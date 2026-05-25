@@ -139,6 +139,11 @@ def main() -> int:
     parser.add_argument("--device", choices=["cuda", "cpu"], default="cuda")
     parser.add_argument("--no-msa", action="store_true",
                         help="Disable MSA server for faster but lower-quality predictions")
+    parser.add_argument("--targets-filter", nargs="+", default=None,
+                        help="Only score these UniProt IDs (e.g. P36544 Q08499 Q9Y5N1)")
+    parser.add_argument("--include-allosteric-panel", action="store_true",
+                        help="Force-include allosteric audit ligands at their cognate target "
+                             "even if not in top-N MAMMAL hits")
     args = parser.parse_args()
 
     ensure_dirs()
@@ -152,12 +157,56 @@ def main() -> int:
                 len(targets), len(compounds), len(gates),
                 "yes" if mammal_scores is not None else "no")
 
+    # --targets-filter restricts the panel to a subset (e.g. for focused gate tests)
+    if args.targets_filter:
+        targets = targets[targets["uniprot"].isin(args.targets_filter)].copy()
+        logger.info("Targets filter applied: %d remaining (%s)",
+                    len(targets), list(targets["uniprot"]))
+
     pairs = _build_pair_list(
         targets=targets, compounds=compounds, gates=gates,
         mammal_scores=mammal_scores,
         include_flag=args.include_flag,
         top_n_per_compound=args.top_n_per_compound,
     )
+
+    # Force-include allosteric audit ligands at their cognate target.
+    if args.include_allosteric_panel:
+        allosteric_extra = {
+            "P36544": ["galantamine", "encenicline", "tc-5619"],            # CHRNA7
+            "Q08499": ["bpn14770", "zatolmilast", "rolipram"],              # PDE4D
+            "P42261": ["tulrampator", "cx-516", "cx-717", "aniracetam"],    # GRIA1
+            "P42262": ["tulrampator", "cx-516", "cx-717", "aniracetam"],
+            "P42263": ["tulrampator", "cx-516", "cx-717", "aniracetam"],
+            "P48058": ["tulrampator", "cx-516", "cx-717", "aniracetam"],
+            "Q9Y5N1": ["pitolisant", "cep-26401"],                          # HRH3
+            "P22303": ["donepezil", "rivastigmine", "galantamine"],         # ACHE
+            "Q01959": ["methylphenidate", "modafinil", "d-amphetamine"],    # DAT
+            "P23975": ["atomoxetine", "methylphenidate"],                   # NET
+            "P21728": ["aripiprazole"],                                     # DRD1
+        }
+        cmp_lookup = compounds.set_index(
+            compounds["name"].str.lower().str.strip()
+        )[["smiles", "name"]].apply(tuple, axis=1).to_dict()
+        tgt_lookup = targets.set_index("uniprot")[["sequence"]].to_dict()["sequence"]
+        existing_keys = {(tgt, name.lower().strip()) for tgt, _, name, _ in pairs}
+        extra_added = 0
+        for tgt, comp_names in allosteric_extra.items():
+            seq = tgt_lookup.get(tgt)
+            if seq is None:
+                continue
+            for name in comp_names:
+                lc = name.lower().strip()
+                if (tgt, lc) in existing_keys:
+                    continue
+                entry = cmp_lookup.get(lc)
+                if entry is None:
+                    continue
+                smi, orig_name = entry
+                pairs.append((tgt, seq, orig_name, smi))
+                extra_added += 1
+        logger.info("Allosteric panel: added %d extra (target,compound) pairs.", extra_added)
+
     logger.info("Built call list: %d (target, compound) pairs.", len(pairs))
 
     if args.resume:

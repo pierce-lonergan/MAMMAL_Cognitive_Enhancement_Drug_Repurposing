@@ -119,11 +119,22 @@ def _write_affinity_yaml(
 
 
 def _find_affinity_output(out_dir: Path, run_name: str):
-    pred_root = out_dir / "predictions" / run_name
-    if not pred_root.exists():
-        pred_root = out_dir
-    affinity_json = next(pred_root.glob("affinity_*.json"), None)
-    confidence_json = next(pred_root.glob("confidence_*_model_0.json"), None)
+    """Walk the output dir to find affinity + confidence JSONs anywhere.
+
+    Boltz writes outputs to several possible locations depending on version:
+        <out>/boltz_results_<run>/predictions/<run>/affinity_<run>.json
+        <out>/predictions/<run>/affinity_<run>.json
+        <out>/<run>/affinity_<run>.json
+    We just rglob for any JSON with "affinity" in its name.
+    """
+    affinity_json = next(
+        (p for p in out_dir.rglob("*.json") if "affinity" in p.name.lower()),
+        None,
+    )
+    confidence_json = next(
+        (p for p in out_dir.rglob("*.json") if "confidence" in p.name.lower()),
+        None,
+    )
     return affinity_json, confidence_json
 
 
@@ -181,6 +192,10 @@ def score_affinity(
             "--output_format", "mmcif",
             "--accelerator", "gpu" if device == "cuda" else "cpu",
             "--devices", "1",
+            # Disable cuequivariance triangle-mult kernel — the native
+            # cuequivariance-ops-torch-cu12 wheel is not published for Windows;
+            # the PyTorch fallback is slower but functionally correct.
+            "--no_kernels",
         ]
         if use_msa_server:
             cmd.append("--use_msa_server")

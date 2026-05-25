@@ -178,6 +178,8 @@ def predict_structure(
             "--output_format", "mmcif",
             "--accelerator", "gpu" if device == "cuda" else "cpu",
             "--devices", "1",
+            # cuequivariance-ops wheel isn't on Windows; fall back to PyTorch.
+            "--no_kernels",
         ]
         if use_msa_server:
             cmd.append("--use_msa_server")
