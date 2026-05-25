@@ -1,0 +1,66 @@
+_meta:
+  generator: scripts/22_v3_calibration.py
+  description: "Per-target RRF weight overrides derived from ChEMBL ground-truth Spearman\
+    \ \u03C1. Applied on top of `configs/weights.yaml` defaults."
+per_target_weights:
+  P36544:
+    cluster_a_mammal: 0.6
+    cluster_a_boltzina: 0.6
+  P22303:
+    cluster_a_mammal: 0.6
+    cluster_a_boltzina: 0.6
+  P42261:
+    cluster_a_mammal: 0.6
+    cluster_a_boltzina: 0.6
+  P42262:
+    cluster_a_mammal: 0.6
+    cluster_a_boltzina: 0.6
+  P42263:
+    cluster_a_mammal: 0.6
+    cluster_a_boltzina: 0.6
+  P48058:
+    cluster_a_mammal: 0.6
+    cluster_a_boltzina: 0.6
+  Q12879:
+    cluster_a_mammal: 0.3
+    cluster_a_boltzina: 0.3
+    _note: "INVERTED \u2014 manual review before relying on rank."
+  Q13224:
+    cluster_a_mammal: 0.3
+    cluster_a_boltzina: 0.3
+    _note: "INVERTED \u2014 manual review before relying on rank."
+  Q01959:
+    cluster_a_mammal: 0.3
+    cluster_a_boltzina: 0.3
+    _note: "INVERTED \u2014 manual review before relying on rank."
+  P08913:
+    cluster_a_mammal: 0.6
+    cluster_a_boltzina: 0.6
+  P23975:
+    cluster_a_mammal: 0.3
+    cluster_a_boltzina: 0.3
+    _note: "INVERTED \u2014 manual review before relying on rank."
+  Q9Y5N1:
+    cluster_a_mammal: 1.0
+    cluster_a_boltzina: 2.0
+  O43614:
+    cluster_a_mammal: 0.6
+    cluster_a_boltzina: 0.6
+  Q08499:
+    cluster_a_mammal: 0.6
+    cluster_a_boltzina: 0.6
+  O76083:
+    cluster_a_mammal: 0.6
+    cluster_a_boltzina: 0.6
+  Q16620:
+    cluster_a_mammal: 0.6
+    cluster_a_boltzina: 0.6
+  Q99720:
+    cluster_a_mammal: 0.6
+    cluster_a_boltzina: 0.6
+  O43526:
+    cluster_a_mammal: 0.6
+    cluster_a_boltzina: 0.6
+  O60741:
+    cluster_a_mammal: 0.6
+    cluster_a_boltzina: 0.6

@@ -127,19 +127,47 @@ def calibrate_target(
         rho_b = math.nan
         n_bz = 0
 
-    # Verdict
+    # Verdict — refined from the original spec to honestly handle the cases
+    # the original rules didn't anticipate:
+    #   (a) Boltz NaN (overnight sweep still running — most targets have no Boltz data yet)
+    #   (b) MAMMAL ρ strongly negative (the DTI head IS informative, just inverted —
+    #       still risky to auto-invert, so flag for manual review and de-weight)
+    #   (c) MAMMAL ρ ≈ 0 (no signal, not useful as a ranker)
+    mm_has = (not math.isnan(rho_m)) and len(mm_join) >= 3
+    bz_has = (not math.isnan(rho_b)) and n_bz >= 3
+    RHO_STRONG = 0.30
+    RHO_NEG = -0.30  # |ρ| ≥ 0.3 in the wrong direction = inverted
+
     if len(truth) < 5:
         verdict = "INSUFFICIENT_DATA"
-    elif math.isnan(rho_m) and math.isnan(rho_b):
+    elif not mm_has and not bz_has:
         verdict = "NO_CLUSTER_DATA"
-    elif (not math.isnan(rho_m)) and (not math.isnan(rho_b)) and rho_m < 0.3 and rho_b < 0.3:
-        verdict = "DE_WEIGHT_TARGET"   # both clusters poor → drop this target from fusion
-    elif (not math.isnan(rho_b)) and (math.isnan(rho_m) or (rho_b >= rho_m + 0.1)):
-        verdict = "BOLTZ_2X_MAMMAL"
-    elif (not math.isnan(rho_m)) and (math.isnan(rho_b) or (rho_m >= rho_b + 0.1)):
-        verdict = "MAMMAL_2X_BOLTZ"
+    elif mm_has and not bz_has:
+        # MAMMAL only — qualify by signal strength + direction
+        if rho_m <= RHO_NEG:
+            verdict = "MAMMAL_ONLY_INVERTED"   # treat as DE_WEIGHT; needs manual review
+        elif rho_m < RHO_STRONG:
+            verdict = "MAMMAL_ONLY_WEAK"        # informative but noisy; DE_WEIGHT
+        else:
+            verdict = "MAMMAL_ONLY_STRONG"      # default weights apply
+    elif bz_has and not mm_has:
+        # Boltz only — same qualification
+        if rho_b <= RHO_NEG:
+            verdict = "BOLTZ_ONLY_INVERTED"
+        elif rho_b < RHO_STRONG:
+            verdict = "BOLTZ_ONLY_WEAK"
+        else:
+            verdict = "BOLTZ_ONLY_STRONG"
     else:
-        verdict = "EQUAL_WEIGHTS"
+        # Both clusters present — original 4-rule logic, but require ρ ≥ 0.3 for "trust"
+        if rho_m < RHO_STRONG and rho_b < RHO_STRONG:
+            verdict = "DE_WEIGHT_TARGET"
+        elif rho_b >= rho_m + 0.1 and rho_b >= RHO_STRONG:
+            verdict = "BOLTZ_2X_MAMMAL"
+        elif rho_m >= rho_b + 0.1 and rho_m >= RHO_STRONG:
+            verdict = "MAMMAL_2X_BOLTZ"
+        else:
+            verdict = "EQUAL_WEIGHTS"
 
     return {
         "target_uniprot": target_uniprot,
@@ -168,15 +196,23 @@ def render_markdown(
     lines.append("Quality filter: assay_type='B', confidence_score≥7, standard_type∈{Ki,IC50,Kd,EC50}.")
     lines.append("")
 
-    n_de_weight = sum(1 for r in rows if r["verdict"] == "DE_WEIGHT_TARGET")
-    n_boltz = sum(1 for r in rows if r["verdict"] == "BOLTZ_2X_MAMMAL")
-    n_mammal = sum(1 for r in rows if r["verdict"] == "MAMMAL_2X_BOLTZ")
-    n_equal = sum(1 for r in rows if r["verdict"] == "EQUAL_WEIGHTS")
-    n_insuf = sum(1 for r in rows if r["verdict"] in {"INSUFFICIENT_DATA", "NO_CLUSTER_DATA"})
-
-    lines.append(f"**Summary**: BOLTZ_2X_MAMMAL: {n_boltz} | MAMMAL_2X_BOLTZ: {n_mammal} | "
-                 f"EQUAL_WEIGHTS: {n_equal} | DE_WEIGHT_TARGET: {n_de_weight} | INSUFFICIENT_DATA: {n_insuf}")
+    # Verdict tallies — covers the expanded matrix
+    from collections import Counter  # noqa: PLC0415
+    counts = Counter(r["verdict"] for r in rows)
+    summary_parts = [f"{v}: {counts[v]}" for v in sorted(counts.keys())]
+    lines.append(f"**Summary**: {' | '.join(summary_parts)}")
     lines.append("")
+
+    # Boltz-coverage advisory
+    n_boltz_targets = sum(1 for r in rows if r["boltz_n"] >= 3)
+    if n_boltz_targets < len(rows) // 2:
+        lines.append(
+            f"⚠️ **Boltz coverage is partial: only {n_boltz_targets}/{len(rows)} targets "
+            f"have ≥3 Boltz predictions.** The overnight WSL2 sweep is still running; "
+            f"re-run this calibration once `data/results/v2/boltzina_affinity.parquet` is "
+            f"populated. Most current verdicts are `MAMMAL_ONLY_*`."
+        )
+        lines.append("")
 
     lines.append("| Target | UniProt | ChEMBL truth n | MAMMAL ρ (n) | Boltz ρ (n) | Verdict |")
     lines.append("|---|---|---|---|---|---|")
@@ -190,10 +226,21 @@ def render_markdown(
 
     lines.append("## Interpretation")
     lines.append("")
-    lines.append("- **BOLTZ_2X_MAMMAL**: Boltzina ρ exceeds MAMMAL ρ by ≥0.1. Trust the structure-aware affinity head 2:1 over the sequence-only DTI head at this target. Common at allosteric pockets.")
-    lines.append("- **MAMMAL_2X_BOLTZ**: MAMMAL ρ exceeds Boltzina ρ by ≥0.1. Trust the sequence-only DTI head 2:1 — usually at well-characterized orthosteric pockets MAMMAL was trained on (BindingDB coverage).")
-    lines.append("- **EQUAL_WEIGHTS**: ρ values within 0.1 of each other. Both clusters comparable; equal weighting.")
-    lines.append("- **DE_WEIGHT_TARGET**: both ρ < 0.3. Neither cluster predicts well; down-weight in fusion to avoid amplifying noise.")
+    lines.append("Each verdict requires ≥3 joined predictions and ≥5 ChEMBL truth records. `RHO_STRONG = 0.30` (the threshold for \"trusted\"); `RHO_NEG = -0.30` (the threshold for inverted).")
+    lines.append("")
+    lines.append("**Both clusters present (≥3 predictions each):**")
+    lines.append("- **BOLTZ_2X_MAMMAL**: Boltz ρ ≥ MAMMAL ρ + 0.1 AND Boltz ρ ≥ 0.30. Common at allosteric pockets.")
+    lines.append("- **MAMMAL_2X_BOLTZ**: MAMMAL ρ ≥ Boltz ρ + 0.1 AND MAMMAL ρ ≥ 0.30. Well-characterised orthosteric pockets MAMMAL saw in BindingDB.")
+    lines.append("- **EQUAL_WEIGHTS**: both ρ ≥ 0.30 and within 0.1 of each other.")
+    lines.append("- **DE_WEIGHT_TARGET**: both ρ < 0.30 (including negative or near-zero). Neither cluster is a useful ranker; down-weight in fusion.")
+    lines.append("")
+    lines.append("**Single cluster only** (the other has <3 predictions — usually Boltzina, because the WSL2 overnight sweep is still running):")
+    lines.append("- **MAMMAL_ONLY_STRONG / BOLTZ_ONLY_STRONG**: ρ ≥ 0.30. Default weights apply.")
+    lines.append("- **MAMMAL_ONLY_WEAK / BOLTZ_ONLY_WEAK**: 0 ≤ ρ < 0.30. Down-weight to 0.6 — informative but noisy.")
+    lines.append("- **MAMMAL_ONLY_INVERTED / BOLTZ_ONLY_INVERTED**: ρ ≤ -0.30. Predictions ARE informative but in the wrong direction. Too risky to auto-invert (sign could flip with more data); de-weight to 0.3 and flag for manual review.")
+    lines.append("")
+    lines.append("**Insufficient:**")
+    lines.append("- **NO_CLUSTER_DATA**: neither cluster has ≥3 joined predictions. No calibration possible.")
     lines.append("- **INSUFFICIENT_DATA**: <5 ChEMBL pchembl records. Cannot calibrate; default to equal weights.")
     lines.append("")
     lines.append("Generated by `scripts/22_v3_calibration.py`.")
@@ -228,9 +275,25 @@ def write_calibrated_weights(rows: list[dict], out_path: Path) -> None:
             payload["per_target_weights"][tgt] = {
                 "cluster_a_mammal": 0.3,
                 "cluster_a_boltzina": 0.3,
-                "cluster_b_admet": 0.5,  # ADMET keeps its weight; the structural pair is the unreliable one
+                "cluster_b_admet": 0.5,
             }
-        # EQUAL_WEIGHTS + INSUFFICIENT_DATA → no override (inherit defaults)
+        elif v in {"MAMMAL_ONLY_INVERTED", "BOLTZ_ONLY_INVERTED"}:
+            # Strongly negative ρ — predictions ARE informative but in the wrong
+            # direction. Too risky to auto-invert (could amplify bad calls if the
+            # ρ flips with more Boltz data). De-weight and flag for manual review.
+            payload["per_target_weights"][tgt] = {
+                "cluster_a_mammal": 0.3,
+                "cluster_a_boltzina": 0.3,
+                "_note": "INVERTED — manual review before relying on rank.",
+            }
+        elif v in {"MAMMAL_ONLY_WEAK", "BOLTZ_ONLY_WEAK"}:
+            # Single-cluster, weak signal (0 ≤ ρ < 0.3). Keep but down-weight.
+            payload["per_target_weights"][tgt] = {
+                "cluster_a_mammal": 0.6,
+                "cluster_a_boltzina": 0.6,
+            }
+        # MAMMAL_ONLY_STRONG / BOLTZ_ONLY_STRONG / EQUAL_WEIGHTS /
+        # INSUFFICIENT_DATA / NO_CLUSTER_DATA → no override (inherit defaults)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
