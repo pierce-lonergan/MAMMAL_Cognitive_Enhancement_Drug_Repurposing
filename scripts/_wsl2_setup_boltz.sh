@@ -8,8 +8,13 @@ VENV="$HOME/mammal_env"
 PROJ="/mnt/c/Users/Pierce Lonergan/Documents/GitHub/MAMMAL_Cognitive_Enhancement_Drug_Repurposing"
 
 echo "=== Step 1: apt prerequisites ==="
-sudo apt-get update -qq
-sudo apt-get install -y python3 python3-pip python3-venv build-essential
+# Ubuntu 24.04 has a known python3-pip apt-dep issue (wants python3-wheel which
+# is not installable in the default WSL2 distro). Skip python3-pip; venv's
+# ensurepip provides pip inside the venv. Use sudo only if not already root.
+SUDO=""
+if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; fi
+$SUDO apt-get update -qq
+$SUDO apt-get install -y --no-install-recommends python3 python3-venv python3-dev build-essential ca-certificates
 
 echo ""
 echo "=== Step 2: venv ==="

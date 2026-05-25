@@ -143,7 +143,12 @@ def main() -> int:
                 rank, pct, sc = r
                 allo_results.append((name, rank, pct, sc))
         passed = sum(1 for _, _, p, _ in allo_results if p >= args.top_pct_allosteric)
-        gate_passed = passed >= 2 if len(panel["allosteric"]) >= 2 else passed >= 1
+        # Gate against EVALUATED ligands (allo_results) not the full configured
+        # panel — if only 1 allosteric ligand from the panel was actually scored
+        # (e.g. PDE4D's bpn14770 alone), require that single one to pass; we
+        # can't ask for "≥2 of 1".
+        n_eval = len(allo_results)
+        gate_passed = (passed >= 2) if n_eval >= 2 else (passed >= 1 and n_eval >= 1)
         if gate_passed:
             n_targets_pass += 1
         flag = "✅" if gate_passed else "❌"
