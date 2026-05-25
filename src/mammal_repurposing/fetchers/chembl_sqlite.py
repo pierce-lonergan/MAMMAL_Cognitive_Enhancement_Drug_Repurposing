@@ -52,21 +52,31 @@ class PairEvidence(TypedDict):
 
 
 def get_conn() -> sqlite3.Connection:
-    """Lazy-open the local ChEMBL SQLite mirror via chembl-downloader."""
+    """Lazy-open the local ChEMBL SQLite mirror via chembl-downloader.
+
+    Note on chembl-downloader 0.5.2 API quirks:
+        - `latest()` returns a version string like "36" (NOT a path).
+        - `download_extract_sqlite()` returns a `Path` to the .db file and is
+          idempotent (no re-download if cached). We use it for path resolution.
+        - `connect()` is a context manager; not useful for a singleton pattern.
+    """
     global _CONN, _DB_PATH
     if _CONN is not None:
         return _CONN
 
     import chembl_downloader  # noqa: PLC0415
 
-    _DB_PATH = Path(chembl_downloader.latest())
-    if not _DB_PATH.exists():
+    try:
+        _DB_PATH = Path(chembl_downloader.download_extract_sqlite())
+    except Exception as e:
         raise FileNotFoundError(
-            f"ChEMBL SQLite not found at {_DB_PATH}. Run:\n"
+            "ChEMBL SQLite not available. Run:\n"
             "  python -c \"import chembl_downloader; "
             "chembl_downloader.download_extract_sqlite()\"\n"
-            "(~4 GB download + 12 GB extracted; ~10 min on a fast connection.)"
-        )
+            "(~4 GB download + 12 GB extracted; ~15 min on a fast connection.)"
+        ) from e
+    if not _DB_PATH.exists():
+        raise FileNotFoundError(f"ChEMBL SQLite expected at {_DB_PATH} but missing.")
 
     logger.info("Opening ChEMBL SQLite at %s", _DB_PATH)
     _CONN = sqlite3.connect(f"file:{_DB_PATH}?mode=ro", uri=True, check_same_thread=False)
@@ -108,30 +118,37 @@ def smiles_to_inchikey(smiles: str) -> Optional[str]:
 
 # --- Lookup queries ----------------------------------------------------------
 
-# ChEMBL schema (release 33+, stable across 32-35):
+# ChEMBL 36 schema (also verified for 33-36):
 #   activities.molregno → molecule_dictionary.molregno (the salt form)
-#   molecule_dictionary.parent_molregno → parent compound's molregno (NULL if itself is parent)
+#   molecule_hierarchy.molregno → molecule_hierarchy.parent_molregno
+#                                 (NULL row if the molecule has no parent record)
 #   molecule_dictionary.molregno ↔ compound_structures.molregno → standard_inchi_key
 #   activities.assay_id → assays.assay_id → assays.tid → target_dictionary.tid
 #   target_dictionary.tid → target_components.tid → component_sequences.accession (UniProt)
+#
+# IMPORTANT: parent_molregno lives in molecule_hierarchy (a SEPARATE table),
+# NOT as a column on molecule_dictionary. Earlier ChEMBL docs sometimes show
+# it on molecule_dictionary; that's a different (older / aggregated) schema.
 
 
 _LOOKUP_BY_INCHIKEY_SQL = """
 WITH canonical AS (
-    -- Resolve InChIKey → set of {parent_molregno, all_salt_molregnos} so we
-    -- catch activity records that reference the salt form.
+    -- Resolve InChIKey → set of canonical parent molregnos. Use molecule_hierarchy
+    -- to walk salt → parent; fall back to the row itself if no hierarchy entry.
     SELECT DISTINCT
-        COALESCE(md.parent_molregno, md.molregno) AS parent_molregno
+        COALESCE(mh.parent_molregno, md.molregno) AS parent_molregno
     FROM compound_structures cs
     JOIN molecule_dictionary md ON cs.molregno = md.molregno
+    LEFT JOIN molecule_hierarchy mh ON md.molregno = mh.molregno
     WHERE cs.standard_inchi_key = ?
 ),
 expanded AS (
-    -- All molregnos whose canonical (parent) is in the canonical set —
+    -- All molregnos that resolve to one of these canonical parents —
     -- includes the parent itself and every salt form.
     SELECT md.molregno
     FROM molecule_dictionary md
-    WHERE COALESCE(md.parent_molregno, md.molregno) IN (SELECT parent_molregno FROM canonical)
+    LEFT JOIN molecule_hierarchy mh ON md.molregno = mh.molregno
+    WHERE COALESCE(mh.parent_molregno, md.molregno) IN (SELECT parent_molregno FROM canonical)
 )
 SELECT
     md.chembl_id           AS molecule_chembl_id,
@@ -273,17 +290,18 @@ def per_target_pchembl_records(target_uniprot: str) -> pd.DataFrame:
     """
     sql = """
     SELECT
-        md.chembl_id                AS molecule_chembl_id,
-        cs.standard_inchi_key       AS inchikey,
-        MAX(a.pchembl_value)        AS best_pchembl,
-        COUNT(*)                    AS n_records
+        md.chembl_id                                AS molecule_chembl_id,
+        cs.standard_inchi_key                       AS inchikey,
+        MAX(a.pchembl_value)                        AS best_pchembl,
+        COUNT(*)                                    AS n_records
     FROM activities a
     JOIN assays s                ON a.assay_id = s.assay_id
     JOIN target_dictionary td    ON s.tid = td.tid
     JOIN target_components tc    ON td.tid = tc.tid
     JOIN component_sequences cseq ON tc.component_id = cseq.component_id
     JOIN molecule_dictionary md  ON a.molregno = md.molregno
-    JOIN compound_structures cs  ON COALESCE(md.parent_molregno, md.molregno) = cs.molregno
+    LEFT JOIN molecule_hierarchy mh ON md.molregno = mh.molregno
+    JOIN compound_structures cs  ON COALESCE(mh.parent_molregno, md.molregno) = cs.molregno
     WHERE cseq.accession = ?
       AND s.assay_type = 'B'
       AND a.standard_type IN ('Ki', 'IC50', 'Kd', 'EC50')

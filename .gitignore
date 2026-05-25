@@ -54,6 +54,7 @@ Thumbs.db
 # Derived data — committable seed CSVs in data/raw/ are kept, everything else is regenerated
 data/interim/
 data/results/
+data/cache/
 !data/interim/.gitkeep
 !data/results/.gitkeep
 

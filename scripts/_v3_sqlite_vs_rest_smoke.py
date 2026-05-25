@@ -113,6 +113,37 @@ def main() -> int:
                            r["target_uniprot"], r["compound_name"],
                            r["sql_status"], r["sql_n"], r["rest_status"], r["rest_n"])
 
+    # Write evidence to reports/ for auditability
+    report_dir = ROOT / "reports"
+    report_dir.mkdir(parents=True, exist_ok=True)
+    md = ["# Phase A.5 — SQLite vs REST agreement smoke test",
+          "",
+          f"**Agreement: {n_agree}/{n_total} ({100 * n_agree / max(n_total, 1):.0f}%) "
+          f"(errors: {n_err})**",
+          "",
+          "Picked the top 20 (target, compound) pairs by predicted_pkd with SMILES < 200 chars.",
+          "Both the SQLite backstop (`fetchers/chembl_sqlite.py`) and the legacy REST",
+          "fetcher (`fetchers/chembl_groundtruth.py`) were run on the same pairs. "
+          "INCONCLUSIVE (REST) is normalised to AMBIGUOUS (SQLite) for comparison.",
+          "",
+          "| target | compound | SQL status | SQL n | REST status | REST n | agree |",
+          "|---|---|---|---|---|---|---|"]
+    for _, r in df.iterrows():
+        md.append(
+            f"| {r['target_uniprot']} | {r['compound_name']} | "
+            f"{r['sql_status']} | {r['sql_n']} | "
+            f"{r['rest_status']} | {r['rest_n']} | "
+            f"{'✓' if r['agree'] else '✗'} |"
+        )
+    md.append("")
+    md.append("_Gate logic: PASS when n_agree == n_total - n_err. REST 500s are tolerated "
+              "(transient EBI infrastructure) — only true status mismatches count as failures._")
+    md.append("")
+    md.append(f"**Result: {'PASS' if n_agree == n_total - n_err else 'FAIL'}** "
+              f"(n_agree={n_agree}, n_total={n_total}, n_err={n_err})")
+    (report_dir / "sqlite_vs_rest_smoke.md").write_text("\n".join(md), encoding="utf-8")
+    logger.info("Wrote %s", report_dir / "sqlite_vs_rest_smoke.md")
+
     return 0 if n_agree == n_total - n_err else 2
 
 
