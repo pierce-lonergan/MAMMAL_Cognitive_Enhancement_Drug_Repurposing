@@ -151,9 +151,10 @@ See also: [`design/V3_ATTACK_PLAN.md`](design/V3_ATTACK_PLAN.md) and the sprint 
 | Question | File |
 |---|---|
 | What does this pipeline DO and NOT do? | [`reports/methodology_v1.md`](reports/methodology_v1.md) |
+| **What's the v3 state + forward plan?** | [`design/V3_STATUS_AND_FORWARD_PLAN.md`](design/V3_STATUS_AND_FORWARD_PLAN.md) |
 | What's the architecture? | [`design/V2_HYBRID_ARCHITECTURE.md`](design/V2_HYBRID_ARCHITECTURE.md) |
-| What's working / what's broken / what's the WSL2 plan? | [`design/V2_STATUS_AND_FORWARD_PLAN.md`](design/V2_STATUS_AND_FORWARD_PLAN.md) |
-| What's the next 4 days of work? | [`design/V3_ATTACK_PLAN.md`](design/V3_ATTACK_PLAN.md) |
+| What was working/broken at v2 (historical)? | [`design/V2_STATUS_AND_FORWARD_PLAN.md`](design/V2_STATUS_AND_FORWARD_PLAN.md) |
+| What was the next 4 days of v3 sprint work? | [`design/V3_ATTACK_PLAN.md`](design/V3_ATTACK_PLAN.md) |
 | Did the CHRNA7 rescue work? | [`design/PHASE_0_5_DECISION_RECORD.md`](design/PHASE_0_5_DECISION_RECORD.md) |
 | Did WSL2 + cuEquivariance kernels work on RTX 5070? | [`design/WSL2_VALIDATION_RECORD.md`](design/WSL2_VALIDATION_RECORD.md) |
 | Were the ChEMBL target IDs right? | [`design/T1_CHEMBL_AUDIT_VERDICT.md`](design/T1_CHEMBL_AUDIT_VERDICT.md), [`reports/chembl_target_id_audit_sqlite.md`](reports/chembl_target_id_audit_sqlite.md) |
