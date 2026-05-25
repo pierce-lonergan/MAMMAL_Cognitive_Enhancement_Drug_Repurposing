@@ -1,34 +1,46 @@
-"""Boltzina — affinity-only mode bypassing Boltz-2's diffusion structure module.
+"""Boltzina-style affinity scoring.
 
-Per the v2 research doc §3 Class A:
-    Source: Furui & Ohue, arXiv 2508.17555 (Aug 24 2025)
-    Workflow: AutoDock Vina poses → Boltz-2 affinity head (skip diffusion)
-    Speed: ~11.8× faster than full Boltz-2 (reduced recycling + batch processing)
-    Accuracy: below full Boltz-2; well above Vina/GNINA on MF-PCBA
-    VRAM: ~7-8 GB affinity-only on L40S; fits RTX 5070 12 GB
+The pure Boltzina protocol (Furui & Ohue, arXiv 2508.17555) — Vina pose →
+Boltz-2 affinity head, skipping the diffusion structure module — would be the
+ideal default. There is currently no Boltzina pip package, however, so this
+module ships TWO modes:
 
-This module is a STUB. Real install requires:
-    pip install boltz vina rdkit-pypi
-    pip install git+https://github.com/Furui-Lab/Boltzina  # hypothetical; verify
+    Mode A (default): full `boltz predict` with both structure + affinity
+        prediction enabled. Slower per call (~30-60 s per pair on RTX 5070),
+        but uses the official Boltz-2 CLI verbatim and produces both the
+        pose and the affinity simultaneously.
 
-Expected output schema (consumed by fusion + provenance):
-    target_uniprot | compound_name | smiles | log_ic50 | binder_prob | pose_path
+    Mode B (Boltzina-style, future v2.1): pre-generate Vina poses, feed the
+        pose + sequence to the Boltz-2 affinity head only. Documented as a
+        TODO — implement once the boltz repo exposes a clean Python API for
+        affinity-only mode, or we vendor the Furui & Ohue reference.
 
-For the v2 hybrid, Boltzina is called only on the TOP-N compounds surviving
-the ADMET hard gates (typically top 50 by MAMMAL pKd per target). This
-limits the call count to ~50 × 22 = 1100 affinity predictions, ~5-10s each
-in Boltzina mode = ~3-6 hours wall-clock on cold cache.
+Output schema (consumed by fusion + provenance):
+    target_uniprot | compound_name | smiles |
+    affinity_pred_value (log10 IC50 in µM) |
+    affinity_probability_binary (calibrated binder probability in [0,1]) |
+    pose_plddt | mode | scored_at
+
+Cache: data/cache/boltzina/<sha1(seq)+sha1(smiles)>.json.
 """
 
 from __future__ import annotations
 
+import datetime as dt
+import gc
 import hashlib
 import json
 import logging
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
+from dataclasses import dataclass
 from pathlib import Path
-from typing import TypedDict
+from typing import Literal
 
-import pandas as pd
+import yaml
 
 from mammal_repurposing.config import DATA_DIR
 
@@ -37,14 +49,40 @@ logger = logging.getLogger(__name__)
 _AFFINITY_CACHE_DIR = DATA_DIR / "cache" / "boltzina"
 
 
-class BoltzinaResult(TypedDict):
+def _find_boltz_executable() -> str:
+    """Locate the boltz CLI. Prefer the env's Scripts dir over PATH because
+    the subprocess inherits the parent's PATH which on Windows often doesn't
+    include the active conda env's Scripts directory."""
+    env_scripts = Path(sys.executable).parent / "Scripts" / "boltz.exe"
+    if env_scripts.exists():
+        return str(env_scripts)
+    env_unix = Path(sys.executable).parent / "boltz"
+    if env_unix.exists():
+        return str(env_unix)
+    found = shutil.which("boltz")
+    if found:
+        return found
+    raise FileNotFoundError(
+        "boltz CLI not found. Tried "
+        f"{env_scripts}, {env_unix}, and PATH. Run `pip install boltz`."
+    )
+
+Mode = Literal["full", "boltzina_vina"]
+
+
+@dataclass
+class AffinityResult:
     target_uniprot: str
     compound_name: str
     smiles: str
-    log_ic50: float          # log10(IC50 in µM); more negative = stronger
-    binder_prob: float       # [0, 1] calibrated binder probability
-    pose_plddt: float | None # pose-confidence proxy
-    pose_path: str | None    # path to saved pose (.sdf or .pdb)
+    affinity_pred_value: float  # log10 IC50 in µM (more negative = stronger)
+    affinity_probability_binary: float  # calibrated binder probability [0, 1]
+    pose_plddt: float | None
+    mode: Mode
+    scored_at: str
+
+    def as_dict(self) -> dict:
+        return self.__dict__.copy()
 
 
 def _pair_hash(seq: str, smiles: str) -> str:
@@ -55,77 +93,185 @@ def _pair_hash(seq: str, smiles: str) -> str:
     return h.hexdigest()
 
 
+def _write_affinity_yaml(
+    sequence: str,
+    smiles: str,
+    run_name: str,
+    work_dir: Path,
+) -> Path:
+    """Write the Boltz YAML for a (protein, ligand) affinity prediction.
+
+    Per the current Boltz YAML schema, affinity is requested by including a
+    `properties: [affinity]` block referencing the ligand id.
+    """
+    payload = {
+        "version": 1,
+        "sequences": [
+            {"protein": {"id": "A", "sequence": sequence}},
+            {"ligand": {"id": "L", "smiles": smiles}},
+        ],
+        "properties": [{"affinity": {"binder": "L"}}],
+    }
+    yaml_path = work_dir / f"{run_name}.yaml"
+    with open(yaml_path, "w", encoding="utf-8") as f:
+        yaml.safe_dump(payload, f, sort_keys=False)
+    return yaml_path
+
+
+def _find_affinity_output(out_dir: Path, run_name: str):
+    pred_root = out_dir / "predictions" / run_name
+    if not pred_root.exists():
+        pred_root = out_dir
+    affinity_json = next(pred_root.glob("affinity_*.json"), None)
+    confidence_json = next(pred_root.glob("confidence_*_model_0.json"), None)
+    return affinity_json, confidence_json
+
+
 def score_affinity(
+    *,
     target_uniprot: str,
     sequence: str,
     compound_name: str,
     smiles: str,
-    *,
-    structure_path: Path | None = None,
     device: str = "cuda",
     use_cache: bool = True,
-) -> BoltzinaResult:
-    """Score a single (target, compound) pair with Boltzina affinity-only mode.
+    mode: Mode = "full",
+    recycling_steps: int = 3,
+    diffusion_samples: int = 1,
+    use_msa_server: bool = True,
+    timeout_sec: int = 60 * 30,  # 30 min per pair worst-case
+) -> AffinityResult:
+    """Score a single (target, compound) pair via Boltz-2 affinity prediction.
 
-    Args:
-        target_uniprot: identifier for the protein.
-        sequence: protein AA sequence.
-        compound_name: identifier for the compound.
-        smiles: small-molecule SMILES.
-        structure_path: pre-predicted .cif from `boltz_runner.predict_structure`;
-            if None, Boltzina will use Vina with a sequence-derived pocket.
-        device: "cuda" or "cpu".
-        use_cache: read/write cached affinity result.
-
-    Returns:
-        BoltzinaResult dict (also persisted as JSON in the cache).
+    On cache hit returns the stored JSON. On miss invokes `boltz predict`.
     """
     _AFFINITY_CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    cache_path = _AFFINITY_CACHE_DIR / f"{_pair_hash(sequence, smiles)}.json"
+    pair_h = _pair_hash(sequence, smiles)
+    cache_path = _AFFINITY_CACHE_DIR / f"{pair_h}.json"
+
     if use_cache and cache_path.exists():
         with open(cache_path) as f:
-            return json.load(f)
+            data = json.load(f)
+        return AffinityResult(**data)
+
+    if mode == "boltzina_vina":
+        raise NotImplementedError(
+            "Boltzina-style Vina-pose-only mode is a future v2.1 optimization. "
+            "Use mode='full' for now."
+        )
 
     try:
         import boltz  # noqa: F401, PLC0415
     except ImportError as e:
-        raise ImportError(
-            "boltz not installed; cannot run Boltzina affinity. "
-            "Run `pip install boltz`."
-        ) from e
+        raise ImportError("boltz not installed. Run `pip install boltz`.") from e
 
-    raise NotImplementedError(
-        "Boltzina runner is a stub. Implement the call to "
-        "Boltz-2 affinity head with Vina-generated pose; see Furui & Ohue 2025 "
-        "(arXiv 2508.17555) for the exact pipeline."
+    run_name = f"aff_{pair_h[:10]}"
+    with tempfile.TemporaryDirectory(prefix="boltz_aff_") as tmp:
+        work_dir = Path(tmp)
+        yaml_path = _write_affinity_yaml(sequence, smiles, run_name, work_dir)
+        out_dir = work_dir / "out"
+        out_dir.mkdir()
+
+        boltz_exe = _find_boltz_executable()
+        cmd: list[str] = [
+            boltz_exe, "predict", str(yaml_path),
+            "--out_dir", str(out_dir),
+            "--recycling_steps", str(recycling_steps),
+            "--diffusion_samples", str(diffusion_samples),
+            "--output_format", "mmcif",
+            "--accelerator", "gpu" if device == "cuda" else "cpu",
+            "--devices", "1",
+        ]
+        if use_msa_server:
+            cmd.append("--use_msa_server")
+        env = os.environ.copy()
+        env.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
+
+        proc = subprocess.run(cmd, capture_output=True, text=True, env=env, timeout=timeout_sec)
+        if proc.returncode != 0:
+            logger.error("Boltz affinity failed (exit %d). stderr tail:\n%s",
+                         proc.returncode, proc.stderr[-500:])
+            raise RuntimeError(f"boltz predict (affinity) failed exit {proc.returncode}")
+
+        aff_path, conf_path = _find_affinity_output(out_dir, run_name)
+        if aff_path is None:
+            raise RuntimeError(f"No affinity JSON under {out_dir}. stdout tail:\n{proc.stdout[-500:]}")
+        with open(aff_path) as f:
+            aff = json.load(f)
+        # Boltz affinity output keys (verify against installed version on first run):
+        #   affinity_pred_value         — log10 IC50 (µM)
+        #   affinity_probability_binary — calibrated binder probability
+        pred_val = float(aff.get("affinity_pred_value", aff.get("affinity_pred_value_1", float("nan"))))
+        pred_prob = float(aff.get("affinity_probability_binary",
+                                   aff.get("affinity_probability_binary_1", float("nan"))))
+
+        pose_plddt = None
+        if conf_path is not None:
+            with open(conf_path) as f:
+                conf = json.load(f)
+            per_res = conf.get("plddt") or conf.get("per_residue_plddt") or []
+            if per_res:
+                pose_plddt = float(sum(per_res) / len(per_res))
+
+    result = AffinityResult(
+        target_uniprot=target_uniprot,
+        compound_name=compound_name,
+        smiles=smiles,
+        affinity_pred_value=pred_val,
+        affinity_probability_binary=pred_prob,
+        pose_plddt=pose_plddt,
+        mode=mode,
+        scored_at=dt.datetime.now(dt.timezone.utc).isoformat(),
     )
+    with open(cache_path, "w") as f:
+        json.dump(result.as_dict(), f)
+    return result
+
+
+def free_gpu() -> None:
+    """Aggressive GPU cleanup. Call between target switches."""
+    import torch  # noqa: PLC0415
+
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
 
 
 def score_grid(
     pairs: list[tuple[str, str, str, str]],
     *,
-    structure_paths: dict[str, Path] | None = None,
     device: str = "cuda",
     use_cache: bool = True,
-) -> pd.DataFrame:
+    mode: Mode = "full",
+    on_pair_complete=None,
+) -> list[AffinityResult]:
     """Score a list of (target_uniprot, sequence, compound_name, smiles) tuples.
 
-    Returns a DataFrame with the BoltzinaResult fields. Caches every call.
+    Returns the list of AffinityResult. Caller may pass ``on_pair_complete``
+    callback (e.g. for incremental flush). Free GPU between target switches.
     """
-    structure_paths = structure_paths or {}
-    rows: list[BoltzinaResult] = []
+    out: list[AffinityResult] = []
+    last_target: str | None = None
     for tgt, seq, name, smi in pairs:
+        if last_target and tgt != last_target:
+            free_gpu()
         try:
-            rows.append(score_affinity(
-                tgt, seq, name, smi,
-                structure_path=structure_paths.get(tgt),
-                device=device, use_cache=use_cache,
+            r = score_affinity(
+                target_uniprot=tgt, sequence=seq,
+                compound_name=name, smiles=smi,
+                device=device, use_cache=use_cache, mode=mode,
+            )
+            out.append(r)
+            if on_pair_complete is not None:
+                on_pair_complete(r)
+        except Exception as e:
+            logger.warning("Boltzina failed for (%s, %s): %s", tgt, name, e)
+            out.append(AffinityResult(
+                target_uniprot=tgt, compound_name=name, smiles=smi,
+                affinity_pred_value=float("nan"),
+                affinity_probability_binary=float("nan"),
+                pose_plddt=None, mode=mode,
+                scored_at=dt.datetime.now(dt.timezone.utc).isoformat(),
             ))
-        except (ImportError, NotImplementedError) as e:
-            logger.warning("Boltzina skipped %s/%s (%s); writing NaN.", tgt, name, e)
-            rows.append({
-                "target_uniprot": tgt, "compound_name": name, "smiles": smi,
-                "log_ic50": float("nan"), "binder_prob": float("nan"),
-                "pose_plddt": None, "pose_path": None,
-            })
-    return pd.DataFrame(rows)
+        last_target = tgt
+    return out
