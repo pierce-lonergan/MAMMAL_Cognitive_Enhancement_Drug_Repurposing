@@ -314,6 +314,45 @@ def per_target_pchembl_records(target_uniprot: str) -> pd.DataFrame:
     return pd.read_sql_query(sql, conn, params=(target_uniprot,))
 
 
+def chembl_actives_with_smiles_for_target(
+    target_uniprot: str,
+    min_pchembl: float = 6.0,
+) -> pd.DataFrame:
+    """All compounds at this target with pchembl ≥ threshold, returned with
+    canonical SMILES from compound_structures.canonical_smiles.
+
+    Cols: molecule_chembl_id, inchikey, canonical_smiles, best_pchembl, n_records.
+    Used by diagnostics A (scaffold saturation) and D (Tanimoto to known actives).
+    """
+    sql = """
+    SELECT
+        md.chembl_id              AS molecule_chembl_id,
+        cs.standard_inchi_key     AS inchikey,
+        cs.canonical_smiles       AS canonical_smiles,
+        MAX(a.pchembl_value)      AS best_pchembl,
+        COUNT(*)                  AS n_records
+    FROM activities a
+    JOIN assays s                ON a.assay_id = s.assay_id
+    JOIN target_dictionary td    ON s.tid = td.tid
+    JOIN target_components tc    ON td.tid = tc.tid
+    JOIN component_sequences cseq ON tc.component_id = cseq.component_id
+    JOIN molecule_dictionary md  ON a.molregno = md.molregno
+    LEFT JOIN molecule_hierarchy mh ON md.molregno = mh.molregno
+    JOIN compound_structures cs  ON COALESCE(mh.parent_molregno, md.molregno) = cs.molregno
+    WHERE cseq.accession = ?
+      AND s.assay_type = 'B'
+      AND a.standard_type IN ('Ki', 'IC50', 'Kd', 'EC50')
+      AND s.confidence_score >= 7
+      AND a.pchembl_value IS NOT NULL
+      AND a.pchembl_value >= ?
+      AND cs.canonical_smiles IS NOT NULL
+    GROUP BY md.chembl_id, cs.standard_inchi_key, cs.canonical_smiles
+    HAVING MAX(a.pchembl_value) IS NOT NULL
+    """
+    conn = get_conn()
+    return pd.read_sql_query(sql, conn, params=(target_uniprot, min_pchembl))
+
+
 def close_conn() -> None:
     """Close the singleton connection (tests, teardown)."""
     global _CONN

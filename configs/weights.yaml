@@ -5,12 +5,17 @@ fusion:
   rrf_k: 60                       # Cormack et al. SIGIR 2009 default; insensitive in [30, 80]
   lambdamart_min_labels: 20       # gate the promotion from RRF -> LambdaMART
   # Per-ranker RRF weight (1.0 = equal). Sweep these once calibration data exists.
+  # Tanimoto baseline gets weight 1.5 because it empirically dominates MAMMAL
+  # at every audited cognition target (reports/tanimoto_baseline_v1.md):
+  # SLC6A3 ρ +0.90 vs -0.70; DRD1 ρ +0.85 vs +0.29; ACHE ρ +0.81 vs +0.24.
   cluster_rrf_weights:
     cluster_a_mammal: 1.0
     cluster_a_boltzina: 1.0
+    cluster_a_tanimoto: 1.5
     cluster_b_admet: 0.5          # also enters fusion as a soft signal (gates run separately)
     cluster_c_txgnn: 1.0
     cluster_c_kg_paths: 0.5
+    cluster_c_primekg: 0.5
 
 
 # Per-compound ADMET score (used as a fusion feature AND for downstream sorting).

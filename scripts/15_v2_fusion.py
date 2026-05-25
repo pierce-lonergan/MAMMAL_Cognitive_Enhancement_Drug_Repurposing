@@ -82,6 +82,13 @@ def main() -> int:
                         help="Suffix appended to output filenames "
                              "(e.g. '_uncalibrated', '_calibrated') so calibrated "
                              "vs uncalibrated runs don't overwrite each other.")
+    parser.add_argument("--add-tanimoto-ranker", action="store_true",
+                        help="Add a per-target Tanimoto-to-ChEMBL-actives ranker "
+                             "as a 5th cluster (cluster_a_tanimoto). Empirically "
+                             "beats MAMMAL ρ at every target — see "
+                             "reports/tanimoto_baseline_v1.md.")
+    parser.add_argument("--tanimoto-active-pchembl", type=float, default=8.0,
+                        help="ChEMBL pchembl threshold for 'active' (default 8.0).")
     args = parser.parse_args()
 
     ensure_dirs()
@@ -200,6 +207,43 @@ def main() -> int:
             })
             tx_rows.append(df)
         additional_long.append(pd.concat(tx_rows, ignore_index=True))
+
+    # --- Cluster A.4 — Tanimoto-to-known-actives baseline ranker --------------
+    # Empirically beats MAMMAL ρ at every audited cognition target (see
+    # reports/tanimoto_baseline_v1.md). Adding it as a real ranker is the v4
+    # quickest win — zero training cost, deterministic, no GPU.
+    if args.add_tanimoto_ranker:
+        from mammal_repurposing.cluster_a.tanimoto_ranker import (  # noqa: PLC0415
+            TanimotoRankerConfig, build_long_format_ranker,
+        )
+        from mammal_repurposing.fetchers.chembl_sqlite import (  # noqa: PLC0415
+            chembl_actives_with_smiles_for_target,
+        )
+
+        # Build a per-target loader (caches at SQLite query level)
+        def _active_loader(uniprot: str) -> list[str]:
+            df = chembl_actives_with_smiles_for_target(
+                uniprot, min_pchembl=args.tanimoto_active_pchembl,
+            )
+            return df["canonical_smiles"].dropna().tolist()
+
+        # Deduplicated compound table (one row per compound_name + canonical smi)
+        lib_unique = (mammal[["compound_name", "compound_smiles"]]
+                      .drop_duplicates(subset=["compound_name"])
+                      .rename(columns={"compound_smiles": "smiles"}))
+        logger.info("Computing Tanimoto ranker on %d compounds × %d targets ...",
+                    len(lib_unique), len(targets))
+        tani_long = build_long_format_ranker(
+            lib_unique, list(targets), _active_loader,
+            config=TanimotoRankerConfig(
+                active_pchembl_threshold=args.tanimoto_active_pchembl,
+            ),
+            ranker_name="cluster_a_tanimoto",
+        )
+        # Drop NaN rows (compounds where SMILES failed to parse, etc.)
+        tani_long = tani_long.dropna(subset=["predicted_pkd"])
+        logger.info("Tanimoto ranker: %d (target, compound) scores.", len(tani_long))
+        additional_long.append(tani_long)
 
     long_scores = pd.concat([mammal_long, admet_long, *additional_long], ignore_index=True)
     logger.info("Fusion input: %d rows across %d rankers: %s",
