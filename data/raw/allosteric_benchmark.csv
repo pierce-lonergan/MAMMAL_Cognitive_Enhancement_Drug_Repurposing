@@ -1,0 +1,22 @@
+target_uniprot,target_gene,compound_name,smiles,binding_mode,measured_activity_nm,activity_type,source_doi_or_pmid,notes
+P36544,CHRNA7,galantamine,CC1=C2CC3C(C1)C(OCC4C3CCCC4(C(C2)O)OC)N(C)C,allosteric_pam,200,EC50,PMID:17009919,Alzheimer's approved; PAM at alpha-7
+P36544,CHRNA7,encenicline,CN1CCC(CC1)NC(=O)c1ccc2c(c1)CC(=O)N2,allosteric_partial_agonist,3.7,EC50,PMID:23864257,EVP-6124; phase 3 schizophrenia (halted GI)
+P36544,CHRNA7,nicotine,CN1CCCC1c1cccnc1,orthosteric_agonist,1000,EC50,literature,prototypical orthosteric agonist
+P36544,CHRNA7,acetylcholine,CC(=O)OCC[N+](C)(C)C,orthosteric_agonist,300,EC50,literature,endogenous orthosteric agonist
+P36544,CHRNA7,methyllycaconitine,CCN1CC(O)(C(C)C)C(OC)CC1(O)C(=O)OCc1ccccc1NC(=O)C,orthosteric_antagonist,1.4,Ki,literature,prototypical alpha-7 antagonist (control negative for cognition)
+Q08499,PDE4D,rolipram,O=C1N(C2CCCC2)Cc1cc(OC)c1OCC,orthosteric_inhibitor,100,IC50,PMID:7508728,prototypical PDE4 orthosteric
+Q08499,PDE4D,zatolmilast,Cc1ccc(C(=O)N2CCN(c3ccc(C(F)(F)F)cn3)CC2)cc1Nc1cccnc1,allosteric_nam,140,IC50,PMID:33982298,BPN14770; PDE4D NAM
+Q08499,PDE4D,piclamilast,CC(C)OC1=CC=C(C=C1OC)C2=NN3CCNCC3=N2,orthosteric_inhibitor,4,IC50,PMID:7508728,PDE4 orthosteric (potent)
+Q08499,PDE4D,apremilast,CC(=O)Nc1ccc2c(c1)C(N1CCOCC1)(C(=O)N(c1ccccc1)c1cccc2c1)c1ccccc1OC,orthosteric_inhibitor,74,IC50,literature,FDA-approved PDE4 (orthosteric)
+P42261,GRIA1,cx-516,O=C(N1CCCCC1)c1ccc2[nH]ncc2c1,allosteric_pam,1500,EC50,literature,CX-516 ampakine
+P42261,GRIA1,aniracetam,O=C1N(CCO)CCC1C(=O)c1ccc(OC)cc1,allosteric_pam,5000,EC50,literature,classical racetam AMPA PAM
+P42261,GRIA1,cx-717,CC(C)(C)C(=O)c1ccc(SC2=NC(=O)NC=N2)cc1,allosteric_pam,800,EC50,PMID:16187807,DARPA-tested ampakine
+P42261,GRIA1,glutamate,N[C@@H](CCC(=O)O)C(=O)O,orthosteric_agonist,1000,EC50,literature,endogenous orthosteric
+P42261,GRIA1,ampa,N[C@@H](Cc1onc(C)c1C(=O)O)C(=O)O,orthosteric_agonist,500,EC50,literature,prototypical orthosteric agonist
+P42261,GRIA1,nbqx,O=C1N(CC(=O)Nc2nn[nH]n2)c2cc([N+](=O)[O-])c([N+](=O)[O-])cc2C1=O,orthosteric_antagonist,150,Ki,literature,AMPA receptor antagonist
+O76083,PDE9A,pf-04447943,CC(C)C(=O)N1CCN(c2nc(C)nc3[nH]nc(C(C)(C)C)c23)CC1,orthosteric_inhibitor,12,IC50,PMID:18482843,Pfizer PDE9 (orthosteric)
+O76083,PDE9A,bay-73-6691,Cc1cc2c(C(c3cccc(C)c3)C(C)C)c(=O)[nH]c(=O)n2n1,orthosteric_inhibitor,55,IC50,literature,PDE9 orthosteric
+O76083,PDE9A,bi-409306,CC1(C)OC(=O)N1c1ccc(-c2nnc(N3CCN(C)CC3)n2C)cc1F,orthosteric_inhibitor,67,IC50,literature,Boehringer PDE9 (orthosteric)
+Q9Y5N1,HRH3,pitolisant,Clc1ccc(CCCC2CCCCN2)cc1OCCCN1CCCCC1,orthosteric_inverse_agonist,5,Ki,literature,FDA approved narcolepsy
+Q9Y5N1,HRH3,ciproxifan,CC(C)C(=O)c1ccc(OCCCC2CCC=N2)cc1,orthosteric_inverse_agonist,8,Ki,literature,prototypical H3 inverse agonist
+Q9Y5N1,HRH3,thioperamide,CC1=NC=C(N1)CSCCNC(=NC2CCCCC2)S,orthosteric_antagonist,4,Ki,literature,classic H3 antagonist

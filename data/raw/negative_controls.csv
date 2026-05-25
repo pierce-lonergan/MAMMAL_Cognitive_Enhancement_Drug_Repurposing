@@ -1,0 +1,21 @@
+name,alt_names,category,notes
+loratadine,,peripheral_antihistamine,non-sedating H1; minimal CNS penetration
+fexofenadine,,peripheral_antihistamine,non-sedating H1; P-gp substrate
+cetirizine,,peripheral_antihistamine,low CNS penetration H1
+naproxen,,nsaid,COX inhibitor; peripheral
+ibuprofen,,nsaid,COX inhibitor; peripheral
+simvastatin,,statin,HMG-CoA reductase
+atorvastatin,,statin,HMG-CoA reductase
+enalapril,,ace_inhibitor,ACE; peripheral
+lisinopril,,ace_inhibitor,ACE; peripheral
+omeprazole,,ppi,H+/K+ ATPase
+esomeprazole,,ppi,H+/K+ ATPase
+metformin,,antidiabetic,AMPK / complex I (peripheral mech for our panel)
+atenolol,,cardiac_beta_blocker,beta-1 selective; low CNS
+warfarin,,anticoagulant,VKOR
+amoxicillin,,antibiotic,beta-lactam
+ciprofloxacin,,antibiotic,DNA gyrase
+furosemide,,diuretic,Na-K-Cl cotransporter
+hydrochlorothiazide,,diuretic,Na-Cl cotransporter
+allopurinol,,antigout,xanthine oxidase
+ranitidine,,h2_antagonist,peripheral H2 (not CNS H1/H3)

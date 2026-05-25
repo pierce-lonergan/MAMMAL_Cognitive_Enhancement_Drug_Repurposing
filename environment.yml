@@ -1,0 +1,35 @@
+name: mammal_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      # PyTorch nightly (Blackwell sm_120 support) — install via the explicit index URL,
+      # NOT from PyPI defaults. Run scripts/01_setup_env.ps1 instead of relying on this
+      # file for the torch install.
+      - --pre
+      - --extra-index-url https://download.pytorch.org/whl/nightly/cu128
+      - torch
+      - torchvision
+      # MAMMAL. The example task code (mammal/examples/dti_bindingdb_kd/) ships
+      # with the base package; the [examples] extra pulls in cellxgene tooling
+      # that requires tiledbsoma (Windows wheel build fails). We don't need it.
+      - biomed-multi-alignment>=0.2.4
+      # Pipeline deps
+      - pandas>=2.0
+      - pyarrow>=14.0
+      - httpx>=0.27
+      - tenacity>=8.2
+      - typer>=0.12
+      - tqdm>=4.66
+      - rich>=13.7
+      # Dev
+      - pytest>=8.0
+      - pytest-mock>=3.12
+      - respx>=0.21
+      - ruff>=0.4
+      # Notebook
+      - jupyter>=1.0
+      - ipykernel>=6.29
+      - matplotlib>=3.8

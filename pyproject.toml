@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mammal-repurposing"
+version = "0.1.0"
+description = "MAMMAL-based drug repurposing pipeline for cognitive enhancement targets"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Pierce Lonergan" }]
+keywords = ["drug-repurposing", "mammal", "ibm-research", "cognitive-enhancement", "dti"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+    "pandas>=2.0",
+    "pyarrow>=14.0",
+    "httpx>=0.27",
+    "tenacity>=8.2",
+    "typer>=0.12",
+    "tqdm>=4.66",
+    "rich>=13.7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-mock>=3.12",
+    "respx>=0.21",
+    "ruff>=0.4",
+]
+notebook = [
+    "jupyter>=1.0",
+    "ipykernel>=6.29",
+    "matplotlib>=3.8",
+]
+
+[project.scripts]
+mammal-repurposing = "mammal_repurposing.cli:app"
+
+[project.urls]
+Repository = "https://github.com/Pierce-Lonergan/MAMMAL_Cognitive_Enhancement_Drug_Repurposing"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+mammal_repurposing = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: marks tests as slow (requires GPU + downloaded weights)",
+]
+addopts = "-ra -q --strict-markers"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N", "W"]
+ignore = ["E501"]

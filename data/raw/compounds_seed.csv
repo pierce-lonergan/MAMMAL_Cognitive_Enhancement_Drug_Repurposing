@@ -1,0 +1,84 @@
+name,alt_names,mechanism_class,evidence_tier,expected_top_target,notes
+donepezil,,cholinergic,positive_control,P22303,AChE inhibitor; Aricept
+rivastigmine,,cholinergic,positive_control,P22303,AChE+BuChE inhibitor; Exelon
+galantamine,,cholinergic,positive_control,P22303,AChE inhibitor + alpha-7 PAM; Razadyne
+huperzine A,huperzine;huperzia,cholinergic,extended_cns,P22303,natural product AChE inhibitor
+methylphenidate,,dopaminergic,positive_control,Q01959,DAT+NET inhibitor; Ritalin
+d-amphetamine,dextroamphetamine;dexamphetamine,dopaminergic,positive_control,Q01959,DAT+NET releaser; Dexedrine
+lisdexamfetamine,,dopaminergic,extended_cns,Q01959,d-amphetamine prodrug; Vyvanse
+modafinil,,dopaminergic,positive_control,Q01959,DAT-adjacent wake-promoter; Provigil
+armodafinil,,dopaminergic,extended_cns,Q01959,R-enantiomer of modafinil; Nuvigil
+atomoxetine,,noradrenergic,positive_control,P23975,NET inhibitor; Strattera
+guanfacine,,noradrenergic,extended_cns,P08913,alpha-2A agonist; Intuniv
+clonidine,,noradrenergic,extended_cns,P08913,alpha-2 agonist
+pitolisant,wakix,histaminergic,positive_control,Q9Y5N1,H3 inverse agonist; Wakix
+cep-26401,irdabisant;CEP-26401,histaminergic,named_in_research,Q9Y5N1,H3 antagonist clinical candidate
+encenicline,EVP-6124,cholinergic,named_in_research,P36544,alpha-7 nAChR partial agonist
+tc-5619,TC-5619,cholinergic,named_in_research,P36544,alpha-7 nAChR agonist
+cx-717,CX-717,glutamatergic_ampa,named_in_research,P42261,AMPA PAM (ampakine)
+cx-516,CX-516,glutamatergic_ampa,named_in_research,P42261,AMPA PAM (ampakine)
+tulrampator,S-47445,glutamatergic_ampa,named_in_research,P42261,AMPA PAM
+aniracetam,,glutamatergic_ampa,named_in_research,P42261,racetam class AMPA modulator
+piracetam,,glutamatergic_ampa,extended_cns,P42261,prototypical nootropic racetam
+oxiracetam,,glutamatergic_ampa,extended_cns,P42261,racetam
+pramiracetam,,glutamatergic_ampa,extended_cns,P42261,racetam
+memantine,,glutamatergic_nmda,named_in_research,Q13224,low-affinity NMDA antagonist; Namenda
+rapastinel,GLYX-13,glutamatergic_nmda,named_in_research,Q12879,NMDA NR2B modulator
+lanicemine,AZD6765,glutamatergic_nmda,named_in_research,Q12879,low-trapping NMDA antagonist
+suvorexant,,orexinergic,named_in_research,O43613,dual orexin receptor antagonist; Belsomra
+lemborexant,,orexinergic,named_in_research,O43613,DORA; Dayvigo
+danavorexton,TAK-925,orexinergic,named_in_research,O43614,OX2R agonist
+isrib,ISRIB;trans-ISRIB,isr_modulator,named_in_research,,eIF2B activator tool compound
+dnl343,DNL343,isr_modulator,named_in_research,,Denali EIF2B activator (Phase 2/3)
+2bact,2BAct,isr_modulator,named_in_research,,ISRIB analog
+7-8-dihydroxyflavone,"7,8-DHF;7,8-dihydroxyflavone",neurotrophin,named_in_research,Q16620,TrkB agonist (disputed)
+lm22a-4,LM22A-4,neurotrophin,named_in_research,Q16620,TrkB partial agonist (disputed)
+fluvoxamine,,sigma,named_in_research,Q99720,SSRI + sigma-1 agonist; Luvox
+pridopidine,,sigma,named_in_research,Q99720,sigma-1 agonist; Huntington's trial
+blarcamesine,ANAVEX 2-73;anavex 2-73,sigma,named_in_research,Q99720,sigma-1 agonist; Anavex
+retigabine,ezogabine,ion_channel_kv7,named_in_research,O43526,Kv7 opener; Potiga (withdrawn)
+xen-1101,XEN-1101,ion_channel_kv7,named_in_research,O43526,Kv7 opener clinical
+ivabradine,,ion_channel_hcn,named_in_research,O60741,HCN/funny-current inhibitor; Corlanor
+rolipram,,phosphodiesterase,positive_control,Q08499,PDE4 inhibitor (prototype)
+bpn14770,zatolmilast;BPN-14770,phosphodiesterase,positive_control,Q08499,PDE4D NAM; Fragile X Phase 2 positive
+pf-04447943,PF-04447943,phosphodiesterase,named_in_research,O76083,PDE9 inhibitor (Pfizer)
+bi-409306,BI 409306,phosphodiesterase,extended_cns,O76083,PDE9 inhibitor
+methylene blue,methylthioninium chloride;methylthioninium,mitochondrial,named_in_research,,mitochondrial electron-cycling; nootropic at low dose
+clemastine,,remyelination,named_in_research,,first-gen H1 antihistamine + oligodendrocyte differentiation
+riluzole,,glutamate_release,named_in_research,,Na-channel/glutamate modulator; ALS approved
+troriluzole,BHV-4157,glutamate_release,named_in_research,,riluzole prodrug
+semaglutide,,glp1_agonist,named_in_research,,GLP-1 agonist (peptide); Ozempic/Wegovy
+liraglutide,,glp1_agonist,named_in_research,,GLP-1 agonist (peptide); Victoza
+fluoxetine,,ssri,extended_cns,,SSRI; Prozac
+sertraline,,ssri,extended_cns,,SSRI; Zoloft
+paroxetine,,ssri,extended_cns,,SSRI; Paxil
+citalopram,,ssri,extended_cns,,SSRI; Celexa
+escitalopram,,ssri,extended_cns,,SSRI; Lexapro
+venlafaxine,,snri,extended_cns,,SNRI; Effexor
+duloxetine,,snri,extended_cns,,SNRI; Cymbalta
+desvenlafaxine,,snri,extended_cns,,SNRI; Pristiq
+bupropion,,nri_ndri,extended_cns,Q01959,NDRI; Wellbutrin
+aripiprazole,,atypical_antipsychotic,positive_control,P21728,partial D2/D1 agonist; Abilify
+lurasidone,,atypical_antipsychotic,extended_cns,,5-HT7 antagonist + D2 antagonist
+quetiapine,,atypical_antipsychotic,extended_cns,,broad receptor profile; Seroquel
+risperidone,,atypical_antipsychotic,extended_cns,,D2/5-HT2A antagonist
+olanzapine,,atypical_antipsychotic,extended_cns,,D2/5-HT2A; Zyprexa
+buspirone,,anxiolytic,extended_cns,,5-HT1A partial agonist
+hydroxyzine,,anxiolytic,extended_cns,,H1 antagonist + anxiolytic
+lamotrigine,,anti_epileptic,extended_cns,,Na-channel blocker; mood stabilizer
+levetiracetam,,anti_epileptic,extended_cns,,SV2A modulator; Keppra
+topiramate,,anti_epileptic,extended_cns,,multi-target AED; Topamax
+valproate,valproic acid;sodium valproate,anti_epileptic,extended_cns,,broad-spectrum AED
+selegiline,,maoi,extended_cns,Q01959,MAO-B inhibitor; Parkinson's
+rasagiline,,maoi,extended_cns,Q01959,MAO-B inhibitor
+amitriptyline,,tca,extended_cns,P23975,TCA; SERT+NET
+nortriptyline,,tca,extended_cns,P23975,TCA; NET-selective
+clomipramine,,tca,extended_cns,,TCA; SERT-selective
+levodopa,L-DOPA,parkinsons_dopamine,extended_cns,,dopamine precursor
+pramipexole,,parkinsons_dopamine,extended_cns,,D2/D3 agonist
+ropinirole,,parkinsons_dopamine,extended_cns,,D2/D3 agonist
+cannabidiol,CBD,cannabinoid,extended_cns,,CB1/CB2 modulator; Epidiolex
+propranolol,,beta_blocker,extended_cns,,non-selective beta-blocker; performance anxiety
+alpha-gpc,alpha-glycerylphosphorylcholine,choline,extended_cns,,choline supplement
+citicoline,CDP-choline,choline,extended_cns,,choline source
+lithium carbonate,lithium,mood_stabilizer,extended_cns,,GSK-3 inhibitor; mood stabilizer
