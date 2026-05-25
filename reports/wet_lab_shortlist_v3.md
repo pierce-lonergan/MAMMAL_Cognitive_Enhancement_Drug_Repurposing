@@ -5,9 +5,9 @@ Per-target weights from `configs/weights_calibrated.yaml` (see `reports/calibrat
 
 Coverage at this snapshot:
   - MAMMAL DTI: 6,556 (target, compound) pairs
-  - Boltzina:   98 pairs (overnight WSL2 sweep in progress)
+  - Boltzina:   264 pairs (overnight WSL2 sweep in progress)
   - PrimeKG/TxGNN: absent
-  - ChEMBL evidence backstop: absent (Phase A.4 still running)
+  - ChEMBL evidence backstop: 6,556 rows
 
 **This shortlist is a PRIORITISATION, not a wet-lab recommendation.** Read `reports/methodology_v1.md` for the known failure modes (4 MAMMAL_ONLY_INVERTED targets including DAT/NET, Boltz coverage still partial). Each compound's calibrated rank reflects which targets it scores well on AFTER down-weighting WEAK / INVERTED targets.
 
@@ -66,7 +66,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - NOVEL: 22
 
 ### 2. 2bact
 
@@ -92,7 +92,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - NOVEL: 22
 
 ### 3. aripiprazole
 
@@ -118,7 +118,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - AMBIGUOUS: 1 | CORROBORATED: 2 | NOVEL: 19
 
 ### 4. (s)-ampa
 
@@ -143,7 +143,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - CORROBORATED: 4 | NOVEL: 18
 
 ### 5. (r,s)-ampa
 
@@ -168,7 +168,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - CORROBORATED: 4 | NOVEL: 18
 
 ### 6. modafinil
 
@@ -191,7 +191,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - CORROBORATED: 1 | NOVEL: 21
 
 ### 7. alpha-gpc
 
@@ -217,7 +217,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - NOVEL: 22
 
 ### 8. bi-409306
 
@@ -231,7 +231,9 @@ Coverage at this snapshot:
   - Polypharmacology (n MAMMAL targets): 22
 
 **Cluster A.2 — Boltzina (structure-aware):**
-  - _not yet covered by Boltz sweep_
+  - CHRNA7 (P36544): binder_prob = 0.267, affinity log10(IC50 µM) = -0.530
+  - DRD1 (P21728): binder_prob = 0.135, affinity log10(IC50 µM) = 0.836
+  - HCRTR1 (O43613): binder_prob = 0.098, affinity log10(IC50 µM) = 1.243
 
 **Cluster B — ADMET-AI:**
   - admet_score = 0.779  |  gate = `FLAG`
@@ -241,7 +243,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - CORROBORATED: 1 | NOVEL: 21
 
 ### 9. rolipram
 
@@ -264,7 +266,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - CORROBORATED: 1 | NOVEL: 21
 
 ### 10. piracetam
 
@@ -287,7 +289,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - NOVEL: 22
 
 ### 11. levetiracetam
 
@@ -310,7 +312,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - NOVEL: 22
 
 ### 12. rasagiline
 
@@ -333,7 +335,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - NOVEL: 22
 
 ### 13. bupropion
 
@@ -347,7 +349,9 @@ Coverage at this snapshot:
   - Polypharmacology (n MAMMAL targets): 22
 
 **Cluster A.2 — Boltzina (structure-aware):**
-  - _not yet covered by Boltz sweep_
+  - SLC6A2 (P23975): binder_prob = 0.933, affinity log10(IC50 µM) = 0.937
+  - SLC6A3 (Q01959): binder_prob = 0.869, affinity log10(IC50 µM) = 1.258
+  - DRD1 (P21728): binder_prob = 0.831, affinity log10(IC50 µM) = 0.565
 
 **Cluster B — ADMET-AI:**
   - admet_score = 0.921  |  gate = `PASS`
@@ -356,7 +360,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - AMBIGUOUS: 1 | CORROBORATED: 2 | NOVEL: 19
 
 ### 14. amitriptyline
 
@@ -382,7 +386,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - AMBIGUOUS: 1 | CORROBORATED: 4 | NOVEL: 17
 
 ### 15. lemborexant
 
@@ -406,7 +410,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - NOVEL: 22
 
 ### 16. lanicemine
 
@@ -429,7 +433,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - NOVEL: 22
 
 ### 17. 7-8-dihydroxyflavone
 
@@ -455,7 +459,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - CORROBORATED: 1 | NOVEL: 21
 
 ### 18. tulrampator
 
@@ -479,7 +483,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - NOVEL: 22
 
 ### 19. methylphenidate
 
@@ -502,7 +506,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - CORROBORATED: 2 | NOVEL: 20
 
 ### 20. d-amphetamine
 
@@ -525,7 +529,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - NOVEL: 22
 
 ### 21. topiramate
 
@@ -549,7 +553,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - NOVEL: 22
 
 ### 22. lithium carbonate
 
@@ -572,7 +576,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - NOVEL: 22
 
 ### 23. galantamine
 
@@ -595,7 +599,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - NOVEL: 22
 
 ### 24. tc-5619
 
@@ -619,7 +623,7 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - NOVEL: 22
 
 ### 25. bpn14770
 
@@ -634,6 +638,8 @@ Coverage at this snapshot:
 
 **Cluster A.2 — Boltzina (structure-aware):**
   - PDE4D (Q08499): binder_prob = 0.963, affinity log10(IC50 µM) = -1.258
+  - CHRNA7 (P36544): binder_prob = 0.404, affinity log10(IC50 µM) = -0.726
+  - ADRA2A (P08913): binder_prob = 0.307, affinity log10(IC50 µM) = 0.632
 
 **Cluster B — ADMET-AI:**
   - admet_score = 0.563  |  gate = `FLAG`
@@ -643,4 +649,4 @@ Coverage at this snapshot:
   - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
 
 **ChEMBL ground truth (across panel):**
-  - _Phase A.4 backstop still running; check `data/results/chembl_evidence.parquet`_
+  - CORROBORATED: 1 | NOVEL: 21
