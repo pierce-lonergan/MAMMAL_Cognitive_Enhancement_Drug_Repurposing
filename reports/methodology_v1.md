@@ -1,11 +1,21 @@
 # Methodology Note v1 — MAMMAL Cognitive Enhancement Drug Repurposing
 
 **Repository:** `MAMMAL_Cognitive_Enhancement_Drug_Repurposing` (private)
-**Pipeline snapshot:** main @ `9f800f8` (Phase D shipped)
+**Pipeline snapshot:** main @ `530dc40` (diagnostics + Tanimoto ranker)
 **Author:** Pierce Lonergan, with Claude-assisted scaffolding
 **Date:** 2026-05-25
 
 This is the v1 methodology note. Its purpose is to describe what the pipeline does, what it does NOT do, and where to find the artifacts. It is not a publication and is not a wet-lab handoff. The point of the note is to make the system's failure modes legible so that downstream consumers (us, future agents, collaborators) do not over-interpret its rankings.
+
+> **⚠️ POST-SHIP UPDATE (commit `530dc40`)**: A diagnostic protocol against
+> `research/4-tier/Diagnosing MAMMAL DTI Anti-Correlation.md` revealed
+> **MAMMAL prior collapse is panel-wide** (19/22 targets at >10× collapse vs
+> training SD) and a **1996-vintage Tanimoto-on-Morgan-FP baseline beats
+> MAMMAL at every audited target** (SLC6A3 +0.90 vs -0.70; DRD1 +0.85 vs +0.29).
+> The Phase A.7 per-target ρ values are statistics on noise for most compounds.
+> A new Cluster A.4 (Tanimoto-to-ChEMBL-actives ranker) has been added to fusion
+> as the immediate v4 fix. See `reports/diagnostics_v1.md`,
+> `reports/tanimoto_baseline_v1.md`, `reports/fusion_tanimoto_addition_diff.md`.
 
 ---
 

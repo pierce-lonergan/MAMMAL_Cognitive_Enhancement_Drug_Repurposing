@@ -2,7 +2,19 @@
 
 **Read this first.** This is the source-of-truth status document for the project after the V3 Post-Phase-0.5 Aggressive Sprint shipped Phases A, C, D, E. The architecture spec still lives in [V2_HYBRID_ARCHITECTURE.md](V2_HYBRID_ARCHITECTURE.md); the original v3 plan in [V3_ATTACK_PLAN.md](V3_ATTACK_PLAN.md); this doc supersedes [V2_STATUS_AND_FORWARD_PLAN.md](V2_STATUS_AND_FORWARD_PLAN.md) as the live state-of-the-world.
 
-**Snapshot**: `main @ a2ff155` — Phase A.4 backstop complete (6,556 ChEMBL evidence rows), overnight Boltz sweep at ~22% (~17h to go).
+**Snapshot**: `main @ 530dc40` — diagnostics + Tanimoto ranker shipped.
+
+> **🔥 POST-SPRINT BREAKTHROUGH (commit `530dc40`)** — *Diagnostic Protocol +
+> Tanimoto Baseline*: a 1996-vintage Tanimoto-on-Morgan-FP baseline beats
+> MAMMAL at **every audited cognition target** (SLC6A3 ρ +0.90 vs -0.70; DRD1
+> ρ +0.85 vs +0.29; ACHE ρ +0.81 vs +0.24). MAMMAL prior collapse is
+> panel-wide (19/22 SEVERE at >10× collapse vs training SD). The Phase A.7
+> ρ values are statistics on noise. **Cluster A.4 (Tanimoto-to-actives) has
+> been added as a real ranker in fusion** — donepezil leapt from rank #42 to
+> #4 in the 5-cluster output. This RE-PRIORITISES §7.6 (LoRA fine-tune is
+> NOT the right next move) and PROMOTES §7.7 (cross-DTI ensemble with
+> MMAtt-DTA) to Tier 1. See `reports/diagnostics_v1.md`,
+> `reports/tanimoto_baseline_v1.md`, `reports/fusion_tanimoto_addition_diff.md`.
 
 ---
 
