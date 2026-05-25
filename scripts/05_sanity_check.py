@@ -25,6 +25,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
+from mammal_repurposing.analysis.filters import filter_scores_grid  # noqa: E402
 from mammal_repurposing.analysis.polypharm import compute_polypharm  # noqa: E402
 from mammal_repurposing.analysis.sanity import build_report, write_report  # noqa: E402
 from mammal_repurposing.config import (  # noqa: E402
@@ -33,6 +34,7 @@ from mammal_repurposing.config import (  # noqa: E402
     NEGATIVE_CONTROL_FLAG_PERCENTILE,
     POSITIVE_CONTROL_TOP_PERCENTILE,
     SANITY_REPORT_MD,
+    SMILES_MAX_LENGTH_FOR_RANKING,
     ensure_dirs,
 )
 
@@ -72,18 +74,28 @@ def main() -> int:
     scores = pd.read_parquet(args.scores)
     compounds = pd.read_parquet(args.compounds)
     logger.info(
-        "Loaded %d scores spanning %d targets x %d compounds.",
+        "Loaded %d scores spanning %d targets x %d compounds (raw).",
         len(scores),
         scores["target_uniprot"].nunique(),
         scores["compound_name"].nunique(),
     )
 
+    # Filter peptides / over-long SMILES — out of distribution for MAMMAL's
+    # small-molecule DTI head. These dominate top-of-distribution rankings
+    # via molecular-size bias, not real binding chemistry.
+    scores_filt = filter_scores_grid(scores, compounds,
+                                     max_smiles_length=SMILES_MAX_LENGTH_FOR_RANKING)
+    logger.info(
+        "After exclusion filter: %d scores, %d compounds remaining.",
+        len(scores_filt), scores_filt["compound_name"].nunique(),
+    )
+
     report = build_report(
-        scores, compounds,
+        scores_filt, compounds,
         top_percentile=args.top_percentile,
         neg_flag_percentile=args.neg_flag_percentile,
     )
-    polypharm = compute_polypharm(scores)
+    polypharm = compute_polypharm(scores_filt)
 
     write_report(report, polypharm, args.out)
 

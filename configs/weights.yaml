@@ -1,0 +1,77 @@
+# Fusion / scoring weights for the v2 hybrid.
+# Source: research/Hybrid Architecture... §3 Class B/C, §5.
+
+fusion:
+  rrf_k: 60                       # Cormack et al. SIGIR 2009 default; insensitive in [30, 80]
+  lambdamart_min_labels: 20       # gate the promotion from RRF -> LambdaMART
+  # Per-ranker RRF weight (1.0 = equal). Sweep these once calibration data exists.
+  cluster_rrf_weights:
+    cluster_a_mammal: 1.0
+    cluster_a_boltzina: 1.0
+    cluster_b_admet: 0.5          # also enters fusion as a soft signal (gates run separately)
+    cluster_c_txgnn: 1.0
+    cluster_c_kg_paths: 0.5
+
+
+# Per-compound ADMET score (used as a fusion feature AND for downstream sorting).
+# Weighted sum where each component is in [0, 1].
+admet_score:
+  bbb_permeability: 0.35
+  one_minus_herg: 0.20
+  one_minus_pgp_substrate: 0.15
+  one_minus_dili: 0.10
+  caco2_norm: 0.10                # normalized log Papp into [0, 1]
+  one_minus_cyp3a4_inhibition: 0.10
+
+
+# Knowledge-graph composite score (Cluster C).
+kg_score:
+  indication: 0.4
+  contraindication: 0.3           # subtracted
+  path_count_log: 0.2             # log(1 + path_count) to compress long tail
+  side_effect_penalty: 0.1        # subtracted
+
+
+# Model-disagreement detection thresholds.
+# Drives provenance/disagreement_report.md.
+disagreement:
+  mammal_pkd_strong: 7.0          # > ~100 nM threshold for "strong binder per MAMMAL"
+  mammal_pkd_weak: 5.5
+  boltzina_binder_prob_high: 0.70
+  boltzina_binder_prob_low: 0.30
+  structure_plddt_high_confidence: 70
+  txgnn_indication_strong: 0.50
+
+
+# Cognition virtual phenotype anchor — Cluster C uses union of 2-hop neighborhoods.
+# Source: research/Hybrid Architecture... §3 Class C.
+cognition_virtual_anchor:
+  disease_nodes:
+    - id: "EFO_0006816"
+      name: "Mild cognitive impairment"
+      weight: 1.0
+      rationale: "Direct cognitive-decline proxy"
+    - id: "EFO_0000249"
+      name: "Alzheimer's disease"
+      weight: 0.8
+      rationale: "Mechanistic proxy (cholinergic, AMPA); cautious"
+    - id: "EFO_0003888"
+      name: "Attention deficit hyperactivity disorder"
+      weight: 1.0
+      rationale: "Processing-speed / working-memory targets"
+    - id: "EFO_0004247"
+      name: "Fragile X syndrome"
+      weight: 1.0
+      rationale: "PDE4D anchor (BPN14770 evidence)"
+    - id: "EFO_0003781"
+      name: "Narcolepsy"
+      weight: 1.0
+      rationale: "HCRTR1/2 + HRH3 anchor"
+  k_hops: 2
+  cognition_degrading_side_effects:
+    - sedation
+    - somnolence
+    - cognitive impairment
+    - anticholinergic
+    - confusional state
+    - amnesia

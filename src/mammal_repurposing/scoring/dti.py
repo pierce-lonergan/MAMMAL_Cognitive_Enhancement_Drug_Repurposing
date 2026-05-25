@@ -34,11 +34,22 @@ def _build_sample(
     drug_smiles: str,
     tokenizer: "ModularTokenizerOp",
     device,  # torch.device | str
+    sample_id: str = "unnamed",
 ) -> dict:
-    """Run MAMMAL's preprocessing on a single (target, drug) pair."""
+    """Run MAMMAL's preprocessing on a single (target, drug) pair.
+
+    The ``sample_id`` is injected so MAMMAL's tokenizer error handler can
+    produce a useful message instead of crashing in its own error formatter.
+    """
     from mammal.examples.dti_bindingdb_kd.task import DtiBindingdbKdTask  # noqa: PLC0415
 
-    sample = {"target_seq": target_aa, "drug_seq": drug_smiles}
+    # fuse's get_sample_id() looks for "data.sample_id" or the SAMPLE_ID key.
+    # Provide both — cheap and bullet-proof against API drift in fuse.
+    sample = {
+        "target_seq": target_aa,
+        "drug_seq": drug_smiles,
+        "data.sample_id": sample_id,
+    }
     return DtiBindingdbKdTask.data_preprocessing(
         sample_dict=sample,
         tokenizer_op=tokenizer,
@@ -66,9 +77,16 @@ def score_pair(
     tokenizer: "ModularTokenizerOp",
     target_aa: str,
     drug_smiles: str,
+    *,
+    sample_id: str = "unnamed",
 ) -> float:
-    """Score one (target, drug) pair and return the predicted pKd."""
-    sample = _build_sample(target_aa, drug_smiles, tokenizer, device=model.device)
+    """Score one (target, drug) pair and return the predicted pKd.
+
+    Raises whatever MAMMAL raises on tokenizer/forward errors. Caller in
+    :func:`score_batch_safe` is responsible for catching and logging.
+    """
+    sample = _build_sample(target_aa, drug_smiles, tokenizer,
+                           device=model.device, sample_id=sample_id)
     batch_dict = model.forward_encoder_only([sample])
     batch_dict = _postprocess(batch_dict)
     return float(batch_dict[OUTPUT_KEY][0])
@@ -78,16 +96,61 @@ def score_batch(
     model: "Mammal",
     tokenizer: "ModularTokenizerOp",
     pairs: list[tuple[str, str]],
+    *,
+    sample_ids: list[str] | None = None,
 ) -> list[float]:
     """Score a batch of (target_aa, drug_smiles) pairs.
 
-    Returns a list of pKd values in the same order as ``pairs``. Caller is
-    responsible for chunking large grids — see :mod:`mammal_repurposing.scoring.runner`.
+    Returns a list of pKd values in the same order as ``pairs``. Raises on any
+    pair failure — use :func:`score_batch_safe` for fault-tolerant scoring.
     """
     if not pairs:
         return []
-    samples = [_build_sample(t, d, tokenizer, device=model.device) for t, d in pairs]
+    if sample_ids is None:
+        sample_ids = [f"pair{i}" for i in range(len(pairs))]
+    samples = [
+        _build_sample(t, d, tokenizer, device=model.device, sample_id=sid)
+        for (t, d), sid in zip(pairs, sample_ids, strict=True)
+    ]
     batch_dict = model.forward_encoder_only(samples)
     batch_dict = _postprocess(batch_dict)
     raw = batch_dict[OUTPUT_KEY]
     return [float(v) for v in raw]
+
+
+def score_batch_safe(
+    model: "Mammal",
+    tokenizer: "ModularTokenizerOp",
+    pairs: list[tuple[str, str]],
+    *,
+    sample_ids: list[str] | None = None,
+) -> list[float]:
+    """Score a batch; on any batch-level failure, retry pair-by-pair so we
+    can identify and skip the offending pair (returns NaN for it).
+
+    This makes the runner robust to bad compounds (e.g. peptide SMILES that
+    overflow the tokenizer max length) without losing the rest of the batch.
+    """
+    import math  # noqa: PLC0415
+
+    if sample_ids is None:
+        sample_ids = [f"pair{i}" for i in range(len(pairs))]
+    try:
+        return score_batch(model, tokenizer, pairs, sample_ids=sample_ids)
+    except Exception as e:
+        logger.warning(
+            "Batch of %d failed at MAMMAL inference (%s: %s); retrying per-pair.",
+            len(pairs), type(e).__name__, e,
+        )
+
+    out: list[float] = []
+    for (t, d), sid in zip(pairs, sample_ids, strict=True):
+        try:
+            out.append(score_pair(model, tokenizer, t, d, sample_id=sid))
+        except Exception as e:
+            logger.warning(
+                "Pair %s failed (%s: %s). Recording NaN. (drug_seq len=%d, target_aa len=%d)",
+                sid, type(e).__name__, e, len(d), len(t),
+            )
+            out.append(math.nan)
+    return out

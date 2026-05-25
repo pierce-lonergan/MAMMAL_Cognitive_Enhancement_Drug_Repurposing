@@ -21,10 +21,13 @@ if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
 from mammal_repurposing.analysis.composites import compute_composites  # noqa: E402
+from mammal_repurposing.analysis.filters import filter_scores_grid  # noqa: E402
 from mammal_repurposing.config import (  # noqa: E402
+    COMPOUNDS_PARQUET,
     DTI_SCORES_PARQUET,
     POLYPHARM_PKD_THRESHOLD,
     RESULTS_DIR,
+    SMILES_MAX_LENGTH_FOR_RANKING,
     TARGETS_PARQUET,
     ensure_dirs,
 )
@@ -42,21 +45,29 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--scores", type=Path, default=DTI_SCORES_PARQUET)
     parser.add_argument("--targets", type=Path, default=TARGETS_PARQUET)
+    parser.add_argument("--compounds", type=Path, default=COMPOUNDS_PARQUET)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--threshold", type=float, default=POLYPHARM_PKD_THRESHOLD)
     args = parser.parse_args()
 
     ensure_dirs()
-    for required in (args.scores, args.targets):
+    for required in (args.scores, args.targets, args.compounds):
         if not required.exists():
             logger.error("Missing input: %s", required)
             return 1
 
     scores = pd.read_parquet(args.scores)
     targets = pd.read_parquet(args.targets)
-    logger.info("Loaded %d scores spanning %d targets x %d compounds.",
+    compounds = pd.read_parquet(args.compounds)
+    logger.info("Loaded %d scores spanning %d targets x %d compounds (raw).",
                 len(scores), scores["target_uniprot"].nunique(),
                 scores["compound_name"].nunique())
+
+    # Same exclusion policy as sanity gate: drop peptides + over-long SMILES.
+    scores = filter_scores_grid(scores, compounds,
+                                max_smiles_length=SMILES_MAX_LENGTH_FOR_RANKING)
+    logger.info("After exclusion filter: %d scores, %d compounds.",
+                len(scores), scores["compound_name"].nunique())
 
     df = compute_composites(scores, targets, threshold=args.threshold)
     args.out.parent.mkdir(parents=True, exist_ok=True)

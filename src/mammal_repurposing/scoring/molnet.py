@@ -18,11 +18,28 @@ from __future__ import annotations
 
 import gc
 import logging
+import os
+from pathlib import Path
 from typing import Literal, TypedDict
 
 logger = logging.getLogger(__name__)
 
 TaskName = Literal["BBBP", "TOXICITY", "FDA_APPR"]
+
+# Local snapshot cache for the MoleculeNet heads. We download with
+# local_dir_use_symlinks=False to bypass the Windows symlink-creation
+# privilege requirement (HF hub's default cache uses snapshot->blob symlinks
+# that need SeCreateSymbolicLinkPrivilege or Developer Mode).
+_AUX_CACHE_DIR = Path(os.environ.get(
+    "MAMMAL_REPURPOSING_AUX_CACHE",
+    str(Path.home() / ".cache" / "mammal_repurposing_aux"),
+))
+
+_TASK_TO_HF_PATH = {
+    "BBBP":     "ibm/biomed.omics.bl.sm.ma-ted-458m.moleculenet_bbbp",
+    "TOXICITY": "ibm/biomed.omics.bl.sm.ma-ted-458m.moleculenet_clintox_tox",
+    "FDA_APPR": "ibm/biomed.omics.bl.sm.ma-ted-458m.moleculenet_clintox_fda",
+}
 
 
 class MolnetResult(TypedDict):
@@ -39,6 +56,49 @@ def _resolve_device(device: str | None) -> str:
     return "cuda" if torch.cuda.is_available() else "cpu"
 
 
+def _ensure_local_snapshot(task_name: TaskName) -> str:
+    """Download the model snapshot to a local dir without symlinks.
+
+    Returns the local directory path. Idempotent: skips re-download if the
+    snapshot already contains a config.json.
+    """
+    from huggingface_hub import snapshot_download  # noqa: PLC0415
+
+    hf_path = _TASK_TO_HF_PATH[task_name]
+    local_dir = _AUX_CACHE_DIR / hf_path.replace("/", "__")
+    if (local_dir / "config.json").exists():
+        logger.debug("Aux head %s already cached at %s.", task_name, local_dir)
+        return str(local_dir)
+
+    local_dir.mkdir(parents=True, exist_ok=True)
+    logger.info("Downloading aux head %s -> %s (no symlinks)...", task_name, local_dir)
+    snapshot_download(
+        repo_id=hf_path,
+        local_dir=str(local_dir),
+        local_dir_use_symlinks=False,
+    )
+    return str(local_dir)
+
+
+def _load_model_local(task_name: TaskName, device: str) -> dict:
+    """Mirror of ``mammal.examples.molnet.molnet_infer.load_model`` that loads
+    from a flat local snapshot dir instead of the symlink-using HF cache.
+
+    Note: ``ModularTokenizerOp.from_pretrained`` expects a local path to be the
+    tokenizer sub-directory itself (where ``config.yaml`` lives), not the
+    snapshot root. Pass ``<snapshot>/tokenizer``.
+    """
+    from fuse.data.tokenizers.modular_tokenizer.op import ModularTokenizerOp  # noqa: PLC0415
+    from mammal.model import Mammal  # noqa: PLC0415
+
+    path = _ensure_local_snapshot(task_name)
+    model = Mammal.from_pretrained(path)
+    model.eval()
+    model.to(device=device)
+    tokenizer_op = ModularTokenizerOp.from_pretrained(str(Path(path) / "tokenizer"))
+    return {"task_name": task_name, "model": model, "tokenizer_op": tokenizer_op}
+
+
 def score_task_batch(
     task_name: TaskName,
     smiles_list: list[str],
@@ -50,11 +110,11 @@ def score_task_batch(
     Loads the model once for the batch, scores serially (MAMMAL's molnet_infer
     is single-sample), then frees the model on return so the next head can load.
     """
-    from mammal.examples.molnet.molnet_infer import load_model, task_infer  # noqa: PLC0415
+    from mammal.examples.molnet.molnet_infer import task_infer  # noqa: PLC0415
 
     device = _resolve_device(device)
     logger.info("Loading MAMMAL MoleculeNet head '%s' on %s ...", task_name, device)
-    task_dict = load_model(task_name=task_name, device=device)
+    task_dict = _load_model_local(task_name, device=device)
 
     results: list[MolnetResult] = []
     try:

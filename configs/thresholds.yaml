@@ -1,0 +1,77 @@
+# Cognition-specific ADMET hard-gate thresholds.
+# Source: research/Hybrid Architecture... §3 Class B.
+# A CUT removes the compound from rank fusion entirely.
+# A FLAG marks it for review but keeps it in the pool.
+
+admet_hard_gates:
+  bbb_permeability:
+    direction: lt          # cut if BBB probability < 0.30
+    threshold: 0.30
+    action: cut
+    rationale: "Cognition target -> must reach CNS"
+
+  pgp_substrate:
+    direction: gt
+    threshold: 0.85
+    action: cut
+    rationale: "P-gp efflux kills CNS exposure for many cognitive enhancers"
+
+  herg_inhibition:
+    direction: gt
+    threshold: 0.70
+    action: cut
+    rationale: "Cardiotox risk in chronic-dosing healthy-adult scenario"
+
+  dili:
+    direction: gt
+    threshold: 0.80
+    action: cut
+    rationale: "Hepatotox risk in chronic dosing"
+
+  ames_mutagenicity:
+    direction: gt
+    threshold: 0.85
+    action: cut
+    rationale: "Hard kill on mutagenicity"
+
+  cyp3a4_inhibition:
+    direction: gt
+    threshold: 0.85
+    action: flag
+    rationale: "DDI risk; flag for review but do not cut"
+
+  caco2_permeability:
+    direction: lt          # ADMET-AI returns log Papp (more negative = less permeable)
+    threshold: -5.5
+    action: flag
+    rationale: "Oral bioavailability concern"
+
+
+# Mapping from ADMET-AI's actual column names to the gate names above.
+# Verify against the live ADMET-AI output schema after first run; some endpoints
+# in the TDC ADMET leaderboard have multiple aliases.
+admet_ai_column_map:
+  bbb_permeability:   "BBB_Martins"
+  pgp_substrate:      "Pgp_Broccatelli"
+  herg_inhibition:    "hERG"
+  dili:               "DILI"
+  ames_mutagenicity:  "AMES"
+  cyp3a4_inhibition:  "CYP3A4_Veith"
+  caco2_permeability: "Caco2_Wang"
+
+
+# Sanity checks performed after gating to confirm we haven't accidentally
+# eliminated all positive controls. Pipeline aborts (or warns loudly with
+# --no-gate) if any of these compounds fails to pass the BBB gate.
+positive_control_must_pass_bbb:
+  - donepezil
+  - galantamine
+  - rivastigmine
+  - modafinil
+  - methylphenidate
+  - atomoxetine
+  - pitolisant
+  - bpn14770
+  - aripiprazole
+  - varenicline
+  - vortioxetine

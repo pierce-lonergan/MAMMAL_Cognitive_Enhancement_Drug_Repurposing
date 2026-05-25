@@ -85,3 +85,22 @@ POSITIVE_CONTROLS: dict[str, list[str]] = {
 POSITIVE_CONTROL_TOP_PERCENTILE = 0.20  # top 20% (relaxed from research doc's 5%)
 NEGATIVE_CONTROL_FLAG_PERCENTILE = 0.05  # flag if any neg ctrl in top 5%
 POLYPHARM_PKD_THRESHOLD = 6.0            # pKd > 6 = Ki < 1 µM, counts as "hit"
+
+
+# --- Compound exclusion (peptides + out-of-distribution structures) ----------
+# MAMMAL's DTI head was trained on BindingDB small molecules. Peptides (GLP-1
+# agonists, endogenous neuropeptides) game the top of every target's score
+# distribution due to molecular-size bias in the learned representation — they
+# are scientifically out-of-distribution for this head, not genuine binders.
+#
+# These compounds are excluded from sanity ranking, composite scoring, and the
+# wet-lab shortlist. They are NOT excluded from the raw scores parquet (so the
+# calibration / allosteric benchmark can inspect the full data if needed).
+
+EXCLUDED_COMPOUND_NAMES: set[str] = {
+    "liraglutide", "semaglutide", "orexin b",
+}
+
+# Compounds with SMILES strings longer than this are likely peptide chains or
+# macrocyclic natural products — out of distribution for the DTI head.
+SMILES_MAX_LENGTH_FOR_RANKING = 400

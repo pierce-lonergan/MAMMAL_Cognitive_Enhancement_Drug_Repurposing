@@ -23,7 +23,7 @@ from mammal_repurposing.config import (
     DTI_SCORES_PARQUET,
     MAMMAL_DTI_MODEL,
 )
-from mammal_repurposing.scoring.dti import score_batch
+from mammal_repurposing.scoring.dti import score_batch_safe
 from mammal_repurposing.scoring.model_loader import load_dti_model
 
 logger = logging.getLogger(__name__)
@@ -99,8 +99,12 @@ def score_grid(
     try:
         for batch_idx, chunk in enumerate(_chunks(grid, batch_size)):
             pairs = list(zip(chunk["target_sequence"], chunk["compound_smiles"]))
+            sample_ids = [
+                f"{row['target_uniprot']}/{row['compound_name']}"
+                for _, row in chunk.iterrows()
+            ]
             try:
-                pkds = score_batch(model, tokenizer, pairs)
+                pkds = score_batch_safe(model, tokenizer, pairs, sample_ids=sample_ids)
             except RuntimeError as e:
                 if "out of memory" in str(e).lower():
                     logger.exception(

@@ -28,10 +28,12 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
+from mammal_repurposing.analysis.filters import filter_compound_df, filter_scores_grid  # noqa: E402
 from mammal_repurposing.config import (  # noqa: E402
     COMPOUNDS_PARQUET,
     DTI_SCORES_PARQUET,
     RESULTS_DIR,
+    SMILES_MAX_LENGTH_FOR_RANKING,
     ensure_dirs,
 )
 
@@ -283,8 +285,14 @@ def main() -> int:
     ot = pd.read_parquet(args.opentargets) if args.opentargets.exists() else None
     comp = pd.read_parquet(args.composites) if args.composites.exists() else None
 
+    # Apply the same exclusion policy as Phase 0.5 sanity and Phase 2 composites:
+    # drop peptides + over-long SMILES from both the score grid and the compounds list.
+    scores = filter_scores_grid(scores, compounds,
+                                max_smiles_length=SMILES_MAX_LENGTH_FOR_RANKING)
+    compounds = filter_compound_df(compounds, max_smiles_length=SMILES_MAX_LENGTH_FOR_RANKING)
+
     logger.info(
-        "Joining: scores=%d, compounds=%d, aux=%s, chembl=%s, opentargets=%s, composites=%s",
+        "Joining (post-filter): scores=%d, compounds=%d, aux=%s, chembl=%s, opentargets=%s, composites=%s",
         len(scores), len(compounds),
         len(aux) if aux is not None else "missing",
         len(chembl) if chembl is not None else "missing",

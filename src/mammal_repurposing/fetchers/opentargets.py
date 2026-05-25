@@ -73,27 +73,18 @@ query TargetContext($ensemblId: String!, $size: Int!) {
   target(ensemblId: $ensemblId) {
     id
     approvedSymbol
-    knownDrugs(size: $size) {
+    biotype
+    associatedDiseases(page: {index: 0, size: $size}) {
       count
       rows {
-        drug {
-          name
-          id
-          maximumClinicalTrialPhase
-          mechanismsOfAction {
-            rows {
-              mechanismOfAction
-            }
-          }
-        }
+        score
         disease {
           name
+          id
           therapeuticAreas {
             name
           }
         }
-        phase
-        mechanismOfAction
       }
     }
   }
@@ -157,28 +148,19 @@ def fetch_target_context(
         data = _post_graphql(client, _QUERY_TARGET_CONTEXT,
                               {"ensemblId": ensembl_id, "size": size})
         target = data.get("target") or {}
-        known_drugs_block = target.get("knownDrugs") or {}
-        rows = known_drugs_block.get("rows") or []
+        ad_block = target.get("associatedDiseases") or {}
+        rows = ad_block.get("rows") or []
 
-        known_drugs: list[KnownDrug] = []
+        known_drugs: list[KnownDrug] = []  # left empty in v4 schema (knownDrugs field removed)
         cns_diseases: set[str] = set()
-        n_cns_drugs = 0
+        n_cns_total = 0
 
         for row in rows:
-            drug = row.get("drug") or {}
             disease = row.get("disease") or {}
-            is_cns = _is_cns_disease(disease)
-            if is_cns:
-                n_cns_drugs += 1
+            if _is_cns_disease(disease):
+                n_cns_total += 1
                 if disease.get("name"):
                     cns_diseases.add(disease["name"])
-            known_drugs.append(KnownDrug(
-                drug_name=drug.get("name") or "",
-                drug_chembl_id=drug.get("id"),
-                max_phase=row.get("phase"),
-                mechanism_of_action=row.get("mechanismOfAction"),
-                disease_name=disease.get("name"),
-            ))
 
         return TargetContext(
             target_uniprot=target_uniprot,
@@ -186,8 +168,8 @@ def fetch_target_context(
             approved_symbol=target.get("approvedSymbol"),
             known_drugs=known_drugs,
             cns_disease_associations=sorted(cns_diseases),
-            n_known_drugs_total=known_drugs_block.get("count") or len(known_drugs),
-            n_cns_drugs=n_cns_drugs,
+            n_known_drugs_total=ad_block.get("count") or 0,
+            n_cns_drugs=n_cns_total,
         )
     finally:
         if own_client:
