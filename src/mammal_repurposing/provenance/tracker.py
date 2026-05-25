@@ -51,33 +51,69 @@ def build_provenance(
         out = out.merge(m_per_compound, on="compound_name", how="left")
 
     if boltzina_scores is not None and not boltzina_scores.empty:
+        # Real schema: affinity_probability_binary (0-1, higher = better) and
+        # affinity_pred_value (logIC50 in µM; lower = better). Older smoke files
+        # may still have the legacy binder_prob/log_ic50 names.
+        bz = boltzina_scores.copy()
+        prob_col = ("affinity_probability_binary"
+                    if "affinity_probability_binary" in bz.columns
+                    else "binder_prob")
+        logic50_col = ("affinity_pred_value"
+                       if "affinity_pred_value" in bz.columns
+                       else "log_ic50")
         b_per_compound = (
-            boltzina_scores.sort_values(["compound_name", "binder_prob"],
-                                         ascending=[True, False])
+            bz.sort_values(["compound_name", prob_col], ascending=[True, False])
             .groupby("compound_name")
             .agg(
                 boltzina_best_target=("target_uniprot", "first"),
-                boltzina_best_logic50=("log_ic50", "min"),
-                boltzina_best_binder_prob=("binder_prob", "max"),
+                boltzina_best_logic50=(logic50_col, "min"),
+                boltzina_best_binder_prob=(prob_col, "max"),
             ).reset_index()
         )
         out = out.merge(b_per_compound, on="compound_name", how="left")
 
     if txgnn_scores is not None and not txgnn_scores.empty:
-        out = out.merge(
-            txgnn_scores[["compound_name", "indication_score", "contraindication_score"]]
-            .rename(columns={"indication_score": "txgnn_max_indication",
-                              "contraindication_score": "txgnn_max_contraindication"}),
-            on="compound_name", how="left",
-        )
+        # Real Cluster C parquet uses txgnn_mean_p_indication /
+        # txgnn_mean_p_contraindication. Older stubs use indication_score /
+        # contraindication_score. Pick whichever pair exists.
+        ind_col = ("txgnn_mean_p_indication"
+                   if "txgnn_mean_p_indication" in txgnn_scores.columns
+                   else "indication_score")
+        contra_col = ("txgnn_mean_p_contraindication"
+                      if "txgnn_mean_p_contraindication" in txgnn_scores.columns
+                      else "contraindication_score")
+        keep = ["compound_name"]
+        rename: dict[str, str] = {}
+        if ind_col in txgnn_scores.columns:
+            keep.append(ind_col)
+            rename[ind_col] = "txgnn_max_indication"
+        if contra_col in txgnn_scores.columns:
+            keep.append(contra_col)
+            rename[contra_col] = "txgnn_max_contraindication"
+        if len(keep) > 1:
+            out = out.merge(txgnn_scores[keep].rename(columns=rename),
+                            on="compound_name", how="left")
 
     if kg_scores is not None and not kg_scores.empty:
-        out = out.merge(
-            kg_scores[["compound_name", "path_count", "side_effect_count"]]
-            .rename(columns={"path_count": "kg_path_count",
-                              "side_effect_count": "kg_side_effect_count"}),
-            on="compound_name", how="left",
-        )
+        # Real Cluster C parquet uses kg_ppr_sum / kg_n_targets_reachable.
+        # Older stubs use path_count / side_effect_count.
+        pc_col = ("kg_ppr_sum" if "kg_ppr_sum" in kg_scores.columns
+                  else ("path_count" if "path_count" in kg_scores.columns else None))
+        se_col = ("kg_n_targets_reachable"
+                  if "kg_n_targets_reachable" in kg_scores.columns
+                  else ("side_effect_count"
+                        if "side_effect_count" in kg_scores.columns else None))
+        keep = ["compound_name"]
+        rename = {}
+        if pc_col:
+            keep.append(pc_col)
+            rename[pc_col] = "kg_path_count"
+        if se_col:
+            keep.append(se_col)
+            rename[se_col] = "kg_side_effect_count"
+        if len(keep) > 1:
+            out = out.merge(kg_scores[keep].rename(columns=rename),
+                            on="compound_name", how="left")
 
     if rrf_ranking is not None and not rrf_ranking.empty:
         rrf_min = rrf_ranking[["compound_name", "per_compound_rrf"]].rename(

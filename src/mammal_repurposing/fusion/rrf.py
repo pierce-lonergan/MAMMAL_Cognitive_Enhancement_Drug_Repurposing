@@ -122,6 +122,7 @@ def rrf_per_target_then_compound(
     ranker_col: str = "ranker_name",
     ascending: bool = False,
     weight_map: dict[str, float] | None = None,
+    per_target_weights: dict[str, dict[str, float]] | None = None,
     k_const: int = 60,
 ) -> pd.DataFrame:
     """Per-target RRF over (target, compound) pairs, then aggregate per compound.
@@ -130,9 +131,24 @@ def rrf_per_target_then_compound(
     For each (target, compound) pair across rankers, compute the per-pair RRF.
     Then aggregate to per-compound by summing per-target RRF scores.
 
+    Args:
+        weight_map: global ranker → weight. Used when no per-target override exists.
+        per_target_weights: optional per-target overrides keyed by target UniProt.
+            Each entry is {ranker_name: weight}. Overrides win over weight_map
+            for that target; rankers absent from the override fall back to weight_map.
+            Special key ``_note`` in an override is ignored (used for human comments
+            like "INVERTED — manual review").
+
     Returns DataFrame with compound_name + per_compound_rrf + n_targets_supporting.
     """
     weight_map = weight_map or {}
+    per_target_weights = per_target_weights or {}
+
+    def _w_for(target_key: str, ranker_name: str) -> float:
+        override = per_target_weights.get(target_key, {})
+        if ranker_name in override:
+            return float(override[ranker_name])
+        return float(weight_map.get(ranker_name, 1.0))
 
     per_pair_rows: list[dict] = []
     for target, target_group in long_scores.groupby(target_col):
@@ -143,7 +159,7 @@ def rrf_per_target_then_compound(
                 name=str(ranker_name),
                 scores=s,
                 ascending=ascending,
-                weight=weight_map.get(str(ranker_name), 1.0),
+                weight=_w_for(str(target), str(ranker_name)),
             ))
         if not rankers:
             continue

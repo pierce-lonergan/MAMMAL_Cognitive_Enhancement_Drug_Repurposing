@@ -28,6 +28,7 @@ import sys
 from pathlib import Path
 
 import pandas as pd
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "src") not in sys.path:
@@ -41,8 +42,6 @@ from mammal_repurposing.config import (  # noqa: E402
     ensure_dirs,
 )
 from mammal_repurposing.fusion.rrf import (  # noqa: E402
-    RankerInput,
-    rrf,
     rrf_per_target_then_compound,
 )
 from mammal_repurposing.provenance.disagreement_report import (  # noqa: E402
@@ -72,6 +71,17 @@ def main() -> int:
     parser.add_argument("--k-const", type=int, default=60, help="RRF k_const (Cormack default 60)")
     parser.add_argument("--include-cut", action="store_true",
                         help="Include CUT compounds (default: drop them).")
+    parser.add_argument("--weights", type=Path,
+                        default=ROOT / "configs" / "weights.yaml",
+                        help="Global per-cluster RRF weights (default configs/weights.yaml).")
+    parser.add_argument("--calibrated-weights", type=Path,
+                        default=ROOT / "configs" / "weights_calibrated.yaml",
+                        help="Per-target overrides from Phase A.7 calibration. "
+                             "Pass /dev/null or a nonexistent path to disable.")
+    parser.add_argument("--out-suffix", type=str, default="",
+                        help="Suffix appended to output filenames "
+                             "(e.g. '_uncalibrated', '_calibrated') so calibrated "
+                             "vs uncalibrated runs don't overwrite each other.")
     args = parser.parse_args()
 
     ensure_dirs()
@@ -126,22 +136,61 @@ def main() -> int:
     boltzina = None
     if args.boltzina.exists():
         boltzina = pd.read_parquet(args.boltzina)
-        logger.info("Loaded Boltzina affinity: %d pairs.", len(boltzina))
-        b_long = boltzina[["target_uniprot", "compound_name", "binder_prob"]].rename(
-            columns={"binder_prob": "predicted_pkd"}
+        # Real Boltzina parquet schema: affinity_probability_binary (0-1, higher = better).
+        # Some older smoke files use binder_prob; fall back.
+        if "affinity_probability_binary" in boltzina.columns:
+            b_score_col = "affinity_probability_binary"
+        elif "binder_prob" in boltzina.columns:
+            b_score_col = "binder_prob"
+        else:
+            # Fall back to -affinity_pred_value (logIC50 µM; lower = stronger → negate)
+            b_score_col = "_neg_aff"
+            boltzina[b_score_col] = -boltzina["affinity_pred_value"]
+        logger.info("Loaded Boltzina affinity: %d pairs (ranker col=%s).",
+                    len(boltzina), b_score_col)
+        b_long = boltzina[["target_uniprot", "compound_name", b_score_col]].rename(
+            columns={b_score_col: "predicted_pkd"}
         )
         b_long["ranker_name"] = "cluster_a_boltzina"
         additional_long.append(b_long)
+
+    # PrimeKG path scoring (Cluster C, per-compound aggregate)
+    kg = None
+    if args.kg.exists():
+        kg = pd.read_parquet(args.kg)
+        logger.info("Loaded PrimeKG scores: %d compounds.", len(kg))
+        if "kg_ppr_sum" in kg.columns:
+            kg_score_col = "kg_ppr_sum"
+        elif "ppr_sum" in kg.columns:
+            kg_score_col = "ppr_sum"
+        else:
+            kg_score_col = None
+        if kg_score_col:
+            kg_rows = []
+            kg_by_compound = kg.set_index(
+                kg["compound_name"].str.lower().str.strip()
+            )[kg_score_col]
+            for t in targets:
+                df = pd.DataFrame({
+                    "target_uniprot": t,
+                    "compound_name": kg_by_compound.index,
+                    "predicted_pkd": kg_by_compound.values,
+                    "ranker_name": "cluster_c_primekg",
+                })
+                kg_rows.append(df)
+            additional_long.append(pd.concat(kg_rows, ignore_index=True))
 
     txgnn = None
     if args.txgnn.exists():
         txgnn = pd.read_parquet(args.txgnn)
         logger.info("Loaded TxGNN scores: %d compounds.", len(txgnn))
         # TxGNN is per-compound, broadcast like ADMET
+        tx_score_col = ("indication_score" if "indication_score" in txgnn.columns
+                        else "txgnn_mean_p_indication")
         tx_rows = []
         tx_by_compound = txgnn.set_index(
             txgnn["compound_name"].str.lower().str.strip()
-        )["indication_score"]
+        )[tx_score_col]
         for t in targets:
             df = pd.DataFrame({
                 "target_uniprot": t,
@@ -153,8 +202,43 @@ def main() -> int:
         additional_long.append(pd.concat(tx_rows, ignore_index=True))
 
     long_scores = pd.concat([mammal_long, admet_long, *additional_long], ignore_index=True)
-    logger.info("Fusion input: %d rows across %d rankers.",
-                len(long_scores), long_scores["ranker_name"].nunique())
+    logger.info("Fusion input: %d rows across %d rankers: %s",
+                len(long_scores), long_scores["ranker_name"].nunique(),
+                sorted(long_scores["ranker_name"].unique()))
+
+    # --- Load weights ---------------------------------------------------------
+    global_weights: dict[str, float] = {}
+    if args.weights.exists():
+        wcfg = yaml.safe_load(args.weights.read_text(encoding="utf-8")) or {}
+        # Supported shapes (in priority order):
+        #   {"fusion": {"cluster_rrf_weights": {ranker: w}}}   (our configs/weights.yaml)
+        #   {"weights": {ranker: w}}
+        #   {ranker: w}
+        if isinstance(wcfg, dict):
+            if "fusion" in wcfg and isinstance(wcfg["fusion"], dict) \
+                    and "cluster_rrf_weights" in wcfg["fusion"]:
+                global_weights = dict(wcfg["fusion"]["cluster_rrf_weights"])
+            elif "weights" in wcfg and isinstance(wcfg["weights"], dict):
+                global_weights = dict(wcfg["weights"])
+            else:
+                global_weights = {k: v for k, v in wcfg.items()
+                                  if isinstance(v, (int, float))}
+        global_weights = {k: float(v) for k, v in global_weights.items()
+                          if isinstance(v, (int, float))}
+        logger.info("Loaded global weights from %s: %s", args.weights, global_weights)
+    else:
+        logger.info("No global weights file at %s; all rankers default to weight 1.0.",
+                    args.weights)
+
+    per_target_overrides: dict[str, dict[str, float]] = {}
+    if args.calibrated_weights.exists():
+        cw = yaml.safe_load(args.calibrated_weights.read_text(encoding="utf-8")) or {}
+        per_target_overrides = cw.get("per_target_weights", {})
+        logger.info("Loaded per-target calibrated overrides: %d targets touched.",
+                    len(per_target_overrides))
+    else:
+        logger.info("No calibrated overrides at %s; running uncalibrated.",
+                    args.calibrated_weights)
 
     # --- Run per-target then aggregate ---------------------------------------
     rrf_ranking = rrf_per_target_then_compound(
@@ -164,10 +248,13 @@ def main() -> int:
         score_col="predicted_pkd",
         ranker_col="ranker_name",
         ascending=False,
+        weight_map=global_weights,
+        per_target_weights=per_target_overrides,
         k_const=args.k_const,
     )
-    rrf_ranking.to_parquet(V2_DIR / "rrf_ranking.parquet", index=False)
-    logger.info("Wrote rrf_ranking.parquet (%d compounds).", len(rrf_ranking))
+    suffix = args.out_suffix
+    rrf_ranking.to_parquet(V2_DIR / f"rrf_ranking{suffix}.parquet", index=False)
+    logger.info("Wrote rrf_ranking%s.parquet (%d compounds).", suffix, len(rrf_ranking))
 
     # --- Build provenance ----------------------------------------------------
     prov = build_provenance(
@@ -178,22 +265,22 @@ def main() -> int:
         txgnn_scores=txgnn,
         rrf_ranking=rrf_ranking,
     )
-    prov.to_parquet(V2_DIR / "provenance.parquet", index=False)
+    prov.to_parquet(V2_DIR / f"provenance{suffix}.parquet", index=False)
 
     # --- Disagreement diagnosis report --------------------------------------
     disagreement_md = render_disagreement(prov)
-    (V2_DIR / "disagreement_report.md").write_text(disagreement_md, encoding="utf-8")
-    logger.info("Wrote disagreement_report.md.")
+    (V2_DIR / f"disagreement_report{suffix}.md").write_text(disagreement_md, encoding="utf-8")
+    logger.info("Wrote disagreement_report%s.md.", suffix)
 
     # --- Narrative for top-N -------------------------------------------------
     narrative_md = render_narrative(prov, top_n=args.top_n)
-    (V2_DIR / "funnel_narrative.md").write_text(narrative_md, encoding="utf-8")
-    logger.info("Wrote funnel_narrative.md (top %d).", args.top_n)
+    (V2_DIR / f"funnel_narrative{suffix}.md").write_text(narrative_md, encoding="utf-8")
+    logger.info("Wrote funnel_narrative%s.md (top %d).", suffix, args.top_n)
 
     # --- Final ranking parquet (joined view) --------------------------------
     final = prov.sort_values("rrf_score", ascending=False).reset_index(drop=True)
-    final.to_parquet(V2_DIR / "final_ranking.parquet", index=False)
-    logger.info("Wrote final_ranking.parquet (%d compounds).", len(final))
+    final.to_parquet(V2_DIR / f"final_ranking{suffix}.parquet", index=False)
+    logger.info("Wrote final_ranking%s.parquet (%d compounds).", suffix, len(final))
 
     # --- Console summary ----------------------------------------------------
     logger.info("Top 10 v2 candidates:")
