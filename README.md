@@ -6,26 +6,33 @@ A four-cluster hybrid pipeline for drug repurposing on cognition-relevant target
 
 This pipeline does **not** discover "smart drugs." It enriches a candidate set so wet-lab cycles spend money on plausibility, not chemistry-lottery tickets. Roberts CA et al. (*Eur Neuropsychopharm* 2020, PMID 32709551) puts the effect-size ceiling for healthy-adult cognitive enhancement at SMD ≈ 0.21 for the strongest known agents (methylphenidate). The deliverable here is a calibrated, provenance-rich ranking + a publishable methodology contribution — not a miracle compound.
 
-## Current state (v3 in progress)
+## Current state (v3 sprint Phases A, C, D, E shipped)
 
-**Sprint commit log**: 3baf422 → ed4761c → 7467ac1 → 8f75a32 → … (`git log --oneline`)
+**Sprint commit log**: 3baf422 → ed4761c → 7467ac1 → 8f75a32 → 9d40e19 → 42b6597 → 1551a3e → 7c1d55e → b716ec7 → 9f800f8 → 5b415b5 → 5d7f67d (`git log --oneline`)
 
 | Component | Status | Evidence |
 |---|---|---|
-| **Cluster A.1** — MAMMAL DTI head | ✅ live | 6,556 pairs scored; 4/7 v1 positive controls top-20% |
+| **Cluster A.1** — MAMMAL DTI head | ✅ live | 6,556 pairs scored; calibrated ρ vs ChEMBL per target (see below) |
 | **Cluster A.2** — ESM2-650M target embeddings | ✅ live | 22 targets cached; paralog cos = 0.997 |
 | **Cluster A.3** — Boltz-2 affinity (Windows) | ✅ live (slow) | ~149 s/pair, `--no_kernels` fallback |
 | **Cluster A.3** — Boltz-2 affinity (WSL2 + cuEquiv kernels) | ✅ live (fast) | ~23 s/pair, 5.6× speedup confirmed |
 | **Cluster B** — ADMET-AI 41 endpoints + hard gates | ✅ live | 53 PASS / 64 FLAG / 181 CUT of 298 compounds |
-| **Cluster C.1** — PrimeKG loader | 🔄 sprint Phase B (next) | code stub + cognition virtual anchor (5 EFO union) ready |
-| **Cluster C.2** — TxGNN scorer | 🔄 sprint Phase B (next) | stub ready; install path via WSL2 + PyG cu128 verified |
-| **Fusion** — RRF over MAMMAL + ADMET | ✅ live (2-of-4 clusters) | `scripts/15_v2_fusion.py` |
-| **Provenance** — disagreement archetypes + funnel narrative | ✅ live | `provenance/*.py`, renders on every fusion run |
+| **Cluster C.1** — PrimeKG loader (real, igraph) | ✅ code live | runs in WSL2 `txgnn_env` venv; download + setup scripted |
+| **Cluster C.2** — TxGNN scorer (real) | ✅ code live | cognition virtual anchor (5 EFO union) wired |
+| **ChEMBL 36 SQLite mirror** | ✅ live | local mirror via `chembl_downloader`; A.5 PASS (19/20 vs REST) |
+| **Phase A.7 Calibration linchpin** | ✅ **shipped** | `reports/calibration_report.md`, `configs/weights_calibrated.yaml` |
+| **Phase C 4-cluster RRF (calibrated + uncalibrated)** | ✅ live | `scripts/15_v2_fusion.py --out-suffix _{un,}calibrated` |
+| **Phase D calibration diff** | ✅ shipped | `reports/fusion_calibration_diff.md` (Spearman ρ = +0.994) |
+| **Phase E methodology note v1** | ✅ shipped | `reports/methodology_v1.md` |
+| **Wet-lab shortlist v3 (4-cluster scorecards)** | ✅ shipped | `reports/wet_lab_shortlist_v3.md` |
 | **Phase 0.5 CHRNA7 rescue gate** | ✅ **PASSED** | TC-5619 100%, encenicline 80% (vs v1 19%, 7%) |
-| **Phase 0.4 full Boltz sweep** | 🔄 **running overnight** in WSL2 | 1,165 pairs ETA ~10 h; check via `scripts/_wsl2_sweep_status.sh` |
-| **Phase 3.1 calibration** | 🔄 sprint Phase A (now) | gated on T2 (local ChEMBL SQLite mirror) |
+| **Phase A.4 full backstop (6,556 pairs)** | 🔄 running | SQLite, ~75 min ETA; `data/results/chembl_evidence.parquet` |
+| **Phase 0.4 full Boltz overnight sweep** | 🔄 **running** in WSL2 | 1,165 pairs ETA ~24 h; check via `scripts/_wsl2_sweep_status.sh` |
+| **Phase B PrimeKG+TxGNN run** | ⏳ blocked | waiting for overnight Boltz sweep to free the GPU |
 
 **The single most important empirical result so far**: at CHRNA7, Boltz-2's pose-conditioned affinity rescues the α7 nAChR positive allosteric modulators that MAMMAL's sequence-only head buries in the bottom quartile. See [`design/PHASE_0_5_DECISION_RECORD.md`](design/PHASE_0_5_DECISION_RECORD.md).
+
+**The single most important Phase A.7 finding**: only **2 of 22 panel targets** (DRD1 ρ=+0.31, HCRTR1 ρ=+0.37) have MAMMAL ρ ≥ 0.30 against ChEMBL pchembl. **4 are inverted** (SLC6A3/DAT ρ=-0.71, SLC6A2/NET ρ=-0.53, GRIN2A ρ=-0.35, GRIN2B ρ=-0.30). The remaining 14 are weakly informative (0 ≤ ρ < 0.30). See [`reports/calibration_report.md`](reports/calibration_report.md) and the limitations section of [`reports/methodology_v1.md`](reports/methodology_v1.md).
 
 ## The hybrid architecture in one diagram
 
@@ -108,20 +115,52 @@ wsl -d Ubuntu -u root -- bash scripts/_wsl2_sweep_status.sh
 python scripts/15_v2_fusion.py
 ```
 
-### C. Sprint: ChEMBL SQLite mirror + calibration + Cluster C + 4-cluster fusion
+### C. Full sprint reproduction (ChEMBL SQLite + calibration + 4-cluster fusion)
 
-In flight; see [`design/V3_ATTACK_PLAN.md`](design/V3_ATTACK_PLAN.md) and the sprint phase docs (`design/PHASE_*.md`).
+```powershell
+# One-time: download ChEMBL 36 SQLite (~4 GB compressed, ~13 GB extracted, ~15 min)
+python -c "import chembl_downloader; chembl_downloader.download_extract_sqlite()"
+
+# Phase A.5 — verify SQLite vs REST agreement (gate: must PASS)
+python scripts/_v3_sqlite_vs_rest_smoke.py
+
+# Phase A.6 — clean T1 audit
+python scripts/24_v3_audit_chembl_targets_sqlite.py
+
+# Phase A.7 — calibration linchpin (THE unlock)
+python scripts/22_v3_calibration.py
+
+# Phase A.4 — full backstop (~75 min for 6,556 pairs)
+python scripts/21_v3_chembl_evidence_sqlite.py --all-pairs
+
+# Phase C — both fusion passes
+python scripts/15_v2_fusion.py --calibrated-weights NONE --out-suffix _uncalibrated
+python scripts/15_v2_fusion.py --out-suffix _calibrated
+
+# Phase D — diff calibrated vs uncalibrated
+python scripts/25_v3_fusion_diff.py
+
+# Phase C completion — v3 wet-lab shortlist with 4-cluster scorecards
+python scripts/26_v3_wet_lab_shortlist.py
+```
+
+See also: [`design/V3_ATTACK_PLAN.md`](design/V3_ATTACK_PLAN.md) and the sprint phase docs (`design/PHASE_*.md`).
 
 ## Where to look for what
 
 | Question | File |
 |---|---|
+| What does this pipeline DO and NOT do? | [`reports/methodology_v1.md`](reports/methodology_v1.md) |
 | What's the architecture? | [`design/V2_HYBRID_ARCHITECTURE.md`](design/V2_HYBRID_ARCHITECTURE.md) |
 | What's working / what's broken / what's the WSL2 plan? | [`design/V2_STATUS_AND_FORWARD_PLAN.md`](design/V2_STATUS_AND_FORWARD_PLAN.md) |
 | What's the next 4 days of work? | [`design/V3_ATTACK_PLAN.md`](design/V3_ATTACK_PLAN.md) |
 | Did the CHRNA7 rescue work? | [`design/PHASE_0_5_DECISION_RECORD.md`](design/PHASE_0_5_DECISION_RECORD.md) |
 | Did WSL2 + cuEquivariance kernels work on RTX 5070? | [`design/WSL2_VALIDATION_RECORD.md`](design/WSL2_VALIDATION_RECORD.md) |
-| Were the ChEMBL target IDs right? | [`design/T1_CHEMBL_AUDIT_VERDICT.md`](design/T1_CHEMBL_AUDIT_VERDICT.md) |
+| Were the ChEMBL target IDs right? | [`design/T1_CHEMBL_AUDIT_VERDICT.md`](design/T1_CHEMBL_AUDIT_VERDICT.md), [`reports/chembl_target_id_audit_sqlite.md`](reports/chembl_target_id_audit_sqlite.md) |
+| Per-target calibration results (the linchpin) | [`reports/calibration_report.md`](reports/calibration_report.md) |
+| What did calibration change in the rankings? | [`reports/fusion_calibration_diff.md`](reports/fusion_calibration_diff.md) |
+| Wet-lab prioritisation shortlist (top 25) | [`reports/wet_lab_shortlist_v3.md`](reports/wet_lab_shortlist_v3.md) |
+| Phase A.5 SQLite agreement gate | [`reports/sqlite_vs_rest_smoke.md`](reports/sqlite_vs_rest_smoke.md) |
 | Original research deep-dive | [`research/compass_artifact_wf-*.md`](research/) |
 | Hybrid architecture research | [`research/Hybrid Architecture for MAMMAL-Based...md`](research/) |
 | Deep-research on tier-4 issues | [`research/4-tier/`](research/4-tier/) (5 files) |
