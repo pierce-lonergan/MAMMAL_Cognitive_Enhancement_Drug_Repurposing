@@ -1,0 +1,138 @@
+# Per-target pocket centroid database for §7.5 pocket-conditioned classification.
+# Per research/4-tier/Pocket-Conditioned-Boltz2.md §2 (7 priority targets).
+#
+# Each pocket entry:
+#   class:        orthosteric | allosteric_known | allosteric_putative
+#   pdb:          reference PDB ID (RCSB will fetch on first use)
+#   chain:        chain ID containing the pocket residues
+#   residues:     residue numbers used to compute heavy-atom mean centroid
+#   ligand:       (optional) PDB ligand code for ground-truth validation
+#   tag:          short symbolic label (e.g. "type-II PAM", "UCR2", "CAS")
+#   note:         optional caveat / disagreement annotation
+#
+# Centroid XYZ is COMPUTED on first use from the residues by
+# pocket_database.py and cached at data/pockets/centroids/<target>.json.
+
+version: 1
+distance_threshold_known: 8.0     # Å — pose centroid within this of a known pocket → class
+distance_threshold_buried: 15.0   # Å — within this → no_pocket_match; beyond → surface_artifact
+
+targets:
+
+  CHRNA7:
+    uniprot: P36544
+    note: "alpha-7 nAChR pentamer; 5-fold symmetry — pocket residues per subunit"
+    pockets:
+      - class: orthosteric
+        pdb: "7KOQ"
+        chain: "A"
+        residues: [92, 148, 187, 194, 53]    # Tyr92, Trp148, Tyr187, Tyr194, Trp53
+        tag: "ACh_ECD_interface"
+        note: "principal-face residues at α7/α7 ECD interface; 5 sites per pentamer"
+      - class: allosteric_known
+        pdb: "7KOX"
+        chain: "A"
+        residues: [253, 223, 247, 281]       # Met253(M1), Ser223, Leu247(M2), Ile281(M3)
+        tag: "PAM_type_II_TMD_intersubunit"
+        note: "PNU-120596 site; activated-state TMD intersubunit interface"
+      - class: allosteric_known
+        pdb: "7KOQ"
+        chain: "A"
+        residues: [196, 197, 198]            # I196, T197, F198 (β-strand 10)
+        tag: "PAM_type_I_ECD_beta_strand_10"
+        note: "galantamine APL site (Ludwig 2010); Kowal 2018 disputes PAM effect — manual_review"
+
+  GRIN2B:
+    uniprot: Q13224
+    note: "ifenprodil pocket is at GluN1/GluN2B ATD HETERODIMER interface — single-chain Boltz cofold CANNOT see it"
+    pockets:
+      - class: orthosteric
+        pdb: "4PE5"
+        chain: "B"
+        residues: [754, 690, 691, 688]       # Tyr754, Ser690, Thr691, Ser688
+        tag: "LBD_glutamate_cleft"
+        note: "single-chain accessible"
+      - class: allosteric_known
+        pdb: "3QEL"
+        chain: "B"
+        residues: [82, 114, 110]             # GluN2B I82, F114, Q110
+        tag: "ATD_ifenprodil_heterodimer_interface"
+        note: "REQUIRES Boltz cofold of GluN1 (Q05586) + GluN2B; single-chain inference will misclassify"
+
+  PDE4D:
+    uniprot: Q08499
+    note: "★ headline win: BPN14770 (UCR2 allosteric) vs rolipram catalytic. Centroid for the allosteric site is ligand-anchored to KR7 (BPN14770) in 6NJJ — guarantees coord-frame agreement"
+    pockets:
+      - class: orthosteric
+        pdb: "6NJJ"
+        chain: "A"
+        # Catalytic cAMP gorge — Zn²⁺-coordinating histidines + glutamine
+        # Use SO4 (sulfate at catalytic Mg site) as anchor since 6NJJ doesn't
+        # have a co-crystallised rolipram-class catalytic-only inhibitor
+        ligand_anchor: "SO4"
+        residues: []
+        tag: "catalytic_cAMP_pocket"
+        note: "approximated via SO4 (catalytic metal site marker); rolipram-class binds here"
+      - class: allosteric_known
+        pdb: "6NJJ"
+        chain: "A"
+        ligand_anchor: "KR7"               # BPN14770 itself — ligand-anchored centroid
+        residues: []
+        tag: "UCR2_closed_BPN14770"
+        note: "BPN14770 ligand-anchored; the actual UCR2 helix + catalytic span where it binds"
+
+  SIGMAR1:
+    uniprot: Q99720
+    note: "single cavity; agonist/antagonist discriminator is chemotype, not pocket"
+    pockets:
+      - class: orthosteric
+        pdb: "5HK1"
+        chain: "A"
+        residues: [172, 103, 126, 93, 95, 120]    # E172, Y103, D126, M93, L95, Y120
+        tag: "cupin_barrel_E172_salt_bridge"
+        note: "obligatory E172 salt bridge to ligand basic amine"
+
+  HRH3:
+    uniprot: Q9Y5N1
+    note: "single canonical aminergic GPCR pocket; pitolisant Ki=0.16nM"
+    pockets:
+      - class: orthosteric
+        pdb: "7F61"
+        chain: "A"
+        residues: [114]                        # D114 (3.32)
+        tag: "aminergic_D114_3.32"
+        note: "inactive-state; PF-03654746 antagonist co-crystal"
+
+  DRD1:
+    uniprot: P21728
+    note: "clean two-pocket dichotomy. SAME PDB 7LJC used for both centroids so they share the same coordinate frame as the SKF-81297 / LY3154207 ligand pair"
+    pockets:
+      - class: orthosteric
+        pdb: "7LJC"
+        chain: "R"
+        residues: [103, 198, 202, 321]         # D103(3.32), S198/S202(5), W321(6)
+        tag: "aminergic_OBP_D103"
+        note: "Asp103-anchored aminergic pocket; SKF-81297 sits here in 7LJC"
+      - class: allosteric_known
+        pdb: "7LJC"
+        chain: "R"
+        residues: [130, 135, 140, 145]         # ICL2/TM3-TM4 boundary region
+        tag: "PAM_ICL2_TM3_TM4"
+        note: "LY3154207/mevidalen membrane-embedded PAM site; ~12Å from OBP"
+
+  ACHE:
+    uniprot: P22303
+    note: "single deep gorge with CAS (bottom) and PAS (mouth) sub-sites; donepezil spans both"
+    pockets:
+      - class: orthosteric
+        pdb: "4EY7"
+        chain: "A"
+        residues: [86, 133, 202, 203, 337, 338, 447]    # CAS: W86, Y133, E202, S203, Y337, F338, H447
+        tag: "CAS_catalytic_anionic_site"
+        note: "tacrine, huperzine A, galantamine"
+      - class: allosteric_known
+        pdb: "4EY7"
+        chain: "A"
+        residues: [72, 74, 124, 286, 295, 341]          # PAS: Y72, D74, Y124, W286, F295, Y341
+        tag: "PAS_peripheral_anionic_site"
+        note: "donepezil dual-CAS+PAS span requires contact with BOTH centroids"
