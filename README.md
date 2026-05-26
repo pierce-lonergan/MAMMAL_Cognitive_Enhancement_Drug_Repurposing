@@ -150,21 +150,26 @@ See also: [`design/V3_ATTACK_PLAN.md`](design/V3_ATTACK_PLAN.md) and the sprint 
 
 | Question | File |
 |---|---|
-| What does this pipeline DO and NOT do? | [`reports/methodology_v1.md`](reports/methodology_v1.md) |
-| **What's the v3 state + forward plan?** | [`design/V3_STATUS_AND_FORWARD_PLAN.md`](design/V3_STATUS_AND_FORWARD_PLAN.md) |
-| What's the architecture? | [`design/V2_HYBRID_ARCHITECTURE.md`](design/V2_HYBRID_ARCHITECTURE.md) |
+| What does this pipeline DO and NOT do? | [`reports/methodology_v1.md`](reports/methodology_v1.md) (with v4 update banners) |
+| **What's the v4 state + forward plan?** | [`design/V4_STATUS_AND_FORWARD_PLAN.md`](design/V4_STATUS_AND_FORWARD_PLAN.md) |
+| What was the v3 state (historical)? | [`design/V3_STATUS_AND_FORWARD_PLAN.md`](design/V3_STATUS_AND_FORWARD_PLAN.md) |
+| What's the (v2) architecture skeleton? | [`design/V2_HYBRID_ARCHITECTURE.md`](design/V2_HYBRID_ARCHITECTURE.md) |
 | What was working/broken at v2 (historical)? | [`design/V2_STATUS_AND_FORWARD_PLAN.md`](design/V2_STATUS_AND_FORWARD_PLAN.md) |
 | What was the next 4 days of v3 sprint work? | [`design/V3_ATTACK_PLAN.md`](design/V3_ATTACK_PLAN.md) |
 | Did the CHRNA7 rescue work? | [`design/PHASE_0_5_DECISION_RECORD.md`](design/PHASE_0_5_DECISION_RECORD.md) |
 | Did WSL2 + cuEquivariance kernels work on RTX 5070? | [`design/WSL2_VALIDATION_RECORD.md`](design/WSL2_VALIDATION_RECORD.md) |
 | Were the ChEMBL target IDs right? | [`design/T1_CHEMBL_AUDIT_VERDICT.md`](design/T1_CHEMBL_AUDIT_VERDICT.md), [`reports/chembl_target_id_audit_sqlite.md`](reports/chembl_target_id_audit_sqlite.md) |
-| Per-target calibration results (the linchpin) | [`reports/calibration_report.md`](reports/calibration_report.md) |
-| What did calibration change in the rankings? | [`reports/fusion_calibration_diff.md`](reports/fusion_calibration_diff.md) |
-| Wet-lab prioritisation shortlist (top 25) | [`reports/wet_lab_shortlist_v3.md`](reports/wet_lab_shortlist_v3.md) |
+| Per-target calibration linchpin (V3) | [`reports/calibration_report.md`](reports/calibration_report.md) |
+| **THE Tanimoto-beats-MAMMAL breakthrough (V4)** | [`reports/tanimoto_baseline_v1.md`](reports/tanimoto_baseline_v1.md) |
+| Diagnostic protocol (prior-collapse + power + 5 lateral) | [`reports/diagnostics_v1.md`](reports/diagnostics_v1.md) |
+| §7.11 isotonic per-target calibration (V4) | [`reports/calibration_comparison_v1.md`](reports/calibration_comparison_v1.md) |
+| §7.5 pocket-conditioned MVP (13/13 gates) | [`reports/pocket_database_v1.md`](reports/pocket_database_v1.md) |
+| §8.1 multi-class faceted shortlist (V4 deliverable) | [`reports/wet_lab_shortlist_v4_faceted.md`](reports/wet_lab_shortlist_v4_faceted.md) |
+| What did calibration change in the rankings? | [`reports/fusion_calibration_diff.md`](reports/fusion_calibration_diff.md), [`reports/fusion_tanimoto_addition_diff.md`](reports/fusion_tanimoto_addition_diff.md) |
 | Phase A.5 SQLite agreement gate | [`reports/sqlite_vs_rest_smoke.md`](reports/sqlite_vs_rest_smoke.md) |
 | Original research deep-dive | [`research/compass_artifact_wf-*.md`](research/) |
 | Hybrid architecture research | [`research/Hybrid Architecture for MAMMAL-Based...md`](research/) |
-| Deep-research on tier-4 issues | [`research/4-tier/`](research/4-tier/) (5 files) |
+| Deep-research on tier-4 issues (5 V3+ docs) | [`research/4-tier/`](research/4-tier/) |
 
 ## Project layout
 
