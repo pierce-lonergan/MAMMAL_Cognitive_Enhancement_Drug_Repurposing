@@ -118,6 +118,14 @@ def main() -> int:
                         help="ADMET gates parquet — CUT compounds dropped before scoring.")
     parser.add_argument("--no-filter", action="store_true",
                         help="Skip both v1 exclusion + ADMET CUT filters.")
+    parser.add_argument("--z-normalize", action="store_true",
+                        help="§7.18 / §4.8 fix — Z-normalize predicted_pkd within target "
+                             "before selectivity computation. Required when input is "
+                             "calibrated MAMMAL pKd (per-target isotonic calibrators "
+                             "produce different Y-axis scales per target which breaks "
+                             "panel-wide Gini). Output values are z-scores; rescale "
+                             "back to pKd-like [4, 9] for compatibility with existing "
+                             "thresholds.")
     args = parser.parse_args()
 
     dti_grid = pd.read_parquet(args.scores)
@@ -154,6 +162,35 @@ def main() -> int:
         logger.info("Rebuilding affinity grid using Tanimoto-to-actives "
                     "(threshold pchembl ≥ %.1f) ...", args.active_pchembl)
         dti_grid = _build_tanimoto_grid(dti_grid, args.active_pchembl)
+
+    if args.z_normalize:
+        # §7.18 / §4.8 — Z-norm within target. Required when input is
+        # per-target-calibrated MAMMAL pKd (each calibrator has its own scale).
+        # Output: (predicted_pkd - target_mean) / target_std, then rescaled to
+        # pKd-like [4, 9] so downstream Gini thresholds keep their meaning.
+        logger.info("Applying §7.18 Z-norm within target ...")
+        before_stats = dti_grid.groupby("target_uniprot")["predicted_pkd"].agg(["mean", "std"])
+        logger.info("  Pre-Z-norm per-target std range: [%.3f, %.3f]",
+                    float(before_stats["std"].min()),
+                    float(before_stats["std"].max()))
+
+        def _z_norm(group):
+            mu = group["predicted_pkd"].mean()
+            sigma = group["predicted_pkd"].std()
+            if sigma == 0 or pd.isna(sigma):
+                group["predicted_pkd"] = 6.5    # collapsed; use centre
+            else:
+                z = (group["predicted_pkd"] - mu) / sigma
+                # Rescale to pKd-like 4..9: z=-2 → 4.0, z=0 → 6.5, z=+2 → 9.0
+                group["predicted_pkd"] = (6.5 + 1.25 * z).clip(lower=2.0, upper=11.0)
+            return group
+
+        dti_grid = (dti_grid.groupby("target_uniprot", group_keys=False)
+                            .apply(_z_norm))
+        after_stats = dti_grid.groupby("target_uniprot")["predicted_pkd"].agg(["mean", "std"])
+        logger.info("  Post-Z-norm per-target std range: [%.3f, %.3f] (should be uniform)",
+                    float(after_stats["std"].min()),
+                    float(after_stats["std"].max()))
 
     logger.info("Computing selectivity scorecards for %d unique compounds × %d targets ...",
                 dti_grid["compound_name"].nunique(),
