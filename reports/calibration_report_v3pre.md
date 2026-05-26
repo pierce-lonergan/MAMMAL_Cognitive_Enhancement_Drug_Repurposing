@@ -6,9 +6,9 @@ Spearman ρ between predicted ranking and ChEMBL ground-truth pchembl_value, com
 Boltz `affinity_pred_value` is log10 IC50 (µM); negated to align direction with pchembl (higher = stronger).
 Quality filter: assay_type='B', confidence_score≥7, standard_type∈{Ki,IC50,Kd,EC50}.
 
-**Summary**: BOLTZ_2X_MAMMAL: 3 | DE_WEIGHT_TARGET: 1 | EQUAL_WEIGHTS: 1 | MAMMAL_ONLY_INVERTED: 2 | MAMMAL_ONLY_STRONG: 1 | MAMMAL_ONLY_WEAK: 13 | NO_CLUSTER_DATA: 1
+**Summary**: BOLTZ_2X_MAMMAL: 1 | MAMMAL_ONLY_INVERTED: 4 | MAMMAL_ONLY_STRONG: 2 | MAMMAL_ONLY_WEAK: 14 | NO_CLUSTER_DATA: 1
 
-⚠️ **Boltz coverage is partial: only 5/22 targets have ≥3 Boltz predictions.** The overnight WSL2 sweep is still running; re-run this calibration once `data/results/v2/boltzina_affinity.parquet` is populated. Most current verdicts are `MAMMAL_ONLY_*`.
+⚠️ **Boltz coverage is partial: only 1/22 targets have ≥3 Boltz predictions.** The overnight WSL2 sweep is still running; re-run this calibration once `data/results/v2/boltzina_affinity.parquet` is populated. Most current verdicts are `MAMMAL_ONLY_*`.
 
 | Target | UniProt | ChEMBL truth n | MAMMAL ρ (n) | Boltz ρ (n) | Verdict |
 |---|---|---|---|---|---|
@@ -20,11 +20,11 @@ Quality filter: assay_type='B', confidence_score≥7, standard_type∈{Ki,IC50,K
 | GRIA4 | P48058 | 46 | -0.12 (12) | — | `MAMMAL_ONLY_WEAK` |
 | GRIN2A | Q12879 | 239 | -0.35 (8) | — | `MAMMAL_ONLY_INVERTED` |
 | GRIN2B | Q13224 | 3228 | -0.30 (14) | — | `MAMMAL_ONLY_INVERTED` |
-| DRD1 | P21728 | 1379 | +0.31 (21) | +0.36 (8) | `EQUAL_WEIGHTS` |
-| SLC6A3 | Q01959 | 3391 | -0.71 (26) | -0.87 (3) | `DE_WEIGHT_TARGET` |
-| ADRA2A | P08913 | 986 | +0.02 (22) | +0.47 (14) | `BOLTZ_2X_MAMMAL` |
-| SLC6A2 | P23975 | 3635 | -0.53 (25) | +0.34 (8) | `BOLTZ_2X_MAMMAL` |
-| HRH3 | Q9Y5N1 | 3758 | -0.14 (12) | +0.52 (6) | `BOLTZ_2X_MAMMAL` |
+| DRD1 | P21728 | 1379 | +0.31 (21) | — | `MAMMAL_ONLY_STRONG` |
+| SLC6A3 | Q01959 | 3391 | -0.71 (26) | — | `MAMMAL_ONLY_INVERTED` |
+| ADRA2A | P08913 | 986 | +0.02 (22) | — | `MAMMAL_ONLY_WEAK` |
+| SLC6A2 | P23975 | 3635 | -0.53 (25) | — | `MAMMAL_ONLY_INVERTED` |
+| HRH3 | Q9Y5N1 | 3758 | -0.14 (12) | +0.87 (3) | `BOLTZ_2X_MAMMAL` |
 | HCRTR1 | O43613 | 5628 | +0.37 (6) | — | `MAMMAL_ONLY_STRONG` |
 | HCRTR2 | O43614 | 6119 | -0.09 (6) | — | `MAMMAL_ONLY_WEAK` |
 | PDE4D | Q08499 | 1440 | -0.11 (11) | — | `MAMMAL_ONLY_WEAK` |

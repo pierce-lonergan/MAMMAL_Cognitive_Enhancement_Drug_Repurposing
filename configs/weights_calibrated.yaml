@@ -32,14 +32,13 @@ per_target_weights:
   Q01959:
     cluster_a_mammal: 0.3
     cluster_a_boltzina: 0.3
-    _note: "INVERTED \u2014 manual review before relying on rank."
+    cluster_b_admet: 0.5
   P08913:
-    cluster_a_mammal: 0.6
-    cluster_a_boltzina: 0.6
+    cluster_a_mammal: 1.0
+    cluster_a_boltzina: 2.0
   P23975:
-    cluster_a_mammal: 0.3
-    cluster_a_boltzina: 0.3
-    _note: "INVERTED \u2014 manual review before relying on rank."
+    cluster_a_mammal: 1.0
+    cluster_a_boltzina: 2.0
   Q9Y5N1:
     cluster_a_mammal: 1.0
     cluster_a_boltzina: 2.0
