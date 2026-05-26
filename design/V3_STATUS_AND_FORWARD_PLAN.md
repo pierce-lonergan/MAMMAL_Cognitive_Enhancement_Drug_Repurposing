@@ -44,6 +44,22 @@
 > deferred to v2. See `reports/calibration_comparison_v1.md`,
 > `reports/calibration_apply_v1.md`, `data/calibration/router_decisions.csv`.
 
+> **🔥 POST-SPRINT BREAKTHROUGH #4 (this commit)** — *§7.5 Pocket-conditioned
+> Boltz-2 MVP: curated centroid database + geometric classifier, all 13
+> validation gates pass*. 7 priority targets (CHRNA7 / GRIN2B / PDE4D /
+> SIGMAR1 / HRH3 / DRD1 / ACHE), 13 pockets curated from RCSB PDBs via
+> biopython, with both residue-derived AND ligand-anchored centroid modes.
+> The headline win is **PDE4D BPN14770 (allosteric, UCR2) vs rolipram-class
+> (orthosteric, catalytic) discrimination at the geometric level** — enables
+> §8.0b emesis-liability gating split. ACHE donepezil correctly classified
+> as orthosteric via dual-site (CAS+PAS span) detection. P1=4/4 orthosteric
+> + P2=2/2 allosteric + P3=7/7 negative-control = 13/13 gates pass.
+> Sprint 2 (P2Rank + PocketMiner + CryptoBench consensus) and Sprint 3
+> (§8.0b liability split + §8.1 new facets) deferred. Pose-conditioning
+> goes operational once a pose-saving Boltz wrapper is added. See
+> `reports/pocket_database_v1.md`, `data/pockets/pocket_database.yml`,
+> `src/mammal_repurposing/pockets/`.
+
 ---
 
 ## 1. Executive Summary
