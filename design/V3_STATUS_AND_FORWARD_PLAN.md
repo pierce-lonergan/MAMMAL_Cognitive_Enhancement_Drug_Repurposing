@@ -29,6 +29,21 @@
 > amitriptyline on 5-HT2B+HRH1) + ~7 FLAGs that ADMET-AI alone misses.
 > See `reports/wet_lab_shortlist_v4_faceted.md`, `reports/selectivity_v1_tanimoto.md`.
 
+> **🔥 POST-SPRINT BREAKTHROUGH #3 (commit `d0b4bd7`)** — *§7.11 Isotonic
+> per-target post-hoc calibration*. `IsotonicRegression(increasing='auto')`
+> naturally absorbs sign inversion at MAMMAL_ONLY_INVERTED targets,
+> replacing the awkward `weight=0.30` hack. **Headline**: SLC6A3 raw ρ=-0.70 →
+> post-cal ρ=**+0.62** (Δρ=+1.32, CI=[+0.71, +0.80], Tier A); SLC6A2 -0.60 →
+> +0.40 (Tier B). The research doc predicted [+0.45, +0.65] for SLC6A3; we
+> landed at the high end. GRIN2A/2B confirmed as Scenario 3 (structural
+> blindness at ifenprodil dimer-interface) — calibration can't fix it; they
+> escalate to §7.7 cross-DTI ensemble. Decision router (`calibration/router.py`)
+> implements §1D matrix + Tier A/B/C/D post-fit classifier. Calibrated DTI
+> grid at `data/results/dti_scores_calibrated.parquet`. Beta-calibration
+> deferred (betacal package is binary-classifier-only); PyMC hierarchical
+> deferred to v2. See `reports/calibration_comparison_v1.md`,
+> `reports/calibration_apply_v1.md`, `data/calibration/router_decisions.csv`.
+
 ---
 
 ## 1. Executive Summary
