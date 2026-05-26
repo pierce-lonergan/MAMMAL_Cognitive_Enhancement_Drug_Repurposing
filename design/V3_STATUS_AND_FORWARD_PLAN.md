@@ -16,6 +16,19 @@
 > MMAtt-DTA) to Tier 1. See `reports/diagnostics_v1.md`,
 > `reports/tanimoto_baseline_v1.md`, `reports/fusion_tanimoto_addition_diff.md`.
 
+> **🔥 POST-SPRINT BREAKTHROUGH #2 (commit `b3fddfa`)** — *Selectivity layer
+> + faceted shortlist + 44-target liability panel*. The HRH3-23/25 lock-in
+> from the v3 calibrated output is **DISSOLVED**. New `wet_lab_shortlist_v4_faceted.md`
+> surfaces top-5 per mechanism class across 8 classes + 9 targeted pairs,
+> with cross-facet provenance. Pitolisant correctly ranks #2 in histaminergic
+> facet; donepezil in cholinergic top-5; atomoxetine/fluoxetine/duloxetine
+> in noradrenergic; (s)-AMPA and ampakines dominate glutamatergic AMPA.
+> The 44-target off-target liability panel (§8.0b) is built and ready — Stage 1
+> (UniProt enrichment) shipped; Stages 2+3 (MAMMAL DTI + gating) queued for
+> when WSL2 Boltz frees the GPU. Expected effect: 2 hard CUTs (aripiprazole,
+> amitriptyline on 5-HT2B+HRH1) + ~7 FLAGs that ADMET-AI alone misses.
+> See `reports/wet_lab_shortlist_v4_faceted.md`, `reports/selectivity_v1_tanimoto.md`.
+
 ---
 
 ## 1. Executive Summary
