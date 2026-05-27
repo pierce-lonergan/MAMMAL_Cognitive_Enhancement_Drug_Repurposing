@@ -55,6 +55,8 @@ Thumbs.db
 data/interim/
 data/results/
 data/cache/
+data/kg/
+data/pockets/pdbs/
 !data/interim/.gitkeep
 !data/results/.gitkeep
 

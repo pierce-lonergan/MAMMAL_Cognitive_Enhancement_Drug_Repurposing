@@ -228,6 +228,48 @@ def _numpyro_available() -> bool:
         return False
 
 
+def build_y_obs_from_sources(
+    target_uniprots: list[str],
+    y_ahba: dict[str, float] | None = None,
+    y_l2g: dict[str, float] | None = None,
+    y_sc: dict[str, float] | None = None,
+    sigma_ahba: float = 0.30,    # AHBA spatial-corr Fisher-z SE; Markello 2021
+    sigma_l2g: float = 0.20,     # OT Genetics L2G Shapley-XGBoost noise
+    sigma_sc: float = 0.35,      # cellxgene single-cell aggregation noise
+) -> tuple[np.ndarray, np.ndarray, list[str]]:
+    """Stack AHBA / L2G / SC observations into the (S, T) matrix shape
+    expected by `fit_cluster_d_prior_nuts`.
+
+    Returns (y_obs, sigma_obs, source_names). Missing sources are dropped;
+    missing per-target values default to 0.0 with inflated sigma.
+    """
+    sources: list[tuple[str, dict[str, float] | None, float]] = [
+        ("AHBA", y_ahba, sigma_ahba),
+        ("L2G", y_l2g, sigma_l2g),
+        ("SC", y_sc, sigma_sc),
+    ]
+    active = [(name, stream, sig) for name, stream, sig in sources if stream is not None]
+    if not active:
+        raise ValueError("At least one of y_ahba / y_l2g / y_sc must be provided")
+
+    T_n = len(target_uniprots)
+    y_obs = np.zeros((len(active), T_n), dtype=float)
+    sigma_obs = np.zeros((len(active), T_n), dtype=float)
+    source_names: list[str] = []
+    for s_idx, (name, stream, sig) in enumerate(active):
+        source_names.append(name)
+        for t_idx, t in enumerate(target_uniprots):
+            v = stream.get(t)
+            if v is None:
+                # Missing observation → centered at 0 with very inflated sigma
+                y_obs[s_idx, t_idx] = 0.0
+                sigma_obs[s_idx, t_idx] = sig * 5.0
+            else:
+                y_obs[s_idx, t_idx] = float(v)
+                sigma_obs[s_idx, t_idx] = sig
+    return y_obs, sigma_obs, source_names
+
+
 def roberts_2020_ceiling_check(
     posterior: ClusterDPosterior,
     target_smd_predictions: dict[str, float] | None = None,

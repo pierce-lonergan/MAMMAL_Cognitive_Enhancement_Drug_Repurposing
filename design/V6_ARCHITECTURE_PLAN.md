@@ -1,18 +1,28 @@
-# V6 Architecture & Phased Implementation Plan
+# V6 / V7 / V8 Architecture & Phased Implementation Plan
 
-**Status**: live source-of-truth for V6 design. Companion to
-`design/V4_STATUS_AND_FORWARD_PLAN.md` §13 (V5/V6 Path Forward). Concrete
-implementation roadmap for the two V6 priorities:
+**Status**: live source-of-truth for the V6 → V7 → V8 design arc. Companion to
+`design/V4_STATUS_AND_FORWARD_PLAN.md` §13 (V5/V6 Path Forward) + §13.Y (V7)
++ §13.Z (V8). Concrete implementation roadmap for **four** workstreams:
 
 - **V6.A — Multi Head DTI ensemble** (~12 weeks) per
   `research/4-tier/Multi Head DTI.md`
 - **V6.B — Bayesian Cluster D neurobiological prior** (~16 weeks) per
   `research/4-tier/Multi-Source Neurobiological Prior for Cognition Target Prioritization.md`
+- **V7 — Clinical Effect-Size Translation Function** (~3-4 months) per
+  `research/4-tier/Clinical Effect-Size Translation Function.md` + the
+  companion Pre-Registration Methodology doc. *Downstream consumer of V6.A
+  pchembl posteriors + V6.B θ̄ via multiplicative Cluster D gate.*
+- **V8 / Cluster E — πphen Perturbational Evidence Axis** (~22 weeks) per
+  `research/4-tier/Perturbational Evidence Axis.md` + the Technical
+  Feasibility Deep-Dive companion. *Parallel third Bayesian factor; target-
+  agnostic phenotypic prior to V6's target-first axes.*
 
-The V6 scaffolds for both are already shipped in `src/mammal_repurposing/`
+The V6 scaffolds for V6.A + V6.B are already shipped in `src/mammal_repurposing/`
 (diagnostics/per_head_bias.py, fusion/bayesian_router.py,
-cluster_d/bayesian_prior.py, cluster_d/data_fetchers.py). The implementation
-work below operationalises them with real heads + real data.
+cluster_d/bayesian_prior.py, cluster_d/data_fetchers.py, cluster_a/
+{mmatt_dta_adapter.py, psichic_adapter.py}, calibration/venn_abers.py). The
+implementation work below operationalises them with real heads + real data,
+then layers V7 (translation) and V8 (πphen) on top.
 
 ---
 
@@ -141,9 +151,9 @@ PMC10941541). Internal references corrected throughout V4 doc + Appendix A.9.
 
 ---
 
-## V6.A × V6.B Composition (the joint posterior)
+## V6.A × V6.B Composition (the V6 joint posterior)
 
-Per V4 §13.3, the joint posterior over (compound, target) pairs is:
+Per V4 §13.3, the V6 joint posterior over (compound, target) pairs is:
 
 p(cognitive_relevance(q, t)) ∝ π(t | cognition) · Σ_k w_k(t) · F_k(q, t)
 
@@ -167,80 +177,331 @@ These are the high-information-value candidates that justify wet-lab spend.
 
 ---
 
-## Resource allocation decision tree
+## V7 — Clinical Effect-Size Translation Function (~3-4 months)
 
-If a **single research-engineer-month** is available between now and V5 launch:
-1. **MMAtt-DTA head** (V6.A.1 first slice, 2-3 days) — single biggest disambiguation between "Tanimoto is the right baseline" and "modern DTI heads can beat it." Settles the empirical question.
-2. **Pose-saving Boltz wrapper** (V4 §7.17 — code shipped; ~6-10h pose-only Boltz re-run on WSL2 GPU). Operationalises §7.5 on the live grid and unblocks §8.13 pocket-conditioned liability gating.
-3. **Cluster C TxGNN run** (V4 last Tier-1 item; ~1 day setup including DGL wheel pin + PrimeKG download + 1hr run). Adds the 5th cluster to RRF.
+### Goal
+The first **translational head** in the pipeline. Translate the V6.A pchembl
+posteriors + V6.B Cluster D θ̄ posteriors + PBPK exposure into a *predicted*
+healthy-adult cognition Hedges' *g* with credible intervals. Every prior
+layer ranks compounds; V7 predicts the magnitude of the effect a wet-lab
+experiment would actually measure.
 
-If **2-3 months** are available — ship the full V6.A.1-A.4 Multi Head DTI core (heads + bias decomposition + Bayesian router + calibration). Disagreement facet (V6.A.5) and publication (V6.A.6) come naturally.
+### V7 in one sentence
+**g_predicted(compound, endpoint) ~ Normal(η[compound, target] − Σ_k γ_k m_k, σ²)**
+where η = sigmoid(α + β1·E[pchembl_post] + β2·E[relevance_post] + β3·copula_correction),
+**β_target[t_c] = θ̄_{t_c} · β_raw_target[t_c]** (Cluster D multiplicative gate),
+and the 5 failure-mode moderators m_k cover U-shape, practice/placebo,
+tolerance, trait×state, trial-design.
 
-If **6+ months** are available — ship V6.A in full, then begin V6.B Cluster D. The V6.B Bayesian model requires V6.A's calibrated uncertainty propagation as input.
+### Pre-committed Tier-A criterion
+8 pre-registered predictions P1–P8 (donepezil, encenicline-3mg-failure,
+MPH-DSST, modafinil-200mg, memantine-20mg, intepirdine-MINDSET, pridopidine-
+PROOF-HD, lecanemab-cognitive-subdomain) must all land within pre-registered
+posterior bands. If ≥3 fail → **CPT:PSP negative-result paper** fallback.
 
-If **no engineer time** is available — the current `reports/wet_lab_shortlist_v6_full.md` is the production deliverable. 43 PASS compounds with all V4 + V5 gates flowing through (calibrated MAMMAL + Z-norm + Tanimoto + ADMET + MoA + §8.0b-zn liability + Pareto + scaffold-AL + nootropic-similarity + CTgov IP). The contribution is honest and defensible as-is.
+### Phased plan
+
+| Stage | Wk | Deliverable | Validation |
+|---|---|---|---|
+| **V7.1 PBPK foundation** | 1-4 | `src/mammal_repurposing/translation/pbpk.py` — JAX/diffrax 9-compartment ODE solver (gut → plasma → peripheral → cortex → striatum → hippocampus → basal-forebrain → brainstem → CSF). Watson 1989 receptor-occupancy-with-reserve formalism. U-shape generator (D1-postsynaptic vs D2-autoreceptor). Tolerance kinetics (R_avail dynamics) | All 3 PET anchors reproduced within 1σ: donepezil 19.1% cortical AChE (Bohnen 2005); MPH 12/40/54/72/74% DAT at 5/10/20/40/60mg (Volkow 1998); haloperidol D2 EC50 ~1.8 nM (Kapur 2000) |
+| **V7.2 Class priors** | 5-8 | `src/mammal_repurposing/translation/prisma_priors.py` — Schmidli 2014 robust MAP priors for 12 mechanism classes (donepezil, modafinil, MPH, atomoxetine, memantine, vortioxetine, guanfacine, caffeine, piracetam, creatine, omega-3, minocycline) extracted from Roberts 2020 + MetaPsy + Cochrane | Each of 12 classes has prior mean ± σ from ≥3 trials; coverage table |
+| **V7.3 Hierarchical Bayes** | 9-14 | `src/mammal_repurposing/translation/effect_size_model.py` — PyMC 3-level model: μ_global ~ N(0, 0.20); μ_class[m] ~ N(μ_class_PRISMA[m], λ_class·σ_class_PRISMA[m]); η = sigmoid(α + β1·E[pchembl_post] + β2·E[relevance_post] + β3·copula_correction); β_target gated by Cluster D θ̄; 5 moderators; numpyro backend | R̂ < 1.01, ESS > 400 per θ; sensitivity sweep over λ_class ∈ {0.1, 0.3, 1.0, 3.0}, robust MAP weight, moderator strengths |
+| **V7.4 Validation gates** | 15-20 | **Gate 1 (HARD)**: All 8 P1–P8 posterior bands land. **Gate 2**: Roberts 2020 SMD ceiling — no compound's posterior 90% credible upper bound exceeds Hedges' g = 0.50. **Gate 3**: MAE on held-out anchor set (15 compounds) < 0.15. **Gate 4**: per-endpoint calibration plot 90% CrI coverage ≥ 85% across 6 endpoints (ADAS-Cog, DSST, n-back, Stroop, RAVLT, CANTAB-RVIP) | All 4 gates pass; otherwise CPT:PSP negative-result framing |
+| **V7.5 OSF pre-registration + paper** | 21-24 | OSF.io lock on (priors, moderators, P1–P8, validation thresholds) BEFORE unblinding the held-out anchor set; pre-registered MS deposited on bioRxiv; submission to **Clinical Pharmacology & Therapeutics** (Wiley, IF 7.3) | OSF DOI minted; CPT submission ID |
+
+### Dependencies + risks
+
+- **JAX + diffrax + numpyro** stack; PyMC 5.x with numpyro backend. ~1 GB
+  install. Mostly tested in V6.B.3, but V7 PBPK adds new ODE solver
+  surface area.
+- **PRISMA meta-analytic prior curation** is the load-bearing manual step:
+  ~2 weeks for one engineer to extract 12-class SMD priors from
+  Roberts 2020 + MetaPsy + Cochrane with proper variance components.
+- **Risk**: V7 cannot fire until **both** V6.A.4 Venn-ABERS posteriors and
+  V6.B.3 PyMC NUTS θ̄ posteriors exist as proper Bayesian objects (means + sds
+  or full draws). V6.A.4 is shipped this sprint; V6.B.3 is queued.
+- **Risk**: Roberts 2020 ceiling (g = 0.43 maximum significant subdomain
+  effect for MPH delayed recall) is so low that V7's discriminative
+  resolution may be at the noise floor. This is honest — the negative-result
+  paper IS the publishable contribution if that's the empirical outcome.
+
+### Falsifiability fallback
+If ≥3 of P1–P8 fail, the V7 hierarchical translation is falsified for
+healthy-adult cognition. Publishable contribution becomes the *negative
+result paper* in **CPT: Pharmacometrics & Systems Pharmacology** (Wiley,
+IF 4.2) — "PBPK + receptor-occupancy hierarchical Bayes cannot translate
+in-silico DTI rankings to healthy-adult Hedges' g, because the Roberts
+2020 ceiling is at the floor of the model's discriminative resolution."
+Pre-registration protects against post-hoc retreat.
 
 ---
 
-## V6 timeline summary
+## V8 / Cluster E — πphen Perturbational Evidence Axis (~22 weeks)
+
+### Goal
+The **third Bayesian factor** parallel to V6.A (target-binding) and V6.B
+(target-relevance). V8 introduces πphen, a *target-agnostic* phenotypic
+evidence axis built from LINCS L1000 + JUMP-CP Cell Painting + iPSC-neuron
+MEA / snRNA-seq + chemCPA generative imputation. The joint posterior
+becomes:
+
+**π_joint ∝ π_target(V6.A, V6.B) · π_phen(V8)**
+
+with **Gaussian-copula correlation correction** between the three factors
+(V6.A pchembl ↔ V6.B relevance ↔ V8 phenotype share training-data variance;
+ignoring it produces overconfidence).
+
+### V8 in one sentence
+**Encenicline** is `target-true.phenotype-failed` — V6.A says binds α7
+(pchembl ~7.8), V6.B Cluster D says α7 cognition relevance moderate (~0.55),
+V8 says inert phenotypic signature (WTCS to active AChE-I cluster < 0.2,
+JUMP-CP DeepProfiler cosine to AChE-I centroid < 0.3). V6 alone cannot
+catch this; V8 does. This is the single motivating case.
+
+### Pre-committed Tier-A criterion
+Gate 1 (PRIMARY): mechanism-class recovery vs PRISMA ~30-class taxonomy with
+**AMI ≥ 0.5, ARI ≥ 0.4**. OSF-pre-registered before unblinding mechanism
+labels.
+
+### Phased plan
+
+| Stage | Wk | Deliverable | Validation gate |
+|---|---|---|---|
+| **V8.1 Data ingestion** | 1-3 | LINCS L1000 ingest (GSE92742 + GSE70138 + clue.io beta via cmapPy WTCS index, ~10 GB). JUMP-CP cpg0016 S3 sync — DeepProfiler + CellProfiler + DINOv2 consensus profiles only, ~30-40 GB (NOT the ~115 TB raw images). iPSC-MEA aggregation from Frank 2017, Odawara 2016, Hyysalo 2017. cellxgene-census brain slice (already V6.B asset, no incremental cost) | ≥60% V6 shortlist coverage in LINCS ∩ JUMP-CP overlap; if <60% chemCPA imputation becomes load-bearing |
+| **V8.2 chemCPA training** | 3-4 | `src/mammal_repurposing/cluster_e/chemcpa_train.py` — RDKit-Morgan-FP-pretrained chemCPA on LINCS + sci-Plex3 (Hetzel 2022 architecture; 4-8 h GPU); LOMCO benchmark on glutamatergic class | R²(all) ≥ 0.50, R²(DEGs) ≥ 0.30 on broader-mix retraining (vs Hetzel 2022 ceiling 0.69/0.47, Piran 2024 cross-condition mean 0.51 ± 0.0062) |
+| **V8.3 MOFA+ joint embedding** | 4-5 | `src/mammal_repurposing/cluster_e/mofa_embed.py` — mofapy2 K=30 across 7 views {L1000, CP_CellProfiler, CP_DeepProfiler, CP_DINO, MEA, snRNA, chemCPA_latent}; per-factor per-view variance attribution table (defends U2OS-to-brain transfer) | Joint AMI exceeds best single modality by ≥0.05 (multi-modal architecture earning its complexity) |
+| **V8.4 Gate 1 pre-registration** | 5-6 | OSF.io lock on (K=30, Leiden γ space, AMI/ARI bands, 30-class mechanism list, 9+1 nootropic-anchor set) BEFORE unblinding. Leiden + HDBSCAN clustering; AMI/ARI computation; stratified per-class + per-modality | **Gate 1 PASS** at AMI ≥ 0.5, ARI ≥ 0.4; **DEGRADE** at [0.3, 0.5) → λ_phen=0.5; **FAIL** at <0.3 → negative-result paper |
+| **V8.5 Joint posterior PyMC** | 6-8 | `src/mammal_repurposing/cluster_e/joint_phenotype.py` — extends V7 PyMC with V8 phenotype node: φ_c | θ_B, θ_T ~ Normal(A·b_c + B·r_c + C·(b_c⊗r_c), Σ_φ(τ_chemCPA, τ_cellline)). Extended g-mean with β_P·φ_c. Gaussian-copula correlation correction. Sensitivity sweep λ_phen ∈ {0, 0.25, 0.5, 1.0, 2.0} | Top-50 shortlist overlap ∈ [60%, 90%] across λ ∈ [0.5, 1.0]; reduces to V7-only at λ_phen=0 (sanity guard) |
+| **V8.6 Gate 2 + 3 + 4 + paper** | 8-10 | GP regression (Matérn-5/2) on MOFA+ factors for held-out g prediction (Gate 2). Nootropic-anchor NN check on 9+1 set (Gate 3). I_novel novel-mechanism score correctly identifies (L, L, H) cell on held-out clemastine + BIMA-8 cluster (Gate 4). Mondrian conformal calibration via `crepes`. | All 4 gates pass; draft for **Nature Machine Intelligence** (A realistic) or **Nature Methods** (A+ stretch at AMI ≥ 0.6) |
+
+### Five-MoA cognition reference centroids (per Technical Feasibility Deep-Dive)
+K=5 sub-centroids in MOFA+ space — the cognition reference shape against
+which compounds are scored for connectivity:
+
+- **Cholinergic**: donepezil, galantamine, rivastigmine
+- **Catecholaminergic**: MPH, atomoxetine, modafinil, d-amphetamine
+- **Glutamatergic**: memantine, ketamine, riluzole
+- **Trophic / ISR**: ISRIB, DNL343, 7,8-DHF, LM22A-4
+- **Remyelination**: Mei 2014 BIMA-8 (clemastine + benztropine + atropine +
+  ipratropium + oxybutynin + trospium + tiotropium + quetiapine); Najm 2015
+  RNA-seq supplement; PIPE-307
+
+Compounds clustering near the remyelination centroid with (L, L, H) profile
+(low V6.A binding, low V6.B target relevance, high V8 phenotypic match)
+are the **clemastine-class novel-mechanism candidates** — V8's central
+pitch.
+
+### 8-cell disagreement table
+high/low × {target, genetic, phenotype}:
+- (H, H, H) = canonical positive (donepezil, MPH)
+- (H, H, L) = `target-true.phenotype-failed` (encenicline, intepirdine, pridopidine)
+- **(L, L, H) = novel-mechanism territory** (clemastine, PIPE-307, BIMA-8)
+- (L, H, L) = genetic-relevance-only (not actionable)
+- ...
+
+I_novel(compound) = π_p · [1 − I(π_p ; (π_t, π_g))] — mutual-information
+novel-mechanism score; high when phenotype is informative AND target-genetic
+axes are uninformative or independent.
+
+### Dependencies + risks
+
+- **Working set**: ~55 GB local cache (LINCS L1000 ~10 GB + JUMP-CP
+  DeepProfiler+CellProfiler ~30-40 GB + iPSC-MEA ~10 GB + chemCPA models
+  <2 GB). cpg0016 full image dataset (~115 TB) is **never downloaded**.
+- **MOFA+** at K=30 across 7 views ~24 GB RAM peak; close to 32 GB ceiling.
+  Mitigation: `mofapy2 sparse_data=True` + minibatching.
+- **PyMC NUTS** on V8 joint at ~50K compounds × 30 factors ~8-16 h GPU via
+  numpyro JAX backend.
+- **U2OS-to-brain transfer** (the elephant): per-cell-line random effect +
+  explicit downweighting of JUMP-CP-only factors in iPSC-deficient
+  subspaces + Gate 1 stratified per modality.
+- **chemCPA hallucination risk** for scaffolds with max-Tanimoto-to-train <
+  0.3: τ_chemCPA × 3 inflation; flagged as `chemCPA.imputed.low_confidence`.
+
+### Compute envelope
+~24-36 h wall-clock (per Perturbational Evidence Axis.md §J.3) — RTX 5070
+12 GB sufficient. Peak 24 GB RAM, 11 GB VRAM.
+
+### Falsifiability fallback
+- Gate 1 AMI < 0.3 → publish negative result for **Cell Reports Methods** or
+  **Bioinformatics**.
+- Gate 2 MAE > 0.35 → β_P = 0 (V8 contributes only to ranking, not to V7).
+- Non-neural-only AMI < 0.3 → frame V8 as chemistry-anchored consistency
+  check rather than brain proxy.
+
+---
+
+## V6 × V7 × V8 composition (three-factor joint posterior)
+
+When V6.A + V6.B + V7 + V8 all ship, the joint posterior over Hedges' g per
+(compound, target) is:
+
+**p(g | compound, target, evidence)**
+**∝ p_V8(g | compound, φ) · p_V7(g | compound, target, θ̄, b, PBPK) · p_V6.B(θ̄ | target) · p_V6.A(b | compound, target)**
+
+with **Gaussian-copula correlation correction** between the three Bayesian
+factors. The composition produces the **V8 wet-lab shortlist** (the
+production deliverable once V8 lands):
+
+1. Ranked by joint posterior mean Hedges' g with 95% CrI
+2. Pre-filtered by Roberts 2020 SMD ceiling (no g > 0.50 at 90% upper CrI)
+3. Annotated with:
+   - V6.A multi-head disagreement-axis facet-tag (novel_scaffold /
+     activity_cliff / ood / noise)
+   - V6.B Cluster D D_i Jensen-Shannon disagreement
+   - V8 three-way JSD I_novel novel-mechanism score
+4. 8-cell disagreement classification: (H, H, H), (H, H, L), **(L, L, H)**
+   [novel mechanism], etc.
+5. Wet-lab priority = high I_novel × high V6.B posterior × high V8
+   phenotypic match × passing Roberts ceiling
+
+These are the **clemastine-class** high-information-value candidates that
+justify wet-lab spend.
+
+---
+
+## Resource allocation decision tree
+
+If a **single research-engineer-month** is available right now:
+1. **BALM adapter** (V6.A.1 phase 3, 2-3 days) — completes the Multi-Head DTI
+   activation. Already shipped: MMAtt-DTA + PSICHIC; BALM is the third
+   non-MAMMAL head. Tier-A criterion at SLC6A3 was empirically falsified by
+   V6.A.1; BALM may still earn an INVERT-mask slot at specific superfamilies.
+2. **OT Genetics L2G fetcher + PyMC NUTS** (V6.B Stages 2-3, ~1-2 weeks).
+   Activates the Cluster D Bayesian prior — V6.B foundation already shipped
+   (abagen AHBA cache via `scripts/54_v6b_cluster_d_foundation.py`). The
+   `cluster_d/bayesian_prior.py::fit_cluster_d_prior_nuts` scaffold fires the
+   moment real (AHBA, L2G, SC) observations arrive.
+3. **TxGNN API rewrite** (V4 last Tier-1 item; ~1 day). Switches from broken
+   `predict_indication(drug, disease)` to public `predict_disease(idx)` API.
+   Adds Cluster C TxGNN as a 5th fusion cluster.
+
+If **2-3 months** are available — ship V6.A full + V6.B foundation. Push
+production wet-lab shortlist to v10 with all 4 DTI heads + Cluster D prior.
+
+If **4-6 months** are available — ship V6.A + V6.B in full, then **begin V7
+PBPK foundation + class priors** (V7.1 + V7.2). V7 cannot fire without V6.A.4
+Venn-ABERS posteriors (shipped) + V6.B.3 PyMC NUTS posteriors (V6.B.3).
+
+If **8-10 months** are available — ship V6 + V7 in full. V7 paper draft for
+Clinical Pharmacology & Therapeutics. Begin V8.1 data ingestion + V8.2
+chemCPA training in parallel.
+
+If **12-15 months** are available — ship V6 + V7 + V8 in full. Three papers,
+three venues:
+- V6.A → J Cheminform / Nat Mach Intell
+- V6.B → Cell Reports Methods / Bioinformatics
+- V7 → Clinical Pharmacology & Therapeutics (CPT, IF 7.3) or CPT:PSP (negative-result fallback)
+- V8 → Nature Machine Intelligence (A realistic) / Nature Methods (A+ stretch)
+
+If **no engineer time** is available — the current
+`reports/wet_lab_shortlist_v6_full.md` is the production deliverable.
+43 PASS compounds with all V4 + V5 gates flowing through. V6.A.1 MMAtt-DTA
+empirical activation + V6.B.1 Cluster D foundation shipped this sprint and
+ready to bolt on when engineering capacity resumes.
+
+---
+
+## V6 + V7 + V8 timeline summary
 
 | Track | Wks | Effort | Dependencies | Output |
 |---|---|---|---|---|
-| V6.A: Multi Head DTI ensemble | 12 | 5 heads + bias decomposition + Bayesian router + eMOSAIC OOD + Venn-ABERS + disagreement facet + validation | None (heads are pip-installable; MMAtt-DTA needs Zenodo download) | `fusion/bayesian_router.py` (shipped scaffold) + `diagnostics/per_head_bias.py` (shipped scaffold) + `diagnostics/ood_emosaic.py` (pending) + `diagnostics/disagreement_axis.py` (pending; §8.15 is partial) + paper draft (J Cheminform / Nat Mach Intell) |
-| V6.B: Bayesian Cluster D prior | 16 | abagen + BrainSMASH + OT L2G + cellxgene + PyMC NUTS + 4-gate validation + §7.11 integration + paper | abagen / BrainSMASH / PyMC installs; cellxgene-census brain slice (~10 GB local cache) | `cluster_d/bayesian_prior.py` (shipped scaffold) + `cluster_d/data_fetchers.py` (shipped scaffold) + 5 validation reports + paper draft (Cell Reports Methods / Bioinformatics) |
-| Composition | 4 | Joint-posterior plumbing + V7 wet-lab shortlist re-render | V6.A + V6.B both shipped | `reports/wet_lab_shortlist_v7_joint.md` |
+| V6.A: Multi Head DTI ensemble | 12 | 5 heads + bias decomposition + Bayesian router + eMOSAIC OOD + Venn-ABERS + disagreement facet + validation | MMAtt-DTA Zenodo download (shipped); PSICHIC adapter (shipped); BALM (pending phase 3) | `fusion/bayesian_router.py` (shipped) + `diagnostics/per_head_bias.py` (shipped) + `cluster_a/{mmatt_dta_adapter, psichic_adapter, balm_adapter}.py` + paper draft (J Cheminform / Nat Mach Intell) |
+| V6.B: Bayesian Cluster D prior | 16 | abagen + BrainSMASH + OT L2G + cellxgene + PyMC NUTS + 4-gate validation + §7.11 integration + paper | abagen/BrainSMASH/PyMC installs (shipped); cellxgene brain slice ~10 GB; OT Genetics GraphQL fetcher (V6.B.2 pending) | `cluster_d/{bayesian_prior, data_fetchers}.py` (shipped scaffolds) + AHBA cache `data/results/v2/ahba_expression_v1.parquet` (shipped) + 5 validation reports + paper draft (Cell Reports Methods / Bioinformatics) |
+| V6 Composition | 4 | Joint-posterior plumbing + wet-lab shortlist re-render | V6.A + V6.B both shipped | `reports/wet_lab_shortlist_v9_joint.md` |
+| **V7: Clinical Effect-Size Translation** | **16** | **JAX/diffrax PBPK + PRISMA-anchored 3-level hierarchical Bayes + 5 failure-mode moderators + 4 validation gates + OSF pre-reg + paper** | **V6.A.4 Venn-ABERS posteriors (shipped); V6.B.3 PyMC θ̄ posteriors (V6.B.3 pending); PRISMA prior curation (~2 wk manual)** | **`translation/{pbpk, prisma_priors, effect_size_model}.py` + OSF pre-registration + CPT paper draft** |
+| **V8 / Cluster E: πphen Perturbational Axis** | **22** | **LINCS L1000 + JUMP-CP + iPSC-MEA + chemCPA imputation + MOFA+ + conditionally-dependent 4-level hierarchical Bayes + 4 validation gates + OSF pre-reg + paper** | **V6.A + V6.B + V7 all shipped; ~55 GB local cache; mofapy2; cmapPy; pycytominer; numpyro JAX backend** | **`cluster_e/{ingest_lincs, ingest_jumpcp, chemcpa_train, mofa_embed, joint_phenotype}.py` + OSF pre-registration + Nat Mach Intell paper draft** |
 
-**Total V6 (A + B + Composition)**: ~32 weeks (~8 months) of focused engineering.
+**Total V6 + V7 + V8**: ~70 weeks (~16-18 months) of focused engineering across
+all four workstreams. Four distinct papers, four distinct validation regimes,
+four distinct publication venues. The shortlist that lands at the end is the
+first cognition-enhancement candidate set in the literature with:
 
-Two distinct papers, two distinct validation regimes, two distinct
-publication venues. The shortlist that lands at the end is the first
-cognition-enhancement candidate set in the literature with:
-- formal credible intervals on every compound's rank,
-- behavioural validation gate (Roberts 2020 SMD ceiling),
-- multi-head ensemble with disagreement-as-signal discovery axis,
-- mechanism + liability gating,
-- AND a per-compound provenance trail back to documented signal sources with known failure modes.
+- formal credible intervals on every compound's rank (V6.A + V6.B + V8),
+- behavioural validation gate (Roberts 2020 SMD ceiling, V6.B + V7),
+- multi-head ensemble with disagreement-as-signal discovery axis (V6.A.5),
+- three-axis JSD with I_novel novel-mechanism score (V8),
+- 8-cell disagreement classification surfacing (L, L, H) clemastine-class candidates,
+- mechanism + liability gating (V4 + V5),
+- predicted Hedges' g per compound × endpoint with PBPK-grounded receptor occupancy (V7),
+- AND a per-compound provenance trail back to documented signal sources with
+  known failure modes.
 
 That candidate set, not the next nootropic, is the contribution.
 
 ---
 
-## V6 scaffold inventory (already shipped)
+## V6 + V7 + V8 scaffold inventory
 
-Pre-V6 plumbing already in `src/mammal_repurposing/`:
+### Already shipped (V6.A + V6.B foundation)
 
-| Module | Lines | Purpose |
+| Module | Lines | Purpose | Status |
+|---|---|---|---|
+| `cluster_a/mmatt_dta_adapter.py` | ~200 | MMAtt-DTA adapter with 22-target superfamily map | LIVE (V6.A.1 activated) |
+| `cluster_a/psichic_adapter.py` | ~190 | PSICHIC subprocess adapter (Koh 2024 Nat Mach Intell) with `_find_psichic_repo` env probe | LIVE (V6.A.1 phase 2) |
+| `calibration/venn_abers.py` | ~200 | Venn-ABERS regressor + correlated_mc_intervals Gaussian-copula MC propagation | LIVE (V6.A.4) |
+| `diagnostics/per_head_bias.py` | ~180 | PC/SN/OOD/CT signature computation + trust matrix builder | LIVE |
+| `fusion/bayesian_router.py` | ~210 | Per-target router + OOD + confidence gates + identifiability diag | LIVE |
+| `cluster_d/bayesian_prior.py` | ~250 | Stage-0 stub + PyMC NUTS full Bayesian model (Neelon-Dunson) | SCAFFOLD; activates with real (AHBA, L2G, SC) observations |
+| `cluster_d/data_fetchers.py` | ~150 | AHBA / OT Genetics / cellxgene adapters with availability probes | LIVE for AHBA (`scripts/54_v6b_cluster_d_foundation.py` shipped); OT L2G pending |
+| `analysis/brain_region.py` | ~140 | Static 22-target brain-bias map (V5 fallback / V6 preview) | LIVE |
+
+**V6 LOC total**: ~1,520 lines of scaffold + tests across the V6 architectural footprint (was 1,130 in earlier snapshot; +PSICHIC adapter, +Venn-ABERS calibration).
+
+### Pending V6 phase 3 / V7 / V8 modules
+
+| Module (planned) | Purpose | When |
 |---|---|---|
-| `cluster_a/mmatt_dta_adapter.py` | ~200 | MMAtt-DTA adapter with 22-target superfamily map |
-| `diagnostics/per_head_bias.py` | ~180 | PC/SN/OOD/CT signature computation + trust matrix builder |
-| `fusion/bayesian_router.py` | ~210 | Per-target router + OOD + confidence gates + identifiability diag |
-| `cluster_d/bayesian_prior.py` | ~250 | Stage-0 stub + PyMC NUTS full Bayesian model (Neelon-Dunson) |
-| `cluster_d/data_fetchers.py` | ~150 | AHBA / OT Genetics / cellxgene adapters with availability probes |
-| `analysis/brain_region.py` | ~140 | Static 22-target brain-bias map (V5 fallback / V6 preview) |
+| `cluster_a/balm_adapter.py` | BALM fine-tuned ESM-2 + ChemBERTa-2 head (Gorantla 2025 JCIM 65(22):12279) | V6.A.1 phase 3 (this sprint) |
+| `cluster_c/txgnn.py` (rewrite) | TxGNN with public `predict_disease(idx)` API for cognition EFO anchors | V6 Cluster C activation (this sprint) |
+| `translation/pbpk.py` | JAX/diffrax 9-compartment PBPK ODE solver | V7.1 |
+| `translation/prisma_priors.py` | Schmidli 2014 robust MAP priors for 12 PRISMA classes | V7.2 |
+| `translation/effect_size_model.py` | PyMC 3-level hierarchical Bayes with Cluster D θ̄ multiplicative gate + 5 moderators | V7.3 |
+| `cluster_e/ingest_lincs.py` | LINCS L1000 cmapPy WTCS index builder | V8.1 |
+| `cluster_e/ingest_jumpcp.py` | JUMP-CP cpg0016 S3 sync + pycytominer normalization | V8.1 |
+| `cluster_e/chemcpa_train.py` | RDKit-pretrained chemCPA on LINCS + sci-Plex3 | V8.2 |
+| `cluster_e/mofa_embed.py` | MOFA+ K=30 joint embedding across 7 views | V8.3 |
+| `cluster_e/joint_phenotype.py` | V7+V8 joint posterior with Gaussian-copula correlation correction | V8.5 |
 
-**LOC total**: ~1,130 lines of scaffold + tests across the V6 architectural footprint.
+### Activation triggers
 
-When the heads + data sources arrive, the scaffold activates via:
-- Set `MMATT_DTA_ROOT` env var → MMAtt-DTA adapter active
-- `pip install pymc numpyro` → Cluster D Bayesian path active
-- `pip install abagen brainsmash` → AHBA real-mode active
+- Set `MMATT_DTA_ROOT` env var → MMAtt-DTA adapter active *(SHIPPED)*
+- Set `PSICHIC_ROOT` env var + matching conda env → PSICHIC adapter active *(SHIPPED)*
+- `pip install pymc numpyro` → Cluster D Bayesian path active *(SHIPPED)*
+- `pip install abagen brainsmash` → AHBA real-mode active *(SHIPPED via scripts/54)*
 - Set `CRYPTOBENCH_HOME` / `POCKETMINER_HOME` → detector ensemble Sprint 2 active
+- Set `BALM_WEIGHTS_DIR` → BALM adapter active *(pending V6.A.1 phase 3)*
+- `pip install jax diffrax` → V7 PBPK active *(pending V7.1)*
+- `pip install mofapy2 cmappy pycytominer` → V8 ingestion active *(pending V8.1)*
 
 ---
 
 ## How this doc was written
 
-V6 plan synthesized from:
-- `research/4-tier/Multi Head DTI.md` (~60 KB) — pre-committed Multi Head DTI spec
-- `research/4-tier/Multi-Source Neurobiological Prior for Cognition Target Prioritization.md` (~39 KB) — pre-committed Cluster D Bayesian model
-- V4 plan §13 V5/V6 Path Forward (already integrated)
-- This sprint's V6 scaffolding work (commits 458881c + 4efcbea + the Tier-3b push)
+V6/V7/V8 plan synthesized from:
+- `research/4-tier/Multi Head DTI.md` (~60 KB) — V6.A spec
+- `research/4-tier/Multi-Source Neurobiological Prior for Cognition Target Prioritization.md` (~39 KB) — V6.B Cluster D Bayesian model
+- `research/4-tier/Clinical Effect-Size Translation Function.md` (~32 KB) — V7 PBPK + hierarchical Bayes spec
+- `research/4-tier/Clinical Effect-Size Translation Function A Methodology Pre-Registration for Bayesian Cognition-Enhancement Drug Repurposing.md` (~18 KB) — V7 companion: OSF pre-registration + P1–P8 falsifiers
+- `research/4-tier/Perturbational Evidence Axis.md` (~50 KB) — V8 Cluster E LINCS + JUMP-CP + iPSC + chemCPA + MOFA+ + conditionally-dependent hierarchical Bayes
+- `research/4-tier/Technical Feasibility Deep-Dive Adding a Phenotypic.md` (~24 KB) — V8 feasibility companion: I_novel score + 8-cell disagreement table + Mondrian conformal
+- V4 plan §13 V5/V6 Path Forward + §13.Y V7 + §13.Z V8 + §13.W three-factor joint posterior (already integrated)
+- This sprint's V6.A.1 + V6.A.4 + V6.B.1 + V7/V8 architecture-planning work
 
-When V6 work begins, the next assistant should:
-1. Re-read both research deep-dives in full
+When V7/V8 work begins, the next assistant should:
+1. Re-read all 6 research deep-dives in full
 2. Activate the scaffolds via the env var / install instructions above
-3. Run V6.A.1 (MMAtt-DTA) FIRST — it's the smallest-effort, highest-leverage step
-4. Use this doc's phase tables as the project plan
-5. Maintain `reports/hypothesis_audit_v1.md` as the standing falsifiability check
+3. Finish V6.A (BALM adapter) + V6.B (OT Genetics + PyMC NUTS) FIRST — they
+   are the prerequisites for V7 (which consumes both posteriors)
+4. Run V7.1 PBPK foundation NEXT — it's the highest-leverage testable
+   first slice of V7 (PET-anchored receptor occupancy is well-validated
+   territory)
+5. Run V8.1 LINCS+JUMP-CP ingestion in parallel with V7.1 — they share no
+   dependencies and use disjoint compute resources
+6. Maintain `reports/hypothesis_audit_v1.md` as the standing falsifiability check
+7. Honor OSF pre-registration timing for V7.5 + V8.4 — they must lock
+   priors and validation thresholds BEFORE unblinding the held-out anchor
+   sets
 
-Generated 2026-05-26 alongside the V6 scaffold commit.
+Generated 2026-05-26 (V6 scaffold commit), extended 2026-05-27 (V7 + V8
+architecture planning sprint).
