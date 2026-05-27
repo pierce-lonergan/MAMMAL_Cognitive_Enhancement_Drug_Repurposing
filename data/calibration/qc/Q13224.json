@@ -1,0 +1,16 @@
+{
+  "target_uniprot": "Q13224",
+  "target_gene": "GRIN2B",
+  "calibrator_tier": "C",
+  "calibrator_n_reported": 13,
+  "reported_post_cal_rho": -0.1715090836632338,
+  "audit_release": "36",
+  "audit_n": 9,
+  "audit_post_cal_rho": -0.05410897700310648,
+  "audit_p_value": 0.8900386838825483,
+  "delta_rho": 0.11740010666012732,
+  "n_out_of_calibration_range": 0,
+  "calibrator_raw_min": 6.328453540802002,
+  "calibrator_raw_max": 6.439767837524414,
+  "status": "REFIT_NEEDED"
+}

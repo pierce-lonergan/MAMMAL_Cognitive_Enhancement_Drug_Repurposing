@@ -1,0 +1,8 @@
+{
+  "target_uniprot": "O60741",
+  "target_gene": "HCN1",
+  "audit_release": "36",
+  "audit_n": 0,
+  "status": "NO_TRUTH",
+  "note": "No ChEMBL pchembl \u2265 8 actives at this target"
+}

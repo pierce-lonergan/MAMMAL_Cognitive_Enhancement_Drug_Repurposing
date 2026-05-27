@@ -1,0 +1,16 @@
+{
+  "target_uniprot": "P36544",
+  "target_gene": "CHRNA7",
+  "calibrator_tier": "C",
+  "calibrator_n_reported": 9,
+  "reported_post_cal_rho": -0.6166666666666666,
+  "audit_release": "36",
+  "audit_n": 8,
+  "audit_post_cal_rho": -0.05498573992282151,
+  "audit_p_value": 0.8971093561867952,
+  "delta_rho": 0.5616809267438451,
+  "n_out_of_calibration_range": 0,
+  "calibrator_raw_min": 6.603344440460205,
+  "calibrator_raw_max": 6.637399673461914,
+  "status": "REFIT_NEEDED"
+}

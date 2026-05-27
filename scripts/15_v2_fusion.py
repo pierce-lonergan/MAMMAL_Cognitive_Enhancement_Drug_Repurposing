@@ -89,17 +89,68 @@ def main() -> int:
                              "reports/tanimoto_baseline_v1.md.")
     parser.add_argument("--tanimoto-active-pchembl", type=float, default=8.0,
                         help="ChEMBL pchembl threshold for 'active' (default 8.0).")
+    parser.add_argument("--calibrated-mammal", action="store_true",
+                        help="Use the isotonic-calibrated DTI grid "
+                             "(data/results/dti_scores_calibrated.parquet) instead of "
+                             "raw predicted_pkd. Closes V4 §4.4 (calibrated grid not "
+                             "flowing through fusion).")
+    parser.add_argument("--calibrated-mammal-path", type=Path,
+                        default=RESULTS_DIR / "dti_scores_calibrated.parquet",
+                        help="Override path to the calibrated MAMMAL parquet.")
+    parser.add_argument("--znorm-mammal", action="store_true",
+                        help="Per-target Z-normalise MAMMAL scores (raw or calibrated) "
+                             "BEFORE RRF. Repairs the V4 §4.8 cross-target scale "
+                             "heterogeneity that lets high-scale targets (PDE9A, "
+                             "SLC6A2) dominate the panel-wide RRF.")
+    parser.add_argument("--add-moa-ranker", action="store_true",
+                        help="Add a §8.7 mechanism-of-action preference ranker as a "
+                             "5th cluster (cluster_b_moa). Scores each (compound, "
+                             "target) by how well the compound's ChEMBL MoA "
+                             "annotation matches the preferred-MoA-for-cognition.")
     args = parser.parse_args()
 
     ensure_dirs()
     V2_DIR.mkdir(parents=True, exist_ok=True)
 
     # --- Load inputs --------------------------------------------------------
-    mammal = pd.read_parquet(args.mammal)
+    if args.calibrated_mammal:
+        if not args.calibrated_mammal_path.exists():
+            logger.error("--calibrated-mammal set but %s missing. Run "
+                         "scripts/33_v3_apply_calibration.py first.",
+                         args.calibrated_mammal_path)
+            return 1
+        mammal = pd.read_parquet(args.calibrated_mammal_path)
+        # The downstream code reads 'predicted_pkd' as the MAMMAL score column;
+        # rename calibrated_pkd → predicted_pkd so the rest of the pipeline is
+        # transparent. Preserve raw via raw_predicted_pkd for traceability.
+        mammal = mammal.rename(columns={"predicted_pkd": "raw_predicted_pkd",
+                                        "calibrated_pkd": "predicted_pkd"})
+        logger.info("Calibrated MAMMAL loaded (V4 §4.4 wired): %d pairs from %s",
+                    len(mammal), args.calibrated_mammal_path)
+    else:
+        mammal = pd.read_parquet(args.mammal)
     compounds = pd.read_parquet(args.compounds)
     gates = pd.read_parquet(args.admet_gates)
     logger.info("Loaded: %d MAMMAL pairs, %d compounds, %d gated compounds.",
                 len(mammal), len(compounds), len(gates))
+
+    # --- §4.8 Z-norm within target -----------------------------------------
+    # Repairs scale heterogeneity (e.g. PDE9A's calibrated mean 10.4 vs
+    # SLC6A3's 6.6). Vectorised, NaN-safe — see gates/liability_panel.py for
+    # the §8.0b-zn variant of this fix.
+    if args.znorm_mammal:
+        grp = mammal.groupby("target_uniprot")["predicted_pkd"]
+        mu = grp.transform("mean")
+        sigma = grp.transform("std")
+        z = (mammal["predicted_pkd"] - mu) / sigma
+        z = z.where(sigma.notna() & (sigma != 0), 0.0)
+        # Map z-score into a pseudo-pKd centred at 6.5 with SD 1.25 so the RRF
+        # input scale is comparable across runs. Clip to plausible pKd range to
+        # absorb isotonic out-of-range artifacts (V4 §4.9).
+        mammal["raw_predicted_pkd_prez"] = mammal["predicted_pkd"]
+        mammal["predicted_pkd"] = (6.5 + 1.25 * z).clip(lower=2.0, upper=11.0)
+        logger.info("MAMMAL Z-normalised within target (V4 §4.8 wired); std now "
+                    "uniform across targets.")
 
     # --- Apply v1's compound-exclusion filter (peptides etc.) --------------
     mammal = filter_scores_grid(mammal, compounds)
@@ -244,6 +295,56 @@ def main() -> int:
         tani_long = tani_long.dropna(subset=["predicted_pkd"])
         logger.info("Tanimoto ranker: %d (target, compound) scores.", len(tani_long))
         additional_long.append(tani_long)
+
+    # --- §8.7 Mechanism-of-action preference ranker ------------------------
+    if args.add_moa_ranker:
+        from mammal_repurposing.cluster_b.moa_ranker import (  # noqa: PLC0415
+            MoaRankerConfig, build_moa_ranker_long,
+        )
+        from mammal_repurposing.fetchers.chembl_sqlite import (  # noqa: PLC0415
+            chembl_moa_for_target,
+        )
+
+        # gene-by-uniprot map needed to look up the preferred MoA table.
+        # Use compounds parquet to get the (target_uniprot, target_gene) mapping
+        # from MAMMAL's grid.
+        if "target_gene" in mammal.columns:
+            uni_to_gene = dict(
+                zip(mammal["target_uniprot"], mammal["target_gene"])
+            )
+        else:
+            uni_to_gene = {}
+
+        # Compound table with inchikey if available; recompute from SMILES otherwise.
+        lib_unique = (mammal[["compound_name", "compound_smiles"]]
+                      .drop_duplicates(subset=["compound_name"])
+                      .copy())
+        # Best-effort inchikey lookup via RDKit (matches ChEMBL inchikey index)
+        from rdkit import Chem  # noqa: PLC0415
+        from rdkit import RDLogger  # noqa: PLC0415
+        RDLogger.DisableLog("rdApp.*")
+
+        def _smi_to_inchi(smi: str) -> str:
+            try:
+                mol = Chem.MolFromSmiles(smi)
+                return Chem.MolToInchiKey(mol) if mol else ""
+            except Exception:
+                return ""
+
+        lib_unique["inchikey"] = lib_unique["compound_smiles"].apply(_smi_to_inchi)
+        logger.info("MoA ranker: computed %d inchikeys for %d compounds.",
+                    int((lib_unique['inchikey'] != '').sum()), len(lib_unique))
+
+        moa_long = build_moa_ranker_long(
+            library_df=lib_unique,
+            target_uniprots=list(targets),
+            gene_by_uniprot=uni_to_gene,
+            chembl_moa_loader=chembl_moa_for_target,
+            config=MoaRankerConfig(),
+            ranker_name="cluster_b_moa",
+        )
+        logger.info("MoA ranker: %d (target, compound) scores.", len(moa_long))
+        additional_long.append(moa_long)
 
     long_scores = pd.concat([mammal_long, admet_long, *additional_long], ignore_index=True)
     logger.info("Fusion input: %d rows across %d rankers: %s",

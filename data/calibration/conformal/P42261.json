@@ -1,0 +1,14 @@
+{
+  "target_uniprot": "P42261",
+  "gene": "GRIA1",
+  "n": 12,
+  "n_train": 7,
+  "n_cal": 5,
+  "alpha": 0.2,
+  "q_alpha": 1.4725,
+  "empirical_coverage_cal": 1.0,
+  "held_out_coverage": 1.0,
+  "raw_min": 6.096,
+  "raw_max": 6.251,
+  "status": "OK"
+}

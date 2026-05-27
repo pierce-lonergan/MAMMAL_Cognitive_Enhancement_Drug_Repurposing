@@ -134,6 +134,10 @@ def apply_and_render(
     out_gates: Path,
     out_combined: Path,
     out_report: Path,
+    znorm: bool = False,
+    z_cut_tier1: float = 2.0,
+    z_flag_tier2: float = 1.5,
+    z_flag_tier3: float = 1.0,
 ) -> None:
     """Stage 3 — apply gates + render markdown audit."""
     panel = load_panel(seed_csv)
@@ -166,7 +170,13 @@ def apply_and_render(
             target_gene=liability_dti["target_uniprot"].map(uni_to_gene),
         )
 
-    gates = apply_liability_gates(liability_dti, panel)
+    gates = apply_liability_gates(
+        liability_dti, panel,
+        znorm=znorm,
+        z_cut_tier1=z_cut_tier1,
+        z_flag_tier2=z_flag_tier2,
+        z_flag_tier3=z_flag_tier3,
+    )
     out_gates.parent.mkdir(parents=True, exist_ok=True)
     gates.to_parquet(out_gates, index=False)
     logger.info("Wrote %s (%d rows).", out_gates, len(gates))
@@ -280,6 +290,15 @@ def main() -> int:
                         help="Skip stages 1-2; assume parquets exist.")
     parser.add_argument("--enrich-only", action="store_true",
                         help="Stage 1 only — fetch UniProt sequences, no DTI / gating.")
+    parser.add_argument("--znorm", action="store_true",
+                        help="Apply per-target Z-norm to liability_dti before "
+                             "gating (the §8.0b-zn fix for MAMMAL prior collapse).")
+    parser.add_argument("--z-cut-tier1", type=float, default=2.0,
+                        help="Z-score threshold for Tier 1 CUT verdict (default 2.0σ).")
+    parser.add_argument("--z-flag-tier2", type=float, default=1.5,
+                        help="Z-score threshold for Tier 2 FLAG verdict (default 1.5σ).")
+    parser.add_argument("--z-flag-tier3", type=float, default=1.0,
+                        help="Z-score threshold for Tier 3 informational hit (default 1.0σ).")
     args = parser.parse_args()
 
     ensure_dirs()
@@ -314,6 +333,10 @@ def main() -> int:
     apply_and_render(
         args.dti_out, args.seed, args.compounds, args.admet_gates,
         args.gates_out, args.combined_out, args.report_out,
+        znorm=args.znorm,
+        z_cut_tier1=args.z_cut_tier1,
+        z_flag_tier2=args.z_flag_tier2,
+        z_flag_tier3=args.z_flag_tier3,
     )
     return 0
 

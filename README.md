@@ -150,7 +150,7 @@ See also: [`design/V3_ATTACK_PLAN.md`](design/V3_ATTACK_PLAN.md) and the sprint 
 
 | Question | File |
 |---|---|
-| What does this pipeline DO and NOT do? | [`reports/methodology_v1.md`](reports/methodology_v1.md) (with v4 update banners) |
+| What does this pipeline DO and NOT do? | [`reports/methodology_v2.md`](reports/methodology_v2.md) — V4+V5 coherent narrative (supersedes v1) |
 | **What's the v4 state + forward plan?** | [`design/V4_STATUS_AND_FORWARD_PLAN.md`](design/V4_STATUS_AND_FORWARD_PLAN.md) |
 | What was the v3 state (historical)? | [`design/V3_STATUS_AND_FORWARD_PLAN.md`](design/V3_STATUS_AND_FORWARD_PLAN.md) |
 | What's the (v2) architecture skeleton? | [`design/V2_HYBRID_ARCHITECTURE.md`](design/V2_HYBRID_ARCHITECTURE.md) |
@@ -165,11 +165,24 @@ See also: [`design/V3_ATTACK_PLAN.md`](design/V3_ATTACK_PLAN.md) and the sprint 
 | §7.11 isotonic per-target calibration (V4) | [`reports/calibration_comparison_v1.md`](reports/calibration_comparison_v1.md) |
 | §7.5 pocket-conditioned MVP (13/13 gates) | [`reports/pocket_database_v1.md`](reports/pocket_database_v1.md) |
 | §8.1 multi-class faceted shortlist (V4 deliverable) | [`reports/wet_lab_shortlist_v4_faceted.md`](reports/wet_lab_shortlist_v4_faceted.md) |
+| **§8.0b-zn liability audit (V5 transition)** | [`reports/liability_audit_v1.md`](reports/liability_audit_v1.md) (z-norm), [`reports/liability_audit_v1_absolute.md`](reports/liability_audit_v1_absolute.md) (calibration-failure evidence) |
+| **§8.15 Tanimoto-vs-MAMMAL disagreement signal (V5 transition)** | [`reports/disagreement_signal_v1.md`](reports/disagreement_signal_v1.md) |
+| **THE V5 production wet-lab handoff** | [`reports/wet_lab_shortlist_v6_full.md`](reports/wet_lab_shortlist_v6_full.md) — calibrated MAMMAL + Z-norm + §8.0b-zn + faceted; 43 PASS / 60 FLAG / 195 CUT |
+| **§8.10 nootropic-similarity annotation** (V5+ sprint) | [`reports/nootropic_similarity_v1.md`](reports/nootropic_similarity_v1.md) |
+| **§8.13 pocket-conditioned liability composition** (V5+ sprint) | [`reports/liability_pocket_aware_v1.md`](reports/liability_pocket_aware_v1.md) |
+| **§8.3 ClinicalTrials.gov IP-status cross-reference** (V5+ sprint) | [`reports/clinical_trials_v1.md`](reports/clinical_trials_v1.md) |
+| **§8.16 calibrator round-trip QC** (V5+ sprint) | [`reports/calibrator_qc_v1.md`](reports/calibrator_qc_v1.md) |
+| **§7.4 v2 selectivity 4-metrics (Gini + S10× + Entropy + PI)** | [`reports/selectivity_v6_tanimoto_4metrics.md`](reports/selectivity_v6_tanimoto_4metrics.md) |
+| **§14 Hypothesis Validation Ledger** (Tier-3 sprint) — falsifiable claim audit | [`reports/hypothesis_audit_v1.md`](reports/hypothesis_audit_v1.md) |
+| **§8.0a Pareto NSGA-III 5-axis shortlist** (Tier-3 sprint) | [`reports/pareto_ranking_v1.md`](reports/pareto_ranking_v1.md) |
+| **§7.12 Conformal prediction per-target** (Tier-3 sprint) | [`reports/conformal_calibration_v1.md`](reports/conformal_calibration_v1.md) |
+| **§7.13 Scaffold-aware AL re-ranking** (Tier-3 sprint) | [`reports/scaffold_aware_v1.md`](reports/scaffold_aware_v1.md) |
+| **§8.6 Brain-region annotation** (Tier-3 sprint, V6 Cluster D preview) | [`reports/brain_region_v1.md`](reports/brain_region_v1.md) |
 | What did calibration change in the rankings? | [`reports/fusion_calibration_diff.md`](reports/fusion_calibration_diff.md), [`reports/fusion_tanimoto_addition_diff.md`](reports/fusion_tanimoto_addition_diff.md) |
 | Phase A.5 SQLite agreement gate | [`reports/sqlite_vs_rest_smoke.md`](reports/sqlite_vs_rest_smoke.md) |
 | Original research deep-dive | [`research/compass_artifact_wf-*.md`](research/) |
 | Hybrid architecture research | [`research/Hybrid Architecture for MAMMAL-Based...md`](research/) |
-| Deep-research on tier-4 issues (5 V3+ docs) | [`research/4-tier/`](research/4-tier/) |
+| Deep-research on tier-4 issues (7 V3+/V5+ docs) | [`research/4-tier/`](research/4-tier/) — includes `Multi Head DTI.md` (V5 priority) and `Multi-Source Neurobiological Prior...md` (V6 priority); 5 shipped docs are in `archived/` |
 
 ## Project layout
 

@@ -1,0 +1,16 @@
+{
+  "target_uniprot": "P21728",
+  "target_gene": "DRD1",
+  "calibrator_tier": "C",
+  "calibrator_n_reported": 17,
+  "reported_post_cal_rho": 0.0049140197466545,
+  "audit_release": "36",
+  "audit_n": 9,
+  "audit_post_cal_rho": -0.13927150363278892,
+  "audit_p_value": 0.7208245032633205,
+  "delta_rho": -0.14418552337944343,
+  "n_out_of_calibration_range": 0,
+  "calibrator_raw_min": 6.386830806732178,
+  "calibrator_raw_max": 6.614522933959961,
+  "status": "REFIT_NEEDED"
+}

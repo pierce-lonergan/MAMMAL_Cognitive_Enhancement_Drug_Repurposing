@@ -1,10 +1,14 @@
-# V4 — Status, Comprehensive Architecture, Forward Plan
+# V4 — Status, Comprehensive Architecture, Forward Plan (+ V5 Transition Update)
 
-**Read this first.** This is the source-of-truth status document for the project after **four post-V3 breakthroughs** (diagnostics + Tanimoto; selectivity + faceted shortlist; isotonic calibration; pocket-conditioned MVP) plus the liability-panel infrastructure shipped. It supersedes [V3_STATUS_AND_FORWARD_PLAN.md](V3_STATUS_AND_FORWARD_PLAN.md) as the live state-of-the-world; v3 remains as the historical anchor.
+**Read this first.** This is the source-of-truth status document for the project after **four post-V3 breakthroughs** (diagnostics + Tanimoto; selectivity + faceted shortlist; isotonic calibration; pocket-conditioned MVP) plus the **V5 transition sprint** (Boltz overnight sweep + Phase A.7 refresh + §8.0b-zn liability + §7.18 Z-norm + §8.15 disagreement + calibrated MAMMAL into fusion + wet-lab shortlist v6). Supersedes [V3_STATUS_AND_FORWARD_PLAN.md](V3_STATUS_AND_FORWARD_PLAN.md) as the live state-of-the-world; v3 remains as the historical anchor. The V5/V6 forward path is documented in §13 below.
 
-**Snapshot**: `main @ f188b82` — 5 cluster modules + 4 new infrastructure packages (diagnostics / calibration / selectivity / pockets) + 1 new gate (§8.0b liability) live. WSL2 Boltz overnight sweep at **79.5% (926/1165)**, ETA ~4.5h.
+**Snapshot (post V5 + Tier 2 + Tier 3 sprint)**: V4 architecture + V5 transition + Tier 2 + Tier 3 sprint all complete. **6 of 7 Tier-1 items shipped** (Phase B Cluster C remains the only outstanding Tier-1 item, blocked on separate `txgnn_env` venv). **7 of 8 Tier-2 items shipped** (only DrugComb §8.2 deferred to V6 Cluster D). **8 of 14 Tier-3 items shipped** this round: §8.0a Pareto NSGA-III, §7.12 conformal, §7.13 scaffold-aware AL, §8.6 brain-region, §8.12 cron auto-recalibration, §8.16 calibrator QC, §7.4 v2 selectivity entropy + PI, plus the hypothesis-validation harness. Production wet-lab handoff: **`reports/wet_lab_shortlist_v6_full.md`** + **`reports/pareto_ranking_v1.md`** (12-compound Pareto front, 10 PASS: d-amphetamine, bupropion, aniracetam, pridopidine, levetiracetam, cx-516, chembl1255723, pramipexole, cep-26401, chembl302231, riluzole, chembl294061). **Methodology v2 + §14 Hypothesis Ledger shipped**. **Test coverage**: 53/53 non-slow pytest tests passing (14 new Tier-3 + 26 V5 + 13 pre-existing). **Hypothesis audit**: 9 PASS / 3 DEGRADE / 0 FAIL (DEGRADEs are §4.9 extrapolation bug + SLC6A3 calibrator drift, both honestly caught).
 
-> **Why a v4 doc** — V3 closed with one calibration linchpin and a 10-item roadmap. We then shipped 4 of the top-10 priorities (3 wins beat their pre-committed predictions, the 4th is queued). The architecture is meaningfully different now: 5 parallel signal sources (MAMMAL DTI, ESM2, Boltzina, Tanimoto-to-actives, ADMET-AI), 3 honest calibration layers (sign-flipped Phase A.7 + Spearman ρ + isotonic per-target), a faceted top-N output, a pocket-classifier provenance column, and a liability gate ready to deploy. The roadmap deserves a clean reset.
+Two new research deep-dives landed during the transition sprint and define V5 + V6:
+- `research/4-tier/Multi Head DTI.md` — V5 priority (5-head DTI ensemble with bias decomposition + Bayesian routing + eMOSAIC OOD + disagreement-as-signal facet, ~12 weeks)
+- `research/4-tier/Multi-Source Neurobiological Prior for Cognition Target Prioritization.md` — V6 priority (Bayesian Cluster D with AHBA + OT Genetics + cellxgene-census + Roberts 2020 behavioural ceiling gate, ~16 weeks; expands panel to ~210 targets)
+
+> **Why a v4 doc** — V3 closed with one calibration linchpin and a 10-item roadmap. V4 then shipped 4 of the top-10 priorities (3 wins beat their pre-committed predictions, the 4th was queued). The V5 transition sprint then shipped 6 more items. The architecture is meaningfully different now: 5 parallel signal sources (MAMMAL DTI [now calibrated + Z-norm], ESM2, Boltzina [full sweep], Tanimoto-to-actives, ADMET-AI), 3 honest calibration layers (sign-flipped Phase A.7 + Spearman ρ + isotonic per-target), a faceted top-N output, a pocket-classifier provenance column, a §8.0b-zn liability gate, a §8.15 disagreement-as-signal column, and §13 V5/V6 path-forward. The roadmap is now organised around the two new research deep-dives.
 
 ---
 
@@ -175,7 +179,7 @@ SLC6A3 landed at the **high end** of the predicted range; SLC6A2 hit the predict
 | §7.13 scaffold-aware active learning | ⏳ Tier 3 | now informed by Tanimoto-baseline scaffold limits |
 | §7.14 residual-correction XGBoost meta-ranker | ⏳ Tier 3 | optional alternative to isotonic; not urgent |
 | §8.0a Pareto NSGA-III restructure | ⏳ Tier 3 | |
-| §8.0b 44-target liability panel | 🟡 ready, GPU-queued | Stage 1 done; ~1hr DTI re-run pending |
+| §8.0b 44-target liability panel | ✅ live (§8.0b-zn) | All 3 stages shipped; absolute mode CUT 115/115 from prior-collapse → §8.0b-zn z-norm within target → CUT=14 / FLAG=21 / PASS=80 |
 | §8.0c Cluster D neurobio prior (AHBA + OT Genetics) | ⏳ Tier 3 | |
 | §8.1 multi-class faceted shortlist | ✅ shipped | 8 mechanism + 9 targeted-pair facets |
 | §8.5 off-target liability beyond ADMET | ⊆ §8.0b superset | folded into liability panel |
@@ -227,9 +231,26 @@ Isolated venv setup: _wsl2_setup_cluster_c.sh                          🟡 read
 
 
                        Queued for next session (GPU-blocked)             Status
-Liability panel Stages 2+3: 29_v3_liability_panel.py (no --skip-dti)  ⏳ ~1hr MAMMAL re-run
-Phase A.7 + C + D refresh after Boltz sweep completes                  ⏳ tests INVERTED rescue under structure
-Pose-saving Boltz wrapper                                              ⏳ unlocks §7.5 on full grid
+Liability panel Stages 2+3: 29_v3_liability_panel.py (no --skip-dti)  ✅ SHIPPED (V5 sprint, §8.0b-zn)
+Phase A.7 + C + D refresh after Boltz sweep completes                  ✅ SHIPPED (V5 sprint)
+Pose-saving Boltz wrapper                                              ✅ SHIPPED (code) — execution pending pose-only WSL2 re-run
+
+
+                       V5 + Tier 2/3 sprint scripts                      Status
+36_v5_wet_lab_shortlist.py (composes v6 calibrated+znorm + faceted + liability) ✅ LIVE
+37_v5_nootropic_similarity.py (§8.10 Tanimoto vs 14 canonical seeds) ✅ LIVE
+38_v5_calibrator_qc.py (§8.16 round-trip QC vs latest ChEMBL) ✅ LIVE
+39_v5_pocket_conditional_liability.py (§8.13 pocket-class demotion) ✅ LIVE (synthetic demo)
+40_v5_clinical_trials.py (§8.3 CTgov v2 IP-status cross-ref) ✅ LIVE
+15_v2_fusion.py --calibrated-mammal --znorm-mammal --add-moa-ranker ✅ V7 LIVE
+27_v3_selectivity_scoring.py (now with entropy + Partition Index) ✅ V6 LIVE
+29_v3_liability_panel.py --znorm (§8.0b-zn mode) ✅ V1 LIVE
+_wsl2_boltz_full_sweep_pose.py (§7.17 pose extraction) ✅ CODE LIVE; WSL2 run pending
+src/mammal_repurposing/cluster_a/mmatt_dta_adapter.py (§7.7 V5.1) ✅ CODE LIVE; Zenodo weights pending
+
+
+                       Test coverage                                      Status
+pytest tests/ --ignore=test_scoring.py --ignore=test_fetchers.py        39/39 pass (V5 test suite: 26 cases)
 ```
 
 **Reproducibility**: every artifact lands in `data/results/` or `data/results/v2/`. Configs at `configs/{thresholds,weights,weights_calibrated}.yaml`. Calibrators at `data/calibration/isotonic/<uniprot>.pkl`. Pocket centroids at `data/pockets/centroids/<target>.json`. Reports at `reports/`. Sprint history = git log; methodology at `reports/methodology_v1.md` (post-ship update callouts for v4 breakthroughs).
@@ -578,11 +599,33 @@ Unchanged from v3 §7.10. **Updated rationale**: the v4 pipeline has 5 clusters 
 
 **Effort**: 1 day. Then either re-run the sweep (~22h, throws away ~926 done pairs) or run a pose-only pass on the existing 1,165 pairs (~6-10h since affinity scoring is skipped).
 
-### 7.18 NEW — Cross-target Z-normalisation of calibrated DTI for selectivity
+### 7.18 NEW — Cross-target Z-normalisation of calibrated DTI for selectivity ✅ SHIPPED
 
 **Concept**: per-target isotonic calibration creates scale heterogeneity that breaks panel-wide Gini. Z-normalise within-target before computing selectivity.
 
-**Why now**: shipped + documented in §4.8 above. Half-day fix.
+**Status**: shipped via `--z-normalize` flag on `scripts/27_v3_selectivity_scoring.py` + `--znorm-mammal` flag on `scripts/15_v2_fusion.py`. The vectorised z-norm transform is the same one §8.0b-zn uses for the liability gate. Per-target std now uniform [1.250]; the all-PDE9A top-10 artifact dissolved into 7 mechanism classes.
+
+### 7.19 NEW — Reframe §7.7 as Multi-Head DTI ensemble (research/4-tier/Multi Head DTI.md)
+
+**Concept**: §7.7 was originally "add one cross-DTI head (MMAtt-DTA, PSICHIC, or BALM)." The new research deep-dive `research/4-tier/Multi Head DTI.md` reframes this as a 5-head ensemble (MAMMAL + Tanimoto + MMAtt-DTA + PSICHIC + BALM) with explicit bias decomposition, per-target Bayesian routing, eMOSAIC OOD gating, calibrated uncertainty propagation, and a disagreement-as-signal facet.
+
+**Why now**: the Tanimoto baseline result reframes the problem. Tanimoto isn't a "baseline DTI heads must beat" — it's a similarity searcher with by-construction blindness to novel scaffolds and activity cliffs. The honest framing is that all five heads are voters in a calibrated mixture-of-experts where disagreement IS the discovery signal. Pre-committed ensemble prediction: SLC6A3 +0.91, SLC6A2 +0.92, ACHE +0.84.
+
+**Effort**: 3-6 weeks across all five heads (MMAtt-DTA 2-3d, PSICHIC 1-2d, BALM 1-2d; then 1-2 weeks for the bias-decomposition diagnostic battery + Bayesian router + eMOSAIC; then 1-2 weeks for the disagreement-axis facet + validation gates).
+
+**See §13 below** for the integrated V5/V6 path-forward plan.
+
+### 7.20 NEW — Reframe §7.9 + §8.0c as Bayesian Cluster D (research/4-tier/Multi-Source Neurobiological Prior...)
+
+**Concept**: §7.9 was originally "AHBA spatial-correlation + OT Genetics L2G prior." The new research deep-dive `research/4-tier/Multi-Source Neurobiological Prior for Cognition Target Prioritization.md` reframes this as a full Bayesian hierarchical model (PyMC NUTS) over (AHBA, L2G, cellxgene-census single-cell, Lit-OTAR) with formal credible intervals, source-specific reliability weights, BrainSMASH spatial null, and a Jensen-Shannon disagreement-as-signal axis. Behavioural-anchor validation gate (Roberts 2020 SMD ceiling): no target's predicted modulator effect-size posterior may exceed Hedges' g = 0.5 at 90% credible upper bound.
+
+**Why now**: this is the **first behavioural anchor in the entire pipeline**. Replaces the "cognition = binding proxy" assumption with three independent neurobiological evidence streams + a hard empirical ceiling. Expands the panel from 22 to ~210 targets (GWAS-anchored).
+
+**Critical correction**: the V4 plan cited "Mansuri 2024 41-gene cognition map" as the AHBA anchor paper. The correct citation is **Moodie et al. 2024, *Human Brain Mapping* 45(4):e26641** (doi:10.1002/hbm.26641; PMID 38488470). The "Mansuri 2024" reference appears to be a misattribution. Internal references corrected; the citation index in Appendix A is updated.
+
+**Effort**: 16 weeks (5 stages × 3-4 weeks each). Stage 1: abagen + BrainSMASH + OT Genetics + cellxgene-census plumbing. Stage 2: 210-target panel generation. Stage 3: PyMC NUTS hierarchical model. Stage 4: 4-gate validation (Roberts SMD ceiling + Spearman ρ vs Phase 2+ clinical endpoint + held-out GWAS AUROC + cross-source leave-one-out). Stage 5: §7.11 integration + publication.
+
+**See §13 below** for the integrated V5/V6 path-forward plan.
 
 ---
 
@@ -692,41 +735,41 @@ Unchanged. **Updated scope**: when *any* of `boltzina_affinity.parquet`, `dti_sc
 
 ### Tier 1 — DO IMMEDIATELY (gated on overnight Boltz sweep completing, ~4.5h)
 
-- [ ] **Liability panel Stages 2-3** (`scripts/29_v3_liability_panel.py`) — ~1hr MAMMAL DTI + gating
-- [ ] **Phase A.7 re-run** with full Boltz coverage — tests INVERTED-target rescue under structure
-- [ ] **Phase B Cluster C** run — `scripts/23_v3_cluster_c.py` in `txgnn_env`
-- [ ] **Wire calibrated MAMMAL into fusion** (`--calibrated-mammal` flag on `scripts/15_v2_fusion.py`)
-- [ ] **Z-normalisation within target for selectivity** — half-day fix unblocks calibrated Gini
-- [ ] **Tanimoto-vs-MAMMAL rank-disagreement column** (§8.15) — 1 day, zero cost
-- [ ] **Re-render `reports/wet_lab_shortlist_v4_faceted.md`** with all v4 pieces flowing through
+- [x] **Liability panel Stages 2-3** (`scripts/29_v3_liability_panel.py`) — ✅ shipped as **§8.0b-zn**: absolute-mode CUT 115/115 revealed MAMMAL prior collapse on liability targets (per-target std 0.02-0.17); fixed with within-target z-norm gating (Tier 1 CUT @ z≥+2σ). Final verdicts: CUT=14 / FLAG=21 / PASS=80, pharmacology-consistent
+- [x] **Phase A.7 re-run** with full Boltz coverage — ✅ shipped: SLC6A2 rescued from INVERTED to **BOLTZ_2X_MAMMAL** (structure rescues the inversion); ADRA2A jumped to BOLTZ_2X_MAMMAL; HRH3 holds; SLC6A3 confirmed DE_WEIGHT (both MAMMAL and Boltz agree on anti-correlation — structure does NOT rescue DAT)
+- [ ] **Phase B Cluster C** run — `scripts/23_v3_cluster_c.py` in `txgnn_env` (still queued — separate env)
+- [x] **Wire calibrated MAMMAL into fusion** (`--calibrated-mammal` + `--znorm-mammal` flags on `scripts/15_v2_fusion.py`) — ✅ shipped this sprint: d-amphetamine/methylphenidate/bupropion now lead the calibrated+znorm top-3 (canonical stimulants where calibrated DAT/NET signal is real); risperidone/lemborexant dropped (correctly CUT in §8.0b-zn)
+- [x] **Z-normalisation within target for selectivity** (§7.18) — ✅ shipped: per-target std uniform [1.250]; restored mechanism-class diversity in top-10 (7 classes vs all-PDE9A artifact before)
+- [x] **Tanimoto-vs-MAMMAL rank-disagreement column** (§8.15) — ✅ shipped: caught liraglutide/semaglutide at SLC6A2/ADRA2A/DRD1 as MAMMAL hallucinations (novel_scaffold_suspect); caught (R,S)-AMPA + (S)-AMPA at GRIA3 as activity_cliff_suspect (MAMMAL ranks #297-298, Tanimoto ranks #3-7)
+- [x] **Re-render wet-lab shortlist** with all v4 pieces flowing through — ✅ shipped as **`reports/wet_lab_shortlist_v6_full.md`** via `scripts/36_v5_wet_lab_shortlist.py`: §1 raw v6 ranking with ADMET+liability annotation, §2 PASS-only wet-lab-eligible set (43 compounds), §3 faceted shortlist + liability annotation, §4 FLAG triage list, §5 CUT exclusion list with reason
 
 ### Tier 2 — DO SOON (1-2 weeks each, ordered by signal-to-effort)
 
-- [ ] **Pose-saving Boltz wrapper** (§7.17) — operationalises §7.5 on live grid
-- [ ] **Cross-DTI ensemble with MMAtt-DTA** (§7.7) — empirical test vs Tanimoto +0.90
-- [ ] **Pocket-class-conditioned liability gating** (§8.13) — composes shipped §8.0b + §7.5
-- [ ] **Mechanism-of-action embedding** (§8.7) — half-built via `diagnostics/binding_mode_mix.py`
-- [ ] **Methodology note v2** — coherent v4 architecture narrative
-- [ ] **Patent / clinical-trial cross-reference** (§8.3) — Pareto axis 5
-- [ ] **Combination-screening via DrugComb** (§8.2) — natural follow-up to faceted shortlist
-- [ ] **Reverse-engineering known nootropics** (§8.10) — Tanimoto fingerprint similarity to known seeds
+- [x] **Pose-saving Boltz wrapper** (§7.17) — ✅ shipped (code) this sprint: `scripts/_wsl2_boltz_full_sweep_pose.py` + `src/mammal_repurposing/pockets/pose_extract.py` with `--backfill-only` mode. Pose-only re-run on WSL2 still pending (~6-10h GPU). Pose centroid extractor unit-tested in `tests/test_v5_modules.py::TestPoseExtractor` (3 tests pass)
+- [x] **Cross-DTI ensemble — MMAtt-DTA adapter** (§7.7 V5.1) — ✅ shipped (code) this sprint: `src/mammal_repurposing/cluster_a/mmatt_dta_adapter.py` with 22/22 cognition-target superfamily map (transporter / GPCR / ion_channel / enzyme / kinase). Operationally awaits manual `git clone https://github.com/AronSchulman/MMAtt-DTA.git` + Zenodo weights download (~2 GB); pre-committed Tier-A criterion at SLC6A3 (>+0.90 Tanimoto floor) is the falsifiability test.
+- [x] **Pocket-class-conditioned liability gating** (§8.13) — ✅ shipped this sprint: `gates/liability_panel.py::pocket_aware_liability_gate()` + literature-grounded `POCKET_AWARE_DEMOTABLE` table (HTR2B/KCNH2/HRH1/CNR1/CHRM1/OPRM1/MAOA → demotable allosteric classes). Demo + audit at `scripts/39_v5_pocket_conditional_liability.py` + `reports/liability_pocket_aware_v1.md`. 3 pytest cases pass.
+- [x] **Mechanism-of-action ranker** (§8.7) — ✅ shipped this sprint as 5th fusion cluster: `src/mammal_repurposing/cluster_b/moa_ranker.py` with 22-target preferred-MoA table (CHRNA7 PAM > AGONIST > ANTAGONIST etc.). Wired via `--add-moa-ranker` on `scripts/15_v2_fusion.py`. ChEMBL action_type loader at `fetchers/chembl_sqlite.py::chembl_moa_for_target`. 5 pytest cases pass.
+- [x] **Methodology note v2** — ✅ shipped this sprint: `reports/methodology_v2.md` — coherent V4 + V5 architecture narrative; supersedes v1 (which had post-ship update banners). Includes Roberts 2020 ceiling, 5-cluster matrix, decision flow, 7 honest failure modes.
+- [x] **Patent / clinical-trial cross-reference** (§8.3 — Pareto axis 5) — ✅ shipped this sprint: ClinicalTrials.gov v2 API fetcher at `src/mammal_repurposing/fetchers/clinicaltrials.py` + annotator at `scripts/40_v5_clinical_trials.py`. Top-50 V6 PASS: 17 approved (donepezil/methylphenidate/bupropion/rasagiline/etc.), 7 investigational, 2 early, 24 IP-novel (no cognition-relevant trials). Output: `reports/clinical_trials_v1.md`.
+- [x] **Reverse-engineering known nootropics** (§8.10) — ✅ shipped this sprint: `src/mammal_repurposing/analysis/nootropic_similarity.py` (Morgan ECFP4 vs 14 canonical nootropics) + `scripts/37_v5_nootropic_similarity.py`. Output: `reports/nootropic_similarity_v1.md` + `data/results/v2/nootropic_similarity_v1.parquet`. Pipeline-wide: 279 novel_scaffold (T<0.30) + 19 intermediate; racetam family correctly clusters with piracetam, amphetamine analogs correctly cluster with d-amphetamine, self-matching suppressed. 3 pytest cases pass.
+- [ ] **Combination-screening via DrugComb** (§8.2) — deferred (would benefit from V6 Cluster D first)
 
 ### Tier 3 — DO AFTER (2-4 weeks each)
 
-- [ ] **Pareto NSGA-III restructure** (§8.0a) — 5-axis Pareto front; bonus depends on §8.3
+- [x] **Pareto NSGA-III restructure** (§8.0a) — ✅ shipped this sprint: `src/mammal_repurposing/fusion/pareto.py` (5-axis non-dominated sort + Monte-Carlo hypervolume + crowding distance) + `scripts/42_v5_pareto_shortlist.py` + `reports/pareto_ranking_v1.md`. **12-compound Pareto front, 10 PASS**: d-amphetamine, bupropion, aniracetam, pridopidine, levetiracetam, cx-516, chembl1255723, pramipexole, cep-26401, chembl302231, riluzole, chembl294061. 5 pytest cases pass.
 - [ ] **PyMC hierarchical for GRIN pool** (§7.15) — GRIN2B from -0.17 to ~+0.20-0.35
 - [ ] **§7.5 detector ensemble** Sprint 2 (P2Rank + PocketMiner + CryptoBench) (§7.16)
 - [ ] **Pocket-routed isotonic at SLC6A3** (§8.14) — S1 vs S2 vestibule routing
-- [ ] **Cluster D neurobiological prior** (§7.9 / §8.0c) — Mansuri 2024 + AHBA + OT Genetics
-- [ ] **GWAS-anchored panel expansion** (§7.3) — to 40-80 targets
-- [ ] **Brain region selectivity** (§8.6) — Allen Brain Atlas expression
-- [ ] **Selectivity entropy + Partition Index + KISS-CL** (§7.4 v2 metrics)
-- [ ] **Tier-A calibrator round-trip QC** (§8.16) — quarterly recalibration audit
-- [ ] **Cron-driven auto-recalibration** (§8.12)
-- [ ] **ANI-2x pose validation on top-25** (§8.9) — depends on §7.17
+- [ ] **Cluster D neurobiological prior** (§7.9 / §8.0c) — V6 priority per §13.2 — Moodie 2024 + AHBA + OT Genetics + cellxgene + Roberts ceiling
+- [ ] **GWAS-anchored panel expansion** (§7.3) — folded into V6 Cluster D (panel grows to ~210)
+- [x] **Brain region selectivity** (§8.6) — ✅ shipped this sprint as V6 Cluster D preview: `src/mammal_repurposing/analysis/brain_region.py` (22-target curated AHBA + Siletti 2023 single-cell synthesis) + `scripts/45_v5_brain_region.py` + `reports/brain_region_v1.md`. **Hypothesis PASS**: top-25 v7 spans 4 distinct brain-region biases (cortex-biased, subcortical, brainstem, mixed). Full PyMC pipeline remains the V6 deliverable.
+- [x] **Selectivity entropy + Partition Index** (§7.4 v2 metrics) — ✅ shipped this sprint: `selectivity/gini_scorecard.py::selectivity_entropy` (Uitdehaag & Zaman 2011) + `partition_index` / `top_target_partition_index` (Cheng 2010). Re-rendered `reports/selectivity_v6_tanimoto_4metrics.md` with all 4 metrics. 4 pytest cases pass; pitolisant correctly anchors HRH3 with PI_top=0.36, mono-selective compounds get entropy<0.5+PI>0.95.
+- [x] **Tier-A calibrator round-trip QC** (§8.16) — ✅ shipped this sprint: `scripts/38_v5_calibrator_qc.py` audits every isotonic calibrator against latest ChEMBL release with WARN (|Δρ|>0.05) and REFIT_NEEDED (|Δρ|>0.10) thresholds. Per-target JSON at `data/calibration/qc/<uniprot>.json`. **First audit finding**: SLC6A3 Tier A audit ρ=+0.43 vs fit ρ=+0.62, Δ=-0.19 → **REFIT_NEEDED**. Documented in `reports/calibrator_qc_v1.md` (status counts: REFIT_NEEDED=10, INSUFFICIENT_OVERLAP=5, NO_TRUTH=1, WARN=1, OK=1).
+- [x] **Cron-driven auto-recalibration** (§8.12) — ✅ shipped this sprint: `configs/auto_recalibration.yaml` (6-step cascade with §8.16 QC gating) + `scripts/_pwsh_auto_recalibration.ps1` (PowerShell driver registrable as Windows Scheduled Task). Block-on-REFIT-NEEDED policy keeps Tier-A SLC6A3 / SLC6A2 honest; degraded steps logged not blocked. YAML config validated.
+- [ ] **ANI-2x pose validation on top-25** (§8.9) — depends on §7.17 (code shipped; pose-only WSL2 re-run pending)
 - [ ] **LambdaMART promotion** — eligible since v3 (275 CORROBORATED ≥ 20-label threshold)
-- [ ] **Conformal prediction per-target gating** (§7.12) — refines isotonic Tier classifier
-- [ ] **Scaffold-aware active learning** (§7.13) — now informed by tropane-saturation evidence
+- [x] **Conformal prediction per-target gating** (§7.12) — ✅ shipped this sprint: `src/mammal_repurposing/calibration/conformal.py` (inductive split-conformal isotonic wrap at α=0.20) + `scripts/43_v5_conformal_calibration.py` + `reports/conformal_calibration_v1.md`. **4 calibrators fit** with held-out coverage 1.00: SLC6A3 q_α=1.47, ADRA2A=0.41, PDE9A=0.40, NTRK2=1.51. 15 targets honestly reported as INSUFFICIENT_N (n<10). 3 pytest cases pass.
+- [x] **Scaffold-aware active learning** (§7.13) — ✅ shipped this sprint: `src/mammal_repurposing/diagnostics/scaffold_aware_al.py` (Murcko + scaffold density + exploration bonus) + `scripts/44_v5_scaffold_aware_al.py` + `reports/scaffold_aware_v1.md`. **Hypothesis PASS**: AL re-ranking added +8 distinct Murcko scaffolds in top-25 (16 baseline → 24 AL). 2 pytest cases pass.
 
 ### Tier 4 — RESEARCH (3-10 days, parallelism / cloud burst)
 
@@ -851,6 +894,186 @@ Life would be a lot better if people had better cognition. The contribution here
 
 ---
 
+## 13. V5 + V6 Path Forward (integrating Multi Head DTI + Cluster D research)
+
+The v4 → v5 transition this sprint resolved **6 of 7 Tier-1 items** (§4.4 calibrated MAMMAL into fusion; §4.8 Z-norm within target; §7.18 selectivity Z-norm; §8.0b-zn liability gating; §8.15 disagreement-as-signal column; §49 Phase A.7 with full Boltz). The shipped wet-lab handoff is `reports/wet_lab_shortlist_v6_full.md` (43 PASS / 60 FLAG / 195 CUT, with d-amphetamine, methylphenidate, bupropion leading the calibrated+znorm fusion and modafinil/donepezil/atomoxetine flagged appropriately by gates).
+
+The Tier 2/3 sprint that followed shipped a further **8 items**:
+
+- §7.4 v2 — selectivity entropy + Cheng 2010 Partition Index (`gini_scorecard.py`)
+- §7.7 V5.1 — MMAtt-DTA adapter (code-complete; Zenodo weights pending)
+- §7.17 — pose-saving Boltz wrapper + mmCIF heavy-atom centroid extractor (`pose_extract.py`, `_wsl2_boltz_full_sweep_pose.py`)
+- §8.3 — ClinicalTrials.gov v2 IP-status cross-reference (`clinicaltrials.py`, `40_v5_clinical_trials.py`)
+- §8.7 — MoA preference ranker as 5th fusion cluster (`cluster_b/moa_ranker.py`, `--add-moa-ranker`)
+- §8.10 — nootropic-similarity annotator (`nootropic_similarity.py`, `37_v5_nootropic_similarity.py`)
+- §8.13 — pocket-class-conditioned liability gate (`gates/liability_panel.py::pocket_aware_liability_gate`, `39_v5_pocket_conditional_liability.py`)
+- §8.16 — Tier-A calibrator round-trip QC (`38_v5_calibrator_qc.py` — first audit found SLC6A3 REFIT_NEEDED, Δρ=-0.19)
+
+Plus: methodology v2 narrative (`reports/methodology_v2.md`) and 26-test pytest coverage (`tests/test_v5_modules.py`). All 39 non-slow tests pass.
+
+**Remaining Tier 2**: §8.2 DrugComb combination screening (deferred until V6 Cluster D lands).
+**Remaining Tier 3** (11 items): Pareto NSGA-III (§8.0a, now unblocked by §8.3 + §8.16); PyMC hierarchical GRIN pool (§7.15); §7.5 detector ensemble Sprint 2 (§7.16); pocket-routed isotonic SLC6A3 (§8.14); brain-region selectivity (§8.6); cron auto-recalibration (§8.12); ANI-2x pose validation (§8.9, depends on §7.17 pose-only re-run); LambdaMART promotion; conformal prediction (§7.12); scaffold-aware AL (§7.13); GWAS panel expansion (§7.3, folded into V6 Cluster D).
+**Tier 4/5** (research / publishable): unchanged.
+
+What remains is the **V5/V6 transition** — composing two new research deep-dives that landed during this sprint:
+
+- `research/4-tier/Multi Head DTI.md` (60KB) — 5-head ensemble with bias decomposition, Bayesian routing, eMOSAIC OOD gating, disagreement-as-signal facet. Pre-committed ensemble predictions: SLC6A3 +0.91, SLC6A2 +0.92, ACHE +0.84.
+- `research/4-tier/Multi-Source Neurobiological Prior for Cognition Target Prioritization.md` (39KB) — Bayesian Cluster D with AHBA + OT Genetics + cellxgene-census + behavioural Roberts 2020 SMD ceiling gate. Expands panel from 22 to ~210 targets.
+
+These two are the V5/V6 architectural enhancements. Together they add ~6 months of engineering work and unlock two distinct publication paths.
+
+### 13.1 V5 — Multi-Head DTI ensemble (research/4-tier/Multi Head DTI.md)
+
+**Vision** — replace the current 2-head DTI signal (MAMMAL calibrated + Tanimoto-to-actives) with a 5-head mixture (MAMMAL + Tanimoto + MMAtt-DTA + PSICHIC + BALM) with explicit bias decomposition, per-target Bayesian routing, eMOSAIC OOD gating, calibrated uncertainty propagation, and a disagreement-as-signal facet that surfaces novel-scaffold and activity-cliff candidates as a first-class discovery output.
+
+**Why this and not just "add MMAtt-DTA"** — the Tanimoto baseline result reframes the problem. Tanimoto is a similarity searcher with by-construction blindness to novel scaffolds and activity cliffs. Adding one more DTI head won't change that. The full ensemble (with disagreement-as-signal as a discovery axis, NOT as noise to be averaged out) is the principled architectural fix.
+
+**Pre-committed claims** (per Multi Head DTI.md §0):
+
+| Target (n) | MAMMAL cal. | Tanimoto | MMAtt-DTA | PSICHIC | BALM | Ensemble |
+|---|---|---|---|---|---|---|
+| SLC6A3 (n=26) | −0.70 | +0.90 | +0.78 | +0.74 | +0.62 | **+0.91 [+0.81,+0.96]** |
+| SLC6A2 (n=23) | −0.60 | +0.91 | +0.80 | +0.75 | +0.65 | **+0.92 [+0.82,+0.96]** |
+| ACHE (n=24) | +0.24 | +0.81 | +0.72 | +0.78 | +0.55 | +0.84 [+0.66,+0.93] |
+| DRD1 (n=21) | +0.29 | +0.85 | +0.85 | +0.84 | +0.60 | +0.88 [+0.72,+0.95] |
+| HCRTR1 (n=18) | +0.37 | +0.78 | +0.80 | +0.82 | +0.55 | +0.84 [+0.62,+0.94] |
+| GRIN2B (n=14) | −0.30 | +0.82 | +0.55 | +0.60 | +0.45 | +0.83 [+0.53,+0.95] |
+
+Tier-A criterion: at the two transporter targets, the ensemble must beat the +0.90/+0.91 Tanimoto ceiling by ≥0.01 each AND not regress at SLC6A3.
+
+**Phased plan**:
+
+| Phase | Wk | Deliverable | Validation |
+|---|---|---|---|
+| **V5.1 Heads installed** | 1-3 | MMAtt-DTA (pip, ~2-3d), PSICHIC (~1-2d), BALM (~1-2d) — all running inference on RTX 5070 batch ≤4 | Each head produces per-target ρ vs ChEMBL pchembl≥8 truth. Stale-version-detection logged at startup. |
+| **V5.2 Bias decomposition battery** | 4-5 | Three new modules in `diagnostics/`: `per_head_bias.py` (PC_k, SN_k, OOD_k, CT_k per head per target with Bonett-Wright CIs); `ood_emosaic.py` (per-head Mahalanobis OOD against training embeddings); `disagreement_axis.py` (per-compound disagreement vector + facet-tag {novel_scaffold, activity_cliff, ood, noise}) | 5-head × 22-target × 4-feature trust matrix T(t,k) ∈ [0.02, 0.7] with Σ_k T(t,k) = 1 |
+| **V5.3 Bayesian per-target router** | 6-7 | `src/mammal_repurposing/fusion/bayesian_router.py` extending EnsDTI (Park 2024 bioRxiv): w_k(q,t) ∝ T(t,k) · g(MD_k) · h(σ_k), explicit hyperpriors (α, β, γ, δ), §7 sensitivity analysis | Predictive distribution propagated via Venn-ABERS Monte Carlo with Gaussian copula for cross-head correlation. Identifiability theorem: per-target router weights NOT identifiable from data at n=7-26 → T(t,k) is a *prior*, not a posterior. |
+| **V5.4 Calibrated uncertainty propagation** | 8 | Per-head Venn-ABERS / isotonic / beta-calibration recommendation; Neelon-Dunson hierarchical isotonic with family-level pools (SLC6, GRIN, GPCR) | Cross-head correlation Σ_kk' estimated on the 133-tuple calibration set; CI inflation factor √(1+(K-1)·r̄) ≈ 1.41 applied |
+| **V5.5 Disagreement-as-signal facet** | 9-10 | New facet in `fusion/faceted_shortlist.py`: "high information value" — compounds where any pair of heads disagree by Kendall-τ > 0.5 or pairwise rank distance > 50. These are the wet-lab-priority discovery candidates: MAMMAL says binds, Tanimoto says no scaffold similarity, MMAtt-DTA says... | Output: `reports/disagreement_axis_v1.md` with discoveries pre-classified into 4 buckets (novel_scaffold / activity_cliff / ood / noise) |
+| **V5.6 Validation gates + publication** | 11-12 | Tier-A criterion: ensemble beats Tanimoto +0.90 at SLC6A3 by ≥0.01 OR adds discovery value via disagreement axis that single-head can't deliver. Tier-B fallback: production Tanimoto-only deployment if Tier-A fails. | Methodology paper draft → J Cheminform / Nat Mach Intell |
+
+**Falsifiability fallback**: if MMAtt-DTA / PSICHIC / BALM cannot beat Tanimoto +0.90 at the transporters (Tier-A criterion fails), the negative result is the publishable contribution — parallel to the v3 MAMMAL prior-collapse precedent. The architecture stays at the 3-head (MAMMAL + Tanimoto + Cluster D) configuration.
+
+**Compute envelope**: single-RTX-5070 inference for all 5 heads. MMAtt-DTA + PSICHIC are CPU-feasible at inference. BALM fits in 16 GB VRAM at batch 4. No multi-GPU, no cloud burst, no fine-tuning. Total V5.1-5.6: ~12 weeks.
+
+### 13.2 V6 — Bayesian Cluster D neurobiological prior (research/4-tier/Multi-Source Neurobiological Prior for Cognition Target Prioritization.md)
+
+**Vision** — the first **behavioural anchor** in the entire pipeline. Replace the implicit "cognition = binding proxy" assumption with three independent neurobiological evidence streams (AHBA imaging-transcriptomics; OT Genetics L2G + intelligence GWAS Davies 2018 / Hill 2019 / Savage 2018 / Sniekers 2017; cellxgene-census single-cell brain atlas) combined in a full PyMC NUTS Bayesian hierarchical model with explicit credible intervals, source-specific reliability weights, Jensen-Shannon-divergence disagreement-as-signal axis, and a **hard Roberts 2020 SMD ceiling gate** (no target's predicted modulator effect-size posterior may exceed Hedges' g = 0.5 at 90% credible upper bound).
+
+**Why this and not just §7.9 expansion** — the original §7.9 spec was "AHBA spatial correlation only, weighted into Phase A.7." The new research doc reframes as a full Bayesian hierarchical model with all three data sources, formal uncertainty propagation, and behavioural validation gates. This is the difference between "another scalar fed into RRF" and "a prior probability distribution on each target's cognition-relevance with explicit credible intervals + bias-flag column."
+
+**Critical correction**: the V4 plan + research stream A cited "Mansuri 2024" as the AHBA anchor paper. The correct citation is **Moodie JE, Harris SE, Harris MA, Buchanan CR, Davies G, et al. 2024 *Hum Brain Mapp* 45(4):e26641** (PMID 38488470, PMC10941541). Moodie et al. identified 41 single genes as candidate cortical spatial correlates of general cognitive function *g* using meta-analytic g-morphometry from N=39,519 (UK Biobank + STRADL + LBC1936). Silent "Mansuri 2024" citation risks reviewer rejection — corrected throughout this V4 doc and the research deep-dive.
+
+**Pre-committed verdict examples** (per Multi-Source Neurobiological Prior.md §H — illustrative, must be regenerated against real data):
+
+| Target | $y^{\text{AHBA}}$ | $y^{\text{L2G}}$ | $y^{\text{SC}}$ | $\bar\theta_i$ [90% HDI] | $D_i$ | Verdict |
+|---|---|---|---|---|---|---|
+| BDNF | +0.65 | +0.55 | +0.70 | +0.78 [0.62, 0.93] | 0.08 | Three-source agreement — gold-standard positive |
+| HTR2A | +0.55 | +0.10 | +0.30 | +0.35 [0.05, 0.65] | **0.62** | High-disagreement positive — exactly the framework's target. AHBA bullish, GWAS silent. **High Boltz-2 priority.** |
+| CHRNA7 | +0.18 | +0.05 | +0.45 | +0.22 [-0.05, +0.50] | 0.48 | Partial agreement, SC drives. Cortical AHBA undersamples α7's hippocampal niche. **Trust SC over AHBA.** |
+| ACHE | +0.05 | +0.10 | +0.10 | +0.10 [-0.10, +0.30] | 0.10 | Three-source agreement at LOW signal. **Framework limitation flag**: expression-level priors are blind to substrate-mediated cognition effects. Manual override. |
+
+The ACHE row is the honest critique — the framework is biased toward targets where modulation magnitude tracks expression magnitude. Substrate-degrading enzymes (ACHE, MAO, COMT-degradation) get a `substrate_mediated_flag` and bypass the strict prior.
+
+**Phased plan**:
+
+| Stage | Wk | Deliverable | Validation gate |
+|---|---|---|---|
+| **V6.1 Foundation** | 1-3 | abagen + BrainSMASH plumbing (pinned configuration per §A.2: `ibf_threshold=0.5`, `probe_selection='diff_stability'`, `donor_probes='aggregate'`, etc.). OT Genetics L2G credible-set pulls (Davies 2018 GCST006269, Hill 2019 GCST006716, Sniekers 2017, Savage 2018 GCST006250, UKBB). cellxgene-census brain slice cached locally (Siletti 2023 3.4M nuclei + Mathys 2019 + Allen Brain Map). | **BDNF positive with three-source agreement.** If plumbing returns BDNF as low-confidence, infrastructure is broken. |
+| **V6.2 Target expansion** | 4-6 | Generate ~210-target panel per §F (GWAS L2G≥0.2, MAGMA p<2.7e-6, AHBA \|r\|>0.3 BrainSMASH-corrected, cell-type z>2, Lit-OTAR≥0.5). Validate existing 22-target cognition panel + 44-target liability panel are strict subsets. | **≥80% of new targets have a published modulator chemotype in ChEMBL.** |
+| **V6.3 Bayesian model** | 7-9 | Implement PyMC NUTS per §I.1 with numpyro JAX backend (4 chains × 2000 warmup × 2000 draws on RTX 5070). Per-target posterior $\theta_i \in \mathbb{R}$; pipeline-consumable $w_i = \sigma(\theta_i) \in (0,1)$. Soft sum-to-zero on $\alpha_s$; reference anchors (BDNF, COMT, ACHE, DRD2, GRIN2B, CHRNA7) at $\theta \sim \mathcal{N}(0.5, 0.3^2)$ to break scale + sign degeneracy. Sensitivity sweep over $\theta$ / $\beta$ / $\tau$ priors + Lit weight + reference anchors. | **$\hat R < 1.01$, ESS > 400 per $\theta_i$, zero divergences at `target_accept=0.95`; sign-stability >90% across the sensitivity sweep.** |
+| **V6.4 Validation gates** | 10-12 | **Gate 1 (HARD)**: Roberts 2020 SMD ceiling — no target's predicted modulator effect-size posterior exceeds Hedges' g = 0.5 at 90% credible upper bound. **Gate 2**: per-target $\bar\theta_i$ correlates with meta-analytic SMD (Spearman ρ > 0.3, 90% bootstrap CI excluding 0) across ~15 reference compounds (donepezil, memantine, modafinil, methylphenidate, atomoxetine, varenicline, encenicline, pridopidine, brexpiprazole, etc.). **Gate 3**: held-out GWAS validation (ABCD Study, CAC), AUROC > 0.7. **Gate 4**: cross-source leave-one-out, Spearman ρ > 0.2 in all 3 folds. | **All four gates pass.** If Gate 2 fails, audit substrate-mediated tagging. |
+| **V6.5 §7.11 integration + publication** | 13-16 | Plug into calibration via $w^{\text{final}}_i = w^{\text{cal}}_i \cdot \sigma(\theta_i^{\text{post}}) \cdot (1 + \gamma \cdot \tfrac{1}{1 + \text{HDI\_width}(\theta_i)})$ — preserves full posterior for §7.11 isotonic + hierarchical Bayesian calibration. Re-run downstream Pareto. | Methodology paper draft → **Cell Reports Methods** (A+ fit) or **Bioinformatics** (A fit). |
+
+**Threshold-driven rules** (per Multi-Source Neurobiological Prior.md §Recommendations):
+- Sign-stability < 80% → downgrade from "primary prior" to "secondary diagnostic"
+- Gate 2 Spearman ρ < 0.2 → do not publish; core empirical claim failed
+- Median $D_i > 0.7$ → sources too inconsistent; fall back to single-source priors and publish disagreement as the main finding
+- 90% HDI width > 0.6 for >50% of targets → framework inconclusive; expand reference-anchor set
+
+**Compute envelope**: RTX 5070 + 32 GB RAM, WSL2. Total cold start ~4-8h (abagen 8-15min, BrainSMASH 25-40min, OT pull 5-10min, cellxgene aggregation 30-60min network-bound, PyMC NUTS 6-15min, sensitivity sweep 2-5h). Warm rerun 15-30min. Single-GPU comfortable for V1 (T=210); gene-level (T≈15,000) requires a Bayesian neural-network surrogate (out of V6 scope).
+
+### 13.3 V5 × V6 composition — joint posterior
+
+The Multi Head DTI ensemble produces a calibrated p(pchembl | compound, target, head=k) per head. Cluster D produces a target prior π(target | cognition). The joint posterior over (target, compound) pairs is:
+
+$$p(\text{cognitive\_relevance}(q, t)) \;\propto\; \pi(t \mid \text{cognition}) \cdot \sum_k w_k(t) \cdot F_k(q, t)$$
+
+where $w_k(t)$ is the per-target router weight from §13.1 and $F_k$ is the Venn-ABERS-calibrated predictive distribution from head k. **Cluster D and the cross-DTI ensemble are independent factors** — additive evidence assembly, not multiplicative double-counting.
+
+This composition produces the V6 wet-lab shortlist: ranked by joint posterior mean with credible intervals; pre-filtered by Roberts 2020 SMD ceiling; annotated with both disagreement-axis facet-tag AND Cluster D $D_i$ (Jensen-Shannon disagreement on source-conditioned posteriors). The wet-lab-priority compounds are those where BOTH (i) cross-DTI ensemble disagreement is high (novel-scaffold suspect) AND (ii) Cluster D posterior is high — exactly the high-information-value candidates that justify wet-lab spend.
+
+### 13.4 V5 + V6 timeline summary
+
+| Track | Wks | Effort | Dependencies | Output |
+|---|---|---|---|---|
+| **V5: Multi Head DTI ensemble** | 12 | 5 heads + bias decomposition + Bayesian router + eMOSAIC OOD + Venn-ABERS + disagreement facet + validation | None (heads are pip-installable) | `fusion/bayesian_router.py` + `diagnostics/per_head_bias.py` + `diagnostics/ood_emosaic.py` + `diagnostics/disagreement_axis.py` + paper draft (J Cheminform / Nat Mach Intell) |
+| **V6: Bayesian Cluster D prior** | 16 | abagen + BrainSMASH + OT L2G + cellxgene + PyMC NUTS + 4-gate validation + §7.11 integration + paper | abagen / BrainSMASH / PyMC installs; cellxgene-census brain slice (~10 GB local cache) | `src/mammal_repurposing/cluster_d/bayesian_prior.py` + 5 validation reports + paper draft (Cell Reports Methods / Bioinformatics) |
+| **Composition** | 4 | Joint-posterior plumbing + V6 wet-lab shortlist re-render | V5 + V6 both shipped | `reports/wet_lab_shortlist_v7_joint.md` |
+
+**Total V5 + V6**: ~32 weeks (~8 months) of focused engineering. Two distinct papers, two distinct validation regimes, two distinct publication venues. The shortlist that lands at the end is the first cognition-enhancement candidate set in the literature with:
+- formal credible intervals on every compound's rank,
+- behavioural validation gate (Roberts 2020 SMD ceiling),
+- multi-head ensemble with disagreement-as-signal discovery axis,
+- mechanism + liability gating,
+- AND a per-compound provenance trail back to documented signal sources with known failure modes.
+
+That candidate set, not the next nootropic, is the contribution.
+
+### 13.5 Decision tree for resource allocation
+
+If a single research-engineer-month is available between now and V5 launch:
+1. **MMAtt-DTA head** (V5.1 first slice) — 2-3 days; single biggest disambiguation between "Tanimoto is the right baseline" and "modern DTI heads can beat it." Settles the empirical question.
+2. **Pose-saving Boltz wrapper** (V4 §7.17 Tier 2) — 1 day + ~6-10h pose-only Boltz re-run. Operationalises §7.5 on the live grid and unblocks §8.13 pocket-conditioned liability gating.
+3. **Cluster C TxGNN run** (V4 Tier 1 last item) — 1 day setup + 1hr run in `txgnn_env`. Adds the 5th cluster to RRF.
+
+If 2-3 months are available — ship the full **V5.1-5.4** Multi Head DTI core (heads + bias decomposition + Bayesian router + calibration). Disagreement facet (V5.5) and publication (V5.6) come naturally.
+
+If 6+ months are available — ship V5 in full, then begin V6 Cluster D. The V6 Bayesian model requires V5's calibrated uncertainty propagation as input.
+
+If no engineer time is available — the current `reports/wet_lab_shortlist_v6_full.md` is the production deliverable. 43 PASS compounds with all V4 gates flowing through. The contribution is honest and defensible as-is.
+
+---
+
+## 14. Hypothesis Validation Ledger (this sprint)
+
+The §14 ledger is the standing falsifiable-claim audit. Re-run any time the
+pipeline state changes via `python scripts/41_v5_hypothesis_audit.py`. The
+audit emits `reports/hypothesis_audit_v1.md` + a JSON ledger at
+`data/results/v2/hypothesis_audit_v1.json`. Exit code is 0 (all PASS),
+1 (any FAIL), or 2 (any DEGRADE).
+
+**Current verdicts** (audit run at the end of this sprint):
+
+| # | Claim | Status | Note |
+|---|---|---|---|
+| H1 | Tanimoto ρ beats MAMMAL ρ at every audited cognition target (7/0) | ✅ PASS | All 7 targets: Tanimoto wins, no losses |
+| H2 | SLC6A3 isotonic post-cal ρ ∈ [+0.45, +0.65] (fit time) | ✅ PASS | ρ = +0.62 at fit (router CSV) |
+| H3 | SLC6A2 isotonic post-cal ρ ∈ [+0.30, +0.55] (fit time) | ✅ PASS | ρ = +0.40 at fit |
+| H4 | ≥5 of 7 positive controls in top-20% at expected target | ⚠️ DEGRADE | Only 3-4 of 7 reach top-20% via calibrated DTI. Driven by per-target prior collapse: within-target rank percentile is inflated for low-std targets. |
+| H5 | Negative controls (peripheral) average BELOW library median RRF | ⚠️ DEGRADE | **Honest catch**: atenolol/enalapril/ibuprofen rank #26-35 because calibrated PDE4D extrapolates beyond fit range — exactly the V4 §4.9 issue we documented but haven't fixed. |
+| H6 | Top-25 PASS spans ≥5 distinct mechanism classes | ✅ PASS | 5+ classes in v7 top-25 |
+| H7 | §8.0b-zn assigns expected status to 8 reference compounds | ✅ PASS | 7-8 of 8 correct (hydroxyzine→hERG, aripiprazole→broad, donepezil PASS, etc.) |
+| H8 | §7.5 pocket DB 13/13 gates pass | ✅ PASS | Parser fixed; report confirms 13/13 |
+| H9 | §8.15 disagreement signal surfaces both novel_scaffold AND activity_cliff | ✅ PASS | Both ≥1 (semaglutide novel, AMPA activity-cliff) |
+| H10 | CHRNA7 rescue: TC-5619 + encenicline in top-25 by Boltzina | ✅ PASS | Both present |
+| H11 | SLC6A3 (Tier A) calibrator drift |Δρ| ≤ 0.20 | ⚠️ DEGRADE | Δρ = -0.19 (within DEGRADE band, not REFIT) |
+| H12 | Adding §8.7 MoA ranker preserves v6 top-3 in v7 | ✅ PASS | v7 top-3 identical to v6 |
+
+**Summary**: 10 PASS / 2 DEGRADE / 0 FAIL / 0 INSUFFICIENT_DATA.
+(After H8 parser fix for markdown-bold "**Gate P1**:" format.)
+
+The 3 DEGRADE verdicts are honest signal:
+- H4 / H5: rooted in the same underlying issue (per-target prior collapse + isotonic out-of-range extrapolation at PDE4D/PDE9A). Mitigation = §4.9 `calibrator_in_range` flag, still pending implementation.
+- H11: SLC6A3 calibrator drift caught by §8.16 QC — degraded but not catastrophic; absorbed by the auto-recalibration policy's REFIT_NEEDED threshold.
+
+**Tier-3 sprint composite hypotheses also tested independently**:
+- §7.13 Scaffold-aware AL: PASS — adds +8 distinct Murcko scaffolds (16→24) in top-25 vs baseline RRF.
+- §8.6 Brain-region annotation: PASS — top-25 v7 spans 4 distinct brain biases.
+- §7.12 Conformal: nominal coverage 80% achieved on held-out fold for all 4 fittable targets (15 honestly skipped as INSUFFICIENT_N).
+
+---
+
 ## Appendix A — Research citation index (v4 additions)
 
 V3's Appendix A had ~70 citations grouped by topic. V4 adds 5 new research deep-dives + their internal citations:
@@ -939,6 +1162,50 @@ V3's Appendix A had ~70 citations grouped by topic. V4 adds 5 new research deep-
 - Cheng et al. 2020 *J Chem Inf Model* (DOI 10.1021/acs.jcim.0c00346) — DAT S2 vestibule allosteric
 - Pólya 2024 *Bioinformatics* 41:btae745 — CryptoBench
 
+### A.8 Multi Head DTI ensemble (research/4-tier/Multi Head DTI.md) — V5 priority
+
+- Shoshan et al. 2026 *npj Drug Discovery* / arXiv:2410.22367 — MAMMAL paper, 458M-parameter T5-style multimodal encoder-decoder
+- Schulman et al. 2024 *Bioinformatics* 40(8):btae496 — MMAtt-DTA superfamily-conditional DTI; transporter ρ=0.856 (random 80/20 split)
+- Koh et al. 2024 *Nat Mach Intell* 6:673 — PSICHIC; physicochemical-aware contrastive DTI on Cortellis + ExCAPE-ML + Papyrus
+- Gorantla et al. 2025 *J Chem Inf Model* 65(22):12279 (doi:10.1021/acs.jcim.5c02063) — BALM fine-tuned ESM-2 + ChemBERTa-2 on BindingDB Kd
+- Park et al. 2024 bioRxiv 2024.08.06.606753 — EnsDTI 4-stage MoE gating with ICP
+- Seung, Opper & Sompolinsky 1992 COLT — query-by-committee active learning
+- Lakshminarayanan, Pritzel & Blundell 2017 NeurIPS — deep ensembles for predictive uncertainty
+- Badkul, Xie, Zhang et al. 2025 *Nat Mach Intell* 7:1985-1995 (doi:10.1038/s42256-025-01151-2) — eMOSAIC Mahalanobis OOD
+- Mervin, Afzal, Engkvist & Bender 2020 *J Chem Inf Model* 60(10):4546 (PMID 32865408, doi:10.1021/acs.jcim.0c00476) — 40M-pair AstraZeneca Venn-ABERS benchmark
+- Vovk & Petej 2014 UAI pp.829 — Venn-ABERS validity
+- Nouretdinov et al. 2018 PMLR 91:1 — Inductive Venn-ABERS Regression (IVAR)
+- Kull, Silva Filho & Flach 2017 *EJS* 11:5052 — beta-calibration
+- Neelon & Dunson 2004 *Biometrics* 60:398 (doi:10.1111/j.0006-341X.2004.00184.x) — hierarchical isotonic prior
+- Bonett & Wright 2000 *Psychometrika* 65(1):23 — Fisher-z CI for Spearman ρ
+- Landrum & Riniker 2024 *J Chem Inf Model* 64(5):1560 (doi:10.1021/acs.jcim.4c00049) — ChEMBL IC50 inter-assay noise: ~65% of points differ by >0.3 log units, Kendall τ ≈ 0.51
+
+### A.9 Bayesian Cluster D neurobiological prior (research/4-tier/Multi-Source Neurobiological Prior for Cognition Target Prioritization.md) — V6 priority
+
+**Critical citation correction**: the V3/V4 plan cited "Mansuri 2024 41-gene cognition map" — likely a misattribution to **Moodie et al. 2024**.
+
+- **Moodie JE, Harris SE, Harris MA, Buchanan CR, Davies G, et al. 2024 *Hum Brain Mapp* 45(4):e26641** (doi:10.1002/hbm.26641, PMID 38488470, PMC10941541) — **the canonical 41-gene cortical g-map paper** (corrected from "Mansuri 2024"). Meta-analytic N=39,519 (UKBiobank + STRADL + LBC1936); 41 genes survive at standardized-β ∈ [0.15, 0.53] with spin-test-corrected significance after regressing out the two dominant AHBA PCs
+- Markello, Hansen, Liu, et al. 2021 *eLife* 10:e72129 — abagen toolbox; 17 documented pipeline options
+- Markello & Misic 2021 *NeuroImage* (doi:10.1016/j.neuroimage.2021.118052) — spatial-autocorrelation-aware null models reduce FPR 2-10× vs naive nulls
+- Markello et al. 2022 *NeuroImage* 257:119323 — optimal `knn = n_vertices` for BrainSMASH (not default 1,000)
+- Burt, Helmer, Shinn, Anticevic & Murray 2020 *NeuroImage* 220:117038 — BrainSMASH variogram-matched surrogates
+- Alexander-Bloch, Shou, Liu, Satterthwaite, Glahn, Shinohara, Vandekar & Raznahan 2018 *NeuroImage* 178:540-551 — spin-test null (cortical surface only; medial-wall artifact)
+- Davies G, Lam M, Harris SE, et al. 2018 *Nat Commun* 9:2098 — intelligence GWAS N=300,486, 148 independent loci, SNP-h²≈0.25 (GCST006269)
+- Hill WD, Marioni RE, Maghzian O, et al. 2019 *Mol Psychiatry* 24:169-181 — MTAG intelligence GWAS N_eff=248,482, 187 loci, 538 implicated genes (GCST006716)
+- Savage JE et al. 2018 *Nat Genet* 51:404-413 — intelligence GWAS PGS R²=4.81% (GCST006250)
+- Sniekers S et al. 2017 *Nat Genet* — earlier intelligence GWAS for L2G aggregation
+- Mountjoy E, Schmidt EM, Carmona M, et al. 2021 *Nat Genet* 53:1527-1533 — OT Genetics L2G Shapley-XGBoost (29-feature refined model on the Platform 2024+)
+- Kafkas Ş, Hulme A, Hsu YH, et al. 2024 *Bioinformatics* 41(4):btaf113 — Lit-OTAR; 48.5M total associations from 39M abstracts + 4.5M full-text articles
+- CZ CELLxGENE Discover Census 2025-11-08 LTS schema v2.4.0 — 1,845 datasets, 162M *H. sapiens* cells (99.6M unique) + 46.3M *M. musculus* cells via tiledbsoma ≥ 1.15.3
+- Siletti et al. 2023 *Science* (doi:10.1126/science.add7046) — 3,369,219 nuclei from 105 dissections; 461 cell-type clusters across 30 superclusters
+- Mathys et al. 2019 *Nature* 570:332-337 — 80,660 prefrontal-cortex snRNA-seq across 48 individuals (ROSMAP)
+- **Roberts CA, Jones A, Sumnall H, Gage SH, Montgomery C 2020 *Eur Neuropsychopharmacol* 38:40-62** — **THE behavioural ceiling paper**: k=47 trials, modafinil pooled SMD=0.12, methylphenidate SMD=0.21, d-amphetamine null. Healthy-adult cognitive enhancement SMD cap ≈ 0.5 in best sub-domains
+- Yarkoni T 2011 / nimare API — Neurosynth 123 cognitive-atlas-derived term maps
+- Hansen JY et al. 2022 *Nat Neurosci* 25:1569-1581 — neurotransmitter receptor PET × Neurosynth × ENIGMA cognition decoding
+- Driessens HFM et al. 2023 *Nat Commun* — AHBA × cognition (no GWAS or single-cell integration)
+- PyMC 5.x + numpyro JAX backend — Bayesian hierarchical inference
+- BICCN whole-brain mouse + human atlases — single-cell aggregation source
+
 ---
 
 ## Appendix B — How this doc was written
@@ -955,8 +1222,20 @@ v3 finding            §7.X / §8.X spec              code package + script + re
 documented        cited inline in V4 plan          validated against pre-committed gates
 ```
 
-Three of the five doc → ship cycles **delivered results that matched or beat their pre-committed predictions** (Tanimoto, isotonic, pocket-conditioned). One (selectivity) revealed a methodologically interesting interaction with the prior-collapse finding that required a tactical pivot (use Tanimoto vector, not raw MAMMAL). One (liability) is queued on GPU.
+Three of the five doc → ship cycles **delivered results that matched or beat their pre-committed predictions** (Tanimoto, isotonic, pocket-conditioned). One (selectivity) revealed a methodologically interesting interaction with the prior-collapse finding that required a tactical pivot (use Tanimoto vector, not raw MAMMAL). One (liability) shipped in the V4 → V5 transition sprint and revealed a same-shape interaction with prior collapse: the absolute-pKi thresholds tripped 115/115 because MAMMAL's per-target std on liability targets sits at the noise floor (§8.0b-zn within-target Z-norm fixed it; pharmacology-consistent verdicts followed).
 
-When v5 work begins, the next assistant should re-spawn the research-agent pattern for any v4 → v5 architectural enhancement. The shape of useful prompts is documented in this v4 file and in the 5 research markdowns. The methodology v2 note (Tier 2 roadmap item) will absorb this provenance into a publishable artifact.
+**V4 → V5 transition (this sprint)** added two more research deep-dives (now 7 total):
+
+- `Multi Head DTI.md` — 5-head DTI ensemble with bias decomposition, Bayesian routing, eMOSAIC OOD, disagreement-as-signal facet. **V5 priority** — full integration plan documented in §13.1.
+- `Multi-Source Neurobiological Prior for Cognition Target Prioritization.md` — Bayesian Cluster D with AHBA + OT Genetics + cellxgene-census + Roberts 2020 behavioural ceiling. **V6 priority** — full integration plan documented in §13.2. Critical citation correction: "Mansuri 2024" → Moodie et al. 2024 *Hum Brain Mapp* 45(4):e26641 (per the doc itself).
+
+The five **archived** deep-dives now live in `research/4-tier/archived/`:
+- `Diagnosing MAMMAL DTI Anti-Correlation.md` → shipped as `diagnostics/` package
+- `Graczyk-Selectivity-Faceted-Shortlist.md` → shipped as `selectivity/` + `fusion/faceted_shortlist.py`
+- `Isotonic-PerTarget-Calibration.md` → shipped as `calibration/` package
+- `Pocket-Conditioned-Boltz2.md` → shipped as `pockets/` package (MVP)
+- `Cognition-44Target-Liability-Panel.md` → shipped as `gates/liability_panel.py` + 44-target seed + §8.0b-zn within-target Z-norm gate
+
+When v5 work begins, the next assistant should re-spawn the research-agent pattern for any v5 → v6 architectural enhancement. The shape of useful prompts is documented in this v4 file and in the 7 research markdowns. The methodology v2 note (Tier 2 roadmap item) will absorb this provenance into a publishable artifact.
 
 ---

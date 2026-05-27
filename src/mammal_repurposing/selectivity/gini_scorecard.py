@@ -129,6 +129,74 @@ def s_10x(pkd_vec: np.ndarray, log_window: float = 1.0) -> int:
     return int((arr >= top - log_window).sum())
 
 
+def selectivity_entropy(pkd_vec: np.ndarray) -> float:
+    """Shannon entropy of the affinity distribution (Uitdehaag & Zaman 2011).
+
+    Lower entropy = more selective. The Boltzmann-weighted affinity vector
+    p_i = exp(pkd_i) / Σ exp(pkd_j) gives the natural probability distribution
+    over panel members. H(p) = -Σ p_i log p_i, normalised by log(N) to [0, 1].
+
+    Reference: Uitdehaag & Zaman 2011 BMC Bioinformatics 12:94 (PMC3100252).
+    H_norm = 0 → mono-selective; H_norm = 1 → panel-flat.
+    """
+    arr = np.asarray(pkd_vec, dtype=float)
+    arr = arr[~np.isnan(arr)]
+    n = arr.size
+    if n < 2:
+        return float("nan")
+    # Numerically stable softmax of the pkd vector
+    z = arr - arr.max()
+    w = np.exp(z)
+    p = w / w.sum()
+    # H = -Σ p log p; protect log(0)
+    nz = p > 0
+    h = -np.sum(p[nz] * np.log(p[nz]))
+    return float(h / np.log(n))
+
+
+def partition_index(pkd_vec: np.ndarray, target_idx: int) -> float:
+    """Cheng 2010 Partition Index for `target_idx` within the panel vector.
+
+    PI_target = K_target / Σ K_i, where K_i = 10^pKd_i (i.e. binding constant
+    derived from pKd). High PI (→ 1) means the target dominates the panel —
+    high selectivity for that target. Low PI means promiscuous binding.
+
+    Reference: Cheng et al. 2010 J Med Chem 53:4502 (doi:10.1021/jm100301x).
+    Returns float in [0, 1] or NaN if vector is empty / target_idx invalid.
+    """
+    arr = np.asarray(pkd_vec, dtype=float)
+    if target_idx < 0 or target_idx >= arr.size:
+        return float("nan")
+    if np.isnan(arr[target_idx]):
+        return float("nan")
+    # Convert pKd to K (binding constant). Numerically stable: shift to max
+    # so the largest entry is 10^0 = 1 and other entries are <= 1.
+    valid = ~np.isnan(arr)
+    if valid.sum() == 0:
+        return float("nan")
+    shifted = arr[valid] - np.nanmax(arr[valid])
+    k = np.power(10.0, shifted)
+    # Map target_idx into the indices of valid entries
+    valid_indices = np.where(valid)[0]
+    pos_in_valid = np.where(valid_indices == target_idx)[0]
+    if pos_in_valid.size == 0:
+        return float("nan")
+    pi = float(k[pos_in_valid[0]] / k.sum())
+    return pi
+
+
+def top_target_partition_index(pkd_vec: np.ndarray) -> float:
+    """Partition Index of the top-scoring panel member.
+
+    For "how selective is this compound for its best target?" reporting.
+    """
+    arr = np.asarray(pkd_vec, dtype=float)
+    if np.all(np.isnan(arr)):
+        return float("nan")
+    top_idx = int(np.nanargmax(arr))
+    return partition_index(arr, top_idx)
+
+
 def selectivity_vector(
     pkd_row: pd.Series,
     panel: list[str] = None,
@@ -224,6 +292,9 @@ class SelectivityScorecard:
     second_target_pkd: float
     mechanism_class: str
     selectivity_category: str
+    # V5/§7.4 v2 additions — Shannon entropy + Cheng 2010 Partition Index
+    entropy: float = float("nan")              # 0 mono-selective; 1 panel-flat
+    partition_index_top: float = float("nan")  # 0 promiscuous; 1 top-target-dominated
 
 
 def score_compound(
@@ -252,6 +323,8 @@ def score_compound(
 
     g_pt, g_lo, g_hi = bootstrap_gini_ci(sel_vec)
     s10 = s_10x(sel_vec)
+    h_norm = selectivity_entropy(sel_vec)
+    pi_top = top_target_partition_index(sel_vec)
 
     # Top + second by RAW predicted_pkd (not by selectivity vector), so we report
     # the actual binding rank rather than the rank-percentile-substituted score.
@@ -278,6 +351,8 @@ def score_compound(
         second_target_gene=second_gene, second_target_pkd=second_pkd,
         mechanism_class=mechanism,
         selectivity_category=cat.label,
+        entropy=h_norm,
+        partition_index_top=pi_top,
     )
 
 
@@ -322,6 +397,8 @@ def score_panel(
             "gini_ci_low": sc.gini_ci_low,
             "gini_ci_high": sc.gini_ci_high,
             "s_10x": sc.s_10x,
+            "entropy": sc.entropy,
+            "partition_index_top": sc.partition_index_top,
             "top_target": sc.top_target_gene,
             "top_target_pkd": sc.top_target_pkd,
             "second_target": sc.second_target_gene,

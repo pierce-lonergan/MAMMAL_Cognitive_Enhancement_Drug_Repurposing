@@ -353,6 +353,36 @@ def chembl_actives_with_smiles_for_target(
     return pd.read_sql_query(sql, conn, params=(target_uniprot, min_pchembl))
 
 
+def chembl_moa_for_target(target_uniprot: str) -> pd.DataFrame:
+    """Return per-molecule MoA annotations (action_type + mechanism_of_action)
+    at a single UniProt accession.
+
+    Used by `cluster_b.moa_ranker` for the §8.7 MoA fusion input.
+
+    Returns DataFrame with columns:
+        inchikey, action_type, mechanism_of_action, binding_site_comment,
+        molecule_chembl_id.
+    """
+    sql = """
+    SELECT DISTINCT
+        cs.standard_inchi_key   AS inchikey,
+        mech.action_type        AS action_type,
+        mech.mechanism_of_action AS mechanism_of_action,
+        mech.binding_site_comment AS binding_site_comment,
+        md.chembl_id            AS molecule_chembl_id
+    FROM drug_mechanism mech
+    JOIN target_dictionary td ON mech.tid = td.tid
+    JOIN target_components tc ON td.tid = tc.tid
+    JOIN component_sequences cseq ON tc.component_id = cseq.component_id
+    JOIN molecule_dictionary md ON mech.molregno = md.molregno
+    LEFT JOIN molecule_hierarchy mh ON md.molregno = mh.molregno
+    JOIN compound_structures cs ON COALESCE(mh.parent_molregno, md.molregno) = cs.molregno
+    WHERE cseq.accession = ?
+    """
+    conn = get_conn()
+    return pd.read_sql_query(sql, conn, params=(target_uniprot,))
+
+
 def close_conn() -> None:
     """Close the singleton connection (tests, teardown)."""
     global _CONN

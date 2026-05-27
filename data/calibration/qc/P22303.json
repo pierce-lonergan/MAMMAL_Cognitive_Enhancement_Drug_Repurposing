@@ -1,0 +1,8 @@
+{
+  "target_uniprot": "P22303",
+  "target_gene": "ACHE",
+  "audit_release": "36",
+  "audit_n": 2,
+  "status": "INSUFFICIENT_OVERLAP",
+  "note": "only 2 library compounds overlap ChEMBL truth at this target"
+}

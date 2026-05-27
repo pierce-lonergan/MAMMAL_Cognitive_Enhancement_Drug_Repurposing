@@ -1,0 +1,16 @@
+{
+  "target_uniprot": "Q08499",
+  "target_gene": "PDE4D",
+  "calibrator_tier": "C",
+  "calibrator_n_reported": 11,
+  "reported_post_cal_rho": -0.184683750447938,
+  "audit_release": "36",
+  "audit_n": 8,
+  "audit_post_cal_rho": -0.18516401995451026,
+  "audit_p_value": 0.6606714401174046,
+  "delta_rho": -0.00048026950657226175,
+  "n_out_of_calibration_range": 0,
+  "calibrator_raw_min": 5.504885673522949,
+  "calibrator_raw_max": 5.664425373077393,
+  "status": "OK"
+}

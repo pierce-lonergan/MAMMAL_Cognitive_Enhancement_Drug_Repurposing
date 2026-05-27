@@ -1,0 +1,16 @@
+{
+  "target_uniprot": "Q99720",
+  "target_gene": "SIGMAR1",
+  "calibrator_tier": "C",
+  "calibrator_n_reported": 21,
+  "reported_post_cal_rho": 0.0519480519480519,
+  "audit_release": "36",
+  "audit_n": 8,
+  "audit_post_cal_rho": -0.5998866106008962,
+  "audit_p_value": 0.11592710157296161,
+  "delta_rho": -0.6518346625489481,
+  "n_out_of_calibration_range": 0,
+  "calibrator_raw_min": 6.08068323135376,
+  "calibrator_raw_max": 6.317469120025635,
+  "status": "REFIT_NEEDED"
+}

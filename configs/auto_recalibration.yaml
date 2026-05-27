@@ -1,0 +1,69 @@
+version: 1
+# §8.12 — Cron-driven auto-recalibration cascade configuration.
+#
+# Triggers (cascade fires if ANY mtime is newer than the previous run's
+# completion marker at data/calibration/qc/.last_run.json):
+trigger_files:
+  - data/results/v2/boltzina_affinity.parquet
+  - data/results/dti_scores.parquet
+  - configs/weights_calibrated.yaml
+  - data/results/dti_scores_calibrated.parquet
+
+# Gating policy: if any Tier-A calibrator shows REFIT_NEEDED at §8.16 QC,
+# block the cascade and emit a notification. The maintainer must explicitly
+# decide to refit the calibrator or override the gate.
+gating_policy:
+  block_on_refit_needed: true
+  tier_a_targets:
+    - Q01959    # SLC6A3 (DAT) — primary Tier-A anchor
+    - P23975    # SLC6A2 (NET) — Tier-B but high-value
+  refit_on_degrade_count: 3      # auto-refit if ≥3 calibrators degrade
+
+# Cascade steps in order. Each step is logged to data/calibration/cascade/.
+cascade:
+  - id: phase_a7
+    description: "Phase A.7 per-target calibration linchpin"
+    command: "python scripts/22_v3_calibration.py"
+    blocking: true
+  - id: phase_c_fusion
+    description: "v7 RRF fusion with calibrated + Z-norm + Tanimoto + MoA"
+    command: >
+      python scripts/15_v2_fusion.py
+        --calibrated-mammal --znorm-mammal
+        --add-tanimoto-ranker --add-moa-ranker
+        --out-suffix _v7_moa_cron
+    blocking: true
+  - id: phase_d_diff
+    description: "Calibration diff report"
+    command: "python scripts/25_v3_fusion_diff.py"
+    blocking: false
+  - id: wet_lab_shortlist
+    description: "v6/v7 wet-lab shortlist with §8.0b-zn + faceted"
+    command: >
+      python scripts/36_v5_wet_lab_shortlist.py
+        --v6-ranking data/results/v2/final_ranking_v7_moa_cron.parquet
+        --report reports/wet_lab_shortlist_v7_cron.md
+    blocking: true
+  - id: hypothesis_audit
+    description: "Re-run hypothesis-validation harness"
+    command: "python scripts/41_v5_hypothesis_audit.py"
+    blocking: false      # Don't block on degradation; emit notification
+  - id: calibrator_qc
+    description: "§8.16 round-trip QC vs latest ChEMBL"
+    command: "python scripts/38_v5_calibrator_qc.py"
+    blocking: false      # logged for review
+
+# Where to write the post-run state marker
+last_run_marker: data/calibration/qc/.last_run.json
+
+# Notification channels (PowerShell BurntToast or webhook URL)
+notification:
+  on_block:
+    method: toast
+    title: "MAMMAL repurposing recalibration BLOCKED"
+  on_complete:
+    method: toast
+    title: "MAMMAL repurposing cascade complete"
+  on_degrade:
+    method: log
+    file: data/calibration/cascade/degradation.log

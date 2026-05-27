@@ -1,0 +1,16 @@
+{
+  "target_uniprot": "O76083",
+  "target_gene": "PDE9A",
+  "calibrator_tier": "C",
+  "calibrator_n_reported": 11,
+  "reported_post_cal_rho": -0.4777670520327407,
+  "audit_release": "36",
+  "audit_n": 10,
+  "audit_post_cal_rho": 0.29814239699997197,
+  "audit_p_value": 0.4027592281495932,
+  "delta_rho": 0.7759094490327128,
+  "n_out_of_calibration_range": 0,
+  "calibrator_raw_min": 5.614027500152588,
+  "calibrator_raw_max": 5.750824928283691,
+  "status": "REFIT_NEEDED"
+}

@@ -1,0 +1,14 @@
+{
+  "target_uniprot": "P08913",
+  "gene": "ADRA2A",
+  "n": 10,
+  "n_train": 5,
+  "n_cal": 5,
+  "alpha": 0.2,
+  "q_alpha": 0.4133,
+  "empirical_coverage_cal": 1.0,
+  "held_out_coverage": 1.0,
+  "raw_min": 6.214,
+  "raw_max": 6.349,
+  "status": "OK"
+}

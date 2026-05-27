@@ -1,0 +1,16 @@
+{
+  "target_uniprot": "Q01959",
+  "target_gene": "SLC6A3",
+  "calibrator_tier": "A",
+  "calibrator_n_reported": 23,
+  "reported_post_cal_rho": 0.6192241355335051,
+  "audit_release": "36",
+  "audit_n": 10,
+  "audit_post_cal_rho": 0.4294778451936666,
+  "audit_p_value": 0.2154702060783416,
+  "delta_rho": -0.18974629033983847,
+  "n_out_of_calibration_range": 0,
+  "calibrator_raw_min": 6.326000690460205,
+  "calibrator_raw_max": 6.499184608459473,
+  "status": "REFIT_NEEDED"
+}

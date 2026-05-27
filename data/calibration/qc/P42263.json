@@ -1,0 +1,8 @@
+{
+  "target_uniprot": "P42263",
+  "target_gene": "GRIA3",
+  "audit_release": "36",
+  "audit_n": 1,
+  "status": "INSUFFICIENT_OVERLAP",
+  "note": "only 1 library compounds overlap ChEMBL truth at this target"
+}

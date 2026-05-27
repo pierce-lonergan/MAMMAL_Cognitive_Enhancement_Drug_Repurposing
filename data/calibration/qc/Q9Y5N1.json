@@ -1,0 +1,16 @@
+{
+  "target_uniprot": "Q9Y5N1",
+  "target_gene": "HRH3",
+  "calibrator_tier": "C",
+  "calibrator_n_reported": 11,
+  "reported_post_cal_rho": -0.4555820475782052,
+  "audit_release": "36",
+  "audit_n": 5,
+  "audit_post_cal_rho": 0.2867696673382022,
+  "audit_p_value": 0.6399416161308045,
+  "delta_rho": 0.7423517149164074,
+  "n_out_of_calibration_range": 0,
+  "calibrator_raw_min": 6.653163433074951,
+  "calibrator_raw_max": 6.790101528167725,
+  "status": "REFIT_NEEDED"
+}
