@@ -107,6 +107,10 @@ def main() -> int:
                              "5th cluster (cluster_b_moa). Scores each (compound, "
                              "target) by how well the compound's ChEMBL MoA "
                              "annotation matches the preferred-MoA-for-cognition.")
+    parser.add_argument("--add-mmatt-ranker", action="store_true",
+                        help="Add V6.A.1 MMAtt-DTA per-target conditional ranker "
+                             "as cluster_a_mmatt. Reads data/results/v2/mmatt_for_fusion.parquet "
+                             "(already INVERT-target-masked per V6.A.1 empirical ρ).")
     args = parser.parse_args()
 
     ensure_dirs()
@@ -345,6 +349,17 @@ def main() -> int:
         )
         logger.info("MoA ranker: %d (target, compound) scores.", len(moa_long))
         additional_long.append(moa_long)
+
+    # V6.A.1 — MMAtt-DTA conditional ranker (INVERT-masked)
+    if args.add_mmatt_ranker:
+        mmatt_parq = V2_DIR / "mmatt_for_fusion.parquet"
+        if mmatt_parq.exists():
+            mm_df = pd.read_parquet(mmatt_parq)
+            logger.info("MMAtt-DTA ranker: %d (target, compound) scores across %d targets",
+                        len(mm_df), mm_df["target_uniprot"].nunique())
+            additional_long.append(mm_df)
+        else:
+            logger.warning("--add-mmatt-ranker but %s missing; skipping", mmatt_parq)
 
     long_scores = pd.concat([mammal_long, admet_long, *additional_long], ignore_index=True)
     logger.info("Fusion input: %d rows across %d rankers: %s",

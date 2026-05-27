@@ -91,6 +91,10 @@ def main() -> int:
     # PrimeKG kg_scores per-compound (one value per compound, broadcast per-target)
     kg = pd.read_parquet(args.kg) if args.kg.exists() else pd.DataFrame()
 
+    # V6.A.1 — MMAtt-DTA per-(compound, target) predictions
+    mmatt_path = ROOT / "data" / "results" / "v2" / "mmatt_dta_predictions.parquet"
+    mmatt = pd.read_parquet(mmatt_path) if mmatt_path.exists() else pd.DataFrame()
+
     rows: list[HeadBiasSignature] = []
     for _, t in targets.iterrows():
         uni = t["uniprot"]
@@ -146,6 +150,27 @@ def main() -> int:
                 ood_fraction=float("nan"),
                 calibration_tier="B",   # KG topology = stable prior; treat as B
             ))
+
+        # V6.A.1 — MMAtt-DTA per-target head
+        if not mmatt.empty:
+            ms = mmatt[mmatt["uniprot_id"] == uni]
+            if not ms.empty:
+                mm_preds = ms["prediction"].to_numpy(dtype=float)
+                rows.append(HeadBiasSignature(
+                    head="MMAtt_DTA",
+                    target_uniprot=uni,
+                    n_predictions=len(mm_preds),
+                    pc_ratio=compute_pc_ratio(mm_preds),
+                    sn_rho=float("nan"),  # Not computed for MMAtt at the moment
+                    ood_fraction=float("nan"),
+                    # Tier from §V6.A.1 empirical: HRH3/HCRTR2/PDE4D/PDE9A/GRIN2B/DRD1
+                    # have ρ > +0.15; ADRA2A/CHRNA7/GRIA1/SIGMAR1/NTRK2 are INVERT
+                    calibration_tier="A" if uni in (
+                        "Q9Y5N1", "O43614", "Q01959"
+                    ) else "B" if uni in (
+                        "Q08499", "Q13224", "P21728", "O76083"
+                    ) else "D",   # INVERT or NoTruth
+                ))
 
     bias_df = pd.DataFrame([{
         "head": s.head, "target_uniprot": s.target_uniprot,

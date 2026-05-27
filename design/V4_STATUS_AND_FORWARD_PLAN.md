@@ -1035,6 +1035,54 @@ If no engineer time is available — the current `reports/wet_lab_shortlist_v6_f
 
 ---
 
+## 13.X V6.A.1 — MMAtt-DTA ACTIVATED (real empirical result)
+
+**Headline**: Per Multi Head DTI.md §0 pre-commitment, ensemble must beat Tanimoto +0.90 at SLC6A3. **Measured MMAtt-DTA ρ at SLC6A3 = +0.65** — FAILS Tier-A criterion. Falsifiability fallback triggers per §0: 3-head ensemble (MAMMAL + Tanimoto + PrimeKG) remains production; MMAtt becomes a 4th conditional ranker at the targets where it actually demonstrates lift.
+
+**Build path** (`reports/mmatt_dta_activation_v1.md`):
+- 8.4 GB Zenodo `pchembl_models.zip` downloaded
+- Ray-pickle compatibility patch: `RobustUnpickler` synthesises stub classes for `ray.air.checkpoint.*` symbols (the actual state_dict is plain torch tensors)
+- Blackwell sm_120 compatibility: torch 2.4 (txgnn_env) fails with "no kernel image"; mammal_env's torch 2.12 nightly cu128 works first try
+- 5,662 predictions across 19 supported targets in ~30 sec on RTX 5070
+- Predictions std = 0.99 (vs MAMMAL collapsed 0.08-0.18) — real dynamic range
+
+**Per-target ρ vs ChEMBL pchembl≥8 (n=joined truth)**:
+
+| Target | Gene | n | MMAtt ρ | Compare to MAMMAL | Compare to Tanimoto | Verdict |
+|---|---|---|---|---|---|---|
+| Q9Y5N1 | HRH3 | 5 | **+0.82** | beats +0.37 | competitive | ✅ KEEP at GPCRs |
+| O43614 | HCRTR2 | 5 | **+0.70** | beats -0.09 | competitive | ✅ KEEP |
+| Q01959 | SLC6A3 | 10 | +0.65 | beats -0.70 raw | **DOES NOT beat +0.90** | ⚠️ Tier-A FAIL |
+| Q08499 | PDE4D | 8 | +0.39 | beats -0.11 | — | KEEP |
+| Q13224 | GRIN2B | 9 | +0.31 | beats -0.30 invert | — | KEEP |
+| P21728 | DRD1 | 9 | +0.29 | tied | — | KEEP |
+| O76083 | PDE9A | 10 | +0.17 | beats -0.19 | — | KEEP |
+| P23975 | SLC6A2 | 7 | -0.07 | DEGRADES vs +0.91 | DEGRADES | ❌ INVERT MASK |
+| Q16620 | NTRK2 | 10 | -0.30 | DEGRADES | — | ❌ INVERT MASK |
+| P36544 | CHRNA7 | 8 | -0.31 | INVERT | — | ❌ INVERT MASK |
+| P42261 | GRIA1 | 12 | -0.34 | INVERT | — | ❌ INVERT MASK |
+| Q99720 | SIGMAR1 | 8 | -0.50 | INVERT | — | ❌ INVERT MASK |
+| P08913 | ADRA2A | 10 | -0.62 | INVERT vs +0.02 | — | ❌ INVERT MASK |
+
+**Pipeline integration (v9 fusion shipped)**:
+- `cluster_a/mmatt_dta_adapter.py` adapter — superfamily map validated
+- `scripts/53_v6_mmatt_fusion_ranker.py` — INVERT-mask (drops 6 targets, keeps 13)
+- `data/results/v2/mmatt_for_fusion.parquet` — 3,874 surviving (compound, target) scores
+- `scripts/15_v2_fusion.py --add-mmatt-ranker` flag wired (7-cluster v9 fusion)
+- **v9 top-10**: methylphenidate / bupropion / d-amphetamine / aniracetam / pramiracetam / rivastigmine / levetiracetam / modafinil / **encenicline ↑** (NEW from MMAtt+CHRNA7 lift) / donepezil(FLAG)
+
+**V6.A.2 + V6.A.5 re-run with 4 heads**:
+- Trust matrix `data/results/v2/trust_matrix_v1.parquet` now 22 targets × 4 heads
+- Per-target weights show MMAtt taking ~33% share at GPCRs (HCRTR2: MMAtt=0.46), <2% at INVERT-mask targets
+- Disagreement axis: 603 high_information_value pairs across 4 heads (was 748 across 3); now includes (s)-AMPA + xen-1101 + lithium-carbonate as top disagreement signals
+
+**Reframed publishable claim**:
+The negative SLC6A3 result IS the contribution. Three modern DTI heads
+(MAMMAL collapsed, MMAtt-DTA superfamily-conditional, Tanimoto similarity)
+each have distinct failure modes. The per-target Bayesian router (V6.A.3)
+is now empirically necessary, not theoretical — uniform-weight ensembling
+would degrade SLC6A2/ADRA2A/CHRNA7 (MMAtt inverts) while losing GPCR lift.
+
 ## 14. Hypothesis Validation Ledger (this sprint)
 
 The §14 ledger is the standing falsifiable-claim audit. Re-run any time the

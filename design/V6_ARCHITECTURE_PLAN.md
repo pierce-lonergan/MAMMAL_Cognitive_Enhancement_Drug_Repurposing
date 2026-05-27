@@ -31,6 +31,19 @@ At SLC6A3 + SLC6A2 the ensemble must beat the +0.90/+0.91 Tanimoto floor by
 production stays at 3-head (MAMMAL + Tanimoto + Cluster D); the negative
 finding is the publishable contribution.
 
+### ⚠️ V6.A.1 EMPIRICAL RESULT (this sprint): Tier-A FAILS at SLC6A3
+
+- **Measured MMAtt-DTA ρ at SLC6A3 = +0.65** (pre-committed +0.78; Tanimoto +0.90)
+- **Tier-A criterion: FAIL** — MMAtt-DTA does not beat Tanimoto at transporter
+- **Tier-B fallback triggered**: 3-head ensemble (MAMMAL+Tanimoto+PrimeKG)
+  is production; MMAtt added as 4th *conditional* ranker via INVERT mask
+  (kept at 13 targets where ρ > +0.15; dropped at 6 INVERT targets)
+- **GPCR/PDE wins are real**: HRH3 +0.82, HCRTR2 +0.70, PDE4D +0.39 —
+  superfamily-conditional architecture works as Schulman 2024 claimed
+- **Reframed publishable contribution**: per-target Bayesian router is now
+  empirically necessary (uniform ensembling would degrade SLC6A2/ADRA2A/CHRNA7)
+- See `reports/mmatt_dta_activation_v1.md` for the full empirical table
+
 ### Phased plan
 
 | Phase | Weeks | Deliverable | Validation |

@@ -114,7 +114,24 @@ def main() -> int:
             })
     kg_long = pd.DataFrame(kg_long_rows)
 
-    all_long = pd.concat([mammal_long, tanimoto_long, kg_long], ignore_index=True)
+    # V6.A.1 — MMAtt-DTA per-(compound, target) predictions
+    mmatt_path = ROOT / "data/results/v2/mmatt_dta_predictions.parquet"
+    mmatt_long = pd.DataFrame()
+    if mmatt_path.exists():
+        mm = pd.read_parquet(mmatt_path)
+        # Join SMILES → compound_name from compounds parquet
+        compounds = pd.read_parquet(ROOT / "data/interim/compounds.parquet")
+        smi_to_name = dict(zip(compounds["smiles"], compounds["name"]))
+        mm["compound_name"] = mm["smiles"].map(smi_to_name)
+        mm = mm.dropna(subset=["compound_name"])
+        mmatt_long = mm[["uniprot_id", "compound_name", "prediction"]].rename(
+            columns={"uniprot_id": "target_uniprot", "prediction": "score"}
+        )
+        mmatt_long["head"] = "MMAtt_DTA"
+
+    all_long = pd.concat(
+        [mammal_long, tanimoto_long, kg_long, mmatt_long], ignore_index=True
+    )
     heads = sorted(all_long["head"].unique())
     logger.info("Heads available: %s", heads)
 
