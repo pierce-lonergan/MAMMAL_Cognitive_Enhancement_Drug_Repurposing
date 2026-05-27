@@ -106,6 +106,7 @@ def main() -> int:
                 len(compounds_surviving))
 
     target_uniprots = targets["uniprot"].tolist()
+    target_gene_symbols = targets["gene"].tolist()
 
     # ------------------- PrimeKG path scoring -------------------
     primekg_rows: list[dict] = []
@@ -120,6 +121,8 @@ def main() -> int:
                 compound_chembl_id=chembl_id,
                 compound_drugbank_id=None,
                 target_uniprots=target_uniprots,
+                compound_name=name,
+                target_gene_symbols=target_gene_symbols,
             )
             primekg_rows.append({"compound_name": name, **{f"kg_{k}": v for k, v in kg_score.items()}})
         primekg_df = pd.DataFrame(primekg_rows)

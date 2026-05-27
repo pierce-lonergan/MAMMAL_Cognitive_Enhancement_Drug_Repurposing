@@ -83,37 +83,51 @@ def load_primekg(path: Path | str = PRIMEKG_CSV) -> "ig.Graph":
     return g
 
 
-def resolve_uniprot_to_node(g: "ig.Graph", uniprot: str) -> int | None:
+def resolve_uniprot_to_node(g: "ig.Graph", uniprot: str,
+                            gene_symbol: str | None = None) -> int | None:
     """Find the PrimeKG gene/protein node for a UniProt accession.
 
-    PrimeKG gene/protein nodes are typically keyed by NCBI gene ID, but
-    `name` field often contains the canonical gene symbol; some have UniProt
-    cross-refs in the id field directly. We try multiple matches.
+    PrimeKG gene/protein nodes are keyed by NCBI gene ID with `name` = canonical
+    gene symbol (e.g. id='1813', name='DRD2'). The cheapest resolver path is
+    therefore by gene symbol against the `name` attribute.
     """
-    # Exact id match
+    # Cheap path — gene symbol against name
+    if gene_symbol:
+        matches = g.vs.select(name_eq=gene_symbol, type_eq="gene/protein")
+        if len(matches) > 0:
+            return matches[0].index
+    # Exact id match (rare — only when caller already has NCBI gene id)
     matches = g.vs.select(id_eq=uniprot)
     if len(matches) > 0:
         return matches[0].index
-    # Substring search on id (some PrimeKG ids include the accession)
-    for v in g.vs.select(type_eq="gene/protein"):
-        if uniprot in (v["id"] or ""):
-            return v.index
     return None
 
 
 def resolve_compound_to_node(g: "ig.Graph", chembl_id: str | None,
-                             drugbank_id: str | None = None) -> int | None:
-    """Find the PrimeKG drug node for a compound by ChEMBL or DrugBank ID."""
+                             drugbank_id: str | None = None,
+                             name: str | None = None) -> int | None:
+    """Find the PrimeKG drug node for a compound by DrugBank ID, ChEMBL ID,
+    or lowercased name. PrimeKG drug nodes are keyed by `id` = DrugBank ID
+    with `name` = lowercased drug name (e.g. 'donepezil')."""
     if drugbank_id:
         matches = g.vs.select(id_eq=drugbank_id)
         if len(matches) > 0:
             return matches[0].index
     if chembl_id:
-        # PrimeKG drug nodes may be keyed by drugbank, name, or chembl
         for prefix in (chembl_id, f"CHEMBL.{chembl_id}", f"CHEMBL:{chembl_id}"):
             matches = g.vs.select(id_eq=prefix)
             if len(matches) > 0:
                 return matches[0].index
+    if name:
+        # PrimeKG drug nodes store the lowercased drug name in `name` attr.
+        # First exact match (cheap, igraph indexes name).
+        matches = g.vs.select(name_eq=name.lower().strip(), type_eq="drug")
+        if len(matches) > 0:
+            return matches[0].index
+        # Then try title-case (PrimeKG x_name "Donepezil")
+        matches = g.vs.select(name_eq=name.strip().capitalize(), type_eq="drug")
+        if len(matches) > 0:
+            return matches[0].index
     return None
 
 
@@ -146,9 +160,16 @@ def score_compound_against_panel(
     compound_chembl_id: str | None,
     compound_drugbank_id: str | None,
     target_uniprots: list[str],
+    compound_name: str | None = None,
+    target_gene_symbols: list[str] | None = None,
 ) -> dict:
-    """End-to-end: resolve compound + panel targets to nodes, compute PPR + shortest path."""
-    src = resolve_compound_to_node(g, compound_chembl_id, compound_drugbank_id)
+    """End-to-end: resolve compound + panel targets to nodes, compute PPR + shortest path.
+
+    target_gene_symbols (if provided, aligned with target_uniprots) enables
+    the cheap name-based protein resolver against PrimeKG's gene/protein
+    nodes (`name` = canonical gene symbol).
+    """
+    src = resolve_compound_to_node(g, compound_chembl_id, compound_drugbank_id, compound_name)
     if src is None:
         return {
             "compound_node_found": False,
@@ -159,8 +180,10 @@ def score_compound_against_panel(
         }
 
     target_indices: list[int] = []
+    gene_map = (dict(zip(target_uniprots, target_gene_symbols))
+                if target_gene_symbols else {})
     for u in target_uniprots:
-        n = resolve_uniprot_to_node(g, u)
+        n = resolve_uniprot_to_node(g, u, gene_symbol=gene_map.get(u))
         if n is not None:
             target_indices.append(n)
 
