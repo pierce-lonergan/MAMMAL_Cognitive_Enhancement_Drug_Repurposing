@@ -31,10 +31,17 @@ source "$VENV/bin/activate"
 python -m pip install --upgrade --quiet pip
 
 echo ""
-echo "=== Step 3: PyTorch 2.7.0 nightly cu128 (PyG-compatible) ==="
-pip install --quiet --pre torch==2.7.0+cu128 torchvision \
-    --index-url https://download.pytorch.org/whl/nightly/cu128 \
-    || pip install --quiet --pre torch torchvision --index-url https://download.pytorch.org/whl/nightly/cu128
+echo "=== Step 3: PyTorch 2.7.0 STABLE cu128 (PyG-compatible — NOT nightly) ==="
+# Pin the exact version PyG ships wheels for. The Cluster C run does NOT
+# need cuequivariance kernels (those are Boltz's requirement, not TxGNN's).
+# Prior attempt with `--pre` on the nightly index fell through to torch
+# 2.12.0.dev which is incompatible with the PyG 2.7-targeted wheels.
+pip uninstall -y torch torchvision torchaudio 2>/dev/null || true
+pip install --quiet torch==2.7.0 torchvision==0.22.0 \
+    --index-url https://download.pytorch.org/whl/cu128
+
+# Verify torch is the pinned major.minor
+python -c "import torch; assert torch.__version__.startswith('2.7'), torch.__version__; print('torch', torch.__version__, 'CUDA', torch.cuda.is_available())"
 
 echo ""
 echo "=== Step 4: PyG core wheels (matching torch 2.7.0+cu128) ==="

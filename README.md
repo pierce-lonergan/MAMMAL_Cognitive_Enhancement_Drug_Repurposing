@@ -182,6 +182,7 @@ See also: [`design/V3_ATTACK_PLAN.md`](design/V3_ATTACK_PLAN.md) and the sprint 
 | **§7.15 Hierarchical Bayes (GRIN pool)** (Tier-3b sprint) | [`reports/hierarchical_bayes_v1.md`](reports/hierarchical_bayes_v1.md) |
 | **§8.14 Pocket-routed isotonic** (Tier-3b sprint, S1 vs S2 demo) | [`reports/pocket_routed_calibration_v1.md`](reports/pocket_routed_calibration_v1.md) |
 | **§8.2 DrugComb combinations** (Tier-3b sprint, fallback table) | [`reports/drugcomb_combinations_v1.md`](reports/drugcomb_combinations_v1.md) |
+| **V6 architecture plan** (Multi Head DTI + Cluster D) | [`design/V6_ARCHITECTURE_PLAN.md`](design/V6_ARCHITECTURE_PLAN.md) |
 | What did calibration change in the rankings? | [`reports/fusion_calibration_diff.md`](reports/fusion_calibration_diff.md), [`reports/fusion_tanimoto_addition_diff.md`](reports/fusion_tanimoto_addition_diff.md) |
 | Phase A.5 SQLite agreement gate | [`reports/sqlite_vs_rest_smoke.md`](reports/sqlite_vs_rest_smoke.md) |
 | Original research deep-dive | [`research/compass_artifact_wf-*.md`](research/) |
