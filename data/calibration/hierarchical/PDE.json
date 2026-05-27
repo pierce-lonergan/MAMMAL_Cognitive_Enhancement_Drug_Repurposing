@@ -1,0 +1,31 @@
+{
+  "family": "PDE",
+  "targets": [
+    "O76083",
+    "Q08499"
+  ],
+  "n_per_target": {
+    "O76083": 10,
+    "Q08499": 8
+  },
+  "single_target_rho": {
+    "Q08499": 0.4331552064814231,
+    "O76083": 0.2173639715801966
+  },
+  "pooled_rho": {
+    "O76083": 0.2640547671596848,
+    "Q08499": 0.3714486687704669
+  },
+  "pooled_ci_lower": {
+    "O76083": -0.44876349127119974,
+    "Q08499": -0.474736092610026
+  },
+  "pooled_ci_upper": {
+    "O76083": 0.7715211365190666,
+    "Q08499": 0.8607862519949507
+  },
+  "family_mean_rho": 0.3132711870918528,
+  "shrinkage_weight": 0.49922419686671615,
+  "method": "empirical_bayes_shrinkage",
+  "note": "PyMC not installed; using James-Stein shrinkage. Install pymc + numpyro for full NUTS posterior credible intervals."
+}

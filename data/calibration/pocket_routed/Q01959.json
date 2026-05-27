@@ -1,0 +1,21 @@
+{
+  "target": "Q01959",
+  "lift": {
+    "global_ssr": 2.143533333333333,
+    "routed_ssr": 1.1132666666666649,
+    "lift_pct": 48.06394426647599,
+    "n_total": 10,
+    "n_by_pocket": {
+      "S1_orthosteric": 5,
+      "S2_vestibule": 5
+    }
+  },
+  "n_by_pocket": {
+    "S1_orthosteric": 5,
+    "S2_vestibule": 5
+  },
+  "fitted_pockets": [
+    "S1_orthosteric",
+    "S2_vestibule"
+  ]
+}

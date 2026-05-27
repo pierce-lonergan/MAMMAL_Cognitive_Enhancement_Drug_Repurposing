@@ -178,6 +178,10 @@ See also: [`design/V3_ATTACK_PLAN.md`](design/V3_ATTACK_PLAN.md) and the sprint 
 | **§7.12 Conformal prediction per-target** (Tier-3 sprint) | [`reports/conformal_calibration_v1.md`](reports/conformal_calibration_v1.md) |
 | **§7.13 Scaffold-aware AL re-ranking** (Tier-3 sprint) | [`reports/scaffold_aware_v1.md`](reports/scaffold_aware_v1.md) |
 | **§8.6 Brain-region annotation** (Tier-3 sprint, V6 Cluster D preview) | [`reports/brain_region_v1.md`](reports/brain_region_v1.md) |
+| **LambdaMART meta-ranker** (Tier-3b sprint, NDCG@25 = 0.891 vs 0.774 baseline) | [`reports/lambdamart_meta_v1.md`](reports/lambdamart_meta_v1.md) |
+| **§7.15 Hierarchical Bayes (GRIN pool)** (Tier-3b sprint) | [`reports/hierarchical_bayes_v1.md`](reports/hierarchical_bayes_v1.md) |
+| **§8.14 Pocket-routed isotonic** (Tier-3b sprint, S1 vs S2 demo) | [`reports/pocket_routed_calibration_v1.md`](reports/pocket_routed_calibration_v1.md) |
+| **§8.2 DrugComb combinations** (Tier-3b sprint, fallback table) | [`reports/drugcomb_combinations_v1.md`](reports/drugcomb_combinations_v1.md) |
 | What did calibration change in the rankings? | [`reports/fusion_calibration_diff.md`](reports/fusion_calibration_diff.md), [`reports/fusion_tanimoto_addition_diff.md`](reports/fusion_tanimoto_addition_diff.md) |
 | Phase A.5 SQLite agreement gate | [`reports/sqlite_vs_rest_smoke.md`](reports/sqlite_vs_rest_smoke.md) |
 | Original research deep-dive | [`research/compass_artifact_wf-*.md`](research/) |

@@ -1,0 +1,31 @@
+{
+  "family": "SLC6",
+  "targets": [
+    "P23975",
+    "Q01959"
+  ],
+  "n_per_target": {
+    "P23975": 7,
+    "Q01959": 10
+  },
+  "single_target_rho": {
+    "Q01959": -0.2068372574533107,
+    "P23975": -0.2285835246911499
+  },
+  "pooled_rho": {
+    "P23975": -0.22187735375068235,
+    "Q01959": -0.21113262382211773
+  },
+  "pooled_ci_lower": {
+    "P23975": -0.8389500438835745,
+    "Q01959": -0.7457794747161005
+  },
+  "pooled_ci_upper": {
+    "P23975": 0.6448067660794763,
+    "Q01959": 0.48893829294103497
+  },
+  "family_mean_rho": -0.2157916027865386,
+  "shrinkage_weight": 0.4980266176592897,
+  "method": "empirical_bayes_shrinkage",
+  "note": "PyMC not installed; using James-Stein shrinkage. Install pymc + numpyro for full NUTS posterior credible intervals."
+}
