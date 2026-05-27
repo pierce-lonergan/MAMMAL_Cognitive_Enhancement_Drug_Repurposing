@@ -515,6 +515,335 @@ def h12_moa_preserves_top3() -> HypothesisVerdict:
 
 
 # ---------------------------------------------------------------------------
+# V6 phase 3 + V7 + V8 + V6.B.4 hypotheses (this sprint additions)
+# ---------------------------------------------------------------------------
+def h13_balm_availability_probe() -> HypothesisVerdict:
+    """BALM adapter graceful degradation: availability() must never throw,
+    must return {'available': bool}; if weights missing, must have 'reason'."""
+    try:
+        from mammal_repurposing.cluster_a.balm_adapter import availability
+        a = availability()
+        ok = isinstance(a, dict) and "available" in a
+        if not a.get("available") and "reason" not in a:
+            return HypothesisVerdict(
+                id="H13", claim="BALM adapter availability probe is well-formed",
+                status="FAIL",
+                measured=str(a)[:80],
+                expected="dict with 'available' + (if False, 'reason')",
+            )
+        return HypothesisVerdict(
+            id="H13",
+            claim="BALM adapter availability probe is well-formed",
+            status="PASS" if ok else "FAIL",
+            measured=str(a)[:80],
+            expected="dict with 'available' boolean",
+        )
+    except Exception as e:
+        return HypothesisVerdict(
+            id="H13", claim="BALM adapter availability probe", status="FAIL",
+            measured=f"raised {type(e).__name__}: {e}",
+        )
+
+
+def h14_ot_genetics_cognition_studies() -> HypothesisVerdict:
+    """OT Genetics fetcher includes the 5 cognition GWAS studies per
+    V6.B.1 Stage 2 spec (Davies + Hill + Savage + Sniekers + UKBB)."""
+    try:
+        from mammal_repurposing.cluster_d.data_fetchers import COGNITION_GWAS_STUDIES
+        canonical = {"GCST006269", "GCST006716", "GCST006250", "GCST005059"}
+        present = set(COGNITION_GWAS_STUDIES.keys())
+        missing = canonical - present
+        if missing:
+            return HypothesisVerdict(
+                id="H14",
+                claim="OT Genetics fetcher includes ≥4 canonical cognition GWAS",
+                status="FAIL",
+                measured=f"present={sorted(present)}",
+                expected=f"superset of {sorted(canonical)}",
+            )
+        return HypothesisVerdict(
+            id="H14",
+            claim="OT Genetics fetcher includes ≥4 canonical cognition GWAS",
+            status="PASS" if len(COGNITION_GWAS_STUDIES) >= 4 else "DEGRADE",
+            measured=f"{len(COGNITION_GWAS_STUDIES)} studies registered",
+            expected="≥4 cognition GWAS",
+        )
+    except Exception as e:
+        return HypothesisVerdict(
+            id="H14", claim="OT Genetics cognition studies", status="FAIL",
+            measured=f"raised {type(e).__name__}: {e}",
+        )
+
+
+def h15_pymc_nuts_stub_path() -> HypothesisVerdict:
+    """Stage 0 stub posterior runs without PyMC and produces σ(θ) ∈ (0, 1)
+    per target. Falsifier: stub returns nan or values outside (0, 1)."""
+    try:
+        from mammal_repurposing.cluster_d.bayesian_prior import (
+            fit_cluster_d_prior_stub,
+        )
+        post = fit_cluster_d_prior_stub(
+            ["P22303", "Q01959", "P36544"],
+            y_ahba={"P22303": 0.5, "Q01959": -0.2, "P36544": 0.1},
+            y_l2g={"P22303": 0.7, "Q01959": 0.4},
+        )
+        all_valid = all(0 < w < 1 for w in post.w_pipeline.values())
+        return HypothesisVerdict(
+            id="H15",
+            claim="Cluster D PyMC stub path produces σ(θ) ∈ (0, 1) per target",
+            status="PASS" if all_valid else "FAIL",
+            measured=f"w_pipeline={post.w_pipeline}",
+            expected="all w ∈ (0, 1)",
+        )
+    except Exception as e:
+        return HypothesisVerdict(
+            id="H15", claim="Cluster D NUTS stub path", status="FAIL",
+            measured=f"raised {type(e).__name__}: {e}",
+        )
+
+
+def h16_txgnn_per_disease_api() -> HypothesisVerdict:
+    """TxGNN per-disease ranking API: 5 cognition anchors registered,
+    availability probe returns dict, aggregate_per_compound preserves
+    weighted mean."""
+    try:
+        from mammal_repurposing.cluster_c.txgnn import (
+            COGNITION_ANCHORS, availability, aggregate_per_compound,
+        )
+        anchors_ok = len(COGNITION_ANCHORS) == 5
+        avail = availability()
+        avail_ok = isinstance(avail, dict) and "available" in avail
+        # Smoke aggregate_per_compound
+        long = pd.DataFrame([
+            {"compound_id": "X", "anchor_id": "A1", "anchor_name": "n",
+             "weight": 1.0, "p_indication": 0.8, "p_contraindication": 0.1},
+            {"compound_id": "X", "anchor_id": "A2", "anchor_name": "n",
+             "weight": 1.0, "p_indication": 0.6, "p_contraindication": 0.2},
+        ])
+        agg = aggregate_per_compound(long)
+        wmean_ok = abs(agg.iloc[0]["mean_p_indication"] - 0.7) < 1e-6
+        if anchors_ok and avail_ok and wmean_ok:
+            return HypothesisVerdict(
+                id="H16",
+                claim="TxGNN per-disease API: 5 anchors + availability + weighted mean",
+                status="PASS",
+                measured=f"5 anchors, avail={avail.get('available')}, wmean=0.70",
+            )
+        return HypothesisVerdict(
+            id="H16",
+            claim="TxGNN per-disease API: 5 anchors + availability + weighted mean",
+            status="FAIL",
+            measured=f"anchors_ok={anchors_ok}, avail_ok={avail_ok}, wmean_ok={wmean_ok}",
+        )
+    except Exception as e:
+        return HypothesisVerdict(
+            id="H16", claim="TxGNN per-disease API", status="FAIL",
+            measured=f"raised {type(e).__name__}: {e}",
+        )
+
+
+def h17_pbpk_pet_anchors_finite() -> HypothesisVerdict:
+    """V7.1 PBPK PET-anchor residuals are finite + bounded for all 3 anchors
+    (donepezil cortical AChE / MPH DAT / haloperidol D2)."""
+    try:
+        from mammal_repurposing.translation.pbpk import (
+            compute_pet_anchor_residuals, PET_ANCHORS,
+        )
+        if len(PET_ANCHORS) < 3:
+            return HypothesisVerdict(
+                id="H17", claim="V7.1 PBPK PET anchors finite",
+                status="FAIL",
+                measured=f"only {len(PET_ANCHORS)} anchors",
+                expected="≥3 PET anchors",
+            )
+        residuals = compute_pet_anchor_residuals()
+        all_finite = all(np.isfinite(r["residual"]) for r in residuals)
+        bounded = all(abs(r["predicted"]) <= 1.0 for r in residuals)
+        if all_finite and bounded:
+            return HypothesisVerdict(
+                id="H17",
+                claim="V7.1 PBPK PET anchors produce finite bounded residuals",
+                status="PASS",
+                measured=f"residuals={[round(r['residual'], 3) for r in residuals]}",
+            )
+        return HypothesisVerdict(
+            id="H17",
+            claim="V7.1 PBPK PET anchors produce finite bounded residuals",
+            status="FAIL",
+            measured=f"finite={all_finite}, bounded={bounded}",
+        )
+    except Exception as e:
+        return HypothesisVerdict(
+            id="H17", claim="V7.1 PBPK PET anchors", status="FAIL",
+            measured=f"raised {type(e).__name__}: {e}",
+        )
+
+
+def h18_prisma_priors_12_classes() -> HypothesisVerdict:
+    """V7.2 PRISMA priors: exactly 12 mechanism classes, all with
+    peak_subdomain_g ≤ Roberts 2020 ceiling (0.50)."""
+    try:
+        from mammal_repurposing.translation.prisma_priors import (
+            PRISMA_CLASS_PRIORS,
+        )
+        n_classes = len(PRISMA_CLASS_PRIORS)
+        n_violations = sum(1 for cp in PRISMA_CLASS_PRIORS
+                           if cp.peak_subdomain_g > 0.50)
+        if n_classes == 12 and n_violations == 0:
+            return HypothesisVerdict(
+                id="H18",
+                claim="V7.2 PRISMA: 12 classes, all peak_g ≤ Roberts ceiling 0.50",
+                status="PASS",
+                measured=f"n_classes={n_classes}, n_violations=0",
+            )
+        return HypothesisVerdict(
+            id="H18",
+            claim="V7.2 PRISMA: 12 classes, all peak_g ≤ Roberts ceiling 0.50",
+            status="FAIL",
+            measured=f"n_classes={n_classes}, n_violations={n_violations}",
+            expected="n_classes=12, n_violations=0",
+        )
+    except Exception as e:
+        return HypothesisVerdict(
+            id="H18", claim="V7.2 PRISMA 12 classes", status="FAIL",
+            measured=f"raised {type(e).__name__}: {e}",
+        )
+
+
+def h19_lincs_availability_well_formed() -> HypothesisVerdict:
+    """V8.1 LINCS availability probe returns dict with cell_lines_supported
+    including the 3 neural lines (NPC, NEU, SHSY5Y)."""
+    try:
+        from mammal_repurposing.cluster_e.ingest_lincs import (
+            availability, COGNITION_CELL_LINES,
+        )
+        a = availability()
+        ok = (isinstance(a, dict)
+              and "cell_lines_supported" in a
+              and {"NPC", "NEU", "SHSY5Y"}.issubset(
+                  set(a["cell_lines_supported"])))
+        neural_weighted = all(COGNITION_CELL_LINES[c] == 1.0
+                              for c in ("NPC", "NEU", "SHSY5Y"))
+        if ok and neural_weighted:
+            return HypothesisVerdict(
+                id="H19",
+                claim="V8.1 LINCS: 3 neural cell lines weighted 1.0; probe well-formed",
+                status="PASS",
+                measured="NPC/NEU/SHSY5Y all weight=1.0",
+            )
+        return HypothesisVerdict(
+            id="H19",
+            claim="V8.1 LINCS: 3 neural cell lines weighted 1.0; probe well-formed",
+            status="FAIL",
+            measured=f"probe_ok={ok}, weighted={neural_weighted}",
+        )
+    except Exception as e:
+        return HypothesisVerdict(
+            id="H19", claim="V8.1 LINCS availability", status="FAIL",
+            measured=f"raised {type(e).__name__}: {e}",
+        )
+
+
+def h20_jumpcp_13_sources_known() -> HypothesisVerdict:
+    """V8.1b JUMP-CP: 13 source codes registered (s1-s13) per
+    Chandrasekaran 2024 design + 3 embedding types."""
+    try:
+        from mammal_repurposing.cluster_e.ingest_jumpcp import (
+            JUMP_SOURCES, EMBEDDING_TYPES,
+        )
+        n_sources = len(JUMP_SOURCES)
+        n_embed = len(EMBEDDING_TYPES)
+        sources_ok = all(f"s{i}" in JUMP_SOURCES for i in range(1, 14))
+        embed_ok = {"deepprofiler", "cellprofiler", "dinov2"}.issubset(
+            set(EMBEDDING_TYPES.keys()))
+        if n_sources == 13 and n_embed == 3 and sources_ok and embed_ok:
+            return HypothesisVerdict(
+                id="H20",
+                claim="V8.1b JUMP-CP: 13 sources × 3 embedding types registered",
+                status="PASS",
+                measured=f"sources={n_sources}, embeddings={n_embed}",
+            )
+        return HypothesisVerdict(
+            id="H20",
+            claim="V8.1b JUMP-CP: 13 sources × 3 embedding types registered",
+            status="FAIL",
+            measured=f"sources={n_sources}, embeddings={n_embed}, "
+                     f"sources_ok={sources_ok}, embed_ok={embed_ok}",
+        )
+    except Exception as e:
+        return HypothesisVerdict(
+            id="H20", claim="V8.1b JUMP-CP coverage", status="FAIL",
+            measured=f"raised {type(e).__name__}: {e}",
+        )
+
+
+def h21_validation_gates_framework() -> HypothesisVerdict:
+    """V6.B.4 validation gates: 15 reference compounds + 4 gates + Gate 1
+    correctly identifies a Roberts-ceiling violation."""
+    try:
+        from mammal_repurposing.cluster_d.validation_gates import (
+            REFERENCE_COMPOUND_SMD, gate_1_roberts_ceiling, availability,
+        )
+        avail = availability()
+        n_compounds = avail["n_reference_compounds"]
+        n_gates = avail["n_gates"]
+        # Synthetic violation: predict 0.65 at one target
+        result = gate_1_roberts_ceiling(
+            target_smd_predictions={"safe": 0.30, "bad": 0.65}, ceiling=0.50,
+        )
+        gate_fires = result.pass_status == "FAIL"
+        if n_compounds == 15 and n_gates == 4 and gate_fires:
+            return HypothesisVerdict(
+                id="H21",
+                claim="V6.B.4: 15 ref compounds + 4 gates + Gate 1 fires on g > 0.50",
+                status="PASS",
+                measured=f"n_compounds={n_compounds}, gate1='{result.pass_status}'",
+            )
+        return HypothesisVerdict(
+            id="H21",
+            claim="V6.B.4: 15 ref compounds + 4 gates + Gate 1 fires on g > 0.50",
+            status="FAIL",
+            measured=f"compounds={n_compounds}, gates={n_gates}, fires={gate_fires}",
+        )
+    except Exception as e:
+        return HypothesisVerdict(
+            id="H21", claim="V6.B.4 validation gates", status="FAIL",
+            measured=f"raised {type(e).__name__}: {e}",
+        )
+
+
+def h22_effect_size_cluster_d_gate() -> HypothesisVerdict:
+    """V7.3 effect-size stub: Cluster D multiplicative gate produces
+    monotonic dependence on relevance_post_mean."""
+    try:
+        from mammal_repurposing.translation.effect_size_model import (
+            EffectSizeObservation, fit_effect_size_stub,
+        )
+        obs = [
+            EffectSizeObservation("high", "AChE-I", "P22303",
+                                  pchembl_post_mean=8.5,
+                                  relevance_post_mean=0.90),
+            EffectSizeObservation("low", "AChE-I", "P22303",
+                                  pchembl_post_mean=8.5,
+                                  relevance_post_mean=0.10),
+        ]
+        post = fit_effect_size_stub(obs)
+        monotonic = post.g_mean["high"] >= post.g_mean["low"]
+        return HypothesisVerdict(
+            id="H22",
+            claim="V7.3: Cluster D multiplicative gate monotonic in relevance_post",
+            status="PASS" if monotonic else "FAIL",
+            measured=f"g(high)={post.g_mean['high']:.3f}, "
+                     f"g(low)={post.g_mean['low']:.3f}",
+        )
+    except Exception as e:
+        return HypothesisVerdict(
+            id="H22", claim="V7.3 Cluster D gate monotonicity", status="FAIL",
+            measured=f"raised {type(e).__name__}: {e}",
+        )
+
+
+# ---------------------------------------------------------------------------
 # Orchestrator
 # ---------------------------------------------------------------------------
 def main() -> int:
@@ -538,6 +867,17 @@ def main() -> int:
         h10_chrna7_rescue,
         h11_calibrator_drift,
         h12_moa_preserves_top3,
+        # V6 phase 3 + V7 + V8 + V6.B.4 falsifiers (this sprint)
+        h13_balm_availability_probe,
+        h14_ot_genetics_cognition_studies,
+        h15_pymc_nuts_stub_path,
+        h16_txgnn_per_disease_api,
+        h17_pbpk_pet_anchors_finite,
+        h18_prisma_priors_12_classes,
+        h19_lincs_availability_well_formed,
+        h20_jumpcp_13_sources_known,
+        h21_validation_gates_framework,
+        h22_effect_size_cluster_d_gate,
     ]
 
     verdicts = [t() for t in tests]

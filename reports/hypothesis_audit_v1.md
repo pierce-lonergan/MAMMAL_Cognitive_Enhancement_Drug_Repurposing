@@ -2,7 +2,7 @@
 
 Falsifiable re-test of every pre-committed claim from V3/V4/V5 design docs against the live production artifacts. **Brutal honesty mode** — no claim is grandfathered.
 
-**Summary**: PASS=9 | DEGRADE=3 | FAIL=0 | INSUFFICIENT_DATA=0 (of 12 hypotheses)
+**Summary**: PASS=19 | DEGRADE=3 | FAIL=0 | INSUFFICIENT_DATA=0 (of 22 hypotheses)
 
 ## Verdicts
 
@@ -20,6 +20,16 @@ Falsifiable re-test of every pre-committed claim from V3/V4/V5 design docs again
 | H10 | CHRNA7 rescue: TC-5619 + encenicline in top-25 by Boltzina affinity | **PASS** | found={'tc-5619': 1, 'encenicline': 5}; in_top25=2/2 | 2/2 in top-25 |
 | H11 | SLC6A3 (Tier A) calibrator drift |Δρ| ≤ 0.20 between fit and audit | **DEGRADE** | Δρ = -0.190 | |Δρ| ≤ 0.10 (PASS) / ≤ 0.20 (DEGRADE) /  |
 | H12 | Adding §8.7 MoA ranker preserves v6 top-3 in v7 | **PASS** | v6=['d-amphetamine', 'methylphenidate', 'bupropion']; v7=['d | set equality |
+| H13 | BALM adapter availability probe is well-formed | **PASS** | {'available': False, 'reason': 'BALM repo not found for subp | dict with 'available' boolean |
+| H14 | OT Genetics fetcher includes ≥4 canonical cognition GWAS | **PASS** | 5 studies registered | ≥4 cognition GWAS |
+| H15 | Cluster D PyMC stub path produces σ(θ) ∈ (0, 1) per target | **PASS** | w_pipeline={'P22303': 0.7721691574281991, 'Q01959': 0.372124 | all w ∈ (0, 1) |
+| H16 | TxGNN per-disease API: 5 anchors + availability + weighted mean | **PASS** | 5 anchors, avail=False, wmean=0.70 | None |
+| H17 | V7.1 PBPK PET anchors produce finite bounded residuals | **PASS** | residuals=[-0.191, -0.54, -0.65] | None |
+| H18 | V7.2 PRISMA: 12 classes, all peak_g ≤ Roberts ceiling 0.50 | **PASS** | n_classes=12, n_violations=0 | None |
+| H19 | V8.1 LINCS: 3 neural cell lines weighted 1.0; probe well-formed | **PASS** | NPC/NEU/SHSY5Y all weight=1.0 | None |
+| H20 | V8.1b JUMP-CP: 13 sources × 3 embedding types registered | **PASS** | sources=13, embeddings=3 | None |
+| H21 | V6.B.4: 15 ref compounds + 4 gates + Gate 1 fires on g > 0.50 | **PASS** | n_compounds=15, gate1='FAIL' | None |
+| H22 | V7.3: Cluster D multiplicative gate monotonic in relevance_post | **PASS** | g(high)=0.162, g(low)=0.018 | None |
 
 ## Detail per hypothesis
 
@@ -185,6 +195,69 @@ _Note_: Audit n=10 vs fit n=23
 
 **Expected**: set equality
 **Measured**: v6=['d-amphetamine', 'methylphenidate', 'bupropion']; v7=['d-amphetamine', 'methylphenidate', 'bupropion']
+
+### H13 — PASS
+
+**Claim**: BALM adapter availability probe is well-formed
+
+**Expected**: dict with 'available' boolean
+**Measured**: {'available': False, 'reason': 'BALM repo not found for subprocess fallback. Set
+
+### H14 — PASS
+
+**Claim**: OT Genetics fetcher includes ≥4 canonical cognition GWAS
+
+**Expected**: ≥4 cognition GWAS
+**Measured**: 5 studies registered
+
+### H15 — PASS
+
+**Claim**: Cluster D PyMC stub path produces σ(θ) ∈ (0, 1) per target
+
+**Expected**: all w ∈ (0, 1)
+**Measured**: w_pipeline={'P22303': 0.7721691574281991, 'Q01959': 0.3721242776511587, 'P36544': 0.33236988665395295}
+
+### H16 — PASS
+
+**Claim**: TxGNN per-disease API: 5 anchors + availability + weighted mean
+
+**Measured**: 5 anchors, avail=False, wmean=0.70
+
+### H17 — PASS
+
+**Claim**: V7.1 PBPK PET anchors produce finite bounded residuals
+
+**Measured**: residuals=[-0.191, -0.54, -0.65]
+
+### H18 — PASS
+
+**Claim**: V7.2 PRISMA: 12 classes, all peak_g ≤ Roberts ceiling 0.50
+
+**Measured**: n_classes=12, n_violations=0
+
+### H19 — PASS
+
+**Claim**: V8.1 LINCS: 3 neural cell lines weighted 1.0; probe well-formed
+
+**Measured**: NPC/NEU/SHSY5Y all weight=1.0
+
+### H20 — PASS
+
+**Claim**: V8.1b JUMP-CP: 13 sources × 3 embedding types registered
+
+**Measured**: sources=13, embeddings=3
+
+### H21 — PASS
+
+**Claim**: V6.B.4: 15 ref compounds + 4 gates + Gate 1 fires on g > 0.50
+
+**Measured**: n_compounds=15, gate1='FAIL'
+
+### H22 — PASS
+
+**Claim**: V7.3: Cluster D multiplicative gate monotonic in relevance_post
+
+**Measured**: g(high)=0.162, g(low)=0.018
 
 ---
 
