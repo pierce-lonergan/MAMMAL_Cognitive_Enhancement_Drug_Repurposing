@@ -389,8 +389,16 @@ def assert_p1_through_p8(
     predictions = predictions or default_predictions
     out: dict[str, str] = {}
     for pred_id, (lo, hi) in predictions.items():
-        # Match by suffix after first underscore
-        compound_key = pred_id.split("_", 1)[1] if "_" in pred_id else pred_id
+        # Match by *base* compound name (drop "Pn_" prefix AND any "_dose" suffix)
+        # e.g. "P3_methylphenidate_20mg" → base="methylphenidate"
+        parts = pred_id.split("_")
+        # Drop Pn prefix
+        if parts and parts[0].startswith("P") and parts[0][1:].isdigit():
+            parts = parts[1:]
+        # Drop dose suffix (e.g. "20mg", "200mg", "3mg")
+        if parts and parts[-1].endswith("mg") and parts[-1][:-2].replace(".", "").isdigit():
+            parts = parts[:-1]
+        compound_key = "_".join(parts) if parts else pred_id
         candidates = [c for c in posterior.compounds
                       if compound_key.lower() in c.lower()]
         if not candidates:

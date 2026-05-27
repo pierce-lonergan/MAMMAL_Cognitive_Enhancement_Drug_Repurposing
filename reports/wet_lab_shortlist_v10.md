@@ -25,40 +25,41 @@ Composes V6.A 4-head pchembl + V6.B Cluster D θ̄ + V7 effect-size + V8 πphen 
 ## Headline
 
 - Total ranked: **25** compounds
-- Roberts ceiling PASS: **5** (20%)
-- Roberts ceiling violations: **20**
+- Roberts ceiling PASS: **0** (0%)
+- Roberts ceiling violations: **25**
 - 8-cell distribution:
-  - `target_only`: 25
+  - `target_true.phenotype_failed`: 13
+  - `genetic_only`: 12
 
 ## Top-25 by wet-lab priority
 
 | Rank | Compound | Target | g | g₉₀ | I_novel | 8-cell | AXES |
 |---|---|---|---|---|---|---|---|
-| 1 | chembl2179877 | /P22303 | +0.12 | +0.46 | 0.30 | target_only | v6a,v7,v8 |
-| 2 | chembl5171984 | /P22303 | +0.12 | +0.47 | 0.31 | target_only | v6a,v7,v8 |
-| 3 | chembl2151438 | /P22303 | +0.12 | +0.46 | 0.30 | target_only | v6a,v7,v8 |
-| 4 | chembl1818445 | /P22303 | +0.12 | +0.47 | 0.31 | target_only | v6a,v7,v8 |
-| 5 | chembl1818444 | /P22303 | +0.12 | +0.47 | 0.31 | target_only | v6a,v7,v8 |
-| 6 | lisuride | /P22303 | +0.11 | +0.51 | 0.25 | target_only | v6a,v7,v8 |
-| 7 | liraglutide | /P22303 | +0.12 | +0.52 | 0.30 | target_only | v6a,v7,v8 |
-| 8 | lemborexant | /P22303 | +0.12 | +0.53 | 0.30 | target_only | v6a,v7,v8 |
-| 9 | tulrampator | /P22303 | +0.12 | +0.54 | 0.28 | target_only | v6a,v7,v8 |
-| 10 | (r,s)-ampa | /P22303 | +0.11 | +0.51 | 0.26 | target_only | v6a,v7,v8 |
-| 11 | (s)-ampa | /P22303 | +0.11 | +0.51 | 0.26 | target_only | v6a,v7,v8 |
-| 12 | ivabradine | /P22303 | +0.11 | +0.53 | 0.25 | target_only | v6a,v7,v8 |
-| 13 | chembl258349 | /P22303 | +0.12 | +0.61 | 0.28 | target_only | v6a,v7,v8 |
-| 14 | chembl2403550 | /P22303 | +0.12 | +0.50 | 0.28 | target_only | v6a,v7,v8 |
-| 15 | chembl2403549 | /P22303 | +0.12 | +0.50 | 0.28 | target_only | v6a,v7,v8 |
-| 16 | chembl2333945 | /P22303 | +0.11 | +0.51 | 0.26 | target_only | v6a,v7,v8 |
-| 17 | chembl206968 | /P22303 | +0.12 | +0.57 | 0.31 | target_only | v6a,v7,v8 |
-| 18 | chembl199454 | /P22303 | +0.12 | +0.61 | 0.31 | target_only | v6a,v7,v8 |
-| 19 | chembl272077 | /P22303 | +0.12 | +0.59 | 0.31 | target_only | v6a,v7,v8 |
-| 20 | chembl28394 | /P22303 | +0.12 | +0.54 | 0.28 | target_only | v6a,v7,v8 |
-| 21 | chembl1830963 | /P22303 | +0.12 | +0.53 | 0.29 | target_only | v6a,v7,v8 |
-| 22 | chembl1830646 | /P22303 | +0.12 | +0.51 | 0.33 | target_only | v6a,v7,v8 |
-| 23 | chembl1814790 | /P22303 | +0.11 | +0.59 | 0.26 | target_only | v6a,v7,v8 |
-| 24 | chembl180470 | /P22303 | +0.12 | +0.53 | 0.29 | target_only | v6a,v7,v8 |
-| 25 | fluoxetine | /P22303 | +0.11 | +0.51 | 0.26 | target_only | v6a,v7,v8 |
+| 1 | zicronapine | ACHE/P22303 | +0.07 | +0.55 | 0.29 | target_true.phenotype_failed | v6a,v6b,v7,v8 |
+| 2 | (r,s)-ampa | ACHE/P22303 | +0.07 | +0.56 | 0.26 | target_true.phenotype_failed | v6a,v6b,v7,v8 |
+| 3 | (s)-ampa | ACHE/P22303 | +0.07 | +0.56 | 0.26 | target_true.phenotype_failed | v6a,v6b,v7,v8 |
+| 4 | 2bact | ACHE/P22303 | +0.07 | +0.57 | 0.26 | target_true.phenotype_failed | v6a,v6b,v7,v8 |
+| 5 | 7-8-dihydroxyflavone | ACHE/P22303 | +0.07 | +0.55 | 0.24 | genetic_only | v6a,v6b,v7,v8 |
+| 6 | abt-107 | ACHE/P22303 | +0.07 | +0.53 | 0.27 | target_true.phenotype_failed | v6a,v6b,v7,v8 |
+| 7 | allopurinol | ACHE/P22303 | +0.06 | +0.51 | 0.20 | genetic_only | v6a,v6b,v7,v8 |
+| 8 | xen-1101 | ACHE/P22303 | +0.07 | +0.55 | 0.28 | target_true.phenotype_failed | v6a,v6b,v7,v8 |
+| 9 | amitriptyline | ACHE/P22303 | +0.07 | +0.58 | 0.26 | target_true.phenotype_failed | v6a,v6b,v7,v8 |
+| 10 | nortriptyline | ACHE/P22303 | +0.07 | +0.55 | 0.25 | genetic_only | v6a,v6b,v7,v8 |
+| 11 | olanzapine | ACHE/P22303 | +0.07 | +0.51 | 0.23 | genetic_only | v6a,v6b,v7,v8 |
+| 12 | omeprazole | ACHE/P22303 | +0.07 | +0.52 | 0.22 | genetic_only | v6a,v6b,v7,v8 |
+| 13 | orexin b | ACHE/P22303 | +0.07 | +0.60 | 0.31 | target_true.phenotype_failed | v6a,v6b,v7,v8 |
+| 14 | oxiracetam | ACHE/P22303 | +0.06 | +0.50 | 0.21 | genetic_only | v6a,v6b,v7,v8 |
+| 15 | paroxetine | ACHE/P22303 | +0.07 | +0.51 | 0.23 | genetic_only | v6a,v6b,v7,v8 |
+| 16 | pf-04447943 | ACHE/P22303 | +0.07 | +0.55 | 0.27 | target_true.phenotype_failed | v6a,v6b,v7,v8 |
+| 17 | piclamilast | ACHE/P22303 | +0.07 | +0.61 | 0.29 | target_true.phenotype_failed | v6a,v6b,v7,v8 |
+| 18 | lurasidone | ACHE/P22303 | +0.07 | +0.54 | 0.26 | target_true.phenotype_failed | v6a,v6b,v7,v8 |
+| 19 | memantine | ACHE/P22303 | +0.07 | +0.51 | 0.22 | genetic_only | v6a,v6b,v7,v8 |
+| 20 | metformin | ACHE/P22303 | +0.06 | +0.51 | 0.21 | genetic_only | v6a,v6b,v7,v8 |
+| 21 | methylene blue | ACHE/P22303 | +0.07 | +0.52 | 0.27 | target_true.phenotype_failed | v6a,v6b,v7,v8 |
+| 22 | methylphenidate | ACHE/P22303 | +0.07 | +0.53 | 0.23 | genetic_only | v6a,v6b,v7,v8 |
+| 23 | modafinil | ACHE/P22303 | +0.07 | +0.51 | 0.22 | genetic_only | v6a,v6b,v7,v8 |
+| 24 | nbqx | ACHE/P22303 | +0.07 | +0.54 | 0.25 | genetic_only | v6a,v6b,v7,v8 |
+| 25 | liraglutide | ACHE/P22303 | +0.07 | +0.57 | 0.31 | target_true.phenotype_failed | v6a,v6b,v7,v8 |
 
 ## Honest caveats
 

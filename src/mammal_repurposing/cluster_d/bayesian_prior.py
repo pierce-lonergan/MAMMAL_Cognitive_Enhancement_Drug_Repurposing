@@ -167,11 +167,12 @@ def fit_cluster_d_prior_nuts(
         # Latent target cognition-relevance θ ∈ R
         theta = pm.Normal("theta", mu=0.0, sigma=1.0, shape=T_n)
 
-        # Reference-anchor likelihood (only if reference_idx provided)
+        # Reference-anchor likelihood via Potential (theta[idx] is derived,
+        # not raw data — observed= would reject it as "depends on other nodes")
         if reference_idx:
-            pm.Normal("ref_anchor",
-                      mu=reference_mean, sigma=reference_sd,
-                      observed=theta[reference_idx])
+            ref_dist = pm.Normal.dist(mu=reference_mean, sigma=reference_sd)
+            ref_loglik = pm.logp(ref_dist, theta[reference_idx]).sum()
+            pm.Potential("ref_anchor_loglik", ref_loglik)
 
         alpha = pm.Normal("alpha", mu=0.0, sigma=0.5, shape=S)
         beta = pm.HalfNormal("beta", sigma=beta_scale, shape=S)
@@ -185,12 +186,14 @@ def fit_cluster_d_prior_nuts(
         sigma_s2 = (1.0 / tau)[:, None] + sigma_obs ** 2
         pm.Normal("y", mu=mu_s, sigma=pt.sqrt(sigma_s2), observed=y_obs)
 
-        idata = pm.sample(
+        sample_kwargs = dict(
             draws=n_draws, tune=n_tune, chains=n_chains,
             target_accept=target_accept,
-            nuts_sampler="numpyro" if _numpyro_available() else None,
             random_seed=random_seed, progressbar=False,
         )
+        if _numpyro_available():
+            sample_kwargs["nuts_sampler"] = "numpyro"
+        idata = pm.sample(**sample_kwargs)
 
     theta_post = idata.posterior["theta"].values    # (chain, draw, target)
     theta_flat = theta_post.reshape(-1, T_n)
