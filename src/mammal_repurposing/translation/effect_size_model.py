@@ -309,12 +309,14 @@ def fit_effect_size_nuts(
         # Track η for all compounds (whether or not observed) for posterior export
         pm.Deterministic("g_pred", eta)
 
-        idata = pm.sample(
+        sample_kwargs = dict(
             draws=n_draws, tune=n_tune, chains=n_chains,
             target_accept=target_accept,
-            nuts_sampler="numpyro" if _numpyro_available() else None,
             random_seed=random_seed, progressbar=False,
         )
+        if _numpyro_available():
+            sample_kwargs["nuts_sampler"] = "numpyro"
+        idata = pm.sample(**sample_kwargs)
 
     g_post = idata.posterior["g_pred"].values    # (chain, draw, n_obs)
     g_flat = g_post.reshape(-1, n_obs)
