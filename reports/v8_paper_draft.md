@@ -267,14 +267,64 @@ The HDBSCAN min_size=50 FAIL is the **deliberate sanity-check**: with min_size =
 
 In the real-data smoke (V6.A real + V6.B stub + V7 stub + V8 heuristic), 25 of 25 top compounds violate the Roberts 2020 ceiling because stub CIs × Cluster D gate inflate g_90_upper > 0.50. This is **expected stub behavior**, not model failure: once V6.B real posterior + V7 full NUTS + V8 real MOFA+ flow, the joint posterior CIs tighten and Roberts violations drop to near-zero (V7 full NUTS alone shows 0/15 violations on the anchor set per V7.4 Stage 2 NUTS).
 
-### 3.5 Architecture summary
+### 3.5 cpg0000 calibration validates U2OS-to-A549 transfer empirically (NEW — Sprint 4.3)
+
+Production NUTS run of `build_v8_hierarchical_with_cell_random_effect` on
+real cpg0000-jump-pilot CPJUMP1 morphological feature data (60 compounds ×
+2 cell-lines × 8 endpoints × ~10 replicates ≈ 9,600 observations) per MH3
+doc § 5.1. 4 chains × 1,000 draws on numpyro/JAX, target_accept=0.95.
+
+**Convergence:**
+
+| Metric | Value | Gate |
+|---|---|---|
+| R̂_max | 1.010 | < 1.05 ✅ |
+| ESS_min | 700 | > 300 ✅ |
+| Divergences | 0 | 0 ✅ |
+
+**Empirical posterior — the MH3 § 5.1 deliverable:**
+
+| Variance component | σ̂ (mean across endpoints) |
+|---|---|
+| σ̂_β (transferable compound effect) | **1.730** |
+| σ̂_α (cell-line: U2OS vs A549) | 0.257 |
+| σ̂_γ (species: all human) | 0.234 |
+| σ̂_δ (compound × cell interaction) | 0.585 |
+| σ̂_ε (residual) | 1.798 |
+
+**Intraclass correlations:**
+
+- **ICC_cell = 0.018** — cell-line variance only 1.8% of total variance. U2OS-vs-A549 does not drive compound-effect heterogeneity in cpg0000.
+- **ICC_inter = 0.149** — compound × cell-line interaction variance 14.9% of (transferable + interaction) variance. Per MH3 § 3.1: ICC_inter < 0.2 → STRONG transferability regime.
+
+**Per-compound transferability index:**
+
+| T_{c,k} bin | Count | Fraction |
+|---|---|---|
+| T > 0.6 (high transferable) | **60 / 60** | 100% |
+| 0.3 < T < 0.6 (intermediate) | 0 / 60 | 0% |
+| T < 0.3 (U2OS-restricted) | 0 / 60 | 0% |
+
+This is the **empirical backing for V8 paper Discussion § 4.3** (U2OS-to-brain
+defence). Mean transferability across 60 × 8 cells = 0.734; range [0.248, 0.986].
+
+**Honest caveat**: cpg0000 covers A549 vs U2OS (both epithelial-like cancer
+lines), not iPSC-cortical-neuron. The cpg0000-calibrated σ̂_α is a *lower
+bound* on the true U2OS-to-neuron variance per MH3 § L1. Adding iPSC-cortical
+CP per Anderson et al. 2025 eLife is the V8 Stage 4 follow-up.
+
+Full report: `reports/v8_hierarchical_cpg0000_calibration_v1.md`. Posterior
+parquet: `data/results/v2/v8_hierarchical_cpg0000_posterior.parquet`.
+
+### 3.6 Architecture summary
 
 | Component | Implementation | Status |
 |---|---|---|
-| LINCS L1000 ingestion | `cluster_e/ingest_lincs.py` + cmapPy WTCS index | ✅ shipped; awaits GCTX download |
-| JUMP-CP ingestion | `cluster_e/ingest_jumpcp.py` + boto3 S3 + pycytominer | ✅ shipped; awaits S3 sync |
-| chemCPA training | `cluster_e/chemcpa_train.py` + Hetzel 2022 architecture | ✅ shipped; synthetic smoke R²=0.485 PASS |
+| LINCS L1000 ingestion | `cluster_e/ingest_lincs.py` + scripts/72 real GCTX loader | ✅ shipped; **5.5 GB Level-5 GCTX downloaded + 672 cognition sigs ingested** |
+| JUMP-CP ingestion | `cluster_e/ingest_jumpcp.py` + boto3 S3 + pycytominer | ✅ shipped; **46 cpg0000 plates pulled** |
+| chemCPA training | `cluster_e/chemcpa_train.py` + Hetzel 2022 architecture | ✅ shipped; synthetic smoke R²=0.485 PASS; real-data trainer Sprint 5.2 |
 | MOFA+ joint embedding | `cluster_e/mofa_embed.py` + mofapy2 + numpy SVD fallback | ✅ shipped |
+| **V8 hierarchical (MH3+MH7)** | `cluster_e/v8_hierarchical.py` + β/α/γ/δ random effects + transferability index | ✅ **shipped; real cpg0000 NUTS: ICC_cell=0.018, T>0.6 for 60/60 compounds** |
 | V7+V8 joint posterior | `cluster_e/joint_phenotype.py` + Gaussian copula | ✅ shipped |
 | 8-cell + I_novel + JS₃ | All three computed per compound in joint_phenotype | ✅ shipped |
 | Wet-lab shortlist v10 | `fusion/joint_composition.py` + scripts/56 | ✅ shipped; smoke run produces 18-column output |
@@ -299,15 +349,52 @@ V8 πphen's expected behavior: encenicline phenotypic signature is INERT relativ
 
 This is the single most important reason to add V8 to the V6 stack: **the target-first prior is structurally over-confident on (H, H, L) compounds.**
 
-### 4.3 The U2OS-to-brain transfer is the elephant
+### 4.3 The U2OS-to-brain transfer — empirically defended via cpg0000 calibration
 
-JUMP-CP cpg0016 morphology is from U2OS osteosarcoma cells, not neurons. The defensibility of using U2OS morphology as a proxy for brain biology depends on:
+JUMP-CP cpg0016 morphology is from U2OS osteosarcoma cells, not neurons. The
+defensibility of using U2OS morphology as a proxy for brain biology was the
+single most-asked reviewer question this paper anticipates. Per MH3 deep-dive
+[`research/4-tier/MH3_per_cell_line_random_effect_deep_research.md`](research/4-tier/MH3_per_cell_line_random_effect_deep_research.md)
+§ 6, we provide a four-sentence quantitative defence:
 
-1. **MOFA+ per-modality variance attribution** — if factor 7 explains 75% of JUMP-CP variance but ~0% of iPSC-MEA variance, it's flagged morphology-only and downweighted for cognition (per V8 plan §B.3).
-2. **Gate 1 AMI three ways** — all-modality joint, neural-only (L1000 NEU/NPC + MEA + snRNA), non-neural (JUMP-CP U2OS). If non-neural-only AMI ≥ 0.5, U2OS transfers meaningfully → publish; if non-neural < 0.3 alone but joint > 0.5, U2OS contributes as chemistry-anchored consistency check, not brain proxy → frame accordingly.
-3. **Per-cell-line random effect** in the joint posterior to soak up cell-context confound.
+1. **We decompose the compound effect into a transferable cross-context
+   component β and a per-cell-line interaction δ**: `y_{c,l,s,k,r} = μ_k +
+   β_{c,k} + α_{l,k} + γ_{s,k} + δ_{c,l,k} + ε`, fit via the V8 hierarchical
+   model in `src/mammal_repurposing/cluster_e/v8_hierarchical.py`.
 
-This is **pre-registered handling** (V8 OSF pre-reg §7). The honest framing in Discussion is non-negotiable.
+2. **On the cpg0000 pilot dataset, where the same 60 compounds were profiled
+   in both U2OS and A549**, we estimate σ̂_β = 1.73 (transferable),
+   σ̂_α = 0.26 (cell-line), σ̂_δ = 0.59 (compound × cell interaction), and
+   σ̂_ε = 1.80 (residual) across 8 morphological-feature endpoints. The
+   resulting **ICC_inter = 0.149** (compound × cell variance fraction) and
+   **ICC_cell = 0.018** (cell-line variance fraction) place the empirical
+   transferability solidly in MH3 § 3.1's "STRONG transfer" regime
+   (ICC_inter < 0.2). See `reports/v8_hierarchical_cpg0000_calibration_v1.md`.
+
+3. **For each compound in the cpg0000 panel we report the per-compound
+   transferability index** `T_{c,k} = E[|β_{c,k}| / (|β_{c,k}| +
+   std(δ_{c,·,k}))]` with 95% credible intervals. **60 of 60 compounds
+   have mean T > 0.6** (high transferable); 0 of 60 have T < 0.3 (U2OS-
+   restricted). This is published as a compound-level filter in the V8
+   (L, L, H) shortlist.
+
+4. **Our shortlist remains consistent with independently published
+   Gorgogietas et al. 2025 Sci Rep mDA-neuron concordance results**, which
+   demonstrated U2OS Cell Painting → midbrain dopaminergic neuron transfer
+   for mitochondrial-uncoupling-class compounds via the same cross-cell-
+   line validation strategy. This is the external empirical existence
+   proof; our MH3 hierarchical model turns it from anecdote into a per-
+   compound posterior.
+
+The cpg0000-calibrated σ̂_α is a **lower bound** on the true U2OS-to-iPSC-
+neuron variance (cpg0000 covers two epithelial-like cancer lines, not
+cortical neurons). Adding iPSC-cortical CP data (per Anderson et al. 2025
+eLife) would tighten this further; it is the V8 Stage 4 follow-up.
+
+The original pre-registered handling (V8 OSF pre-reg § 7) remains: MOFA+
+per-modality variance attribution + Gate 1 AMI three ways. The MH3
+hierarchical model **complements** these by providing per-compound
+transferability quantification, not by replacing them.
 
 ### 4.4 chemCPA hallucination risk
 
