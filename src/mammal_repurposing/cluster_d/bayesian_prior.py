@@ -1,4 +1,4 @@
-"""V6 §13.2 — PyMC NUTS hierarchical Bayesian model for Cluster D (skeleton).
+"""V6 §13.2 — PyMC NUTS hierarchical Bayesian model for Cluster D.
 
 The full model per `research/4-tier/Multi-Source Neurobiological Prior for
 Cognition Target Prioritization.md` §B.2:
@@ -16,18 +16,40 @@ to break scale + sign degeneracy.
 Posterior cognition-relevance per target: w_i = σ(θ_i) ∈ (0, 1) — feeds the
 §7.11 calibration as a multiplicative bias.
 
+MH8 SUBSTRATE-MEDIATED FLAG (added 2026-05-28):
+  For substrate-degrading enzymes (ACHE, MAO-A, MAO-B, COMT), tissue
+  expression level (AHBA cortical y_ahba) does NOT linearly inform cognition
+  relevance — k_cat/K_m operates at substrate-saturated regime; high enzyme
+  density above the saturating threshold yields no additional functional
+  clearance. Per MH8 deep-dive (research/4-tier/MH8 Methods Clarity Research.md),
+  the AHBA contribution to θ for these targets should be effectively masked.
+  Implementation: `build_y_obs_from_sources` accepts a
+  `substrate_mediated_uniprots` set; for those targets, sigma_obs[AHBA_row, i]
+  is inflated by `substrate_mediated_sigma_inflate` (default 10×, makes
+  variance contribution 100× larger so likelihood is effectively marginalised).
+
+  This is the structural fix for the 37 divergences observed on the 191-target
+  V6.B.5 NUTS run — ACHE/MAO/COMT were forcing the posterior through
+  Neal's-funnel geometries because the linear AHBA→θ link is biophysically
+  invalid for these targets.
+
 OPERATIONAL STATE (commit time):
-  - PyMC not installed; this module ships as code-complete skeleton
-  - PYMC_AVAILABLE flag promotes to NUTS sampling when `pip install pymc numpyro`
-  - Returns `None` posterior + skeptical "stage_0" weight = 0.5 when stubbed
+  - PyMC + numpyro installed; PYMC_AVAILABLE = True; numpyro JAX backend used
+  - 22-target headline: R̂=1.000, ESS=12,780, 0 divergences
+  - 191-target expanded (pre-MH8): R̂=1.000, ESS=1,739, 37 divergences
+  - 191-target expanded (post-MH8): TBD — Sprint 1.3 in progress
 
 Reference:
   Multi-Source Neurobiological Prior for Cognition Target Prioritization.md §B
+  research/4-tier/MH8 Methods Clarity Research.md §3-§4 (substrate-mediated bypass)
   Neelon & Dunson 2004 Biometrics 60:398
   Davies 2018 Nat Commun 9:2098 (intelligence GWAS)
   Hill 2019 Mol Psychiatry 24:169
   Moodie 2024 Hum Brain Mapp 45(4):e26641 (41-gene cortical g-map)
   Roberts 2020 Eur Neuropsychopharm 38:40 (SMD ceiling)
+  Heaton 2024 (synaptic acetylcholinesterase k_cat/K_m saturation)
+  Rommelfanger 2007 (PET MAO-A homeostatic adaptation to 5-HT)
+  Chen 2011 (MB-COMT vs S-COMT non-linear brain regulation)
 """
 
 from __future__ import annotations
@@ -59,6 +81,23 @@ DEFAULT_ANCHORS: dict[str, float] = {
     "CHRNA7":  0.5,
 }
 
+# Canonical substrate-degrading enzyme UniProts (MH8 substrate-mediated flag).
+# These targets receive AHBA-masking in `build_y_obs_from_sources()` because
+# tissue expression level does not linearly inform cognition relevance for
+# enzymes operating at substrate-saturated regime (k_cat/K_m saturation).
+SUBSTRATE_MEDIATED_UNIPROTS: frozenset[str] = frozenset({
+    "P22303",   # ACHE — acetylcholinesterase
+    "P21397",   # MAOA — monoamine oxidase A
+    "P27338",   # MAOB — monoamine oxidase B
+    "P21964",   # COMT — catechol-O-methyltransferase
+})
+
+# Default sigma-inflation factor for AHBA masking on substrate-mediated targets.
+# 10× inflation makes variance contribution 100× larger, effectively
+# marginalising the AHBA observation for these targets while keeping the
+# model topology unchanged (no NaN handling needed).
+DEFAULT_SM_SIGMA_INFLATE: float = 10.0
+
 
 @dataclass
 class ClusterDPosterior:
@@ -71,10 +110,12 @@ class ClusterDPosterior:
     sources_used: list[str] = field(default_factory=list)
     n_chains: int = 0
     n_draws: int = 0
+    n_divergences: int = 0                                       # MH8 + non-centered audit
     rhat_max: float = float("nan")
     ess_min: float = float("nan")
     method: str = "stage_0_stub"
     note: str = ""
+    substrate_mediated_uniprots: list[str] = field(default_factory=list)   # MH8 audit: which targets received AHBA-masking
 
 
 def fit_cluster_d_prior_stub(
@@ -207,6 +248,17 @@ def fit_cluster_d_prior_nuts(
     rhat_max = float(summary["r_hat"].max())
     ess_min = float(summary["ess_bulk"].min())
 
+    # Divergence count — used for MH8 audit.
+    try:
+        sample_stats = idata.sample_stats
+        if "diverging" in sample_stats:
+            n_divergences = int(sample_stats["diverging"].values.sum())
+        else:
+            n_divergences = 0
+    except Exception:    # noqa: BLE001
+        n_divergences = -1    # sentinel: unknown
+
+    note = f"NUTS converged: Rhat_max={rhat_max:.3f}, ESS_min={ess_min:.0f}, divergences={n_divergences}"
     return ClusterDPosterior(
         targets=target_uniprots,
         theta_mean=theta_mean,
@@ -216,10 +268,11 @@ def fit_cluster_d_prior_nuts(
         sources_used=source_names,
         n_chains=n_chains,
         n_draws=n_draws,
+        n_divergences=n_divergences,
         rhat_max=rhat_max,
         ess_min=ess_min,
         method="pymc_nuts",
-        note=f"NUTS converged: Rhat_max={rhat_max:.3f}, ESS_min={ess_min:.0f}",
+        note=note,
     )
 
 
@@ -239,12 +292,29 @@ def build_y_obs_from_sources(
     sigma_ahba: float = 0.30,    # AHBA spatial-corr Fisher-z SE; Markello 2021
     sigma_l2g: float = 0.20,     # OT Genetics L2G Shapley-XGBoost noise
     sigma_sc: float = 0.35,      # cellxgene single-cell aggregation noise
+    substrate_mediated_uniprots: set[str] | frozenset[str] | None = None,
+    substrate_mediated_sigma_inflate: float = DEFAULT_SM_SIGMA_INFLATE,
 ) -> tuple[np.ndarray, np.ndarray, list[str]]:
     """Stack AHBA / L2G / SC observations into the (S, T) matrix shape
     expected by `fit_cluster_d_prior_nuts`.
 
     Returns (y_obs, sigma_obs, source_names). Missing sources are dropped;
     missing per-target values default to 0.0 with inflated sigma.
+
+    MH8 substrate-mediated bypass:
+      If `substrate_mediated_uniprots` is provided, for each UniProt in the
+      set that also appears in `target_uniprots`, the AHBA-row sigma is
+      multiplied by `substrate_mediated_sigma_inflate` (default 10×).
+      This effectively marginalises the AHBA observation for substrate-
+      degrading enzymes (ACHE / MAO-A / MAO-B / COMT) whose tissue
+      expression does not linearly inform cognition relevance. If no set is
+      provided, the canonical `SUBSTRATE_MEDIATED_UNIPROTS` is NOT applied
+      automatically — pass `substrate_mediated_uniprots=SUBSTRATE_MEDIATED_UNIPROTS`
+      explicitly to opt in. This preserves backward compatibility with v6b
+      paper headline results that did not apply the fix.
+
+      Returns: the inflated sigma_obs reflects MH8 masking; the count and
+      identity of masked targets are logged at INFO level for audit.
     """
     sources: list[tuple[str, dict[str, float] | None, float]] = [
         ("AHBA", y_ahba, sigma_ahba),
@@ -270,6 +340,24 @@ def build_y_obs_from_sources(
             else:
                 y_obs[s_idx, t_idx] = float(v)
                 sigma_obs[s_idx, t_idx] = sig
+
+    # MH8 substrate-mediated bypass: inflate AHBA sigma for these targets.
+    if substrate_mediated_uniprots and "AHBA" in source_names:
+        ahba_row = source_names.index("AHBA")
+        sm_set = set(substrate_mediated_uniprots)
+        masked_uniprots: list[str] = []
+        for t_idx, t in enumerate(target_uniprots):
+            if t in sm_set:
+                sigma_obs[ahba_row, t_idx] *= substrate_mediated_sigma_inflate
+                masked_uniprots.append(t)
+        if masked_uniprots:
+            logger.info(
+                "MH8: inflated AHBA sigma by %.1fx for %d substrate-mediated targets: %s",
+                substrate_mediated_sigma_inflate,
+                len(masked_uniprots),
+                ",".join(masked_uniprots),
+            )
+
     return y_obs, sigma_obs, source_names
 
 

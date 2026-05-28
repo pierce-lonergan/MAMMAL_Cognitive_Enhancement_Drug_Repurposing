@@ -415,4 +415,319 @@ def availability() -> dict[str, object]:
         "roberts_2020_ceiling": 0.50,
         "n_subdomain_priors": len(PER_SUBDOMAIN_PRIORS),
         "subdomain_endpoints": sorted(set(e for _, e in PER_SUBDOMAIN_PRIORS.keys())),
+        "n_subdomain_priors_v2": len(PER_SUBDOMAIN_PRIORS_V2),
+        "subdomain_endpoints_v2": COGNITIVE_DOMAINS_V2,
+    }
+
+
+# ===========================================================================
+# V7.2 Stage 3 (Sprint 3.1) — 12 mechanism class × 8 cognitive domain table
+# ===========================================================================
+#
+# Source: research/4-tier/MH1 + MH2 Meta-Analytic Prior Expansion for V7 CPT
+#         Bayesian Pharmacology Pipeline.md §4
+#
+# Replaces the Stage 2 (V1) sparse 32-cell endpoint table with a denser
+# 96-cell (class × cognitive-domain) grid populated from published
+# meta-analytic Hedges' g values with CIs and trial counts.
+#
+# Schmidli 2014 robust MAP τ² rule per trial count k:
+#   k ≥ 5  → τ² = 0.02 (tight prior)
+#   k ∈ [2,4] → τ² = 0.04
+#   k = 1  → τ² = 0.08
+#   k = 0  → fallback to HalfNormal(0.3) class-level prior
+#
+# The 8 cognitive domains follow the MH1+MH2 doc § 4 taxonomy (cognitive-
+# function-level, not test-instrument-level):
+#   EM  = episodic memory          PS  = processing speed
+#   WM  = working memory           VL  = verbal learning
+#   ATT = sustained attention      VS  = visuospatial
+#   EF  = executive function       MOT = motor / RT
+#
+# This is the V7.2 Stage 3 deliverable — Sprint 3.1 per
+# `reports/MH_IMPLEMENTATION_ROADMAP.md`.
+
+COGNITIVE_DOMAINS_V2: list[str] = ["EM", "WM", "ATT", "EF", "PS", "VL", "VS", "MOT"]
+
+
+@dataclass
+class SubdomainPriorV2:
+    """One (class, cognitive_domain) cell in the 96-cell PRISMA prior table.
+
+    Includes full meta-analytic provenance + computed Schmidli τ².
+    """
+    class_name: str
+    domain: str
+    pooled_g: float
+    ci_lo: float
+    ci_hi: float
+    k: int                    # number of contributing trials/studies
+    source: str               # citation key
+    population: str = "mixed"  # HC / AD / SCZ / ADHD / FXS / MDD / NRC / mixed
+
+    @property
+    def tau2(self) -> float:
+        """Schmidli 2014 robust MAP τ² per trial count."""
+        if self.k >= 5:
+            return 0.02
+        elif self.k >= 2:
+            return 0.04
+        elif self.k == 1:
+            return 0.08
+        return 0.09    # HalfNormal(0.3)² for k=0 fallback
+
+    @property
+    def tau(self) -> float:
+        """Standard deviation derived from Schmidli τ²."""
+        return self.tau2 ** 0.5
+
+
+# Canonical class-name migration: V1 names → V7.2-Stage-3 (V2) names.
+CLASS_NAME_MIGRATION_V1_TO_V2: dict[str, str] = {
+    "AChE-I":             "AChE_INHIBITORS",
+    "NMDA_antagonist":    "NMDA_MODULATORS",
+    "NDRI":               "DA_STIMULANTS_MPH",
+    "wake_promoting":     "MODAFINIL_LIKE",
+    "multimodal_5HT":     "MULTIMODAL_5HT",
+    "AMPA_pos_mod":       "AMPA_POSITIVE_MOD",
+}
+
+
+# The 96-cell table. Cells without published data are simply omitted (the
+# lookup falls back to class-level via `get_subdomain_prior_v2`).
+PER_SUBDOMAIN_PRIORS_V2: list[SubdomainPriorV2] = [
+    # ----- C1: AChE_INHIBITORS (donepezil / rivastigmine / galantamine in AD) -----
+    SubdomainPriorV2("AChE_INHIBITORS", "EM",  0.36, 0.27, 0.44, 5,
+                     "Birks2018-Cochrane-CD001190", "AD"),
+    SubdomainPriorV2("AChE_INHIBITORS", "WM",  0.30, 0.20, 0.40, 7,
+                     "Birks2018-DPZ-MMSE", "AD"),
+    SubdomainPriorV2("AChE_INHIBITORS", "ATT", 0.25, 0.15, 0.35, 3,
+                     "Birks2018-SIB-attention", "AD"),
+    SubdomainPriorV2("AChE_INHIBITORS", "EF",  0.24, 0.13, 0.35, 6,
+                     "Birks2018-mixed-EF", "AD"),
+    SubdomainPriorV2("AChE_INHIBITORS", "PS",  0.28, 0.18, 0.38, 4,
+                     "Birks2018-Cochrane", "AD"),
+    SubdomainPriorV2("AChE_INHIBITORS", "VL",  0.34, 0.22, 0.46, 5,
+                     "Birks2018-ADAS-WL", "AD"),
+    SubdomainPriorV2("AChE_INHIBITORS", "VS",  0.20, 0.10, 0.30, 3,
+                     "Birks2018-SIB-VS", "AD"),
+    SubdomainPriorV2("AChE_INHIBITORS", "MOT", 0.15, 0.05, 0.25, 3,
+                     "Birks2018-Cochrane", "AD"),
+    # ----- C2: NMDA_MODULATORS (memantine in mod-severe AD) -----
+    SubdomainPriorV2("NMDA_MODULATORS", "EM",  0.27, 0.14, 0.39, 9,
+                     "Matsunaga2015-PMID25869017", "AD"),
+    SubdomainPriorV2("NMDA_MODULATORS", "WM",  0.18, 0.05, 0.31, 4,
+                     "Matsunaga2015-SIB-WM", "AD"),
+    SubdomainPriorV2("NMDA_MODULATORS", "ATT", 0.15, 0.02, 0.28, 3,
+                     "Matsunaga2015", "AD"),
+    SubdomainPriorV2("NMDA_MODULATORS", "EF",  0.20, 0.08, 0.32, 5,
+                     "Matsunaga2015-SIB-EF", "AD"),
+    SubdomainPriorV2("NMDA_MODULATORS", "PS",  0.14, 0.02, 0.26, 3,
+                     "Matsunaga2015", "AD"),
+    SubdomainPriorV2("NMDA_MODULATORS", "VL",  0.22, 0.10, 0.34, 4,
+                     "Matsunaga2015", "AD"),
+    SubdomainPriorV2("NMDA_MODULATORS", "VS",  0.12, 0.00, 0.24, 3,
+                     "Matsunaga2015", "AD"),
+    SubdomainPriorV2("NMDA_MODULATORS", "MOT", 0.08, -0.04, 0.20, 2,
+                     "Matsunaga2015", "AD"),
+    # ----- C3: ALPHA7_NACHR (encenicline / ABT-126 in SCZ+AD pooled) -----
+    SubdomainPriorV2("ALPHA7_NACHR", "EM",  -0.06, -0.16, 0.04, 10,
+                     "Lewis2017-PMID28065843", "SCZ"),
+    SubdomainPriorV2("ALPHA7_NACHR", "WM",  -0.05, -0.18, 0.08, 5,
+                     "Lewis2017", "SCZ"),
+    SubdomainPriorV2("ALPHA7_NACHR", "ATT", -0.08, -0.20, 0.05, 8,
+                     "Lewis2017-attention", "SCZ"),
+    SubdomainPriorV2("ALPHA7_NACHR", "EF",  -0.04, -0.18, 0.10, 5,
+                     "Lewis2017", "SCZ"),
+    SubdomainPriorV2("ALPHA7_NACHR", "PS",   0.02, -0.12, 0.16, 4,
+                     "Lewis2017", "SCZ"),
+    SubdomainPriorV2("ALPHA7_NACHR", "VL",   0.04, -0.10, 0.18, 3,
+                     "Lewis2017-encenicline-only", "SCZ"),
+    # ----- C4: ALPHA4BETA2_NACHR (varenicline in SCZ) -----
+    SubdomainPriorV2("ALPHA4BETA2_NACHR", "EM",  -0.03, -0.18, 0.12, 3,
+                     "Tanzer2020-PMID31792645", "SCZ"),
+    SubdomainPriorV2("ALPHA4BETA2_NACHR", "WM",  -0.05, -0.20, 0.10, 3,
+                     "Tanzer2020", "SCZ"),
+    SubdomainPriorV2("ALPHA4BETA2_NACHR", "ATT", -0.05, -0.20, 0.10, 4,
+                     "Tanzer2020", "SCZ"),
+    SubdomainPriorV2("ALPHA4BETA2_NACHR", "EF",  -0.06, -0.47, 0.35, 2,
+                     "Tanzer2020", "SCZ"),
+    SubdomainPriorV2("ALPHA4BETA2_NACHR", "PS",   0.04, -0.23, 0.31, 3,
+                     "Tanzer2020", "SCZ"),
+    # ----- C5: DA_STIMULANTS_MPH (Roberts 2020 healthy-adult) -----
+    SubdomainPriorV2("DA_STIMULANTS_MPH", "EM",  0.43, 0.21, 0.65, 24,
+                     "Roberts2020-PMID32709551", "HC"),
+    SubdomainPriorV2("DA_STIMULANTS_MPH", "WM",  0.10, -0.05, 0.25, 24,
+                     "Roberts2020-SWM", "HC"),
+    SubdomainPriorV2("DA_STIMULANTS_MPH", "ATT", 0.42, 0.18, 0.66, 24,
+                     "Roberts2020-sustained-attention", "HC"),
+    SubdomainPriorV2("DA_STIMULANTS_MPH", "EF",  0.27, 0.03, 0.51, 24,
+                     "Roberts2020-inhibition", "HC"),
+    SubdomainPriorV2("DA_STIMULANTS_MPH", "PS",  0.21, 0.09, 0.33, 24,
+                     "Roberts2020-overall-SMD", "HC"),
+    SubdomainPriorV2("DA_STIMULANTS_MPH", "VL",  0.43, 0.21, 0.65, 24,
+                     "Roberts2020", "HC"),
+    SubdomainPriorV2("DA_STIMULANTS_MPH", "MOT", 0.15, 0.00, 0.30, 24,
+                     "Roberts2020", "HC"),
+    # ----- C6: AMPHETAMINE_LIKE (Ilieva 2015, healthy adults) -----
+    SubdomainPriorV2("AMPHETAMINE_LIKE", "EM",  0.20, 0.05, 0.35, 10,
+                     "Ilieva2015-PMID25591060-STM", "HC"),
+    SubdomainPriorV2("AMPHETAMINE_LIKE", "WM",  0.13, -0.02, 0.28, 10,
+                     "Ilieva2015-WM", "HC"),
+    SubdomainPriorV2("AMPHETAMINE_LIKE", "ATT", 0.10, -0.10, 0.30, 10,
+                     "Ilieva2015", "HC"),
+    SubdomainPriorV2("AMPHETAMINE_LIKE", "EF",  0.20, 0.05, 0.35, 10,
+                     "Ilieva2015-inhibition", "HC"),
+    SubdomainPriorV2("AMPHETAMINE_LIKE", "PS",  0.15, 0.00, 0.30, 8,
+                     "Marraccini-PS", "HC"),
+    SubdomainPriorV2("AMPHETAMINE_LIKE", "VL",  0.45, 0.20, 0.70, 6,
+                     "Ilieva2015-delayed-memory", "HC"),
+    SubdomainPriorV2("AMPHETAMINE_LIKE", "MOT", 0.10, -0.05, 0.25, 6,
+                     "Ilieva2015", "HC"),
+    # ----- C7: MODAFINIL_LIKE (Roberts 2020 healthy-adult) -----
+    SubdomainPriorV2("MODAFINIL_LIKE", "EM",  0.05, -0.10, 0.20, 14,
+                     "Roberts2020-recall-NS", "HC"),
+    SubdomainPriorV2("MODAFINIL_LIKE", "WM",  0.05, -0.10, 0.20, 14,
+                     "Roberts2020-spatial-WM-NS", "HC"),
+    SubdomainPriorV2("MODAFINIL_LIKE", "ATT", 0.10, -0.05, 0.25, 14,
+                     "Roberts2020-selective-attention-NS", "HC"),
+    SubdomainPriorV2("MODAFINIL_LIKE", "EF",  0.28, 0.03, 0.53, 14,
+                     "Roberts2020-memory-updating-p0.03", "HC"),
+    SubdomainPriorV2("MODAFINIL_LIKE", "PS",  0.12, 0.03, 0.21, 14,
+                     "Roberts2020-overall-p0.01", "HC"),
+    SubdomainPriorV2("MODAFINIL_LIKE", "VL",  0.10, -0.05, 0.25, 10,
+                     "Roberts2020", "HC"),
+    SubdomainPriorV2("MODAFINIL_LIKE", "MOT", 0.05, -0.10, 0.20, 10,
+                     "Roberts2020", "HC"),
+    # ----- C8: MULTIMODAL_5HT (vortioxetine in MDD, Harrison FOCUS + McIntyre) -----
+    SubdomainPriorV2("MULTIMODAL_5HT", "EM",  0.27, 0.15, 0.39, 5,
+                     "Harrison-FOCUS-RAVLT", "MDD"),
+    SubdomainPriorV2("MULTIMODAL_5HT", "WM",  0.30, 0.18, 0.42, 4,
+                     "Harrison-FOCUS", "MDD"),
+    SubdomainPriorV2("MULTIMODAL_5HT", "ATT", 0.42, 0.30, 0.54, 5,
+                     "Harrison-DSST-attn", "MDD"),
+    SubdomainPriorV2("MULTIMODAL_5HT", "EF",  0.40, 0.20, 0.60, 5,
+                     "Harrison-EF-composite", "MDD"),
+    SubdomainPriorV2("MULTIMODAL_5HT", "PS",  0.35, 0.23, 0.47, 5,
+                     "McIntyre2016-PMID27312740-DSST-SES0.35", "MDD"),
+    SubdomainPriorV2("MULTIMODAL_5HT", "VL",  0.27, 0.15, 0.39, 4,
+                     "Harrison-RAVLT-acq", "MDD"),
+    SubdomainPriorV2("MULTIMODAL_5HT", "MOT", 0.20, 0.08, 0.32, 3,
+                     "Harrison-FOCUS", "MDD"),
+    # ----- C9: 5HT6_ANTAGONISTS (idalopirdine / intepirdine in AD) -----
+    SubdomainPriorV2("5HT6_ANTAGONISTS", "EM", -0.05, -0.15, 0.05, 4,
+                     "Matsunaga2018-PMID30560763-ADAS", "AD"),
+    # ----- C10: H3_ANTAGONISTS (pitolisant, arousal-derived) -----
+    SubdomainPriorV2("H3_ANTAGONISTS", "EM",  0.10, -0.10, 0.30, 2,
+                     "narc-attn", "NRC"),
+    SubdomainPriorV2("H3_ANTAGONISTS", "WM",  0.05, -0.15, 0.25, 2,
+                     "narc-attn", "NRC"),
+    SubdomainPriorV2("H3_ANTAGONISTS", "ATT", 0.55, 0.30, 0.80, 3,
+                     "ESS-derived-pitolisant", "NRC"),
+    SubdomainPriorV2("H3_ANTAGONISTS", "EF",  0.15, -0.10, 0.40, 2,
+                     "narc", "NRC"),
+    SubdomainPriorV2("H3_ANTAGONISTS", "PS",  0.20, 0.00, 0.40, 2,
+                     "narc", "NRC"),
+    # ----- C11: PDE4D_NAM (BPN14770 / zatolmilast in FXS) -----
+    SubdomainPriorV2("PDE4D_NAM", "EM",  0.40, 0.05, 0.75, 1,
+                     "BerryKravis2021-PMID33927413-NIH-Tbx-OralRead", "FXS"),
+    SubdomainPriorV2("PDE4D_NAM", "WM",  0.30, -0.10, 0.70, 1,
+                     "BerryKravis2021", "FXS"),
+    SubdomainPriorV2("PDE4D_NAM", "ATT", 0.20, -0.20, 0.60, 1,
+                     "BerryKravis2021", "FXS"),
+    SubdomainPriorV2("PDE4D_NAM", "EF",  0.35, 0.00, 0.70, 1,
+                     "BerryKravis2021", "FXS"),
+    SubdomainPriorV2("PDE4D_NAM", "PS",  0.25, -0.15, 0.65, 1,
+                     "BerryKravis2021", "FXS"),
+    SubdomainPriorV2("PDE4D_NAM", "VL",  0.55, 0.20, 0.90, 1,
+                     "BerryKravis2021-PictureVocab", "FXS"),
+    # ----- C12: AMPA_POSITIVE_MOD (CX-516, farampator, S47445 — all null) -----
+    SubdomainPriorV2("AMPA_POSITIVE_MOD", "EM",   0.02, -0.30, 0.34, 3,
+                     "Goff2008-PMID17487227", "SCZ"),
+    SubdomainPriorV2("AMPA_POSITIVE_MOD", "WM",   0.03, -0.29, 0.35, 3,
+                     "Goff2008", "SCZ"),
+    SubdomainPriorV2("AMPA_POSITIVE_MOD", "ATT",  0.00, -0.30, 0.30, 2,
+                     "Goff2008", "SCZ"),
+    SubdomainPriorV2("AMPA_POSITIVE_MOD", "EF",  -0.10, -0.40, 0.20, 2,
+                     "Goff2008", "SCZ"),
+    SubdomainPriorV2("AMPA_POSITIVE_MOD", "PS",   0.05, -0.25, 0.35, 2,
+                     "Goff2008", "SCZ"),
+    SubdomainPriorV2("AMPA_POSITIVE_MOD", "VL",   0.02, -0.30, 0.34, 2,
+                     "Goff2008", "SCZ"),
+]
+
+
+def get_subdomain_prior_v2(
+    class_name: str,
+    domain: str,
+    *,
+    accept_v1_name: bool = True,
+) -> SubdomainPriorV2 | None:
+    """Lookup (class, cognitive_domain) → SubdomainPriorV2.
+
+    If `accept_v1_name`, V1 class names (AChE-I, NDRI, ...) are
+    auto-migrated via `CLASS_NAME_MIGRATION_V1_TO_V2`.
+
+    Returns None if no cell exists (caller should fall back to
+    class-level PRISMA_CLASS_PRIORS or HalfNormal(0.3)).
+    """
+    if accept_v1_name and class_name in CLASS_NAME_MIGRATION_V1_TO_V2:
+        class_name = CLASS_NAME_MIGRATION_V1_TO_V2[class_name]
+    for sp in PER_SUBDOMAIN_PRIORS_V2:
+        if sp.class_name == class_name and sp.domain == domain:
+            return sp
+    return None
+
+
+def list_class_names_v2() -> list[str]:
+    """All V2 class names (12 canonical names) in canonical order."""
+    seen = []
+    for sp in PER_SUBDOMAIN_PRIORS_V2:
+        if sp.class_name not in seen:
+            seen.append(sp.class_name)
+    return seen
+
+
+def subdomain_prior_table_v2() -> dict[str, dict[str, dict[str, float | int | str]]]:
+    """Nested dict for downstream PyMC consumption:
+    {class: {domain: {pooled_g, ci_lo, ci_hi, k, tau2, source, population}}}."""
+    out: dict[str, dict[str, dict[str, float | int | str]]] = {}
+    for sp in PER_SUBDOMAIN_PRIORS_V2:
+        out.setdefault(sp.class_name, {})[sp.domain] = {
+            "pooled_g": sp.pooled_g,
+            "ci_lo":    sp.ci_lo,
+            "ci_hi":    sp.ci_hi,
+            "k":        sp.k,
+            "tau2":     sp.tau2,
+            "source":   sp.source,
+            "population": sp.population,
+        }
+    return out
+
+
+def coverage_v2() -> dict[str, object]:
+    """Coverage report for V7.2 Stage 3 prior expansion."""
+    classes = list_class_names_v2()
+    n_classes = len(classes)
+    n_domains = len(COGNITIVE_DOMAINS_V2)
+    full_grid_size = n_classes * n_domains    # 12 × 8 = 96
+    populated = len(PER_SUBDOMAIN_PRIORS_V2)
+    by_class = {c: sum(1 for sp in PER_SUBDOMAIN_PRIORS_V2 if sp.class_name == c)
+                for c in classes}
+    by_domain = {d: sum(1 for sp in PER_SUBDOMAIN_PRIORS_V2 if sp.domain == d)
+                 for d in COGNITIVE_DOMAINS_V2}
+    k_distribution = {
+        "k>=5":   sum(1 for sp in PER_SUBDOMAIN_PRIORS_V2 if sp.k >= 5),
+        "k2-4":   sum(1 for sp in PER_SUBDOMAIN_PRIORS_V2 if 2 <= sp.k <= 4),
+        "k=1":    sum(1 for sp in PER_SUBDOMAIN_PRIORS_V2 if sp.k == 1),
+    }
+    return {
+        "n_classes": n_classes,
+        "n_domains": n_domains,
+        "full_grid_size": full_grid_size,
+        "populated_cells": populated,
+        "coverage_pct": populated / full_grid_size * 100,
+        "by_class": by_class,
+        "by_domain": by_domain,
+        "k_distribution": k_distribution,
     }

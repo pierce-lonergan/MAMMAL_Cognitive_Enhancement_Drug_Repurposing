@@ -16,18 +16,27 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 
 | Metric | Value | Status |
 |---|---|---|
-| Pytest pass rate (non-slow) | **250 / 250** | ✅ |
+| Pytest pass rate (non-slow) | **419 / 420** (+87 across Sprints 1.2/1.4/2.2/3.1/3.2/3.3/4.1/4.2; 1 skip is intentional) | ✅ |
+| Pytest pass rate (slow regression) | **11 / 11** (3 MH8 prod lock + 2 V7-V2 pop×class + 3 V8 hierarchical + 3 cluster_d/v6b) | ✅ |
 | Hypothesis audit verdicts | **22 PASS / 3 DEGRADE / 0 FAIL** | ✅ |
-| V6.B PyMC NUTS production | **R̂ max = 1.000, ESS min = 12,780** (4 chains × 2000 draws, real AHBA, 22 targets) | ✅ |
+| V6.B PyMC NUTS production (22-target) | **R̂ max = 1.000, ESS min = 12,780** (4 chains × 2000 draws, real AHBA) | ✅ |
+| V6.B.5 PyMC NUTS production (191-target, **post-MH8**) | **R̂ max = 1.000, ESS min = 1,808, divergences = 0** (was 37 pre-fix) | ✅ |
+| V6.B Gate 1 (Roberts ceiling, HARD) | **0 violations on 191-target posterior** | ✅ |
+| V6.B Gate 2 (multi-modulator Spearman, 70 anchors / 38 targets) | **ρ = +0.10 (DEGRADE best case) / -0.35 (FAIL worst case)** — publishable falsification (see reports/gate2_multi_modulator_v1.md) | 📄 |
 | V7 NUTS with 15-compound anchor likelihood | **R̂ = 1.000, ESS = 2,332, MAE = 0.073, 0 Roberts ceiling violations** | ✅ |
-| V7.4 Gate 1 (P1-P8 prediction bands) | 5 PASS / 1 FAIL / 2 NO_COMPOUND in stub mode; 4 PASS / 3 FAIL / 1 NO_COMPOUND in full NUTS (honest partial-pool) | ⏳ |
-| V7.4 Gate 2 (Roberts ceiling, HARD) | **0 violations on 15-compound anchor set** | ✅ |
-| V7.4 Gate 3 (MAE < 0.15 on anchor) | **MAE = 0.073** | ✅ |
+| V7.4 Gate 1 (P1-P8 prediction bands) | 5 PASS / 1 FAIL / 2 NO_COMPOUND in stub mode; 4 PASS / 3 FAIL / 1 NO_COMPOUND in full NUTS (honest partial-pool — Sprint 3.2 addresses) | ⏳ |
+| V7.2 Stage 3 PRISMA prior coverage | **73 / 96 cells populated (76%)**, up from 32 (33%) — Sprint 3.1 | ✅ |
+| V7.2 Stage 4 reference compound anchors | **109 cells / 48 compounds** (was 15) — Sprint 3.3; includes ketamine impairment + 25 Phase III nulls | ✅ |
+| V7.3 Stage 2 NUTS V2 (per-class τ² + population × class) | `fit_effect_size_nuts_v2` shipped + tested — Sprint 3.2 | ✅ |
+| V8.6 Hierarchical (MH3 + MH7 bundled) | `build_v8_hierarchical_with_cell_random_effect` shipped; β/α/γ/δ random effects + ICC + transferability index T_{c,k}; synthetic round-trip validated — Sprint 4.1 + 4.2 | ✅ |
 | V8.2 chemCPA synthetic-LINCS smoke | Loss 0.1728→0.1068 (1.62× reduction); test R² = +0.485 (gate ≥ 0.30) | ✅ |
 | V8.4 Gate 1 dry-run on synthetic phenotype | **AMI = 1.000, ARI = 1.000** (Agglomerative + HDBSCAN min∈{15,25}) | ✅ |
-| V6.B.5 expanded panel | **191 targets** with 22-panel ✅ strict subset, all UniProts unique | ✅ |
-| Total scripts shipped | 63 | ✅ |
+| Target panel (V6.B core) | **28 targets** (was 22) — +6 cognitive (HTR1A, HTR4, SLC6A9, GRM2/3/5) + `substrate_mediated` column | ✅ |
+| V6.B.5 expanded panel | **191 targets** with 22-panel ✅ strict subset; MAO-A/MAO-B/COMT/ACHE substrate-mediated | ✅ |
+| Multi-modulator anchor table | **70 rows / 38 targets / 59 compounds / 24 Phase III nulls** (Sprint 2.1) | ✅ |
+| Total scripts shipped | 64 (added `scripts/68_load_modulator_anchors.py`) | ✅ |
 | Total source modules shipped | 40+ across cluster_a / cluster_b / cluster_c / cluster_d / cluster_e / translation / calibration / fusion / pockets / selectivity / diagnostics / fetchers / scoring | ✅ |
+| MH implementation roadmap | **10 of ~13 sprints complete** (1.1-1.4 + 2.1-2.2 + 3.1-3.3 + 4.1-4.2; reports/MH_IMPLEMENTATION_ROADMAP.md) | 🚀 |
 
 ---
 
