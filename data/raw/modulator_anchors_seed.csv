@@ -1,0 +1,80 @@
+# Multi-modulator anchor table for V6.B Gate 2 (multi-modulator curation).
+# Source: research/4-tier/Cluster D Methodology Report - Gate 3 and Gate 2.md, Section 4.
+# Sign convention: pooled_g encoded so positive = pro-cognitive (improvement);
+#                  inhibitor-induced gains are reported as positive g.
+# Phase III failures encoded with g ~ 0 +/- small SD to anchor the high-affinity-binder-but-no-clinical-benefit tail.
+# k = number of independent RCTs / pooled studies. CI on g where available.
+# Conversion: MD -> g via Hedges g with pooled SD ~ 7.5 for ADAS-Cog (Roberts 2020 / MH1+MH2 doc Section 5).
+# Target UniProts: CHRM1=P11229, CHRM4=P08173, HTR1A=P08908, HTR2A=P28223, HTR4=Q13639, HTR6=P50406, HTR7=P34969,
+#                  GABRA1=P14867, GABRA2=P47869, GABRA5=P31644, GRIN1=Q05586, MAOA=P21397, MAOB=P27338, COMT=P21964.
+target_uniprot,target_gene,compound,mechanism,pooled_g,CI_lo,CI_hi,k,endpoint,citation_doi,population,notes
+P36544,CHRNA7,Encenicline,alpha7-nAChR partial agonist,0.0,-0.1,0.1,2,MCCB,PMID:26089183,SCZ,Phase III null (EVP-6124-015/016); Phase II g~+0.30
+P36544,CHRNA7,ABT-126,alpha7-nAChR partial agonist,0.0,-0.15,0.15,1,MCCB,Haig2016,SCZ,Null Phase II
+P36544,CHRNA7,Varenicline,alpha4beta2-and-alpha7 partial agonist,0.2,0.05,0.35,1,RAVLT,Hong2011-ArchGenPsy68:1195,SCZ,Modest pro-cognitive
+P36544,CHRNA7,Nicotine,nAChR agonist,0.35,0.15,0.55,1,CPT,Newhouse2012-Neurology78:91,MCI,Pro-cognitive in MCI
+P22303,ACHE,Donepezil_10mg,AChE inhibitor,0.356,0.269,0.441,18,ADAS-Cog,10.1002/14651858.CD001190.pub3,AD,MD=-2.67 [CI -3.31 to -2.02]; g=MD/7.5
+P22303,ACHE,Galantamine_16-24mg,AChE-inh + alpha7-PAM,0.368,0.312,0.423,12,ADAS-Cog,Hansen2008-DARE-NBK74974,AD,WMD=-2.76 [CI -3.17 to -2.34]; g=MD/7.5
+P22303,ACHE,Rivastigmine_6-12mg,AChE-and-BChE inhibitor,0.401,0.295,0.507,10,ADAS-Cog,Hansen2008-DARE-NBK74974,AD,WMD=-3.01 [CI -3.80 to -2.21]; g=MD/7.5
+P22303,ACHE,Donepezil_10mg_VaD,AChE inhibitor,0.295,0.18,0.409,3,ADAS-Cog,PMID:33704781,Vasc,Vascular dementia 10mg MD=-2.21
+Q05586,GRIN1,Memantine_20mg_AD,NMDA uncompetitive antag,0.287,0.14,0.433,4,ADAS-Cog,10.1002/14651858.CD003154.pub6,AD,Mod-severe AD; 2.15 ADAS-Cog improvement
+Q12879,GRIN2A,Memantine_20mg_AD,NMDA uncompetitive antag,0.287,0.14,0.433,4,ADAS-Cog,10.1002/14651858.CD003154.pub6,AD,Subunit attribution; same compound
+Q13224,GRIN2B,Memantine_20mg_AD,NMDA uncompetitive antag,0.287,0.14,0.433,4,ADAS-Cog,10.1002/14651858.CD003154.pub6,AD,Subunit attribution; same compound
+Q05586,GRIN1,Memantine_mild,NMDA antagonist,0.028,-0.127,0.183,3,ADAS-Cog,PMID:21482915,AD,Mild AD; MD=0.21 (NS)
+Q13224,GRIN2B,D-cycloserine,glycine-site partial agonist,0.0,-0.2,0.2,1,MCCB,Goff2008,SCZ,Null
+Q12879,GRIN2A,D-cycloserine,glycine-site partial agonist,0.0,-0.2,0.2,1,MCCB,Goff2008,SCZ,Null
+P42261,GRIA1,Farampator_Org24448,AMPA PAM,0.25,-0.05,0.55,1,RAVLT,Wezenberg2007-JPsychopharm21:451,HC,Signal-only older HC
+P42262,GRIA2,Farampator_Org24448,AMPA PAM,0.25,-0.05,0.55,1,RAVLT,Wezenberg2007,HC,Subunit attribution
+P42263,GRIA3,Farampator_Org24448,AMPA PAM,0.25,-0.05,0.55,1,RAVLT,Wezenberg2007,HC,Subunit attribution
+P48058,GRIA4,Farampator_Org24448,AMPA PAM,0.25,-0.05,0.55,1,RAVLT,Wezenberg2007,HC,Subunit attribution
+P42261,GRIA1,CX-516,AMPA PAM,0.0,-0.2,0.2,1,MCCB,Goff2008,SCZ,Null
+P42261,GRIA1,LY451395_mibampator,AMPA PAM,0.0,-0.2,0.2,1,ADAS-Cog,Trzepacz2013,AD,Null
+P48067,SLC6A9,Bitopertin_RG1678,GlyT1 inhibitor,0.0,-0.05,0.05,3,MCCB,PMID:28117049,SCZ,Phase III null (SunLyte/DayLyte/FlashLyte)
+P48067,SLC6A9,Iclepertin_BI425809,GlyT1 inhibitor,0.25,0.05,0.45,1,MCCB,Rosenbrock2023-MolPsy,SCZ,Phase II positive
+Q14416,GRM2,Pomaglumetad_LY2140023,mGluR2/3 agonist,0.0,-0.1,0.1,3,MCCB,PMID:24772351,SCZ,Phase II/III null (3 trials)
+Q14832,GRM3,Pomaglumetad_LY2140023,mGluR2/3 agonist,0.0,-0.1,0.1,3,MCCB,PMID:24772351,SCZ,Subunit attribution
+P41594,GRM5,Basimglurant,mGluR5 NAM,0.0,-0.15,0.15,1,composite,BerryKravis2016-STM,FXS,Null
+P21728,DRD1,Dihydrexidine_DAR-0100A,D1 partial agonist,0.4,0.1,0.7,2,n-back,Rosell2015-Neuropsychopharm40:446,SCZ,Small RCTs SZ-typal
+P21728,DRD1,PF-06412562,D1 partial agonist,0.0,-0.2,0.2,1,WM,Arce2019,HD,Null Phase II
+Q01959,SLC6A3,Methylphenidate,DAT-NET reuptake inh,0.21,0.1,0.32,1,composite,PMID:32709551,HC,Roberts2020 SMD composite; recall 0.43 / sust-attn 0.42
+Q01959,SLC6A3,d-Amphetamine,DAT-NET-VMAT2,0.0,-0.1,0.1,1,composite,Roberts2021,HC,Null overall
+Q01959,SLC6A3,Modafinil,weak-DAT + Hist/Hcrt,0.12,0.02,0.22,1,composite,Roberts2021,HC,Small SMD
+Q01959,SLC6A3,Lisdexamfetamine,prodrug d-amph,0.5,0.3,0.7,2,DSST/CPT,Faraone2010-Adler2008,ADHD,Adult ADHD
+P08913,ADRA2A,Guanfacine,alpha2A agonist,0.4,0.15,0.65,2,WM/CPT,Biederman2008-Bedard2015,ADHD,Children/adults; small in HC
+P08913,ADRA2A,Clonidine,alpha2 agonist,0.2,-0.05,0.45,1,spatial-WM,Jakala1999,HC,Older HC small effect
+P23975,SLC6A2,Atomoxetine,NET reuptake inh,0.45,0.35,0.54,5,ADHD-RS,Cunill2013,ADHD,Adult ADHD; rev-coded SMD
+P23975,SLC6A2,Atomoxetine_cog,NET reuptake inh,0.2,0.05,0.35,2,composite,Nikolas2019,ADHD,Child cognition meta
+P23975,SLC6A2,Reboxetine,NET inhibitor,0.2,0.0,0.4,1,inhibition,Chamberlain2006,HC,Response inhibition
+Q9Y5N1,HRH3,Pitolisant_Narcolepsy,H3 inverse agonist,0.61,0.3,0.92,2,ESS,PMID:34935103,NRC,HARMONY-1 d=0.61 n=61; HARMONY-CTP d=0.86 n=105
+Q9Y5N1,HRH3,Pitolisant_OSA,H3 inverse agonist,0.413,0.273,0.553,1,ESS,PMC8755655,OSA,ESS MD=-3.1 [CI -4.1 to -2.1]; g=MD/7.5
+Q9Y5N1,HRH3,ABT-288,H3 antagonist,0.0,-0.15,0.15,1,MCCB,Haig2014,SCZ,Null
+Q9Y5N1,HRH3,MK-0249,H3 antagonist,0.0,-0.15,0.15,1,ADAS-Cog,Egan2012,AD,Null
+O43613,HCRTR1,Suvorexant,Dual-OR antag,-0.05,-0.2,0.1,1,DSST,PMID:26194571,HC,~0 at 15/20mg; minor impair at 40
+O43614,HCRTR2,Suvorexant,Dual-OR antag,-0.05,-0.2,0.1,1,DSST,PMID:26194571,HC,Subunit attribution
+O43613,HCRTR1,Lemborexant,Dual-OR antag,-0.1,-0.25,0.05,1,composite,Murphy2017,HC,Small impair at 10mg
+O43614,HCRTR2,Lemborexant,Dual-OR antag,-0.1,-0.25,0.05,1,composite,Murphy2017,HC,Subunit attribution
+Q08499,PDE4D,Zatolmilast_BPN14770,PDE4D allosteric inh,0.71,0.32,1.1,1,NIH-Toolbox,BerryKravis2021-NatMed27:862,FXS,LSMean +5.29 NIH-Tbx Crystallized p=0.0018; g~MD/7.5
+Q08499,PDE4D,Roflumilast_lowdose,PDE4 inh,0.4,0.1,0.7,1,RAVLT,VanDuinen2018,HC,Elderly HC recall
+O76083,PDE9A,PF-04447943,PDE9 inh,0.0,-0.15,0.15,1,ADAS-Cog,Schwam2014,AD,Null
+O76083,PDE9A,BI_409306,PDE9 inh,0.0,-0.15,0.15,1,MCCB,Brown2019,SCZ,Null
+Q99720,SIGMAR1,Blarcamesine_ANAVEX2-73,sigma1 agonist,0.237,0.033,0.441,1,ADAS-Cog13,10.14283/jpad.2024.122,AD,LSM diff=-1.78 p=0.022; co-primary ADCS-ADL missed
+Q99720,SIGMAR1,Fluvoxamine,SSRI w/ sigma1 affinity,0.1,-0.1,0.3,1,composite,Cassano2002,DepCog,Small
+O43526,KCNQ2,Retigabine_ezogabine,Kv7 opener,-0.3,-0.5,-0.1,1,cognition,Brodie2010,EpilCog,Negative withdrawn for tissue discoloration
+O43525,KCNQ3,Retigabine_ezogabine,Kv7 opener,-0.3,-0.5,-0.1,1,cognition,Brodie2010,EpilCog,Subunit attribution
+P11229,CHRM1,Xanomeline_KarXT,M1/M4 agonist,0.5,0.3,0.7,2,MCCB,Kaul2024-Lancet-EMERGENT2-3,SCZ,Cog signal in EMERGENT-2/3
+P11229,CHRM1,GSK1034702,M1 PAM,0.4,0.1,0.7,1,scopolamine,Nathan2013,HC,Scopolamine reversal paradigm
+P08173,CHRM4,Emraclidine,M4 PAM,0.15,-0.05,0.35,1,PANSS,Krystal2022,SCZ,Cog pending; small early
+P50406,HTR6,Idalopirdine,5-HT6 antagonist,-0.055,-0.161,0.053,3,ADAS-Cog,PMID:30560763,AD,Phase III meta MD=-0.41 NS [CI -1.21 to 0.40]
+P50406,HTR6,Intepirdine_SB-742457,5-HT6 antagonist,0.0,-0.1,0.1,1,ADAS-Cog,Khoury2018,AD,MINDSET Phase III null
+P28223,HTR2A,Pimavanserin,5-HT2A inverse agonist,0.0,-0.1,0.1,1,MMSE,Cummings2014,PD,Neutral; no cog worsening
+Q13639,HTR4,Prucalopride_lowdose,5-HT4 agonist,0.3,0.0,0.6,1,memory-consolidation,Murphy2020-TranslPsy,HC,Signal-only
+P34969,HTR7,Lurasidone,atypical-AP w/ 5-HT7 affinity,0.15,0.0,0.3,1,MCCB,Harvey2015,SCZ,Small +
+P08908,HTR1A,Tandospirone,5-HT1A partial agonist,0.4,0.1,0.7,2,various,Sumiyoshi2007,SCZ,Small Asia trials
+P31644,GABRA5,Basmisanil_RG1662,alpha5-selective NAM,0.0,-0.1,0.1,1,RBANS,Lott2016,DownSyndrome,Phase II null CLEMATIS
+P14867,GABRA1,Zolpidem,alpha1 PAM,-0.3,-0.5,-0.1,1,next-day-cog,Verster2002,HC,Sedation impair
+P47869,GABRA2,Zolpidem,alpha1 PAM,-0.3,-0.5,-0.1,1,next-day-cog,Verster2002,HC,Subunit attribution
+P27338,MAOB,Selegiline,MAO-B selective inh,0.1,-0.05,0.25,1,ADAS-Cog,BirksCochrane2003,AD,Small
+P27338,MAOB,Rasagiline,MAO-B selective inh,0.2,0.05,0.35,1,composite,Hanagasi2011,PD,Cognition composite
+P21397,MAOA,Moclobemide,MAO-A reversible inh,0.1,-0.1,0.3,1,composite,Allain1992,DepCog,Small
+P21964,COMT,Tolcapone_valval,brain-penetrant COMT inh,0.4,0.1,0.7,2,n-back,PMID:17299516,HC,val/val genotype responders
+P21964,COMT,Tolcapone_metmet,brain-penetrant COMT inh,-0.3,-0.55,-0.05,1,n-back,PMID:18536698,HC,met/met inverse effect
+P21964,COMT,Entacapone,peripheral COMT inh,0.05,-0.1,0.2,1,cognition,n/a,PD,Minimal CNS penetration

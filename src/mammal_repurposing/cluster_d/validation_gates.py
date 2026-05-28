@@ -225,6 +225,134 @@ def gate_2_spearman_vs_smd(
     )
 
 
+def gate_2_multi_modulator_spearman(
+    theta_mean: dict[str, float],
+    modulator_anchors: list[dict] | "pd.DataFrame",
+    *,
+    aggregation: str = "mean",     # "mean" | "median" | "max" | "weighted_mean"
+    threshold: float = 0.30,
+    bootstrap_n: int = 1000,
+    rng_seed: int = 42,
+    min_modulators_per_target: int = 1,
+) -> GateResult:
+    """Gate 2 (multi-modulator, Sprint 2.2): per-target θ̄ correlates with
+    anchored pooled_g across the multi-modulator anchor table.
+
+    Aggregates pooled_g over multiple modulators per target (default: mean),
+    then computes Spearman ρ between (θ̄_t, g_aggregated_t) across all
+    targets covered by ≥`min_modulators_per_target` modulators.
+
+    Power analysis (per Cluster D Methodology doc § 5B):
+      - n=80 (target, primary_modulator) → 80% power for |ρ|=0.30 at α=0.05
+      - With per-target aggregation: n=38 (current modulator table) → ~50%
+        power for |ρ|=0.30; ~80% power for |ρ|=0.45.
+
+    Args:
+      theta_mean: per-target posterior mean from V6.B(.5) NUTS.
+      modulator_anchors: rows of the modulator_anchors.parquet (Sprint 2.1).
+        Either a list of dicts or a DataFrame with the canonical columns:
+        target_uniprot, compound, pooled_g, CI_lo, CI_hi, k, ...
+      aggregation: how to collapse multiple modulators per target.
+        - "mean": simple mean of pooled_g.
+        - "median": median pooled_g.
+        - "max": max pooled_g (canonical clinical-best for that target).
+        - "weighted_mean": inverse-variance weighting using CI width.
+      threshold: Spearman ρ threshold for PASS.
+      bootstrap_n: number of bootstrap resamples for 90% CI.
+      rng_seed: RNG seed.
+      min_modulators_per_target: drop targets with fewer modulators.
+
+    Returns:
+      GateResult with metric_value = Spearman ρ, detail =
+      "ρ=X.XX 90%CI=[lo, hi] n=N (agg=<method>)".
+    """
+    from scipy.stats import spearmanr
+    rng = np.random.default_rng(rng_seed)
+
+    # Accept either DataFrame or list of dicts
+    try:
+        import pandas as pd
+        if isinstance(modulator_anchors, pd.DataFrame):
+            rows = modulator_anchors.to_dict("records")
+        else:
+            rows = list(modulator_anchors)
+    except ImportError:
+        rows = list(modulator_anchors)
+
+    # Group by target_uniprot
+    per_target: dict[str, list[dict]] = {}
+    for r in rows:
+        per_target.setdefault(r["target_uniprot"], []).append(r)
+
+    # Aggregate and build (target, g) pairs for targets we have θ̄ for
+    pairs: list[tuple[str, float, float, int]] = []    # (uniprot, theta, g_agg, n_mods)
+    for u, mods in per_target.items():
+        if u not in theta_mean:
+            continue
+        if len(mods) < min_modulators_per_target:
+            continue
+        gs = np.array([float(m["pooled_g"]) for m in mods])
+        if aggregation == "mean":
+            g_agg = float(np.mean(gs))
+        elif aggregation == "median":
+            g_agg = float(np.median(gs))
+        elif aggregation == "max":
+            g_agg = float(np.max(gs))
+        elif aggregation == "weighted_mean":
+            cis = np.array([float(m["CI_hi"]) - float(m["CI_lo"]) for m in mods])
+            # Inverse-variance weight ~ 1 / (CI_width / 1.96)^2 -- proxy SE
+            weights = 1.0 / np.maximum(cis / 1.96, 0.05) ** 2
+            g_agg = float(np.average(gs, weights=weights))
+        else:
+            raise ValueError(f"Unknown aggregation: {aggregation}")
+        pairs.append((u, theta_mean[u], g_agg, len(mods)))
+
+    n = len(pairs)
+    if n < 5:
+        return GateResult(
+            gate_name="gate_2_multi_modulator_spearman",
+            pass_status="INSUFFICIENT_DATA",
+            metric_threshold=threshold,
+            detail=f"Only {n} (θ̄, g_agg) pairs after aggregation; need ≥5",
+        )
+
+    theta_arr = np.array([p[1] for p in pairs])
+    g_arr = np.array([p[2] for p in pairs])
+    rho_full, _ = spearmanr(theta_arr, g_arr)
+    if not np.isfinite(rho_full):
+        rho_full = 0.0
+
+    # Bootstrap CI
+    boot_rhos = np.zeros(bootstrap_n)
+    for i in range(bootstrap_n):
+        idx = rng.choice(n, size=n, replace=True)
+        r, _ = spearmanr(theta_arr[idx], g_arr[idx])
+        boot_rhos[i] = r if np.isfinite(r) else 0.0
+    ci_lo = float(np.percentile(boot_rhos, 5))
+    ci_hi = float(np.percentile(boot_rhos, 95))
+
+    rho_above_threshold = rho_full > threshold
+    ci_excludes_zero = ci_lo > 0
+    if rho_above_threshold and ci_excludes_zero:
+        status = "PASS"
+    elif rho_full > 0.10 or ci_lo > -0.10:
+        status = "DEGRADE"
+    else:
+        status = "FAIL"
+
+    per_item = {p[0]: f"θ̄={p[1]:+.3f} g_agg={p[2]:+.3f} (n_mods={p[3]})"
+                for p in pairs}
+    return GateResult(
+        gate_name="gate_2_multi_modulator_spearman",
+        pass_status=status,
+        metric_value=float(rho_full),
+        metric_threshold=threshold,
+        detail=(f"ρ={rho_full:+.3f} 90%CI=[{ci_lo:+.3f}, {ci_hi:+.3f}] "
+                f"n={n} (agg={aggregation})"),
+        per_item=per_item,
+    )
+
+
 def gate_3_held_out_gwas(
     theta_mean: dict[str, float],
     held_out_l2g: dict[str, float] | None = None,

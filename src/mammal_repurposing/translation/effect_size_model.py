@@ -82,8 +82,13 @@ class EffectSizeObservation:
             for the 5 failure modes (m1-m5)
         observed_g: optional ground-truth Hedges' g (for compounds in the
             anchor set with published meta-analytic SMD)
-        endpoint: cognitive endpoint (ADAS-Cog, DSST, n-back, Stroop, RAVLT,
-            CANTAB-RVIP); used for fixed-effect endpoint adjustments
+        endpoint: cognitive endpoint or domain (V1: ADAS-Cog, DSST, n-back,
+            Stroop, RAVLT, CANTAB-RVIP, MCCB; V2: EM, WM, ATT, EF, PS, VL, VS,
+            MOT — the 8 canonical cognitive domains per V7.2 Stage 3).
+        population: Sprint 3.2 — patient population for the population × class
+            interaction term. Canonical values: HC, AD, MCI, SCZ, ADHD, FXS,
+            MDD, NRC, OSA, PD, HD, DownSyndrome, Vasc, DepCog, EpilCog, mixed.
+            Default 'mixed' to preserve backward compatibility with V7.3 callers.
     """
     compound: str
     class_name: str
@@ -96,6 +101,7 @@ class EffectSizeObservation:
     moderators: tuple[float, float, float, float, float] = (0.0,) * N_MODERATORS
     observed_g: float | None = None
     endpoint: str = "DSST"
+    population: str = "mixed"
 
 
 @dataclass
@@ -410,6 +416,234 @@ def _numpyro_available() -> bool:
         return True
     except ImportError:
         return False
+
+
+# ===========================================================================
+# Sprint 3.2 — V7.3 Stage 2 hierarchical Bayes with per-class τ² + population × class interaction
+# ===========================================================================
+
+def fit_effect_size_nuts_v2(
+    observations: Sequence[EffectSizeObservation],
+    *,
+    n_chains: int = 4,
+    n_draws: int = 2000,
+    n_tune: int = 2000,
+    target_accept: float = 0.95,
+    tau_class_prior_scale: float = 0.05,       # HalfNormal scale for per-class τ
+    interaction_prior_scale: float = 0.10,      # interaction term SD
+    sigma_resid_prior: float = 0.20,
+    moderator_gamma_prior_sd: float = 0.10,
+    random_seed: int = 42,
+    use_v2_subdomain_priors: bool = True,
+    subdomain_anchor_weight: float = 0.5,
+) -> EffectSizePosterior:
+    """V7.3 Stage 2 — refit with per-class τ²_class + population × class interaction.
+
+    Sprint 3.2 deliverable per `reports/MH_IMPLEMENTATION_ROADMAP.md` § 3
+    (V7 model-structure refit BEFORE anchor expansion).
+
+    Model (canonical form per MH1+MH2 V7 CPT doc § 5):
+        μ_global              ~ Normal(0, 0.20)
+        τ_class[m]            ~ HalfNormal(tau_class_prior_scale)
+        μ_class[m]            ~ Normal(prisma_mean[m], τ_class[m])        # per-class heterogeneity
+        ι[m, p]               ~ Normal(0, interaction_prior_scale)         # population × class
+        β_pchembl, β_relevance, β_copula, β_pbpk
+        γ_k (k=5)             ~ Normal(0, moderator_gamma_prior_sd)
+        sigma_resid           ~ HalfNormal(sigma_resid_prior)
+
+    Linear predictor:
+        η[c] = sigmoid(α + β·E[pchembl_c] + β·relevance_c + β·copula + β·pbpk_c)
+                · (μ_class[m_c] + ι[m_c, p_c]) · relevance_c
+                − Σ_k γ_k · m_k[c]
+
+    where m_c = class index, p_c = population index for observation c.
+
+    Compared to v1:
+      - τ²_class is now PER class (was single λ_class shared across all classes)
+      - Adds (population × class) interaction ι[m, p] to capture e.g.
+        AChE-I in AD (g≈0.36 EM) vs AChE-I in HC (g≈0.15-0.20)
+      - When `use_v2_subdomain_priors`, anchor likelihood pulls each
+        observation toward its (class, domain) V2 cell via Potential.
+
+    Returns:
+      EffectSizePosterior with method='pymc_nuts_v2' and a populated
+      `note` field reporting per-class τ̂ posterior + interaction magnitudes.
+    """
+    if not PYMC_AVAILABLE:
+        raise ImportError(
+            "PyMC not installed. Use fit_effect_size_stub() instead, or "
+            "`pip install pymc numpyro` for the full Bayesian path."
+        )
+    import pymc as pm
+    import pytensor.tensor as pt
+    import arviz as az
+
+    from .prisma_priors import (
+        class_prior_table, list_class_names,
+        PER_SUBDOMAIN_PRIORS_V2,
+    )
+
+    table = class_prior_table()
+    class_names = list_class_names()
+    n_obs = len(observations)
+    if n_obs == 0:
+        raise ValueError("Cannot fit on zero observations")
+
+    # Index classes and populations
+    cls_idx = np.array([class_names.index(o.class_name)
+                        if o.class_name in class_names else 0
+                        for o in observations])
+    populations = sorted(set(o.population for o in observations))
+    pop_to_idx = {p: i for i, p in enumerate(populations)}
+    pop_idx = np.array([pop_to_idx[o.population] for o in observations])
+    n_pop = len(populations)
+    n_classes = len(class_names)
+
+    pchembl_mean = np.array([o.pchembl_post_mean for o in observations])
+    relevance_mean = np.array([o.relevance_post_mean for o in observations])
+    moderators_mat = np.array([list(o.moderators) for o in observations])
+    pbpk_auc = np.array([o.pbpk_auc_brain for o in observations])
+    obs_g = np.array([o.observed_g if o.observed_g is not None else np.nan
+                      for o in observations])
+    has_g = ~np.isnan(obs_g)
+
+    prisma_means = np.array([table.get(c, {"mean": 0.0})["mean"]
+                              for c in class_names])
+
+    with pm.Model() as model:
+        mu_global = pm.Normal("mu_global", 0.0, 0.20)
+
+        # Per-class heterogeneity: τ_class[m] ~ HalfNormal(scale)
+        tau_class = pm.HalfNormal("tau_class", tau_class_prior_scale,
+                                   shape=n_classes)
+
+        # μ_class[m] ~ Normal(prisma_mean[m], τ_class[m]) — non-centered
+        mu_class_raw = pm.Normal("mu_class_raw", 0.0, 1.0, shape=n_classes)
+        mu_class = pm.Deterministic(
+            "mu_class",
+            prisma_means + tau_class * mu_class_raw,
+        )
+
+        # Population × class interaction: ι[m, p] ~ Normal(0, scale)
+        iota_raw = pm.Normal("iota_raw", 0.0, 1.0, shape=(n_classes, n_pop))
+        iota = pm.Deterministic("iota",
+                                 iota_raw * interaction_prior_scale)
+
+        # Linear predictor components
+        beta_pchembl = pm.Normal("beta_pchembl", 0.0, 0.10)
+        beta_relevance = pm.Normal("beta_relevance", 0.0, 0.10)
+        beta_copula = pm.Normal("beta_copula", 0.0, 0.05)
+        beta_pbpk = pm.Normal("beta_pbpk", 0.0, 0.05)
+        gamma = pm.Normal("gamma_moderators", 0.0, moderator_gamma_prior_sd,
+                          shape=N_MODERATORS)
+
+        pchembl_c = (pchembl_mean - pchembl_mean.mean()) / max(pchembl_mean.std(), 1.0)
+        pbpk_c = (pbpk_auc - pbpk_auc.mean()) / max(pbpk_auc.std(), 1.0)
+        copula = pchembl_c * relevance_mean
+
+        eta_inner = (mu_global
+                     + beta_pchembl * pchembl_c
+                     + beta_relevance * relevance_mean
+                     + beta_copula * copula
+                     + beta_pbpk * pbpk_c)
+        sigmoid_eta = pm.math.sigmoid(eta_inner)
+
+        # Class contribution + population × class interaction
+        class_contrib = mu_class[cls_idx]
+        interaction_contrib = iota[cls_idx, pop_idx]
+        combined_class_effect = class_contrib + interaction_contrib
+
+        # Cluster D gate + moderator debit
+        gated = combined_class_effect * relevance_mean
+        moderator_debit = pm.math.dot(moderators_mat, gamma)
+        eta = sigmoid_eta * gated - moderator_debit
+
+        sigma_resid = pm.HalfNormal("sigma_resid", sigma_resid_prior)
+
+        if has_g.sum() > 0:
+            pm.Normal("g_obs", mu=eta[has_g], sigma=sigma_resid,
+                      observed=obs_g[has_g])
+
+        # V2 subdomain anchor likelihood (per-cell pull via Potential)
+        if use_v2_subdomain_priors and subdomain_anchor_weight > 0:
+            from .prisma_priors import (CLASS_NAME_MIGRATION_V1_TO_V2,
+                                          get_subdomain_prior_v2)
+            subdomain_mu = np.zeros(n_obs)
+            subdomain_sd = np.full(n_obs, 1e6)
+            n_subdomain_hits = 0
+            for i, o in enumerate(observations):
+                cell = get_subdomain_prior_v2(o.class_name, o.endpoint)
+                if cell is not None:
+                    subdomain_mu[i] = cell.pooled_g
+                    # Tighter τ (Schmidli rule) → tighter anchor pull
+                    subdomain_sd[i] = cell.tau / max(subdomain_anchor_weight, 1e-6)
+                    n_subdomain_hits += 1
+            if n_subdomain_hits > 0:
+                sub_loglik = pm.logp(
+                    pm.Normal.dist(mu=subdomain_mu, sigma=subdomain_sd),
+                    eta,
+                ).sum()
+                pm.Potential("v2_subdomain_anchor", sub_loglik)
+                logger.info("V7.3 Stage 2 v2 subdomain anchors: %d/%d observations",
+                            n_subdomain_hits, n_obs)
+
+        pm.Deterministic("g_pred", eta)
+
+        sample_kwargs = dict(
+            draws=n_draws, tune=n_tune, chains=n_chains,
+            target_accept=target_accept,
+            random_seed=random_seed, progressbar=False,
+        )
+        if _numpyro_available():
+            sample_kwargs["nuts_sampler"] = "numpyro"
+        idata = pm.sample(**sample_kwargs)
+
+    g_post = idata.posterior["g_pred"].values
+    g_flat = g_post.reshape(-1, n_obs)
+
+    compounds = [o.compound for o in observations]
+    g_mean = {c: float(g_flat[:, i].mean()) for i, c in enumerate(compounds)}
+    g_2p5 = {c: float(np.percentile(g_flat[:, i], 2.5)) for i, c in enumerate(compounds)}
+    g_97p5 = {c: float(np.percentile(g_flat[:, i], 97.5)) for i, c in enumerate(compounds)}
+    g_90_upper = {c: float(np.percentile(g_flat[:, i], 90.0)) for i, c in enumerate(compounds)}
+    class_mu = {c: float(prisma_means[cls_idx[i]]) for i, c in enumerate(compounds)}
+    gate_active = {c: bool(observations[i].relevance_post_mean > 0.10)
+                   for i, c in enumerate(compounds)}
+
+    summary = az.summary(idata, var_names=["mu_class", "tau_class", "iota",
+                                            "beta_pchembl", "beta_relevance",
+                                            "sigma_resid"])
+    rhat_max = float(summary["r_hat"].max())
+    ess_min = float(summary["ess_bulk"].min())
+
+    # Divergence count
+    try:
+        diverging = idata.sample_stats["diverging"].values if "diverging" in idata.sample_stats else None
+        n_div = int(diverging.sum()) if diverging is not None else 0
+    except Exception:    # noqa: BLE001
+        n_div = -1
+
+    # Per-class τ̂ posterior summary
+    tau_post = idata.posterior["tau_class"].values
+    tau_per_class = tau_post.mean(axis=(0, 1))
+    tau_summary = "; ".join(f"{c}:{tau_per_class[i]:.3f}"
+                            for i, c in enumerate(class_names[:5]))
+
+    return EffectSizePosterior(
+        compounds=compounds,
+        g_mean=g_mean,
+        g_2p5=g_2p5,
+        g_97p5=g_97p5,
+        g_90_upper=g_90_upper,
+        class_mu=class_mu,
+        cluster_d_gate_active=gate_active,
+        n_chains=n_chains, n_draws=n_draws,
+        rhat_max=rhat_max, ess_min=ess_min,
+        method="pymc_nuts_v2",
+        note=(f"NUTS v2 converged: R̂={rhat_max:.3f}, ESS={ess_min:.0f}, "
+              f"divergences={n_div}; tau_class[{tau_summary},...]; "
+              f"n_pop={n_pop} ({','.join(populations)})"),
+    )
 
 
 def assert_p1_through_p8(

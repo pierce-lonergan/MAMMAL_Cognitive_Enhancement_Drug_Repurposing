@@ -110,6 +110,13 @@ def main() -> int:
     parser.add_argument("--n-draws", type=int, default=1000)
     parser.add_argument("--n-tune", type=int, default=1000)
     parser.add_argument("--target-accept", type=float, default=0.95)
+    parser.add_argument("--no-mh8", action="store_true",
+                        help="Skip the MH8 substrate-mediated AHBA-masking. "
+                             "Use ONLY for regression-checking against the "
+                             "pre-MH8 V6.B.5 posterior (37-divergence baseline).")
+    parser.add_argument("--sm-sigma-inflate", type=float, default=10.0,
+                        help="MH8: AHBA sigma inflation factor for "
+                             "substrate-mediated targets (default 10x).")
     parser.add_argument("--stub-only", action="store_true",
                         help="Force stub mode (skip PyMC NUTS); useful when "
                              "NUTS multiprocess sampling hangs in restricted "
@@ -139,7 +146,7 @@ def main() -> int:
     from mammal_repurposing.cluster_d.bayesian_prior import (
         PYMC_AVAILABLE, build_y_obs_from_sources,
         fit_cluster_d_prior_nuts, fit_cluster_d_prior_stub,
-        DEFAULT_ANCHORS,
+        DEFAULT_ANCHORS, SUBSTRATE_MEDIATED_UNIPROTS,
     )
 
     # Reference anchors: BDNF, COMT, ACHE, DRD2, GRIN2B, CHRNA7 (gene-based map)
@@ -162,13 +169,27 @@ def main() -> int:
             panel_uniprots, y_ahba=y_ahba, y_l2g=y_l2g, y_sc=y_sc,
         )
     else:
+        # MH8 substrate-mediated mask: opt-in unless --no-mh8 is set.
+        sm_uniprots: set[str] | None
+        if args.no_mh8:
+            sm_uniprots = None
+            logger.warning("MH8 disabled via --no-mh8 — running pre-MH8 baseline "
+                           "(37-divergence regression check)")
+        else:
+            sm_uniprots = set(SUBSTRATE_MEDIATED_UNIPROTS) & set(panel_uniprots)
+            logger.info("MH8 enabled: %d of %d substrate-mediated targets present in panel: %s",
+                        len(sm_uniprots), len(SUBSTRATE_MEDIATED_UNIPROTS),
+                        sorted(sm_uniprots))
+
         y_obs, sigma_obs, source_names = build_y_obs_from_sources(
             panel_uniprots, y_ahba=y_ahba, y_l2g=y_l2g, y_sc=y_sc,
+            substrate_mediated_uniprots=sm_uniprots,
+            substrate_mediated_sigma_inflate=args.sm_sigma_inflate,
         )
         logger.info("Building Bayesian model: %d sources × %d targets",
                     len(source_names), len(panel_uniprots))
-        logger.info("Running PyMC NUTS: %d chains × %d draws",
-                    args.n_chains, args.n_draws)
+        logger.info("Running PyMC NUTS: %d chains × %d draws (target_accept=%.2f)",
+                    args.n_chains, args.n_draws, args.target_accept)
         posterior = fit_cluster_d_prior_nuts(
             target_uniprots=panel_uniprots,
             y_obs=y_obs,
@@ -180,6 +201,8 @@ def main() -> int:
             n_tune=args.n_tune,
             target_accept=args.target_accept,
         )
+        if sm_uniprots:
+            posterior.substrate_mediated_uniprots = sorted(sm_uniprots)
 
     # Persist
     rows = []
@@ -229,6 +252,8 @@ def main() -> int:
                if np.isfinite(posterior.ess_min) else "n/a")
     L.append(f"- R̂ max: {rhat_str} (gate: < 1.01)")
     L.append(f"- ESS min: {ess_str} (gate: > 400)")
+    L.append(f"- Divergences: {posterior.n_divergences} "
+             f"(gate: 0; pre-MH8 baseline: 37)")
     rhat_gate = ("✅ PASS" if (np.isfinite(posterior.rhat_max)
                                 and posterior.rhat_max < 1.01)
                  else ("⏳ N/A (stub)" if posterior.method == "stage_0_stub"
@@ -237,8 +262,27 @@ def main() -> int:
                                and posterior.ess_min > 400)
                 else ("⏳ N/A (stub)" if posterior.method == "stage_0_stub"
                       else "❌ FAIL"))
+    div_gate = ("✅ PASS" if posterior.n_divergences == 0
+                else ("⏳ N/A (stub)" if posterior.method == "stage_0_stub"
+                      else f"❌ FAIL ({posterior.n_divergences} divergences)"))
     L.append(f"- R̂ gate: {rhat_gate}")
     L.append(f"- ESS gate: {ess_gate}")
+    L.append(f"- Divergence gate: {div_gate}")
+    L.append("")
+    L.append("## MH8 substrate-mediated mask")
+    L.append("")
+    if posterior.substrate_mediated_uniprots:
+        sm_genes = [uniprot_to_gene.get(u, u)
+                    for u in posterior.substrate_mediated_uniprots]
+        L.append(f"- Applied to {len(sm_genes)} targets: {', '.join(sm_genes)}")
+        L.append(f"- AHBA sigma inflated by {args.sm_sigma_inflate:.1f}x "
+                 f"(variance contribution ~{args.sm_sigma_inflate ** 2:.0f}x)")
+        L.append("- Rationale: substrate-degrading enzymes saturate k_cat/K_m; "
+                 "AHBA expression decoupled from cognition relevance. "
+                 "See research/4-tier/MH8 Methods Clarity Research.md §3-§4.")
+    else:
+        L.append("- **DISABLED** (--no-mh8 or no SM targets in panel) — "
+                 "this is the pre-MH8 baseline.")
     L.append("")
     L.append("## Top-30 targets by θ̄")
     L.append("")
