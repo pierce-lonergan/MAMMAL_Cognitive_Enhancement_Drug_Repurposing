@@ -13,9 +13,9 @@ Full PyMC NUTS effect-size translation with 15-compound anchor likelihood. Per `
 ## Convergence
 
 - Method: pymc_nuts
-- R̂ max: 1.000 (gate: < 1.01)
-- ESS min: 2332 (gate: > 400)
-- R̂ gate: ✅ PASS
+- R̂ max: 1.010 (gate: < 1.01)
+- ESS min: 3100 (gate: > 400)
+- R̂ gate: ❌ FAIL
 - ESS gate: ✅ PASS
 
 ## Gate 1 — P1-P8 pre-registered predictions
@@ -39,52 +39,52 @@ Status: **PASS** (0 violations of 15 compounds)
 
 ## Gate 3 — Leave-one-out MAE on anchor set
 
-Status: **PASS** (MAE = 0.073; gate: < 0.15)
+Status: **PASS** (MAE = 0.071; gate: < 0.15)
 
 | Compound | observed g | predicted g | |residual| |
 |---|---|---|---|
-| donepezil | +0.180 | +0.089 | 0.091 |
-| galantamine | +0.150 | +0.089 | 0.061 |
-| rivastigmine | +0.160 | +0.089 | 0.071 |
-| memantine | +0.050 | +0.021 | 0.029 |
-| methylphenidate | +0.210 | +0.079 | 0.131 |
-| d_amphetamine | +0.000 | +0.078 | 0.078 |
-| modafinil | +0.120 | +0.040 | 0.080 |
-| atomoxetine | +0.100 | +0.033 | 0.067 |
-| varenicline | +0.080 | +0.087 | 0.007 |
-| caffeine | +0.200 | +0.071 | 0.129 |
-| encenicline | +0.000 | +0.088 | 0.088 |
-| intepirdine | +0.000 | +0.033 | 0.033 |
-| pridopidine | +0.000 | +0.034 | 0.034 |
-| vortioxetine | +0.120 | +0.032 | 0.088 |
-| guanfacine | +0.150 | +0.045 | 0.105 |
+| donepezil | +0.180 | +0.096 | 0.084 |
+| galantamine | +0.150 | +0.097 | 0.053 |
+| rivastigmine | +0.160 | +0.097 | 0.063 |
+| memantine | +0.050 | +0.025 | 0.025 |
+| methylphenidate | +0.210 | +0.087 | 0.123 |
+| d_amphetamine | +0.000 | +0.087 | 0.087 |
+| modafinil | +0.120 | +0.046 | 0.074 |
+| atomoxetine | +0.100 | +0.038 | 0.062 |
+| varenicline | +0.080 | +0.095 | 0.015 |
+| caffeine | +0.200 | +0.080 | 0.120 |
+| encenicline | +0.000 | +0.095 | 0.095 |
+| intepirdine | +0.000 | +0.038 | 0.038 |
+| pridopidine | +0.000 | +0.039 | 0.039 |
+| vortioxetine | +0.120 | +0.037 | 0.083 |
+| guanfacine | +0.150 | +0.049 | 0.101 |
 
 ## Sensitivity sweep — λ_class
 
 | λ_class | mean g | max g₉₀ | violations | method |
 |---|---|---|---|---|
-| 0.3 | +0.048 | +0.087 | 0 | pymc_nuts |
-| 3.0 | +0.082 | +0.200 | 0 | pymc_nuts |
+| 0.3 | +0.049 | +0.088 | 0 | pymc_nuts |
+| 3.0 | +0.092 | +0.224 | 0 | pymc_nuts |
 
 ## Per-compound posterior
 
 | Compound | g_mean | 95% CrI | g₉₀_upper | Cluster D gate |
 |---|---|---|---|---|
-| galantamine | +0.089 | [+0.02, +0.15] | +0.130 | ✅ |
-| rivastigmine | +0.089 | [+0.02, +0.15] | +0.130 | ✅ |
-| donepezil | +0.089 | [+0.02, +0.15] | +0.130 | ✅ |
-| encenicline | +0.088 | [+0.02, +0.15] | +0.128 | ✅ |
-| varenicline | +0.087 | [+0.02, +0.15] | +0.128 | ✅ |
-| methylphenidate | +0.079 | [-0.00, +0.16] | +0.135 | ✅ |
-| d_amphetamine | +0.078 | [-0.00, +0.16] | +0.134 | ✅ |
-| caffeine | +0.071 | [+0.02, +0.13] | +0.111 | ✅ |
-| guanfacine | +0.045 | [-0.01, +0.10] | +0.080 | ✅ |
-| modafinil | +0.040 | [-0.01, +0.10] | +0.075 | ✅ |
-| pridopidine | +0.034 | [-0.03, +0.10] | +0.076 | ✅ |
-| atomoxetine | +0.033 | [-0.02, +0.09] | +0.073 | ✅ |
-| intepirdine | +0.033 | [-0.03, +0.09] | +0.073 | ✅ |
-| vortioxetine | +0.032 | [-0.03, +0.09] | +0.071 | ✅ |
-| memantine | +0.021 | [-0.05, +0.09] | +0.066 | ✅ |
+| galantamine | +0.097 | [+0.04, +0.16] | +0.135 | ✅ |
+| rivastigmine | +0.097 | [+0.04, +0.16] | +0.134 | ✅ |
+| donepezil | +0.096 | [+0.03, +0.16] | +0.134 | ✅ |
+| encenicline | +0.095 | [+0.03, +0.15] | +0.132 | ✅ |
+| varenicline | +0.095 | [+0.03, +0.15] | +0.132 | ✅ |
+| methylphenidate | +0.087 | [+0.01, +0.17] | +0.139 | ✅ |
+| d_amphetamine | +0.087 | [+0.01, +0.17] | +0.139 | ✅ |
+| caffeine | +0.080 | [+0.02, +0.14] | +0.120 | ✅ |
+| guanfacine | +0.049 | [-0.01, +0.11] | +0.088 | ✅ |
+| modafinil | +0.046 | [-0.01, +0.11] | +0.083 | ✅ |
+| pridopidine | +0.039 | [-0.02, +0.10] | +0.081 | ✅ |
+| atomoxetine | +0.038 | [-0.02, +0.10] | +0.075 | ✅ |
+| intepirdine | +0.038 | [-0.02, +0.10] | +0.078 | ✅ |
+| vortioxetine | +0.037 | [-0.02, +0.10] | +0.076 | ✅ |
+| memantine | +0.025 | [-0.04, +0.10] | +0.069 | ✅ |
 
 ## Honest caveats
 

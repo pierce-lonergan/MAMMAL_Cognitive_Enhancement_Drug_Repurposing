@@ -29,7 +29,7 @@ Falsifiable re-test of every pre-committed claim from V3/V4/V5 design docs again
 | H19 | V8.1 LINCS: 3 neural cell lines weighted 1.0; probe well-formed | **PASS** | NPC/NEU/SHSY5Y all weight=1.0 | None |
 | H20 | V8.1b JUMP-CP: 13 sources × 3 embedding types registered | **PASS** | sources=13, embeddings=3 | None |
 | H21 | V6.B.4: 15 ref compounds + 4 gates + Gate 1 fires on g > 0.50 | **PASS** | n_compounds=15, gate1='FAIL' | None |
-| H22 | V7.3: Cluster D multiplicative gate monotonic in relevance_post | **PASS** | g(high)=0.162, g(low)=0.018 | None |
+| H22 | V7.3: Cluster D multiplicative gate monotonic in relevance_post | **PASS** | g(high)=0.135, g(low)=0.015 | None |
 
 ## Detail per hypothesis
 
@@ -257,7 +257,7 @@ _Note_: Audit n=10 vs fit n=23
 
 **Claim**: V7.3: Cluster D multiplicative gate monotonic in relevance_post
 
-**Measured**: g(high)=0.162, g(low)=0.018
+**Measured**: g(high)=0.135, g(low)=0.015
 
 ---
 

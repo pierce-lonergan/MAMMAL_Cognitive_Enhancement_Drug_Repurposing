@@ -294,6 +294,101 @@ def robust_map_prior_sample(
     return np.where(mix, skeptical, informative)
 
 
+# V7.2 Stage 2 — per-(class, endpoint) cross-tabulation per Birks 2018
+# Cochrane + Roberts 2020 sub-domain breakdowns. Each entry: pooled g for
+# that mechanism class on that endpoint, with SD reflecting between-trial
+# heterogeneity at the (class, endpoint) cell.
+#
+# Endpoint canonical names (V7.4 §3): ADAS-Cog, DSST, n-back, Stroop,
+# RAVLT, CANTAB-RVIP, MCCB. We omit MCCB from cells where there's no
+# published meta-analytic g.
+PER_SUBDOMAIN_PRIORS: dict[tuple[str, str], tuple[float, float]] = {
+    # (class_name, endpoint) → (g_mean, g_sd)
+    # AChE-I per Birks 2018 Cochrane + meta-analytic delayed recall focus
+    ("AChE-I", "ADAS-Cog"):       (0.18, 0.12),
+    ("AChE-I", "delayed_recall"): (0.31, 0.14),
+    ("AChE-I", "DSST"):           (0.15, 0.10),
+    ("AChE-I", "n-back"):         (0.12, 0.10),
+    ("AChE-I", "MCCB"):           (0.10, 0.15),
+    # wake_promoting per Roberts 2020 modafinil overall + vigilance-rich subdomains
+    ("wake_promoting", "ADAS-Cog"):  (0.10, 0.10),
+    ("wake_promoting", "DSST"):      (0.18, 0.10),
+    ("wake_promoting", "n-back"):    (0.12, 0.08),
+    ("wake_promoting", "vigilance"): (0.30, 0.12),
+    ("wake_promoting", "RAVLT"):     (0.08, 0.10),
+    # NDRI per Roberts 2020 MPH overall SMD=0.21 + delayed recall 0.43
+    ("NDRI", "DSST"):             (0.22, 0.12),
+    ("NDRI", "delayed_recall"):   (0.43, 0.18),
+    ("NDRI", "n-back"):           (0.20, 0.10),
+    ("NDRI", "Stroop"):           (0.18, 0.10),
+    ("NDRI", "CANTAB-RVIP"):      (0.25, 0.15),
+    # NRI — atomoxetine response inhibition focus
+    ("NRI", "CANTAB-RVIP"):       (0.20, 0.12),
+    ("NRI", "DSST"):              (0.10, 0.10),
+    ("NRI", "Stroop"):            (0.15, 0.10),
+    # NMDA antagonist — memantine learning subdomain
+    ("NMDA_antagonist", "RAVLT"):       (0.15, 0.10),
+    ("NMDA_antagonist", "ADAS-Cog"):    (0.08, 0.08),
+    ("NMDA_antagonist", "learning"):    (0.15, 0.12),
+    # multimodal_5HT — vortioxetine processing speed in MDD
+    ("multimodal_5HT", "DSST"):              (0.25, 0.12),
+    ("multimodal_5HT", "processing_speed"):  (0.22, 0.10),
+    # alpha2A_agonist — guanfacine working memory (Arnsten 2010)
+    ("alpha2A_agonist", "working_memory"):   (0.28, 0.12),
+    ("alpha2A_agonist", "Stroop"):           (0.15, 0.10),
+    # A2A_antagonist — caffeine vigilance
+    ("A2A_antagonist", "vigilance"):  (0.40, 0.10),
+    ("A2A_antagonist", "DSST"):       (0.20, 0.10),
+    ("A2A_antagonist", "RAVLT"):      (0.10, 0.10),
+    # AMPA pos mod — piracetam declarative memory (mostly null in modern)
+    ("AMPA_pos_mod", "RAVLT"):              (0.10, 0.15),
+    ("AMPA_pos_mod", "declarative_memory"): (0.15, 0.20),
+    # Creatine — working memory in low-baseline subgroups
+    ("creatine", "working_memory"):  (0.15, 0.12),
+    ("creatine", "DSST"):            (0.08, 0.10),
+    # Omega-3 — long-treatment episodic memory
+    ("omega3", "RAVLT"):           (0.12, 0.10),
+    ("omega3", "episodic_memory"): (0.15, 0.10),
+    # Minocycline — generic working memory placeholder
+    ("minocycline", "working_memory"): (0.10, 0.12),
+}
+
+
+def get_subdomain_prior(
+    class_name: str,
+    endpoint: str,
+    fallback_to_class: bool = True,
+) -> tuple[float, float]:
+    """Lookup (class, endpoint) → (g_mean, g_sd) prior.
+
+    If (class, endpoint) missing AND fallback_to_class, returns the
+    class-level prior (PRISMA_CLASS_PRIORS overall mean + sd).
+    """
+    key = (class_name, endpoint)
+    if key in PER_SUBDOMAIN_PRIORS:
+        return PER_SUBDOMAIN_PRIORS[key]
+    if fallback_to_class:
+        try:
+            cp = get_class_prior(class_name)
+            return (cp.prior_mean, cp.prior_sd)
+        except KeyError:
+            pass
+    return (0.0, 0.15)
+
+
+def list_subdomain_endpoints(class_name: str) -> list[str]:
+    """Return all endpoints with a per-subdomain prior for this class."""
+    return sorted(e for c, e in PER_SUBDOMAIN_PRIORS.keys() if c == class_name)
+
+
+def subdomain_prior_table() -> dict[str, dict[str, dict[str, float]]]:
+    """Nested dict for downstream PyMC consumption: {class: {endpoint: {mean, sd}}}."""
+    out: dict[str, dict[str, dict[str, float]]] = {}
+    for (cls, endpoint), (g_mean, g_sd) in PER_SUBDOMAIN_PRIORS.items():
+        out.setdefault(cls, {})[endpoint] = {"mean": g_mean, "sd": g_sd}
+    return out
+
+
 def assert_roberts_ceiling(
     posterior_upper_90: dict[str, float],
     ceiling: float = 0.50,
@@ -318,4 +413,6 @@ def availability() -> dict[str, object]:
         "n_trials_total": sum(cp.n_trials for cp in PRISMA_CLASS_PRIORS),
         "n_subjects_total": sum(cp.n_subjects for cp in PRISMA_CLASS_PRIORS),
         "roberts_2020_ceiling": 0.50,
+        "n_subdomain_priors": len(PER_SUBDOMAIN_PRIORS),
+        "subdomain_endpoints": sorted(set(e for _, e in PER_SUBDOMAIN_PRIORS.keys())),
     }

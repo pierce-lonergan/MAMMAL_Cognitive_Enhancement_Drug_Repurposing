@@ -213,7 +213,8 @@ class TestEffectSizeModel:
             ),
         ]
         post = fit_effect_size_stub(obs)
-        assert post.method == "prisma_stub"
+        # Accept either "prisma_stub" or V7.2 Stage 2 "prisma_stub_subdomain"
+        assert post.method in ("prisma_stub", "prisma_stub_subdomain")
         assert set(post.g_mean.keys()) == {"donepezil", "methylphenidate"}
         # All Cluster D gates should be active for these high-relevance compounds
         assert post.cluster_d_gate_active["donepezil"] is True

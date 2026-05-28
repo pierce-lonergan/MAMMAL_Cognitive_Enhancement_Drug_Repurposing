@@ -124,6 +124,7 @@ def fit_effect_size_stub(
     observations: Sequence[EffectSizeObservation],
     class_prior_lookup: dict[str, dict] | None = None,
     cluster_d_floor: float = 0.10,
+    use_subdomain_priors: bool = True,
 ) -> EffectSizePosterior:
     """Stage 0 stub — returns PRISMA class-mean posterior per compound,
     multiplicatively gated by Cluster D θ̄ (V6.B posterior).
@@ -132,9 +133,15 @@ def fit_effect_size_stub(
     unavailable. The Cluster D gate β_target[t_c] = θ̄_{t_c} · β_raw applies
     as: g_stub[c] = class_prior_mean · max(cluster_d_floor, relevance_post).
 
-    Returns EffectSizePosterior with .method='prisma_stub'.
+    V7.2 Stage 2: if use_subdomain_priors=True (default), prefers per-
+    (class, endpoint) prior from PER_SUBDOMAIN_PRIORS when the observation's
+    endpoint matches a registered subdomain. Falls back to class-level prior
+    otherwise.
+
+    Returns EffectSizePosterior with .method='prisma_stub' or
+    'prisma_stub_subdomain'.
     """
-    from .prisma_priors import class_prior_table   # local import to keep ctor light
+    from .prisma_priors import class_prior_table, get_subdomain_prior
     table = class_prior_lookup or class_prior_table()
     g_mean: dict[str, float] = {}
     g_2p5: dict[str, float] = {}
@@ -143,18 +150,32 @@ def fit_effect_size_stub(
     class_mu: dict[str, float] = {}
     gate_active: dict[str, bool] = {}
     compounds: list[str] = []
+    n_subdomain_hits = 0
 
     for obs in observations:
         compounds.append(obs.compound)
-        cls = table.get(obs.class_name)
-        if cls is None:
-            logger.warning("Compound %s class '%s' missing from PRISMA priors; "
-                           "defaulting to (mean=0, sd=0.15)", obs.compound,
-                           obs.class_name)
-            class_mean, class_sd = 0.0, 0.15
-        else:
-            class_mean = cls["mean"]
-            class_sd = cls["sd"]
+        # V7.2 Stage 2: try subdomain prior first
+        used_subdomain = False
+        if use_subdomain_priors:
+            sub_mean, sub_sd = get_subdomain_prior(obs.class_name, obs.endpoint,
+                                                    fallback_to_class=False)
+            if (sub_mean, sub_sd) != (0.0, 0.15) or (obs.class_name, obs.endpoint) in \
+                    __import__("mammal_repurposing.translation.prisma_priors",
+                               fromlist=["PER_SUBDOMAIN_PRIORS"]).PER_SUBDOMAIN_PRIORS:
+                class_mean = sub_mean
+                class_sd = sub_sd
+                used_subdomain = True
+                n_subdomain_hits += 1
+        if not used_subdomain:
+            cls = table.get(obs.class_name)
+            if cls is None:
+                logger.warning("Compound %s class '%s' missing from PRISMA priors; "
+                               "defaulting to (mean=0, sd=0.15)", obs.compound,
+                               obs.class_name)
+                class_mean, class_sd = 0.0, 0.15
+            else:
+                class_mean = cls["mean"]
+                class_sd = cls["sd"]
         gate = max(cluster_d_floor, obs.relevance_post_mean)
         gated_mean = class_mean * gate
 
@@ -173,6 +194,15 @@ def fit_effect_size_stub(
         class_mu[obs.compound] = class_mean
         gate_active[obs.compound] = obs.relevance_post_mean > cluster_d_floor
 
+    method = "prisma_stub_subdomain" if (use_subdomain_priors
+                                          and n_subdomain_hits > 0) else "prisma_stub"
+    note = ("PyMC unavailable or stub-mode requested. Returns "
+            "PRISMA class-mean × Cluster D θ̄ multiplicative gate − "
+            "moderator penalties. Full NUTS posterior via "
+            "fit_effect_size_nuts() requires `pip install pymc numpyro`.")
+    if use_subdomain_priors and n_subdomain_hits > 0:
+        note += (f" V7.2 Stage 2 active: {n_subdomain_hits}/{len(observations)} "
+                 "observations used per-(class, endpoint) subdomain prior.")
     return EffectSizePosterior(
         compounds=compounds,
         g_mean=g_mean,
@@ -181,11 +211,8 @@ def fit_effect_size_stub(
         g_90_upper=g_90_upper,
         class_mu=class_mu,
         cluster_d_gate_active=gate_active,
-        method="prisma_stub",
-        note=("PyMC unavailable or stub-mode requested. Returns "
-              "PRISMA class-mean × Cluster D θ̄ multiplicative gate − "
-              "moderator penalties. Full NUTS posterior via "
-              "fit_effect_size_nuts() requires `pip install pymc numpyro`."),
+        method=method,
+        note=note,
     )
 
 
@@ -200,6 +227,7 @@ def fit_effect_size_nuts(
     sigma_resid_prior: float = 0.20,
     moderator_gamma_prior_sd: float = 0.10,
     random_seed: int = 42,
+    subdomain_anchor_weight: float = 0.5,    # V7.2 Stage 2: per-(class, endpoint) anchor strength
 ) -> EffectSizePosterior:
     """Full PyMC NUTS hierarchical Bayes.
 
@@ -305,6 +333,30 @@ def fit_effect_size_nuts(
                 sigma=sigma_resid,
                 observed=obs_g[has_g],
             )
+
+        # V7.2 Stage 2: per-(class, endpoint) anchor likelihood (soft) via Potential.
+        # For observations where (class, endpoint) has a curated subdomain prior,
+        # add an additional Gaussian pull centered on the subdomain mean.
+        from .prisma_priors import get_subdomain_prior, PER_SUBDOMAIN_PRIORS
+        subdomain_mu = np.zeros(n_obs)
+        subdomain_sd = np.full(n_obs, 1e6)    # huge sd = no effect (default)
+        n_subdomain_hits = 0
+        for i, o in enumerate(observations):
+            if (o.class_name, o.endpoint) in PER_SUBDOMAIN_PRIORS:
+                sm, ssd = PER_SUBDOMAIN_PRIORS[(o.class_name, o.endpoint)]
+                subdomain_mu[i] = sm
+                # Inflate sd by 1/subdomain_anchor_weight so weight=0 → no anchor,
+                # weight=1 → tight anchor at the subdomain prior sd
+                subdomain_sd[i] = ssd / max(subdomain_anchor_weight, 1e-6)
+                n_subdomain_hits += 1
+        if n_subdomain_hits > 0 and subdomain_anchor_weight > 0:
+            sub_loglik = pm.logp(
+                pm.Normal.dist(mu=subdomain_mu, sigma=subdomain_sd),
+                eta,
+            ).sum()
+            pm.Potential("subdomain_anchor_loglik", sub_loglik)
+            logger.info("V7.2 Stage 2: subdomain anchor applied to %d/%d observations",
+                        n_subdomain_hits, n_obs)
 
         # Track η for all compounds (whether or not observed) for posterior export
         pm.Deterministic("g_pred", eta)
