@@ -1,0 +1,109 @@
+# Cluster D Expanded Posterior v1 (V6.B.5 Stage 2)
+
+PyMC NUTS hierarchical Bayes on the 191-target V6.B.5 expanded panel. Real AHBA scores pulled from V6.B.3 posterior for the 22 anchor targets; synthetic AHBA/L2G/SC for the 169 expansion targets (based on inclusion-rule provenance).
+
+## Setup
+
+- Panel size: 191 targets
+- 22-target V6.B anchor: 22/191 rows are anchored to real V6.B posterior
+- Sources used: AHBA, L2G, SC
+- Reference anchors active: 4
+- Method: stage_0_stub
+
+## Convergence diagnostics
+
+- Chains: 0; draws: 0
+- R̂ max: n/a (gate: < 1.01)
+- ESS min: n/a (gate: > 400)
+- R̂ gate: ⏳ N/A (stub)
+- ESS gate: ⏳ N/A (stub)
+
+## Top-30 targets by θ̄
+
+| Rank | Gene | UniProt | θ̄ | 90% HDI | w_pipeline | Anchor? |
+|---|---|---|---|---|---|---|
+| 1 | LRP1 | Q07954 | +2.179 | [+nan, +nan] | 0.898 | — |
+| 2 | BDNF | P23560 | +1.752 | [+nan, +nan] | 0.852 | ★ |
+| 3 | HTR2A | P28223 | +1.736 | [+nan, +nan] | 0.850 | — |
+| 4 | ENG | P17813 | +1.508 | [+nan, +nan] | 0.819 | — |
+| 5 | NCOA3 | Q9Y6Q9 | +1.498 | [+nan, +nan] | 0.817 | — |
+| 6 | ZNF513 | Q8N8E2 | +1.289 | [+nan, +nan] | 0.784 | — |
+| 7 | NDUFA11 | Q86Y39 | +1.173 | [+nan, +nan] | 0.764 | — |
+| 8 | TRRAP | Q9Y4A5 | +1.059 | [+nan, +nan] | 0.743 | — |
+| 9 | MRC1 | P22897 | +1.047 | [+nan, +nan] | 0.740 | — |
+| 10 | NDUFA5 | Q16718 | +0.988 | [+nan, +nan] | 0.729 | — |
+| 11 | PKM | P14618 | +0.987 | [+nan, +nan] | 0.728 | — |
+| 12 | APP | P05067 | +0.964 | [+nan, +nan] | 0.724 | — |
+| 13 | FAM107B | Q9H098 | +0.849 | [+nan, +nan] | 0.700 | — |
+| 14 | HMGN2 | P05204 | +0.843 | [+nan, +nan] | 0.699 | — |
+| 15 | NFKB1 | P19838 | +0.840 | [+nan, +nan] | 0.698 | — |
+| 16 | PECAM1 | P16284 | +0.823 | [+nan, +nan] | 0.695 | — |
+| 17 | CKB | P12277 | +0.797 | [+nan, +nan] | 0.689 | — |
+| 18 | GFAP | P14136 | +0.789 | [+nan, +nan] | 0.688 | — |
+| 19 | KIF21A | Q7Z4S6 | +0.767 | [+nan, +nan] | 0.683 | — |
+| 20 | ANAPC4 | Q9UJX5 | +0.696 | [+nan, +nan] | 0.667 | — |
+| 21 | PSME4 | Q14997 | +0.665 | [+nan, +nan] | 0.660 | — |
+| 22 | PDE10A | Q9UNP8 | +0.641 | [+nan, +nan] | 0.655 | — |
+| 23 | NCAM1 | P13591 | +0.636 | [+nan, +nan] | 0.654 | — |
+| 24 | APOE | P02649 | +0.633 | [+nan, +nan] | 0.653 | — |
+| 25 | SMARCA2 | P51531 | +0.604 | [+nan, +nan] | 0.647 | — |
+| 26 | SMYD2 | Q9NRG4 | +0.597 | [+nan, +nan] | 0.645 | — |
+| 27 | HTR2C | P28335 | +0.591 | [+nan, +nan] | 0.644 | — |
+| 28 | HSPD1 | P10809 | +0.554 | [+nan, +nan] | 0.635 | — |
+| 29 | HCN3 | Q9P1Z3 | +0.550 | [+nan, +nan] | 0.634 | — |
+| 30 | SFN | P31947 | +0.541 | [+nan, +nan] | 0.632 | — |
+
+## 22-target V6.B anchor recovery
+
+Per-target θ̄ for the 22 anchor targets — should match the V6.B.3 production NUTS posterior closely (real AHBA scores reused).
+
+| Gene | UniProt | θ̄ (expanded) | θ̄ (V6.B.3) | Δ |
+|---|---|---|---|---|
+| Q01959 | Q01959 | +0.429 | +0.252 | +0.177 |
+| PDE9A | O76083 | +0.285 | +0.198 | +0.087 |
+| ACHE | P22303 | +0.192 | +0.473 | -0.282 |
+| HCRTR2 | O43614 | +0.179 | +0.011 | +0.168 |
+| P42261 | P42261 | +0.018 | +0.117 | -0.099 |
+| HRH3 | Q9Y5N1 | -0.026 | +0.092 | -0.119 |
+| HCRTR1 | O43613 | -0.061 | +0.084 | -0.145 |
+| SIGMAR1 | Q99720 | -0.096 | +0.074 | -0.170 |
+| Q13224 | Q13224 | -0.190 | +0.458 | -0.648 |
+| KCNQ2 | O43526 | -0.365 | -0.020 | -0.345 |
+| KCNQ3 | O43525 | -0.378 | -0.030 | -0.348 |
+| PDE4D | Q08499 | -0.445 | -0.045 | -0.400 |
+| P21728 | P21728 | -0.618 | -0.104 | -0.514 |
+| P23975 | P23975 | -0.620 | +0.009 | -0.629 |
+| P48058 | P48058 | -0.728 | -0.148 | -0.580 |
+| P42262 | P42262 | -0.749 | -0.145 | -0.604 |
+| P42263 | P42263 | -0.774 | -0.161 | -0.613 |
+| CHRNA7 | P36544 | -0.843 | +0.438 | -1.281 |
+| HCN1 | O60741 | -1.088 | -0.260 | -0.828 |
+| P08913 | P08913 | -1.121 | -0.277 | -0.844 |
+| NTRK2 | Q16620 | -1.129 | -0.288 | -0.842 |
+| Q12879 | Q12879 | -1.146 | -0.295 | -0.851 |
+
+## Inclusion-rule breakdown
+
+| Rule | Targets | Mean θ̄ |
+|---|---|---|
+| lit_otar | 51 | -0.346 |
+| ahba_cortical | 50 | -0.008 |
+| magma_p | 33 | -0.100 |
+| sc_zscore | 24 | +0.672 |
+| v6b_panel_22_anchor | 22 | -0.422 |
+| v5_liability_panel_44 | 21 | -0.074 |
+| l2g_davies2018 | 6 | +1.088 |
+| l2g_hill2019 | 5 | +1.219 |
+| l2g_savage2018 | 2 | +0.400 |
+| l2g_sniekers2017 | 1 | +0.597 |
+
+## Honest caveats
+
+- The 169 expansion targets use **synthetic** AHBA/L2G/SC scores derived from their inclusion-rule provenance. Real V6.B.5 Stage 3 requires live OT Genetics L2G + cellxgene-census + Moodie 2024 g-cortical alignment + Lit-OTAR (Kafkas 2024).
+- The 22-anchor V6.B.3 θ̄ should be approximately reproduced (Δ < 0.10 for most). Larger Δ indicates noise from the expanded panel diluting the per-anchor signal.
+- Convergence gates may not all PASS at this n_draws — production should use 4 chains × 2000 draws (~5-10 min on RTX 5070).
+- Gene-level T≈15,000 (V6.B.5 plan) requires a sparse approximation (out of V6.B.5 Stage 2 scope; deferred to V7+).
+
+---
+
+Generated by `scripts/62_v6b5_nuts_expanded.py`. V6.B.5 Stage 2 architecture-scaling validation.
