@@ -207,6 +207,20 @@ K=5 sub-centroids in MOFA+ factor space:
 
 ## 3. Results
 
+### Figures
+
+![Figure 1: chemCPA training loss curve](../figures/v8/fig1_chemcpa_loss.png)
+**Figure 1.** V8.2 chemCPA training validation on synthetic LINCS-like data (Hetzel 2022 architecture: RDKit Morgan-FP → 977-gene decoder; 100 compounds × 9 cell lines × 3 doses; CPU training in ~1 sec). Test R² mean = +0.485 → V8.2 gate (≥ 0.30) ✅ PASS.
+
+![Figure 2: Gate 1 AMI/ARI sweep across clustering methods](../figures/v8/fig2_gate1_ami_sweep.png)
+**Figure 2.** V8.4 Gate 1 mechanism-class recovery on synthetic phenotype (5 classes × 50 compounds × K=30). Agglomerative + HDBSCAN (min ∈ {15, 25}) PASS at AMI=1.000, ARI=1.000. HDBSCAN min=50 sanity-FAIL when min_size matches class_size.
+
+![Figure 3: 8-cell scatter with anchor compounds](../figures/v8/fig3_8cell_scatter.png)
+**Figure 3.** V8's 8-cell disagreement classification (target × phenotype quadrants shown; genetic axis omitted for visual clarity). **Top-left (L target, H phenotype) = phenotype_only.novel_mechanism = clemastine / BIMA-8 / PIPE-307 territory** — V8's central contribution. **Bottom-right (H target, L phenotype) = target_true.phenotype_failed = encenicline / intepirdine / pridopidine** — V8 safety net against V6 over-prediction.
+
+![Figure 4: I_novel rank plot for novel-mechanism identification](../figures/v8/fig4_i_novel_rank.png)
+**Figure 4.** V8 Gate 4 dry-run: I_novel mutual-information score correctly identifies 8/8 BIMA-8 anchors (clemastine + benztropine + atropine + ipratropium + oxybutynin + trospium + tiotropium + PIPE-307) in the top-5% I_novel rank. **I_novel(c) = π_p · [1 − I(π_p ; (π_t, π_g))]** highlights compounds where phenotype is informative AND target-genetic axes are uninformative.
+
 ### 3.1 chemCPA synthetic-LINCS smoke validates the architecture
 
 Stage 2 validation on synthetic LINCS-like data (linear projection from real Morgan-FP × cell-line bias × dose modulator + Gaussian noise; 100 compounds × 9 cell lines × 3 doses = 2,700 signatures):

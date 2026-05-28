@@ -128,6 +128,20 @@ Full framework in `src/mammal_repurposing/cluster_d/validation_gates.py`.
 
 ## 3. Results
 
+### Figures
+
+![Figure 1: per-target θ̄ posterior with 90% HDI](../figures/v6b/fig1_theta_posterior.png)
+**Figure 1.** V6.B Bayesian Cluster D posterior θ̄ per target with 90% HDI. PyMC NUTS (4 chains × 2000 draws, R̂=1.000, ESS=12,780). Reference-anchor targets (BDNF, COMT, ACHE, DRD2, GRIN2B, CHRNA7) in dark blue.
+
+![Figure 2: per-target source contribution AHBA vs L2G](../figures/v6b/fig2_source_contribution.png)
+**Figure 2.** Per-target AHBA and L2G source contributions vs posterior θ̄. AHBA cortical-axis score is the primary signal; L2G only fires where the target is GWAS-anchored.
+
+![Figure 3: reference-anchor pull CHRNA7 example](../figures/v6b/fig3_reference_anchor_pull.png)
+**Figure 3.** Reference-anchor pull mechanism. CHRNA7 has negative cortical y_AHBA = −0.53 yet posterior θ̄ = +0.44, recovered via the N(0.5, 0.3²) anchor prior. ACHE substrate-mediated flag correctly fires.
+
+![Figure 4: Cluster D × Roberts ceiling joint + 4-gate summary](../figures/v6b/fig4_roberts_ceiling_joint.png)
+**Figure 4.** Left: all 22 targets predict modulator SMD upper bound ≤ Roberts 2020 ceiling (g = 0.50). Right: 4-gate live validation — Gates 1 + 4 PASS; Gate 2 DEGRADE (small-n Spearman); Gate 3 INSUFFICIENT_DATA (network-blocked GWAS). Overall verdict: CAUTION.
+
 ### 3.1 Convergence
 
 Production NUTS run (4 chains × 2000 draws) on real AHBA + reference anchors converged in **~5 minutes on RTX 5070**:

@@ -102,6 +102,20 @@ Pre-committed: if any modern DTI head cannot beat Tanimoto +0.90 at SLC6A3 by �
 
 ## 3. Results
 
+### Figures
+
+![Figure 1: per-target ρ heatmap across MAMMAL + Tanimoto + MMAtt-DTA with INVERT-mask highlighted](../figures/v6a/fig1_rho_heatmap.png)
+**Figure 1.** Per-target Spearman ρ heatmap across 3 DTI heads (MAMMAL + Tanimoto + MMAtt-DTA) on 13 cognition targets. Red dashed boxes = INVERT-mask targets (MMAtt ρ < −0.15 → dropped from ensemble).
+
+![Figure 2: Tier-A FAIL at SLC6A3 bar chart](../figures/v6a/fig2_tier_a_fail.png)
+**Figure 2.** Pre-committed Tier-A criterion FAILS at SLC6A3 (n=10 ChEMBL pchembl ≥ 8). MMAtt-DTA ρ = +0.65 misses the Tanimoto +0.90 floor by 0.25. Tier-B fallback (3-head + INVERT-mask) triggers.
+
+![Figure 3: v9 fusion top-10 with encenicline rank flow](../figures/v6a/fig3_v9_fusion_top10.png)
+**Figure 3.** v9 ensemble surfaces encenicline newly at rank #9 (from #42 in the 3-head pre-MMAtt fusion) via the MMAtt-CHRNA7 ρ +0.82 disagreement with Tanimoto's novel-α7-PAM-scaffold null call.
+
+![Figure 4: multi-head disagreement axis facet-tag distribution](../figures/v6a/fig4_disagreement_axis.png)
+**Figure 4.** V6.A.5 multi-head disagreement axis surfaces 603 high-information-value (compound, target) pairs in the 4-head v9 ensemble vs 748 in the 3-head V5.1 ensemble — tighter signal post-MMAtt INVERT-mask addition.
+
 ### 3.1 Pre-committed Tier-A criterion: FAILED at SLC6A3
 
 **Headline measurement**: MMAtt-DTA ρ at SLC6A3 = **+0.65** vs Tanimoto ρ = +0.90 → MMAtt-DTA fails Tier-A by **0.25**.

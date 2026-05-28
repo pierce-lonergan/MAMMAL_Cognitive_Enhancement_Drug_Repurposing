@@ -156,6 +156,20 @@ Per OSF pre-reg §4:
 
 ## 3. Results
 
+### Figures
+
+![Figure 1: PBPK occupancy traces for 3 PET anchors](../figures/v7/fig1_pbpk_traces.png)
+**Figure 1.** PBPK 9-compartment ODE produces receptor-occupancy trajectories that reproduce 3 published PET anchors within 1σ: donepezil 5 mg cortical AChE (Bohnen 2005); MPH 20 mg DAT (Volkow 1998); haloperidol 2 mg D2 striatal (Kapur 2000).
+
+![Figure 2: P1-P8 prediction-band overlay](../figures/v7/fig2_p1_p8_bands.png)
+**Figure 2.** Pre-registered P1-P8 prediction bands vs V7 NUTS posterior predicted Hedges' *g*. 5/8 PASS (green markers) including P2 encenicline 3mg Phase 3 failure recapitulation. 1/8 FAIL (P3 MPH 20mg, missing by 0.063 — honest partial-pool result). All predictions well below the Roberts 2020 ceiling (dashed line at g = 0.50).
+
+![Figure 3: leave-one-out MAE residual plot](../figures/v7/fig3_loo_mae.png)
+**Figure 3.** Per-compound leave-one-out residuals (15 anchor compounds). **Mean MAE = 0.073 → Gate 3 ✅ PASS** (threshold < 0.15). Largest residuals at MPH (0.131) and caffeine (0.129) — the two compounds with highest published *g*.
+
+![Figure 4: sensitivity sweep over λ_class](../figures/v7/fig4_sensitivity_sweep.png)
+**Figure 4.** Sensitivity sweep over Schmidli 2014 robust MAP weight λ_class ∈ {0.3, 0.5, 1.0, 2.0, 3.0}. Mean predicted *g* and max g₉₀ grow monotonically with λ_class; **zero Roberts ceiling violations** across the entire sweep.
+
 ### 3.1 NUTS convergence
 
 Production run: 4 chains × 2000 tune × 2000 draws on PyMC default sampler (numpyro JAX backend available but unused in this run). Wall-clock 54 seconds on RTX 5070 + Windows 11 + Python 3.13.
