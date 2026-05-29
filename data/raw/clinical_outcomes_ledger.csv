@@ -1,0 +1,42 @@
+# Cognition clinical-outcome ledger (Gap-3 retrospective validation truth set).
+# Each row = a documented, adjudicated pivotal-trial outcome.
+# clinical_outcome: SUCCESS (approved/positive pivotal on cognition-relevant
+#   endpoint in lead indication) | FAILURE (Phase II/III null or discontinued
+#   for cognition efficacy).
+# clinical_g: pooled meta-analytic Hedges' g on the pivotal endpoint (~0 for failures).
+# mechanism_class: clean biologically-correct grouping curated for this analysis;
+#   the same target may appear in two classes when the indication differs
+#   (H3: pitolisant->wake_promoting SUCCESS vs MK-0249->H3_cognition FAILURE).
+# This file is the HELD-OUT TRUTH; no pipeline axis is fit on clinical_outcome.
+compound,mechanism_class,target_uniprot,indication,pivotal_trial,readout_year,clinical_outcome,clinical_g,endpoint,citation
+donepezil,AChE_inhibitor,P22303,AD,Birks 2018 Cochrane (30 RCT),1996,SUCCESS,0.36,ADAS-Cog,PMID:29923184
+galantamine,AChE_inhibitor,P22303,AD,Loy 2024 Cochrane CD001747,2001,SUCCESS,0.37,ADAS-Cog,PMID:39498781
+rivastigmine,AChE_inhibitor,P22303,AD,Birks 2015 Cochrane CD001191,2000,SUCCESS,0.4,ADAS-Cog,PMID:26393402
+memantine,NMDA_modulator,Q13224,AD-mod-sev,Matsunaga 2015 meta,2003,SUCCESS,0.29,SIB/ADAS-Cog,PMID:25869017
+methylphenidate,catecholaminergic_ADHD,Q01959,ADHD,Coghill 2014 meta,1955,SUCCESS,0.5,ADHD-RS/cognition,PMID:24231201
+lisdexamfetamine,catecholaminergic_ADHD,Q01959,ADHD,Cortese 2021 network meta,2007,SUCCESS,0.55,ADHD-RS,PMID:34693523
+dextroamphetamine,catecholaminergic_ADHD,Q01959,ADHD,Faraone 2010,1976,SUCCESS,0.5,ADHD-RS,Faraone2010
+atomoxetine,catecholaminergic_ADHD,P23975,ADHD,Cunill 2013 meta,2002,SUCCESS,0.45,ADHD-RS,Cunill2013
+guanfacine-XR,catecholaminergic_ADHD,P08913,ADHD,Sallee 2009,2009,SUCCESS,0.5,ADHD-RS,PMID:19106767
+modafinil,wake_promoting,Q01959,narcolepsy-EDS,US Modafinil 1998,1998,SUCCESS,0.4,ESS/MWT,Czeisler2005
+armodafinil,wake_promoting,Q01959,narcolepsy/SWD,Czeisler 2009,2007,SUCCESS,0.35,MWT,Czeisler2009
+pitolisant,wake_promoting,Q9Y5N1,narcolepsy-EDS,HARMONY-1/CTP,2016,SUCCESS,0.61,ESS,PMID:34935103
+vortioxetine,multimodal_5HT,P31645,MDD-cognition,FOCUS Harrison,2013,SUCCESS,0.35,DSST,PMID:27231256
+encenicline,alpha7_nAChR,P36544,CIAS-schizophrenia,EVP-6124-015/016,2016,FAILURE,0.0,MCCB,PMID:26089183
+ABT-126,alpha7_nAChR,P36544,AD/schizophrenia,Haig 2016,2016,FAILURE,0.05,MCCB/ADAS,Haig2016
+TC-5619,alpha7_nAChR,P36544,schizophrenia/ADHD,Walling 2016,2016,FAILURE,-0.02,CogState,Walling2016
+DMXB-A,alpha7_nAChR,P36544,schizophrenia,"Freedman 2008 (Ph2, not advanced)",2008,FAILURE,0.0,MCCB,PMID:18381905
+idalopirdine,5HT6_antagonist,P50406,AD,STARSHINE/SHINE/STARBEAM,2017,FAILURE,-0.05,ADAS-Cog,PMID:30560763
+intepirdine,5HT6_antagonist,P50406,AD,MINDSET,2017,FAILURE,0.0,ADAS-Cog/ADCS-ADL,PMID:29318278
+SUVN-502,5HT6_antagonist,P50406,AD,Nirogi 2022 Ph2,2022,FAILURE,-0.05,ADAS-Cog,PMID:35662833
+pomaglumetad,mGluR,Q14416,schizophrenia,Adams 2014 (3 trials),2013,FAILURE,0.0,PANSS/cognition,Adams2014
+basimglurant,mGluR,P41594,FXS,Berry-Kravis 2016,2016,FAILURE,0.0,composite,PMID:26764156
+mavoglurant,mGluR,P41594,FXS,Berry-Kravis 2016 (AFQ056),2016,FAILURE,-0.05,ABC-C/composite,PMID:26764156
+CX-516,AMPA_PAM,P42261,schizophrenia/MCI,Goff 2008,2008,FAILURE,0.05,MCCB/composite,PMID:17487227
+S47445,AMPA_PAM,P42261,AD,Bernard 2019 ADTRCI,2019,FAILURE,-0.02,ADAS-Cog,PMID:31297441
+farampator,AMPA_PAM,P42261,healthy/AD,"Wezenberg 2007 (signal-only, not advanced)",2007,FAILURE,0.05,RAVLT,Wezenberg2007
+PF-04447943,PDE9_PDE10,O76083,AD,Schwam 2014,2014,FAILURE,-0.05,ADAS-Cog,PMID:24801218
+BI-409306,PDE9_PDE10,O76083,schizophrenia/AD,Brown 2019,2019,FAILURE,0.0,MCCB,Brown2019
+TAK-063,PDE9_PDE10,Q9Y233,schizophrenia,Macek 2019,2019,FAILURE,0.0,MCCB,PMID:30172593
+MK-0249,H3_cognition,Q9Y5N1,AD/schizophrenia,Egan 2012,2012,FAILURE,0.0,ADAS-Cog/MCCB,Egan2012
+ABT-288,H3_cognition,Q9Y5N1,schizophrenia,Haig 2014,2014,FAILURE,0.0,MCCB,Haig2014

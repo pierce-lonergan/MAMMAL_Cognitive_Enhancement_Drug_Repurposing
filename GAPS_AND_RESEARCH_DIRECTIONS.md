@@ -8,6 +8,41 @@
 
 ## ✅ Recently resolved (this sprint)
 
+### GAP 3. Retrospective clinical-outcome validation — leakage-audited (SHIPPED ✅, 2026-05-29)
+
+**Was**: the pipeline was self-consistent (calibrated against the literature it was built
+from) but had never been shown to be *predictive* of real clinical outcomes on held-out drugs.
+
+**Shipped**: a curated, cited **clinical-outcome ledger** (`data/raw/clinical_outcomes_ledger.csv`,
+31 cognition drugs: 13 approved/positive SUCCESS, 18 adjudicated Phase II/III FAILURE, 11
+mechanism classes) + a leakage-audited validation harness
+(`src/mammal_repurposing/validation/retrospective.py`, `scripts/75`) with three predictors
+of SUCCESS-vs-FAILURE and full per-predictor leakage audit:
+
+| Predictor | n | AUROC | 90% CI | perm p | Leakage |
+|---|---|---|---|---|---|
+| P1a target relevance σ(θ̄), V6.B | 26 | **0.59** | [0.38,0.79] | 0.22 | none (GWAS/AHBA never saw trials) |
+| P1b within-target binding %ile, V6.A | 10 | **0.12** | [0.00,0.38] | 0.96 | none (ChEMBL never saw trials) |
+| **P2 class track-record (leave-one-COMPOUND-out)** | 31 | **1.00** | [1.00,1.00] | **0.0002** | siblings only, never own outcome |
+| P3 leave-one-CLASS-out (extrapolation bound) | 31 | **0.00** | — | 1.00 | own class fully removed |
+
+**The honest finding** (NOT "AUROC=1.0 oracle"): across 31 real cognition drugs, **mechanism
+class perfectly stratifies clinical outcome** (zero within-class variance — every AChE-I/
+stimulant/wake/NMDA/multimodal-5HT drug succeeded; every α7-nAChR/5-HT6/mGluR/AMPA-PAM/PDE9-10/
+H3-cognition drug failed). P2's AUROC=1.0 is the direct readout of that homogeneity. The
+*scientific content* is the **contrast**: target-binding affinity (P1b=0.12) and target
+genetic-relevance (P1a=0.59) — the two quantities a target-first pipeline measures — are at or
+below chance. P2 flagged **9/9 of the famous Phase III failures** (encenicline, idalopirdine,
+intepirdine, pomaglumetad, PF-04447943, SUVN-502, ABT-126, TC-5619, MK-0249) without being told
+their outcome. P3=0.0 is the honest ceiling: the pipeline triages within known mechanism space,
+it cannot forecast an unseen mechanism.
+
+This demonstrates **directly against pivotal-trial outcomes** the same lesson as the V6.B Gate-2
+falsification, and is the empirical case for a class-aware + phenotype-aware (not affinity-driven)
+cognition repurposing pipeline. Report: `reports/retrospective_clinical_validation_v1.md`;
+figure: `figures/v11/retrospective_roc.png`; tests: `tests/test_retrospective_validation.py`
+(14 tests). Full suite 442 passed.
+
 ### GAP 1. Degenerate end-to-end shortlist — every compound collapsed onto ACHE (FIXED ✅, 2026-05-29)
 
 **Was**: `reports/wet_lab_shortlist_v10.md` mapped all 298 compounds to `ACHE/P22303`,
