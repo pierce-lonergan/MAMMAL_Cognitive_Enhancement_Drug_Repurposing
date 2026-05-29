@@ -357,3 +357,235 @@ def availability() -> dict[str, object]:
             "ci_penalty": 0.30,
         },
     }
+
+
+# ===========================================================================
+# V11 — Grid-based composition (compound × target repurposing hypotheses)
+# ===========================================================================
+#
+# WHY V11 EXISTS: the v10 composer (above) collapsed every compound to a
+# single target via `g["target_uniprot"].iloc[0]`, which — because the V6.A
+# parquet is ordered with ACHE (P22303) first — assigned ACHE to all 298
+# compounds. That destroyed the target dimension and produced a degenerate
+# shortlist (everything → ACHE, all g ≈ +0.07, all violating the ceiling).
+#
+# The correct scientific unit is the **(compound, target) repurposing
+# hypothesis**. V11 scores the FULL grid and never collapses the target axis.
+#
+# Per-pair score (transparent, fully real-signal — no stubs):
+#   B(c,t)  = within-target percentile of V6.A predicted_pkd  ∈ [0,1]
+#             ("is c a strong binder at t, relative to the library?")
+#   R(t)    = σ(θ̄_t) cognition relevance from V6.B NUTS posterior ∈ (0,1)
+#   R̃(t)   = min(1, R(t) / relevance_anchor)  (rescaled discriminative gate)
+#   μ_m(t)  = PRISMA meta-analytic class-prior mean for t's mechanism class
+#   g(c,t)  = μ_m(t) · B(c,t) · R̃(t)            predicted Hedges' g
+#   For ANCHOR compounds (donepezil, MPH, ...) with a real V7 NUTS posterior,
+#   g is OVERRIDDEN by the real g_mean at the compound's best-binding target.
+#
+# g_90_upper = g + 1.2816 · σ_g  (σ_g blends class-prior σ_m + engagement unc.)
+# Roberts ceiling filters pairs with g_90_upper > 0.50.
+
+
+@dataclass
+class GridCompositionConfig:
+    """Configuration for the V11 grid composer."""
+    roberts_ceiling_g: float = 0.50
+    enforce_roberts_ceiling: bool = True
+    relevance_anchor: float = 0.62          # σ(θ̄) of the most cognition-relevant target
+    binding_high_threshold: float = 0.60    # B percentile for 8-cell "T high"
+    relevance_high_theta: float = 0.30      # θ̄ for 8-cell "G high"
+    phenotype_high_threshold: float = 0.60  # transferability/cosine for 8-cell "P high"
+    ci_z90: float = 1.2816                  # one-sided 90% normal quantile
+    novelty_weight: float = 0.15            # small bonus for (L,L,H) novelty in priority
+    top_n_pairs: int = 50
+
+
+def _eight_cell_tag(b_high: bool, g_high: bool, p_high: bool) -> str:
+    key = (b_high, g_high, p_high)
+    return {
+        (True, True, True):    "agreement.all_high",
+        (True, True, False):   "target_true.phenotype_failed",
+        (True, False, True):   "target.phenotype",
+        (True, False, False):  "target_only",
+        (False, True, True):   "genetic.phenotype",
+        (False, True, False):  "genetic_only",
+        (False, False, True):  "phenotype_only.novel_mechanism",
+        (False, False, False): "no_evidence",
+    }[key]
+
+
+def compose_grid_shortlist_v11(
+    v6a_pchembl: pd.DataFrame,
+    v6b_theta: pd.DataFrame,
+    target_class_map: dict[str, str],
+    class_prior_table: dict[str, dict],
+    *,
+    v7_anchor_g: dict[str, tuple[float, float]] | None = None,
+    phenotype_by_compound: dict[str, float] | None = None,
+    target_gene_map: dict[str, str] | None = None,
+    cfg: GridCompositionConfig | None = None,
+    anchor_compound_target: dict[str, str] | None = None,
+) -> pd.DataFrame:
+    """Compose the V11 wet-lab shortlist over the FULL (compound × target) grid.
+
+    Args:
+        v6a_pchembl: long DataFrame [compound_name, target_uniprot, predicted_pkd]
+            — the real V6.A binding grid (no collapse).
+        v6b_theta: DataFrame [target_uniprot, gene, theta_mean, theta_2p5,
+            theta_97p5, w_pipeline] from the V6.B NUTS posterior.
+        target_class_map: {uniprot: PRISMA mechanism class}.
+        class_prior_table: {class: {"mean": μ_m, "sd": σ_m, ...}} from prisma_priors.
+        v7_anchor_g: optional {base_compound_lower: (g_mean, g_90_upper)} real
+            V7 NUTS posterior — overrides the class-prior estimate at the
+            compound's KNOWN mechanism target (see anchor_compound_target).
+        phenotype_by_compound: optional {compound_lower: phenotype score ∈ [0,1]}
+            (e.g. chemCPA transferability or cosine-to-centroid). Drives the
+            P axis of the 8-cell tag. Missing → P treated as low (unknown).
+        target_gene_map: optional {uniprot: gene} for display.
+        cfg: GridCompositionConfig.
+        anchor_compound_target: authoritative {compound_lower: uniprot} mechanism
+            map. The V7 clinical g is a COMPOUND-LEVEL effect size and must be
+            placed at the drug's KNOWN mechanism target — NOT at MAMMAL's
+            best-binding target, because MAMMAL is structurally blind to
+            allosteric/transporter pharmacology and its binding argmax is
+            biologically unreliable for exactly these drugs (e.g. it would
+            rank rivastigmine's strongest binding at orexin, not ACHE).
+            If a compound's known target is absent from the grid, its anchor
+            g is simply not placed (the class-prior pathway runs instead).
+
+    Returns:
+        Per-(compound, target) DataFrame with binding/relevance/g/ceiling/8-cell
+        columns, ranked by wet_lab_priority. NOT collapsed — one row per pair.
+    """
+    cfg = cfg or GridCompositionConfig()
+    v7_anchor_g = v7_anchor_g or {}
+    phenotype_by_compound = phenotype_by_compound or {}
+    target_gene_map = target_gene_map or {}
+    anchor_compound_target = {k.lower(): v for k, v in
+                              (anchor_compound_target or {}).items()}
+
+    pchembl_col = next((c for c in ("predicted_pkd", "pchembl_mean",
+                                    "predicted_pchembl")
+                        if c in v6a_pchembl.columns), None)
+    if pchembl_col is None:
+        raise ValueError("v6a_pchembl must have a predicted_pkd/pchembl column")
+
+    # --- Within-target binding percentile B(c,t) ---
+    df = v6a_pchembl[["compound_name", "target_uniprot", pchembl_col]].copy()
+    df["B"] = (
+        df.groupby("target_uniprot")[pchembl_col]
+        .rank(method="average", pct=True)
+    )
+
+    # --- Relevance R(t) from V6.B ---
+    theta_by_t: dict[str, float] = {}
+    w_by_t: dict[str, float] = {}
+    for _, r in v6b_theta.iterrows():
+        u = str(r["target_uniprot"])
+        theta_by_t[u] = float(r.get("theta_mean", float("nan")))
+        w = r.get("w_pipeline", float("nan"))
+        if not np.isfinite(w):
+            # derive σ(θ̄) if w_pipeline absent
+            tm = theta_by_t[u]
+            w = 1.0 / (1.0 + np.exp(-tm)) if np.isfinite(tm) else 0.5
+        w_by_t[u] = float(w)
+
+    # --- Determine each compound's best-binding target (for V7 anchor override) ---
+    best_target_by_compound: dict[str, str] = {}
+    for c, g in df.groupby("compound_name"):
+        best_target_by_compound[str(c)] = str(
+            g.sort_values("B", ascending=False)["target_uniprot"].iloc[0]
+        )
+
+    rows: list[dict] = []
+    for _, r in df.iterrows():
+        c = str(r["compound_name"])
+        t = str(r["target_uniprot"])
+        B = float(r["B"])
+        pkd = float(r[pchembl_col])
+        R = w_by_t.get(t, 0.5)
+        theta = theta_by_t.get(t, 0.0)
+        R_tilde = min(1.0, R / cfg.relevance_anchor)
+
+        cls = target_class_map.get(t, "AMPA_pos_mod")
+        prior = class_prior_table.get(cls, {"mean": 0.05, "sd": 0.20})
+        mu_m = float(prior["mean"])
+        sd_m = float(prior.get("sd", 0.15))
+
+        # Predicted g from class-prior pathway
+        g_pred = mu_m * B * R_tilde
+        # Uncertainty: class-prior σ scaled by engagement + a floor
+        engagement = B * R_tilde
+        g_sd = sd_m * (0.5 + 0.5 * engagement)
+        source = "class_prior"
+
+        # V7 anchor override (real meta-analytic g) at the compound's KNOWN
+        # mechanism target. We use the authoritative compound→target map, NOT
+        # MAMMAL's best-binding argmax (which is structurally unreliable for
+        # the allosteric/transporter drugs that dominate this panel).
+        c_lower = c.lower()
+        known_t = anchor_compound_target.get(c_lower)
+        anchor_target = known_t if known_t else best_target_by_compound.get(c)
+        if c_lower in v7_anchor_g and anchor_target == t:
+            g_anchor, g90_anchor = v7_anchor_g[c_lower]
+            if np.isfinite(g_anchor):
+                g_pred = float(g_anchor)
+                g_sd = max(1e-3, (float(g90_anchor) - g_pred) / cfg.ci_z90) \
+                    if np.isfinite(g90_anchor) else g_sd
+                source = ("v7_nuts_anchor" if known_t
+                          else "v7_nuts_anchor_bindingfallback")
+
+        g_90 = g_pred + cfg.ci_z90 * g_sd
+        ceiling_ok = not (np.isfinite(g_90) and g_90 > cfg.roberts_ceiling_g)
+
+        # Phenotype axis
+        phen = phenotype_by_compound.get(c_lower, float("nan"))
+        p_high = bool(np.isfinite(phen) and phen >= cfg.phenotype_high_threshold)
+
+        b_high = B >= cfg.binding_high_threshold
+        g_high = theta >= cfg.relevance_high_theta
+        tag = _eight_cell_tag(b_high, g_high, p_high)
+
+        # Priority: clinically-meaningful g among ceiling-passing pairs,
+        # with a small novelty bonus for the (L,L,H) cell.
+        if cfg.enforce_roberts_ceiling and not ceiling_ok:
+            priority = -1.0
+        else:
+            novelty = cfg.novelty_weight if tag == "phenotype_only.novel_mechanism" else 0.0
+            priority = g_pred + novelty
+
+        rows.append({
+            "compound": c,
+            "target_uniprot": t,
+            "target_gene": target_gene_map.get(t, ""),
+            "mechanism_class": cls,
+            "predicted_pkd": pkd,
+            "binding_percentile": B,
+            "theta_mean": theta,
+            "relevance_w": R,
+            "class_prior_g": mu_m,
+            "g_predicted": g_pred,
+            "g_sd": g_sd,
+            "g_90_upper": g_90,
+            "g_source": source,
+            "phenotype_score": phen,
+            "eight_cell_tag": tag,
+            "roberts_ceiling_ok": ceiling_ok,
+            "wet_lab_priority": priority,
+        })
+
+    out = pd.DataFrame(rows)
+    out = out.sort_values("wet_lab_priority", ascending=False).reset_index(drop=True)
+    out.insert(0, "rank", out.index + 1)
+    return out
+
+
+def best_target_per_compound(grid_df: pd.DataFrame) -> pd.DataFrame:
+    """Collapse the V11 grid to each compound's single best (highest-priority)
+    target hypothesis. This is the clinician-facing 'which target should we
+    test this drug against' view."""
+    idx = grid_df.groupby("compound")["wet_lab_priority"].idxmax()
+    best = grid_df.loc[idx].sort_values("wet_lab_priority", ascending=False)
+    best = best.reset_index(drop=True)
+    best["rank"] = best.index + 1
+    return best

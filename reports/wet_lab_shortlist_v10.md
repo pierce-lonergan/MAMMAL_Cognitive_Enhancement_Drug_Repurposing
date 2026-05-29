@@ -1,3 +1,8 @@
+> ⚠️ **DEPRECATED — superseded by `reports/wet_lab_shortlist_v11.md`.**
+> v10 collapsed every compound onto ACHE via a `.iloc[0]` target-resolution bug
+> and inflated all g₉₀ above the Roberts ceiling. v11 scores the full
+> (compound × target) grid on real differentiated signal. See GAPS doc Gap 1.
+
 # Wet-Lab Shortlist v10 — Three-Factor Joint Composition (V6 × V7 × V8)
 
 Composes V6.A 4-head pchembl + V6.B Cluster D θ̄ + V7 effect-size + V8 πphen phenotype into a single ranked handoff. Pre-filtered by Roberts 2020 SMD ceiling (no g > 0.5 at 90% upper CrI). Annotated with 4-axis disagreement (V6.A multi-head + V6.B D_i + V8 three-way JSD + I_novel novel-mechanism score) and 8-cell classification.

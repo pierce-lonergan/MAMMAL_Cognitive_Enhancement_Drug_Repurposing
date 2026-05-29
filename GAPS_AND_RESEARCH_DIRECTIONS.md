@@ -8,6 +8,36 @@
 
 ## ✅ Recently resolved (this sprint)
 
+### GAP 1. Degenerate end-to-end shortlist — every compound collapsed onto ACHE (FIXED ✅, 2026-05-29)
+
+**Was**: `reports/wet_lab_shortlist_v10.md` mapped all 298 compounds to `ACHE/P22303`,
+with g ≈ +0.07 and 100% Roberts-ceiling **violation**. Two coupled bugs:
+1. **Target collapse**: `joint_composition.compose_wet_lab_shortlist_v10` + `scripts/56`
+   reduced each compound to `g["target_uniprot"].iloc[0]`; the V6.A parquet is ordered
+   with ACHE first → ACHE assigned to everyone. Threw away 12/13 of the target axis.
+2. **Stub-inflated CIs**: the V7 stub produced wide CIs that pushed every g₉₀ above 0.50,
+   so the ceiling "violated" universally.
+
+**Fix** (V11 grid composer): `compose_grid_shortlist_v11()` scores the FULL 298×13
+(compound, target) grid as `g = μ_class(t) × within-target-binding-percentile × σ(θ̄_t)`,
+overriding with the real V7 NUTS g for anchor drugs **at their known mechanism target**
+(authoritative `COMPOUND_TO_TARGET_UNIPROT`, not MAMMAL's structurally-unreliable binding
+argmax). Two views: best-target-per-compound (clinician) + top (compound, target) pairs.
+
+**Result** (`reports/wet_lab_shortlist_v11.md`, `scripts/74`):
+- Top-25 spans **7 unique targets** (was 1), **13 distinct g values** (was ~1).
+- Positive controls land at correct targets: donepezil→ACHE (g=0.22), methylphenidate→SLC6A3,
+  memantine→GRIN2B, pitolisant→HRH3, BPN14770→PDE4D, suvorexant→HCRTR2.
+- Max g₉₀ across all 3,874 hypotheses = **0.39 < 0.50** — honest small cognition effects
+  correctly sit below the ceiling (the v10 "100% violation" was the bug; v11's behaviour is
+  the truth).
+- Differentiation guard PASSES; `tests/test_grid_composition_v11.py` (9 tests) locks it.
+
+**Honest scope retained**: g is an *enrichment ranking* (class-ceiling × engagement), not a
+calibrated per-compound clinical prediction; V6.A grid covers 13/28 panel targets; the
+phenotype (V8) axis isn't yet wired per-compound so the (L,L,H) novel-mechanism cell is not
+yet populated. These are documented in the v11 report.
+
 ### 0. MH8 substrate-mediated AHBA-masking (FIXED ✅, Sprint 1.2-1.4, 2026-05-28)
 
 **Was**: V6.B.5 NUTS on 191-target panel produced 37 divergences (R̂=1.000, ESS=1,739) — the multiplicative gate `y_AHBA = α + β·θ` forced substrate-degrading enzymes (ACHE, MAO-A, MAO-B, COMT) through Neal's-funnel posterior geometries because AHBA tissue expression does NOT linearly inform cognition relevance for enzymes operating at substrate-saturated kinetic regime.
