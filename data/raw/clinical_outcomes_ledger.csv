@@ -29,7 +29,7 @@ DMXB-A,alpha7_nAChR,P36544,schizophrenia,"Freedman 2008 (Ph2, not advanced)",200
 idalopirdine,5HT6_antagonist,P50406,AD,STARSHINE/SHINE/STARBEAM,2017,FAILURE,-0.05,ADAS-Cog,PMID:30560763
 intepirdine,5HT6_antagonist,P50406,AD,MINDSET,2017,FAILURE,0.0,ADAS-Cog/ADCS-ADL,PMID:29318278
 SUVN-502,5HT6_antagonist,P50406,AD,Nirogi 2022 Ph2,2022,FAILURE,-0.05,ADAS-Cog,PMID:35662833
-pomaglumetad,mGluR,Q14416,schizophrenia,Adams 2014 (3 trials),2013,FAILURE,0.0,PANSS/cognition,Adams2014
+pomaglumetad,mGluR,Q14416,schizophrenia,HBBI/HBBM Ph2-3 (efficacy null),2013,FAILURE,0.0,PANSS/cognition,Stauffer2013;Kinon2011 (efficacy; Adams2013 safety)
 basimglurant,mGluR,P41594,FXS,Berry-Kravis 2016,2016,FAILURE,0.0,composite,PMID:26764156
 mavoglurant,mGluR,P41594,FXS,Berry-Kravis 2016 (AFQ056),2016,FAILURE,-0.05,ABC-C/composite,PMID:26764156
 CX-516,AMPA_PAM,P42261,schizophrenia/MCI,Goff 2008,2008,FAILURE,0.05,MCCB/composite,PMID:17487227

@@ -141,7 +141,7 @@ def main() -> int:
         ("pseudo-prospective", "as-of AUROC 1.00 (would have flagged the\n2014–2022 failure wave before readout)"),
         ("granularity-specific", "coarse taxonomy 0.62, random 0.46\n(0/2000 reach 1.00)"),
         ("unbiased replication", "pre-specified ClinicalTrials.gov query\n→ 20/20 classes still pure (n=47)"),
-        ("calibrated + honest", "class-only Brier 0.05; leave-one-CLASS-out\nceiling 0.00 stated; n=31 disclosed"),
+        ("honestly bounded", "class-only Brier 0.05; leave-one-CLASS-out\nceiling 0.00 stated; n=31 disclosed"),
     ]
     w = 1.0 / len(badges)
     for i, (head, body) in enumerate(badges):
