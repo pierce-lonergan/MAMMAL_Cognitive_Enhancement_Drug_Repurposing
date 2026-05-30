@@ -193,7 +193,7 @@ If the context eats >2 GB on our 12 GB card, we're hitting the Blackwell anomaly
 
 **Files**:
 - New: `scripts/_wsl2_vram_probe.sh` — Bash script invoking the above measurement
-- Update: `design/V2_STATUS_AND_FORWARD_PLAN.md` — record the empirical number
+- Update: `design/architecture-and-plans/V2_STATUS_AND_FORWARD_PLAN.md` — record the empirical number
 
 **Verify**: A single number in GB. If ≤2 GB, proceed with WSL2 Boltz. If 5-8 GB, scope down Boltz to smaller batch sizes. If ≥10 GB, abandon WSL2 Boltz; keep on Windows.
 

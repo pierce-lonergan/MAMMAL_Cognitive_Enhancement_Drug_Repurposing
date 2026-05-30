@@ -306,7 +306,7 @@ python scripts/58_v7_nuts_synthetic.py --n-chains 2 --n-draws 1000
 
 ## 6. References
 
-(Full bibliography in `design/V4_STATUS_AND_FORWARD_PLAN.md` Appendix A.10.)
+(Full bibliography in `design/architecture-and-plans/V4_STATUS_AND_FORWARD_PLAN.md` Appendix A.10.)
 
 1. **Roberts CA, Jones A, Sumnall H, Gage SH, Montgomery C** 2020 *Eur Neuropsychopharm* 38:40-62 — THE ceiling paper
 2. **Bohnen NI, Kaufer DI, Hendrickson R, et al.** 2005 *Neurology* 64:1037 — donepezil cortical AChE PET

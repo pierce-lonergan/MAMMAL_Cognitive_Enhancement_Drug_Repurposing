@@ -515,7 +515,7 @@ OSF pre-registration: `reports/v8_osf_preregistration.md` locks Gate 1-4 thresho
 
 ## 6. References
 
-(Full bibliography in `design/V4_STATUS_AND_FORWARD_PLAN.md` Appendix A.11 + `CITATIONS.bib`.)
+(Full bibliography in `design/architecture-and-plans/V4_STATUS_AND_FORWARD_PLAN.md` Appendix A.11 + `CITATIONS.bib`.)
 
 1. **Lamb J, Crawford ED, Peck D, et al.** 2006 *Science* 313(5795):1929-1935 — original CMap
 2. **Subramanian A, Narayan R, Corsello SM, et al.** 2017 *Cell* 171(6):1437-1452.e17 — L1000 1.3M profiles + WTCS/τ/NCS

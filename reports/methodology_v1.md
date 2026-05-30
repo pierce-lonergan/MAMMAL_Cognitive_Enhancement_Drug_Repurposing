@@ -40,7 +40,7 @@ Each cluster is run independently and stored in a versioned parquet. Fusion is d
 
 ### Why these four
 
-* MAMMAL alone is a single-cluster prior — fast, but has a documented dynamic-range collapse on allosteric pockets ([T1 audit](../design/T1_CHEMBL_AUDIT_VERDICT.md) confirmed the target IDs were correct, ruling out the easy fix; [Phase 0.5](../design/PHASE_0_5_DECISION_RECORD.md) confirmed Boltz-2 rescues CHRNA7 PAMs).
+* MAMMAL alone is a single-cluster prior — fast, but has a documented dynamic-range collapse on allosteric pockets ([T1 audit](../design/decision-records/T1_CHEMBL_AUDIT_VERDICT.md) confirmed the target IDs were correct, ruling out the easy fix; [Phase 0.5](../design/decision-records/PHASE_0_5_DECISION_RECORD.md) confirmed Boltz-2 rescues CHRNA7 PAMs).
 * Boltzina gives a structure-conditioned second opinion at the cost of ~80 s per pair on RTX 5070 in WSL2 (cuequivariance kernels). It cannot replace MAMMAL for throughput, only complement it.
 * ADMET-AI is a regulatory filter, not a ranker — `gate_status ∈ {PASS, FLAG, CUT}` plus a composite `admet_score`. Approved drugs get a `regulatory_bypass` flag so an FDA history doesn't drown in toxicity gates the molecule has empirically already cleared.
 * PrimeKG + TxGNN provide an orthogonal "does this compound show up in published indication graphs for cognition-adjacent diseases" signal. The cognition virtual phenotype anchor is a weighted union of 5 EFO disease IDs (MCI, AD, ADHD, FXS, narcolepsy — weights in `configs/weights.yaml`).

@@ -341,7 +341,7 @@ python -c "from mammal_repurposing.cluster_d.validation_gates import ..."
 
 ## 6. References
 
-(Truncated to key citations; full bibliography in `design/V4_STATUS_AND_FORWARD_PLAN.md` Appendix A.9.)
+(Truncated to key citations; full bibliography in `design/architecture-and-plans/V4_STATUS_AND_FORWARD_PLAN.md` Appendix A.9.)
 
 1. **Markello RD, Hansen JY, Liu Z-Q, Bazinet V, Shafiei G, Suárez LE, Blostein N, Seidlitz J, Baillet S, Satterthwaite TD, Chakravarty MM, Raznahan A, Misic B** (2021). Standardizing workflows in imaging transcriptomics with the abagen toolbox. *eLife* 10:e72129. doi:10.7554/eLife.72129
 2. **Moodie JE, Harris SE, Harris MA, Buchanan CR, Davies G, Karama S, McIntosh AM, Cox SR, Deary IJ** (2024). Mapping spatial transcriptomic correlates of cognitive general factor in the cortex. *Hum Brain Mapp* 45(4):e26641. doi:10.1002/hbm.26641

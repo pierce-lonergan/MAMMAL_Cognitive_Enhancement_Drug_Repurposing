@@ -2,7 +2,7 @@
 
 **Status**: live source-of-truth for the project's methodology. Supersedes
 `reports/methodology_v1.md` (V3-era doc with post-ship update banners). Mirrors
-the architecture documented in `design/V4_STATUS_AND_FORWARD_PLAN.md` §13
+the architecture documented in `design/architecture-and-plans/V4_STATUS_AND_FORWARD_PLAN.md` §13
 (V5/V6 path forward) and reflects the V5 transition sprint completed
 2026-05-26.
 
@@ -192,7 +192,7 @@ Wired into fusion as `--add-moa-ranker` (5th cluster `cluster_b_moa`).
 ```
                                                         ▶ READ:
                                                           docs / forward plan
-                                                          design/V4_STATUS_AND_FORWARD_PLAN.md
+                                                          design/architecture-and-plans/V4_STATUS_AND_FORWARD_PLAN.md
 1. compound enters via seed CSV or ChEMBL expansion
         │
         ▼
@@ -300,7 +300,7 @@ centroids cached at `data/pockets/centroids/<target>.json`. Calibrator QC
 trail at `data/calibration/qc/<uniprot>.json`. Reports at `reports/`.
 
 The production handoff command sequence is documented in
-`design/V4_STATUS_AND_FORWARD_PLAN.md` §11 (Single-Page Cheat Sheet).
+`design/architecture-and-plans/V4_STATUS_AND_FORWARD_PLAN.md` §11 (Single-Page Cheat Sheet).
 
 Sprint history = git log. Methodology = this document.
 
@@ -324,7 +324,7 @@ Additional V5 work shipped in the same sprint:
 
 Remaining Tier 1 / Tier 2 / Tier 3 items and the full V5/V6 plan
 (Multi Head DTI 5-head ensemble; Bayesian Cluster D neurobio prior;
-~32 weeks total) are documented in `design/V4_STATUS_AND_FORWARD_PLAN.md`
+~32 weeks total) are documented in `design/architecture-and-plans/V4_STATUS_AND_FORWARD_PLAN.md`
 §9 (Roadmap by Priority Tier) and §13 (V5 + V6 Path Forward).
 
 ---

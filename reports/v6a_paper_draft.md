@@ -255,7 +255,7 @@ python scripts/53_v6_mmatt_fusion_ranker.py
 
 ## 6. References
 
-(Full bibliography in `design/V4_STATUS_AND_FORWARD_PLAN.md` Appendix A.8.)
+(Full bibliography in `design/architecture-and-plans/V4_STATUS_AND_FORWARD_PLAN.md` Appendix A.8.)
 
 1. **Shoshan et al.** 2026 *npj Drug Discovery* / arXiv:2410.22367 — **MAMMAL** foundation model
 2. **Schulman et al.** 2024 *Bioinformatics* 40(8):btae496 — **MMAtt-DTA** superfamily-conditional

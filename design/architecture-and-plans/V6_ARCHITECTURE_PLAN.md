@@ -1,7 +1,7 @@
 # V6 / V7 / V8 Architecture & Phased Implementation Plan
 
 **Status**: live source-of-truth for the V6 → V7 → V8 design arc. Companion to
-`design/V4_STATUS_AND_FORWARD_PLAN.md` §13 (V5/V6 Path Forward) + §13.Y (V7)
+`design/architecture-and-plans/V4_STATUS_AND_FORWARD_PLAN.md` §13 (V5/V6 Path Forward) + §13.Y (V7)
 + §13.Z (V8). Concrete implementation roadmap for **four** workstreams:
 
 - **V6.A — Multi Head DTI ensemble** (~12 weeks) per
