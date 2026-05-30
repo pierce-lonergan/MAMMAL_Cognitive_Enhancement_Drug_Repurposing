@@ -95,6 +95,8 @@ def main() -> int:
                     default=ROOT / "data" / "results" / "dti_scores.parquet")
     ap.add_argument("--liability", type=Path,
                     default=ROOT / "data" / "results" / "liability_dti.parquet")
+    ap.add_argument("--new8", type=Path,
+                    default=ROOT / "data" / "results" / "dti_scores_new8.parquet")
     ap.add_argument("--panel", type=Path,
                     default=ROOT / "data" / "interim" / "targets.parquet")
     ap.add_argument("--out", type=Path,
@@ -114,6 +116,13 @@ def main() -> int:
     parts.append(_slim(dti_add, "mammal_dti"))
     liab_add = liab[liab["target_uniprot"].astype(str).isin(LIABILITY_ADD)]
     parts.append(_slim(liab_add, "mammal_dti_liability"))
+    # the 8 panel targets scored fresh with MAMMAL DTI (scripts/81): the 3 new
+    # (CHRM1/CHRM4/HTR6) + 5 added after the original runs (GRM2/3/5, GlyT1, HTR4)
+    if args.new8.exists():
+        new8 = pd.read_parquet(args.new8)
+        parts.append(_slim(new8, "mammal_dti_new"))
+        logger.info("Including %d freshly-scored targets from %s",
+                    new8["target_uniprot"].nunique(), args.new8.name)
 
     grid = pd.concat(parts, ignore_index=True)
     # restrict to panel targets, dedupe (compound, target) keeping the first

@@ -186,8 +186,9 @@ def render_report(grid: pd.DataFrame, best: pd.DataFrame,
              "disease populations (Gap 2 reframe).")
     L.append("- Binding percentile is real MAMMAL/MMAtt-DTA DTI signal but is sequence-based "
              "and structurally blind to allosteric sites (documented limitation).")
-    L.append("- V6.A grid currently covers 13 of the 28 panel targets (the MMAtt-fusion "
-             "subset). Expanding to all 28 is a follow-up.")
+    L.append("- V6.A grid now covers all **31 panel targets** (MMAtt-DTA for the core 13 + "
+             "real MAMMAL DTI for the rest, including CHRM1/CHRM4/HTR6 scored via "
+             "`scripts/81`). Peptides/biologics are filtered as out-of-domain.")
     L.append("- The class-prior pathway gives every (compound, target) hypothesis the "
              "*ceiling* effect size of a validated modulator of that class, scaled by how "
              "strongly the compound engages that cognition-relevant target. It is an "

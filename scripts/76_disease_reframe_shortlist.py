@@ -220,13 +220,13 @@ def render_report(report_path: Path, per_disease: dict, ledger: pd.DataFrame) ->
              "failed). That homogeneity is the clinically-actionable finding, not a "
              "predictive miracle — the contrast against target relevance (≈ chance) "
              "is the scientific content.")
-    L.append("- The V6.A binding grid now covers **23 of 28 panel targets** (expanded "
-             "from 13 via `scripts/77`, merging real cached MMAtt-DTA + MAMMAL DTI; "
-             "peptides/biologics filtered as out-of-domain). The 5 still-missing "
-             "(GRM2/3/5, GlyT1, HTR4) need a re-score pass; **M1/M4 muscarinic and "
-             "5-HT6 are not in the panel at all** — so the CIAS M1/M4 winner and the "
-             "AD 5-HT6 failure class are priced in the prior table but cannot yet "
-             "surface a compound. Adding those 3 targets is the next panel-expansion step.")
+    L.append("- The V6.A binding grid now covers **all 31 panel targets** (expanded from "
+             "13 via `scripts/77`; the 8 final targets — CHRM1/CHRM4 (M1/M4), HTR6 "
+             "(5-HT6), GRM2/3/5, GlyT1, HTR4 — scored with the real MAMMAL DTI head on "
+             "the RTX 5070 via `scripts/81`; peptides/biologics filtered as "
+             "out-of-domain). The CIAS muscarinic winner (xanomeline class) and the AD "
+             "5-HT6 failure class are now both scorable: CIAS tops with M1/M4, and HTR6 "
+             "is correctly demoted in AD at its FAILURE-class prior.")
     L.append("- **Binding-percentile artifacts**: the non-anchor 'top compound' per class "
              "is whatever MAMMAL ranks highest, and MAMMAL is structurally blind to "
              "allosteric/transporter pharmacology — so noisy picks appear (e.g. a statin "

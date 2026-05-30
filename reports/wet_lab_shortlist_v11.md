@@ -1,6 +1,6 @@
 # Wet-Lab Shortlist v11 — Grid Composition (real, differentiated)
 
-**The first non-degenerate end-to-end shortlist.** Replaces v10, which collapsed every compound onto ACHE via `.iloc[0]`. v11 scores the full **288 compound × 23 target** grid (6624 repurposing hypotheses) on real differentiated signal — no stubs.
+**The first non-degenerate end-to-end shortlist.** Replaces v10, which collapsed every compound onto ACHE via `.iloc[0]`. v11 scores the full **288 compound × 31 target** grid (8928 repurposing hypotheses) on real differentiated signal — no stubs.
 
 ## How each (compound, target) hypothesis is scored
 
@@ -25,7 +25,7 @@ The v10 failure was *degeneracy* — 1 target (ACHE), near-identical g, 100% Rob
 - g spread (std) in top-25: **0.017** (gate >0.015)
 - Distinct g values in top-25: **12** (gate ≥5; v10 was ~1)
 - Roberts-ceiling PASS rate (full grid): **100.0%** (gate ≥80%)
-- Max g₉₀ across all 6624 hypotheses: **+0.390** (gate ≤0.55 — honest small cognition effects cannot exceed the ceiling; the v10 bug forced all g₉₀ > 0.50)
+- Max g₉₀ across all 8928 hypotheses: **+0.390** (gate ≤0.55 — honest small cognition effects cannot exceed the ceiling; the v10 bug forced all g₉₀ > 0.50)
 
 ## View A — Best target per compound (clinician view)
 
@@ -97,6 +97,8 @@ The strongest individual hypotheses across the whole grid (ceiling-passing).
 |---|---|---|---|---|
 | ACHE/P22303 | AChE-I | +0.180 | 288 | donepezil (+0.223) |
 | ADRA2A/P08913 | alpha2A_agonist | +0.150 | 288 | staurosporine (+0.113) |
+| CHRM1/P11229 | AMPA_pos_mod | +0.050 | 288 | staurosporine (+0.042) |
+| CHRM4/P08173 | AMPA_pos_mod | +0.050 | 288 | staurosporine (+0.041) |
 | CHRNA7/P36544 | AChE-I | +0.180 | 288 | encenicline (+0.202) |
 | DRD1/P21728 | wake_promoting | +0.120 | 288 | chembl1256645 (+0.094) |
 | GRIA1/P42261 | AMPA_pos_mod | +0.050 | 288 | cx-516 (+0.175) |
@@ -105,11 +107,16 @@ The strongest individual hypotheses across the whole grid (ceiling-passing).
 | GRIA4/P48058 | AMPA_pos_mod | +0.050 | 288 | chembl331696 (+0.039) |
 | GRIN2A/Q12879 | NMDA_antagonist | +0.050 | 288 | atorvastatin (+0.038) |
 | GRIN2B/Q13224 | NMDA_antagonist | +0.050 | 288 | memantine (+0.179) |
+| GRM2/Q14416 | AMPA_pos_mod | +0.050 | 288 | staurosporine (+0.040) |
+| GRM3/Q14832 | AMPA_pos_mod | +0.050 | 288 | atorvastatin (+0.040) |
+| GRM5/P41594 | AMPA_pos_mod | +0.050 | 288 | atorvastatin (+0.040) |
 | HCN1/O60741 | alpha2A_agonist | +0.150 | 288 | staurosporine (+0.113) |
 | HCRTR1/O43613 | wake_promoting | +0.120 | 288 | suvorexant (+0.098) |
 | HCRTR2/O43614 | wake_promoting | +0.120 | 288 | suvorexant (+0.179) |
 | HRH3/Q9Y5N1 | wake_promoting | +0.120 | 288 | pitolisant (+0.186) |
 | HTR1A/P08908 | AMPA_pos_mod | +0.050 | 288 | staurosporine (+0.040) |
+| HTR4/Q13639 | AMPA_pos_mod | +0.050 | 288 | chembl4780352 (+0.040) |
+| HTR6/P50406 | AMPA_pos_mod | +0.050 | 288 | staurosporine (+0.039) |
 | KCNQ2/O43526 | alpha2A_agonist | +0.150 | 288 | chembl1830646 (+0.120) |
 | KCNQ3/O43525 | alpha2A_agonist | +0.150 | 288 | pitolisant (+0.120) |
 | NTRK2/Q16620 | creatine | +0.080 | 288 | lurasidone (+0.060) |
@@ -118,12 +125,13 @@ The strongest individual hypotheses across the whole grid (ceiling-passing).
 | SIGMAR1/Q99720 | multimodal_5HT | +0.120 | 288 | blarcamesine (+0.178) |
 | SLC6A2/P23975 | NRI | +0.100 | 288 | atomoxetine (+0.189) |
 | SLC6A3/Q01959 | NDRI | +0.210 | 288 | methylphenidate (+0.215) |
+| SLC6A9/P48067 | AMPA_pos_mod | +0.050 | 288 | atorvastatin (+0.040) |
 
 ## Honest scope
 
 - **g is a predicted *clinical* Hedges' g**, bounded by the Roberts 2020 ceiling (g ≈ 0.50 at 90% upper). Effect sizes near 0.2 are at the realistic top of healthy-adult cognitive enhancement; the same machinery yields larger g in disease populations (Gap 2 reframe).
 - Binding percentile is real MAMMAL/MMAtt-DTA DTI signal but is sequence-based and structurally blind to allosteric sites (documented limitation).
-- V6.A grid currently covers 13 of the 28 panel targets (the MMAtt-fusion subset). Expanding to all 28 is a follow-up.
+- V6.A grid now covers all **31 panel targets** (MMAtt-DTA for the core 13 + real MAMMAL DTI for the rest, including CHRM1/CHRM4/HTR6 scored via `scripts/81`). Peptides/biologics are filtered as out-of-domain.
 - The class-prior pathway gives every (compound, target) hypothesis the *ceiling* effect size of a validated modulator of that class, scaled by how strongly the compound engages that cognition-relevant target. It is an enrichment ranking, not a calibrated per-compound clinical prediction.
 
 ---

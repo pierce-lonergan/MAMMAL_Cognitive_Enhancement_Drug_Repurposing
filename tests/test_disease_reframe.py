@@ -86,16 +86,34 @@ EXPANDED_GRID = ROOT / "data" / "results" / "v2" / "v6a_grid_expanded.parquet"
                     reason="expanded grid not built (run scripts/77)")
 def test_expanded_grid_coverage_and_no_peptides():
     g = pd.read_parquet(EXPANDED_GRID)
-    assert g["target_uniprot"].nunique() == 23          # 13 MMAtt + 9 MAMMAL + HTR1A
+    # full 31-target panel once scripts/81 has scored the final 8 (CHRM1/4, HTR6,
+    # GRM2/3/5, GlyT1, HTR4); >=23 if only the cached-signal expansion has run.
+    assert g["target_uniprot"].nunique() >= 23
     assert {"compound_name", "target_uniprot", "predicted_pkd",
             "binding_source"} <= set(g.columns)
     # out-of-domain peptides/biologics filtered (MAMMAL DTI is small-molecule)
     cmpds = set(g["compound_name"])
     assert "semaglutide" not in cmpds
     assert "liraglutide" not in cmpds
-    # new targets present that the 13-grid lacked
+    # targets the original 13-grid lacked
     for u in ("P36544", "Q12879", "Q99720", "P08908"):  # CHRNA7, GRIN2A, SIGMAR1, HTR1A
         assert u in set(g["target_uniprot"].astype(str))
+
+
+@pytest.mark.skipif(not EXPANDED_GRID.exists(),
+                    reason="expanded grid not built (run scripts/77)")
+def test_full_panel_muscarinic_and_5ht6_scorable():
+    """Once the panel is finished to 31 (scripts/81 MAMMAL scoring), the CIAS
+    muscarinic winner (CHRM1/CHRM4) and the AD 5-HT6 failure class (HTR6) must be
+    in the grid. Skips gracefully if only the 23-target cached expansion has run."""
+    g = pd.read_parquet(EXPANDED_GRID)
+    present = set(g["target_uniprot"].astype(str))
+    if g["target_uniprot"].nunique() < 31:
+        pytest.skip("panel not yet finished to 31 (run scripts/81 in the MAMMAL venv)")
+    for u in ("P11229", "P08173", "P50406"):   # CHRM1, CHRM4, HTR6
+        assert u in present
+    assert D.TARGET_TO_MECHCLASS["P11229"] == "M1_M4_agonist"
+    assert D.TARGET_TO_MECHCLASS["P50406"] == "5HT6_antagonist"
 
 
 # ---------------------------------------------------------------------------
