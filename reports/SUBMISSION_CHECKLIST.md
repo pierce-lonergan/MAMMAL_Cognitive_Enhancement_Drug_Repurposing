@@ -5,7 +5,8 @@
 
 The artifacts are written and committed:
 - **Manuscript:** `reports/manuscript_class_prognostic_biorxiv.md` → `reports/manuscript_class_prognostic.pdf`
-- **Cover letter (visual, 3 pp, graphical abstract + Fig. 1 embedded):** `reports/cover_letter_biorxiv.md` → `reports/cover_letter_biorxiv.pdf` (regenerate with the same pandoc command). Opens with the two already-confirmed prospective predictions.
+- **Journal cover letter (visual, 3 pp, graphical abstract embedded; targets *Nature Communications*):** `reports/cover_letter_journal.md` → `reports/cover_letter_journal.pdf`. Leads with the two already-confirmed prospective predictions; includes venue-fit + suggested/non-preferred reviewers. Edit the venue name + reviewers if targeting a different journal.
+- **bioRxiv submission note (short — bioRxiv does not read cover letters):** `reports/biorxiv_submission_note.md` (metadata fields + a 2-sentence editor-comment blurb; the graphical abstract goes in bioRxiv's optional graphical-abstract slot).
 - **Pre-registration:** `reports/osf_preregistration_class_prognostic.md`
 - **Flagship figure (Fig. 1):** `figures/flagship/thesis_synthesis.png`
 - **Figure 2 (temporal + taxonomy):** `figures/flagship/temporal_validation.png` (`scripts/85`)
