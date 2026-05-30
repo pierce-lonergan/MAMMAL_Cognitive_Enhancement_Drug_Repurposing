@@ -44,6 +44,19 @@ def test_summary_partitions():
     assert s["n_total"] == 3 and s["n_pending"] == 2 and s["n_resolved"] == 1
 
 
+def test_cognition_primary_classifier():
+    # cognitive batteries -> cognition-primary
+    assert P.is_cognition_primary("Change From Baseline in the MCCB composite")
+    assert P.is_cognition_primary("ADAS-Cog13 at week 26")
+    assert P.is_cognition_primary("Severe Impairment Battery (SIB)")
+    # safety / psychosis / behaviour primaries -> NOT cognition-primary
+    assert not P.is_cognition_primary("Number of Treatment-Emergent Adverse Events")
+    assert not P.is_cognition_primary("Change in PANSS Total Score")
+    assert not P.is_cognition_primary("Aberrant Behavior Checklist")
+    assert not P.is_cognition_primary("")
+    assert not P.is_cognition_primary(None)
+
+
 @pytest.mark.skipif(not CSV.exists(), reason="prospective CSV absent")
 def test_real_prospective_predictions_resolved_correct():
     """The two resolved NMDA-coagonist-enhancer predictions (iclepertin GlyT1,

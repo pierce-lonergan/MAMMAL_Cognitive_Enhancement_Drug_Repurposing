@@ -9,9 +9,30 @@ named trials, checkable against their actual readouts.
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import pandas as pd
+
+# cognition-PRIMARY detector for ClinicalTrials.gov primary-outcome text.
+# Stems are intentionally un-anchored on the right (e.g. "cognit" must match
+# "cognitive"/"cognition"; "ADAS" must match "ADAS-Cog13"); short acronyms keep
+# word boundaries to avoid spurious in-word hits.
+_COG_PRIMARY = re.compile(
+    r"(\bMCCB\b|\bMATRICS\b|\bADAS\b|\bBACS\b|\bSIB\b|NIH Toolbox|cognit|"
+    r"\bmemory\b|Severe Impairment Battery|\bPACC\b|Preclinical Alzheimer Cognitive)",
+    re.I)
+_NON_COG = re.compile(
+    r"\b(Adverse Event|Treatment-?Emergent|Safety|Tolerab|QTc|PANSS|SANS|BPRS|"
+    r"Aberrant Behavior|Agitation|BOLD|PET|Expressive Language|Mullen|"
+    r"Clinical Global|Successful Completion|Risk Ratio|Sensitivity)\b", re.I)
+
+
+def is_cognition_primary(primary_outcome_text: str | None) -> bool:
+    """True iff a trial's primary outcome is a cognitive measure (and not a
+    safety/behaviour/psychosis primary in which 'cognition' merely appears)."""
+    t = primary_outcome_text or ""
+    return bool(_COG_PRIMARY.search(t)) and not bool(_NON_COG.search(t))
 
 
 def load_prospective(path) -> pd.DataFrame:
