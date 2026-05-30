@@ -8,15 +8,16 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing, buil
 
 ## Headline metrics (current sprint)
 
-- **190 / 190 non-slow pytest tests pass** (across V4 + V5 + V6 + V7 + V8 modules)
+- **442 / 443 non-slow pytest tests pass** (1 skip intentional); **12 / 14 slow pass** (2 require the real MAMMAL `biomed-multi-alignment` package, absent in this env)
+- 🏆 **Retrospective clinical-outcome validation** (`reports/retrospective_clinical_validation_v1.md`): on a leakage-audited ledger of 31 real cognition drugs, **mechanism-class track record discriminates clinical SUCCESS vs Phase III FAILURE at AUROC 1.00** (perm p = 0.0002), flagging **9 / 9 famous Phase III failures** (encenicline, idalopirdine, intepirdine, pomaglumetad, PF-04447943, SUVN-502, ABT-126, TC-5619, MK-0249) it was never told about — while **target-binding affinity (AUROC 0.12) and target genetic-relevance (0.59) sit at or below chance.** The empirical case that cognition repurposing must be class-aware, not affinity-driven.
+- ✅ **Wet-lab shortlist v11** (`reports/wet_lab_shortlist_v11.md`): first non-degenerate (compound × target) grid — top-25 spans **7 targets** (v10 collapsed every compound onto ACHE); positive controls land at the correct mechanism (donepezil → ACHE, methylphenidate → SLC6A3, memantine → GRIN2B); max g₉₀ = 0.39 < 0.50 (honest Roberts-2020 ceiling).
 - **22 / 22 hypothesis-audit verdicts: 19 PASS / 3 DEGRADE / 0 FAIL** (`reports/hypothesis_audit_v1.md`)
 - **V6.B.3 PyMC NUTS production run**: R̂ max = 1.000, ESS min = 12,780 (4 chains × 2000 draws) on the 22-target cognition panel ✅
 - **V6.A multi-head ensemble**: 4 DTI heads shipped (MAMMAL + Tanimoto + MMAtt-DTA + PSICHIC + BALM scaffold) with Venn-ABERS calibration + per-target Bayesian routing
 - **V6.B Cluster D**: AHBA 20/22 cognition genes × 83 brain regions cached; PyMC NUTS posterior θ̄ per target with reference anchors (BDNF, CHRNA7, GRIN2B at θ ~ N(0.5, 0.3²))
 - **V7 effect-size translation**: 9-compartment PBPK + 12-class PRISMA priors + 5 failure-mode moderators; PET-anchored to Bohnen 2005 / Volkow 1998 / Kapur 2000
 - **V7.4 validation**: Gate 1 (P1–P8): **5 PASS / 1 FAIL / 2 NO_COMPOUND** against real V6.A + V6.B
-- **V8 πphen perturbational axis**: 7-view MOFA+ scaffold + chemCPA generative imputer + 8-cell disagreement classification + I_novel novel-mechanism score
-- **Wet-lab shortlist v10** (`reports/wet_lab_shortlist_v10.md`): three-factor π_joint composition across all 4 axes with Roberts 2020 SMD ceiling pre-filter
+- **V8 πphen perturbational axis**: 7-view MOFA+ scaffold + **chemCPA trained on real LINCS L1000** (107K signatures, Val R² = 0.46 / OOD R² = 0.33) + **hierarchical transfer on real cpg0000** (R̂ = 1.010, 0 div, 60/60 compounds T > 0.6) + 8-cell disagreement classification + I_novel novel-mechanism score
 
 ---
 
@@ -77,9 +78,12 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing, buil
                 └─────────────────┬───────────────┘
                                   ▼
                 ┌─────────────────────────────────┐
-                │     Wet-lab shortlist v10        │
+                │  Wet-lab shortlist v11 (grid)    │
+                │  differentiated (compound×target)│
+                │  + retrospective clinical valid. │
                 │  (reports/wet_lab_shortlist_     │
-                │              v10.md)             │
+                │   v11.md · retrospective_        │
+                │   clinical_validation_v1.md)     │
                 └─────────────────────────────────┘
 ```
 
@@ -93,8 +97,9 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing, buil
 | **V6.B** (Bayesian Cluster D) | abagen AHBA cache + OT Genetics L2G fetcher + cellxgene preview + PyMC NUTS hierarchical model + 4-gate validation (Roberts ceiling, Spearman vs SMD, GWAS-AUROC, LOSO) | ✅ shipped; NUTS converged R̂=1.000 |
 | **V6 Cluster C** | PrimeKG + TxGNN per-disease ranking API | ✅ shipped (rewrite) |
 | **V7** (Effect-Size Translation) | 9-compartment PBPK + 12-class PRISMA priors + 5 moderators + 3-level hierarchical Bayes + Cluster D multiplicative gate + 8 P1–P8 pre-registered predictions | ✅ shipped |
-| **V8 / Cluster E** (πphen) | LINCS L1000 + JUMP-CP + chemCPA + MOFA+ K=30 + joint posterior + 8-cell disagreement + I_novel novel-mechanism score | ✅ shipped (scaffolds) |
-| **Wet-lab shortlist v10** | Three-factor composition + 18-column output with 4-axis annotation + Roberts ceiling filter | ✅ shipped |
+| **V8 / Cluster E** (πphen) | LINCS L1000 + JUMP-CP + chemCPA + MOFA+ K=30 + joint posterior + 8-cell disagreement + I_novel novel-mechanism score | ✅ shipped; chemCPA on **real LINCS** (Val R²=0.46), hierarchical on **real cpg0000** (R̂=1.010) |
+| **Wet-lab shortlist v11 (grid)** | Differentiated (compound×target) grid composer + within-target binding percentile + class-anchored clinical g placement + differentiation guard | ✅ shipped (replaces degenerate v10) |
+| **Retrospective clinical validation** (Gap 3) | Leakage-audited 31-drug ledger + 3 leave-out predictors (target / class-LOCO / class-extrapolation) + AUROC/bootstrap/permutation, numpy-only | ✅ shipped; class track-record AUROC 1.00, target affinity ≈ chance |
 
 ### Pre-registration
 
@@ -158,8 +163,11 @@ python scripts/55_v6b_cluster_d_nuts.py          # PyMC NUTS posterior (4 chains
 # Stage 5: V7 effect-size validation
 python scripts/57_v7_validation_gates.py     # P1-P8 + Roberts ceiling gate
 
-# Stage 6: V8 + v10 wet-lab shortlist
-python scripts/56_v8_wet_lab_shortlist_v10.py --top-n 50
+# Stage 6: V8 + v11 differentiated wet-lab shortlist (compound × target grid)
+python scripts/74_wet_lab_shortlist_v11_grid.py --top-n 50
+
+# Stage 7: retrospective clinical-outcome validation (Gap 3 — leakage-audited)
+python scripts/75_retrospective_clinical_validation.py
 
 # Hypothesis audit (re-run any time)
 python scripts/41_v5_hypothesis_audit.py
@@ -168,8 +176,8 @@ python scripts/41_v5_hypothesis_audit.py
 ### Test suite
 
 ```powershell
-pytest tests/ -m "not slow"   # 190 tests pass; ~15 s
-pytest tests/ -m slow         # GPU smoke + real model load (~5 min)
+pytest tests/ -m "not slow"   # 442 pass / 1 skip; ~30 s
+pytest tests/ -m slow         # 12 pass / 2 env-gated (real MAMMAL package); GPU smoke + real model load
 ```
 
 ---
@@ -205,14 +213,17 @@ pytest tests/ -m slow         # GPU smoke + real model load (~5 min)
 │   │   └── venn_abers.py                  #   V6.A.4 Venn-ABERS + correlated MC
 │   ├── fusion/
 │   │   ├── bayesian_router.py             #   V6.A.3 per-target trust matrix
-│   │   ├── joint_composition.py           #   v10 wet-lab composer
+│   │   ├── joint_composition.py           #   v10 + v11-grid wet-lab composer
 │   │   └── faceted_shortlist.py           #   V4 mechanism-class facets
+│   ├── validation/
+│   │   └── retrospective.py               #   Gap 3 leakage-audited clinical validation
 │   └── cluster_c/
 │       ├── txgnn.py                       #   per-disease ranking API
 │       └── primekg.py                     #   PrimeKG loader
-├── scripts/                               # 57 end-to-end pipeline scripts
+├── scripts/                               # 82 end-to-end pipeline scripts
 ├── reports/                               # auto-generated markdown reports
-│   ├── wet_lab_shortlist_v10.md           # ★ production deliverable
+│   ├── wet_lab_shortlist_v11.md           # ★ production deliverable (grid)
+│   ├── retrospective_clinical_validation_v1.md  # ★ Gap 3 headline result
 │   ├── cluster_d_nuts_v1.md               # V6.B.3 posterior + convergence
 │   ├── v7_validation_v1.md                # V7.4 P1-P8 + Roberts ceiling
 │   ├── v7_osf_preregistration.md          # V7 OSF lock
@@ -227,10 +238,12 @@ pytest tests/ -m slow         # GPU smoke + real model load (~5 min)
 │   ├── Clinical Effect-Size Translation Function A Methodology Pre-Registration... # V7 companion
 │   ├── Perturbational Evidence Axis.md                                              # V8
 │   └── Technical Feasibility Deep-Dive Adding a Phenotypic.md                       # V8 companion
-└── tests/                                 # 190 non-slow + ~5 slow
+└── tests/                                 # 442 non-slow + 14 slow (28 test files)
     ├── test_v7_translation.py
     ├── test_v8_cluster_e.py
     ├── test_v8_advanced.py
+    ├── test_grid_composition_v11.py        #   Gap 1 — no-collapse grid composer
+    ├── test_retrospective_validation.py    #   Gap 3 — leakage-audited AUROC
     └── ...
 ```
 
@@ -301,4 +314,4 @@ If you use this pipeline in your work, please cite:
 
 ---
 
-*Build status: **V4 → V8 architecture complete.** V6.B.3 PyMC NUTS production run converged (R̂=1.000, ESS=12,780). V7.4 validation: 5/8 P1-P8 PASS. V8 scaffolds shipped. Wet-lab shortlist v10 produces 3-factor joint composition with 4-axis annotation. 190/190 non-slow pytest pass. See `design/V4_STATUS_AND_FORWARD_PLAN.md` for full status.*
+*Build status: **V4 → V8 architecture complete + Gap 1 & Gap 3 shipped.** V6.B.5 PyMC NUTS converged on the 191-target panel post-MH8 (R̂=1.000, 0 divergences). chemCPA trained on real LINCS L1000 (Val R²=0.46); V8 hierarchical on real cpg0000 (R̂=1.010). Wet-lab shortlist **v11** produces a differentiated (compound × target) grid — top-25 spans 7 targets, positive controls correct. **Retrospective clinical validation**: mechanism-class track record discriminates clinical SUCCESS vs Phase III FAILURE at AUROC 1.00 (9/9 famous failures flagged) while target affinity sits at chance. 442/443 non-slow + 12/14 slow pytest pass. See `PROJECT_STATUS.md` and `design/V4_STATUS_AND_FORWARD_PLAN.md` for full status.*

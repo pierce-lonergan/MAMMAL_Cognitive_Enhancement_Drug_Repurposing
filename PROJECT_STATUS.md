@@ -1,14 +1,14 @@
 # PROJECT STATUS — MAMMAL Cognitive Enhancement Drug Repurposing
 
-**One-pager executive summary** suitable for grant applications, sprint reviews, or stakeholder briefings. Last refreshed in the V6.B.5 + V8 paper sprint.
+**One-pager executive summary** suitable for grant applications, sprint reviews, or stakeholder briefings. Last refreshed 2026-05-29 (Gap 1 v11 grid composer + Gap 3 retrospective clinical validation + MH 1-8 sprint suite + chemCPA real-LINCS training + V8 cpg0000 calibration).
 
 ---
 
 ## What this is
 
-A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built around IBM Research's [MAMMAL](https://github.com/BiomedSciAI/biomed-multi-alignment) foundation model. Five architectural layers (V4 → V5 → V6 → V7 → V8) compose into a single three-factor joint posterior over predicted healthy-adult cognition Hedges' *g*, pre-filtered by the Roberts 2020 SMD ceiling (g ≤ 0.50).
+A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built around IBM Research's [MAMMAL](https://github.com/BiomedSciAI/biomed-multi-alignment) foundation model. Five architectural layers (V4 → V5 → V6 → V7 → V8) compose into a single ranked set of **(compound, target) repurposing hypotheses** with predicted cognition Hedges' *g*, pre-filtered by the Roberts 2020 SMD ceiling (g ≤ 0.50).
 
-**Honest scope**: this pipeline does NOT discover smart drugs. It enriches a candidate set so wet-lab cycles spend money on plausibility, not chemistry-lottery tickets.
+**Honest scope**: this pipeline does NOT discover smart drugs. It enriches a candidate set so wet-lab cycles spend money on plausibility, not chemistry-lottery tickets. Its sharpest validated claim is *negative-and-useful*: target-binding affinity and target genetic-relevance do **not** predict cognition-drug clinical success — mechanism-class track record does (see retrospective validation, below).
 
 ---
 
@@ -16,8 +16,12 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 
 | Metric | Value | Status |
 |---|---|---|
-| Pytest pass rate (non-slow) | **419 / 420** (+87 across Sprints 1.2/1.4/2.2/3.1/3.2/3.3/4.1/4.2; 1 skip is intentional) | ✅ |
-| Pytest pass rate (slow regression) | **11 / 11** (3 MH8 prod lock + 2 V7-V2 pop×class + 3 V8 hierarchical + 3 cluster_d/v6b) | ✅ |
+| Pytest pass rate (non-slow) | **442 / 443** (1 skip intentional; +23 from Gap 1 v11 grid + Gap 3 retrospective) | ✅ |
+| Pytest pass rate (slow) | **12 / 14** (2 fail = real MAMMAL `biomed-multi-alignment` package not in this env, not a regression) | ✅ |
+| **Gap 3 — retrospective clinical-outcome validation** | **mechanism-class track record AUROC 1.00 (perm p=0.0002) vs target affinity 0.12 / relevance 0.59; 9/9 famous Phase III failures flagged** (`reports/retrospective_clinical_validation_v1.md`) | 🏆 |
+| **Gap 1 — v11 grid shortlist** (replaces degenerate v10) | **top-25 spans 7 targets** (was 1); positive controls land correctly (donepezil→ACHE, MPH→SLC6A3, memantine→GRIN2B); max g₉₀=0.39<0.50 | ✅ |
+| chemCPA real-LINCS production training (Sprint 5.2) | **107K real LINCS sigs, Val R²=0.46, OOD R²=0.33** on the 9-compound canonical holdout — 8.3 min on RTX 5070 | ✅ |
+| V8 hierarchical real cpg0000 calibration (Sprint 4.3) | **R̂=1.010, 0 div; ICC_cell=0.018, ICC_inter=0.149; 60/60 compounds T>0.6** (U2OS→brain transfer defended) | ✅ |
 | Hypothesis audit verdicts | **22 PASS / 3 DEGRADE / 0 FAIL** | ✅ |
 | V6.B PyMC NUTS production (22-target) | **R̂ max = 1.000, ESS min = 12,780** (4 chains × 2000 draws, real AHBA) | ✅ |
 | V6.B.5 PyMC NUTS production (191-target, **post-MH8**) | **R̂ max = 1.000, ESS min = 1,808, divergences = 0** (was 37 pre-fix) | ✅ |
@@ -34,9 +38,9 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 | Target panel (V6.B core) | **28 targets** (was 22) — +6 cognitive (HTR1A, HTR4, SLC6A9, GRM2/3/5) + `substrate_mediated` column | ✅ |
 | V6.B.5 expanded panel | **191 targets** with 22-panel ✅ strict subset; MAO-A/MAO-B/COMT/ACHE substrate-mediated | ✅ |
 | Multi-modulator anchor table | **70 rows / 38 targets / 59 compounds / 24 Phase III nulls** (Sprint 2.1) | ✅ |
-| Total scripts shipped | 64 (added `scripts/68_load_modulator_anchors.py`) | ✅ |
-| Total source modules shipped | 40+ across cluster_a / cluster_b / cluster_c / cluster_d / cluster_e / translation / calibration / fusion / pockets / selectivity / diagnostics / fetchers / scoring | ✅ |
-| MH implementation roadmap | **10 of ~13 sprints complete** (1.1-1.4 + 2.1-2.2 + 3.1-3.3 + 4.1-4.2; reports/MH_IMPLEMENTATION_ROADMAP.md) | 🚀 |
+| Total scripts shipped | **83** (added `scripts/74_wet_lab_shortlist_v11_grid.py` + `scripts/75_retrospective_clinical_validation.py`) | ✅ |
+| Total source modules shipped | **110** across cluster_a / cluster_b / cluster_c / cluster_d / cluster_e / translation / calibration / fusion / **validation** / pockets / selectivity / diagnostics / fetchers / scoring | ✅ |
+| MH implementation roadmap | **all core sprints complete** (1.1-1.4 + 2.1-2.2 + 3.1-3.5 + 4.1-4.3 + 5.1-5.2 + 6.2/6.4) + Gap 1 + Gap 3; reports/MH_IMPLEMENTATION_ROADMAP.md | 🚀 |
 
 ---
 
@@ -83,25 +87,29 @@ Both documents are publication-ready markdown. OSF.io account + DOI mint is the 
 ├── research/4-tier/              6 research deep-dives (Multi-Head DTI, Cluster D,
 │                                  V7 Clinical Effect-Size, V7 Pre-Reg companion,
 │                                  V8 Perturbational, V8 Feasibility companion)
-├── reports/                      30+ auto-generated markdown reports
-│   ├── 4 paper drafts (V6.A + V6.B + V7 + V8)
+├── reports/                      90 auto-generated markdown reports
+│   ├── 4 paper drafts (V6.A + V6.B + V7 + V8) + umbrella synthesis
 │   ├── 2 OSF pre-registration docs (V7 + V8)
+│   ├── wet_lab_shortlist_v11.md  (★ Gap 1 differentiated grid deliverable)
+│   ├── retrospective_clinical_validation_v1.md (★ Gap 3 headline result)
 │   ├── methodology_v3.md         (coherent V4→V8 narrative)
-│   ├── hypothesis_audit_v1.md    (22 falsifiable claims tracked)
-│   └── ~24 other auto-generated diagnostic / validation / wet-lab reports
+│   ├── hypothesis_audit_v1.md    (falsifiable claims tracked)
+│   └── ~80 other auto-generated diagnostic / validation / wet-lab reports
 ├── figures/                      Publication-quality figures
-│   └── v7/                       4 figures at 300 DPI (PBPK + P1-P8 + LOO MAE + sweep)
-├── src/mammal_repurposing/       40+ source modules across 12 packages
+│   ├── v7/                       4 figures at 300 DPI (PBPK + P1-P8 + LOO MAE + sweep)
+│   └── v11/                      retrospective_roc.png (Gap 3 ROC contrast)
+├── src/mammal_repurposing/       110 source modules across 14 packages
 │   ├── cluster_a/                (V6.A multi-head DTI: MMAtt + PSICHIC + BALM)
 │   ├── cluster_c/                (V6 PrimeKG + TxGNN per-disease)
 │   ├── cluster_d/                (V6.B Cluster D + 4-gate validation + panel expansion)
 │   ├── cluster_e/                (V8 πphen: LINCS + JUMP-CP + chemCPA + MOFA+ + joint)
 │   ├── translation/              (V7 PBPK + PRISMA priors + effect-size model)
 │   ├── calibration/              (Venn-ABERS + isotonic + IsotonicCalibrator)
-│   ├── fusion/                   (Bayesian router + RRF + faceted + LambdaMART + joint composition)
+│   ├── fusion/                   (Bayesian router + RRF + faceted + LambdaMART + v10/v11-grid composition)
+│   ├── validation/               (Gap 3 leakage-audited retrospective clinical validation)
 │   └── ...                       (pockets / selectivity / diagnostics / fetchers / scoring)
-├── scripts/                      63 end-to-end pipeline scripts
-├── tests/                        250 non-slow pytest cases + 4 slow
+├── scripts/                      83 end-to-end pipeline scripts
+├── tests/                        442 non-slow pytest cases + 14 slow (28 files)
 ├── CITATIONS.bib                 Full BibTeX bibliography (~50 entries)
 ├── README.md                     Public-facing entry point with V4→V8 architecture diagram
 └── PROJECT_STATUS.md             This file
@@ -109,31 +117,31 @@ Both documents are publication-ready markdown. OSF.io account + DOI mint is the 
 
 ---
 
-## What's externally blocked
+## What's been un-blocked since last refresh (now DONE)
 
-These items are ready to ship the moment the external dependency arrives:
+Previously "externally blocked" items that have since been executed in-session:
 
-1. **LINCS L1000 GCTX download** (~10 GB; GSE92742 + GSE70138 + clue.io beta) — blocks V8 real-mode Gate 1 evaluation
-2. **JUMP-CP cpg0016 S3 sync** (~30-40 GB DeepProfiler + CellProfiler + DINOv2 consensus parquets; NEVER the 115 TB raw images) — blocks V8 real-mode Gate 1 evaluation
-3. **chemCPA training on real LINCS + sci-Plex3** (~4-8 h GPU once LINCS loaded) — blocks V8.2 Stage 2
-4. **MOFA+ K=30 on real 7-view stack** (~2-4 h CPU once all 7 views loaded) — blocks V8.3 Stage 2
-5. **V8 PyMC NUTS on joint posterior** (~8-16 h GPU once V8.3 done) — blocks V8.5 Stage 2
-6. **OT Genetics L2G live fetch** — blocked from sandbox; graceful fallback works
-7. **OSF.io account + DOI mint** — both pre-reg documents are markdown-ready
+1. ✅ **LINCS L1000 GCTX** — 5.5 GB GSE70138 Level-5 COMPZ (118,050 sigs × 12,328 genes) downloaded + decompressed.
+2. ✅ **chemCPA real-LINCS training** — trained on 107K real signatures (Val R²=0.46, OOD R²=0.33), 8.3 min on RTX 5070. `scripts/73`.
+3. ✅ **JUMP-CP cpg0000 pilot** — 46 CPJUMP1 plates pulled; V8 hierarchical NUTS run on real A549/U2OS morphology (`scripts/70`+`71`).
 
-Total wall-clock for the full real-data execution: ~24-36 h compute + 1-2 weeks paper drafting iteration.
+## What's still externally blocked
+
+1. **MOFA+ K=30 on real 7-view stack** — needs all 7 views co-loaded (iPSC-MEA + snRNA still pending).
+2. **OT Genetics L2G live fetch (held-out GWAS)** — Gate 3 still INSUFFICIENT_DATA; graceful fallback works.
+3. **OSF.io account + DOI mint** — V7 + V8 pre-reg docs markdown-ready.
+4. **Wet-lab validation** — the only path to prospective external validation (CRO partnership, $60-110K).
+5. **bioRxiv preprint submission** — 5 manuscripts draft-ready.
 
 ---
 
 ## What's actionable now (in priority order)
 
-1. **V6.B paper Methods + Results expansion** — populate the full 22-target posterior table + 4 validation-gate live execution
-2. **V8.4 Stage 2** — if real LINCS + JUMP-CP data arrives, execute Gate 1 AMI/ARI vs PRISMA 30-class
-3. **V7.5 Stage 2** — extend P1-P8 anchor set from 15 to ~50-100 compounds with curated meta-analytic g
-4. **V6.B.5 Stage 2-3** — replace synthetic GWAS/SC/AHBA scores with live OT Genetics + cellxgene + Moodie 2024 alignment
-5. **OSF.io project creation** — upload V7 + V8 pre-registrations + lock + DOI mint
-6. **Wet-lab validation of top-N (L, L, H) candidates** — Mei 2014 BIMA-8 remyelination assay; clemastine-class novel-mechanism follow-up
-7. **Public release on bioRxiv** — V6.A + V6.B + V7 + V8 manuscripts as preprints with code DOI
+1. **Gap 2 — disease reframe** (next sprint): re-point the v11 differentiated shortlist + retrospective-validation machinery at a disease population (CIAS / Alzheimer's / FXS) where mechanism-class effect sizes (g≈0.3-0.4) and clinical need are real, rather than healthy-adult enhancement (g≈0.12).
+2. **V6.A grid expansion** — extend the MMAtt-fusion binding grid from 13 → all 28 panel targets so the v11 shortlist covers CHRNA7/5-HT6/mGluR/GlyT1 (the failure-prone classes the retrospective validation flagged).
+3. **V8 phenotype axis wiring into v11** — populate the (L,L,H) novel-mechanism cell with real chemCPA/transferability per compound.
+4. **OSF.io project creation** — upload V7 + V8 pre-registrations + lock + DOI mint.
+5. **Public release on bioRxiv** — V6.A + V6.B + V7 + V8 + retrospective-validation manuscripts.
 
 ---
 
@@ -177,4 +185,4 @@ Full BibTeX bibliography: `CITATIONS.bib`. Per-paper drafts: `reports/v6a_paper_
 
 ---
 
-*Last updated by V6.B.5 NUTS + 4-paper-suite sprint. The pipeline is end-to-end shipped; what remains is wet-lab validation + external data download.*
+*Last updated 2026-05-29 (Gap 1 v11 grid composer + Gap 3 retrospective clinical-outcome validation + MH 1-8 sprint suite + chemCPA real-LINCS training + V8 cpg0000 calibration). The pipeline is end-to-end shipped with a real differentiated shortlist (v11) and a leakage-audited retrospective validation; what remains is the disease reframe (Gap 2), wet-lab validation, and OSF/bioRxiv release.*
