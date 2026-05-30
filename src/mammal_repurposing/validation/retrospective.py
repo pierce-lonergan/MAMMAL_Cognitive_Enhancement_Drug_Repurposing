@@ -177,6 +177,65 @@ def binding_score(ledger: pd.DataFrame, v6a_grid: pd.DataFrame) -> dict[str, flo
     return out
 
 
+def kg_network_score(ledger: pd.DataFrame, kg_scores: pd.DataFrame,
+                     col: str = "kg_ppr_sum") -> dict[str, float]:
+    """Gap-6 baseline — network-propagation comparator (the KG/GNN paradigm).
+
+    Personalised-PageRank mass that diffuses from the drug node to the
+    cognition target panel over PrimeKG (`kg_ppr_sum`), i.e. a random-walk /
+    network-propagation repurposing score. This is the concrete stand-in for
+    the connectivity-/network-propagation methods reviewers expect as a
+    comparator.
+
+    CAVEAT (hindsight confound — NOT leakage-free, like target popularity): a
+    drug accrues PrimeKG edges — and therefore PageRank mass to the panel —
+    partly *because* it was studied and succeeded. High network connectivity is
+    thus partly a CONSEQUENCE of the outcome. Reported as an instructive
+    confounded baseline, not a clean a-priori predictor."""
+    m = {str(r["compound_name"]).lower(): float(r[col])
+         for _, r in kg_scores.iterrows()
+         if col in kg_scores.columns and np.isfinite(float(r[col]))}
+    return {row["compound"]: m[row["compound_lower"]]
+            for _, row in ledger.iterrows() if row["compound_lower"] in m}
+
+
+def structure_nn_success_score(ledger: pd.DataFrame, compounds: pd.DataFrame,
+                               *, radius: int = 2, n_bits: int = 2048) -> dict[str, float]:
+    """Structure-similarity comparator — leave-one-out nearest-successful-drug.
+
+    For each ledger drug, the maximum Morgan-fingerprint Tanimoto to any OTHER
+    ledger drug that historically SUCCEEDED. This is the chemical-structure
+    analogue of the class-track-record predictor: both use the historical
+    outcomes of the *other* drugs, but one aggregates by chemical similarity
+    and the other by mechanism class. The contrast (structure ≪ class) isolates
+    *which kind* of historical aggregation carries the signal.
+
+    Requires RDKit; returns {} (gracefully) if unavailable or no SMILES join.
+    Only defined for ledger drugs whose SMILES are in the compound library."""
+    try:
+        from rdkit import Chem
+        from rdkit.Chem import AllChem, DataStructs
+    except Exception:
+        return {}
+    sm = {str(r["name"]).lower(): r["smiles"] for _, r in compounds.iterrows()}
+    fps, lab = {}, {}
+    for _, row in ledger.iterrows():
+        s = sm.get(row["compound_lower"])
+        if not s:
+            continue
+        mol = Chem.MolFromSmiles(s)
+        if mol is None:
+            continue
+        fps[row["compound"]] = AllChem.GetMorganFingerprintAsBitVect(mol, radius, nBits=n_bits)
+        lab[row["compound"]] = int(row["label"])
+    out: dict[str, float] = {}
+    for c in fps:
+        sims = [DataStructs.TanimotoSimilarity(fps[c], fps[o])
+                for o in fps if o != c and lab[o] == 1]  # LOO: other SUCCESSES only
+        out[c] = float(max(sims)) if sims else 0.0
+    return out
+
+
 # ---------------------------------------------------------------------------
 # Metrics (numpy-only)
 # ---------------------------------------------------------------------------
@@ -241,6 +300,60 @@ def permutation_p(scores: np.ndarray, labels: np.ndarray,
         if auroc(scores, perm) >= obs:
             ge += 1
     return (ge + 1) / (n_perm + 1)
+
+
+def class_cluster_bootstrap_auroc(ledger: pd.DataFrame, *, n_boot: int = 2000,
+                                  seed: int = 42, alpha: float = 0.10,
+                                  shrinkage_k0: float = 1.0) -> dict:
+    """Class-LEVEL (cluster) bootstrap CI for the class-LOCO AUROC.
+
+    The drug-level bootstrap underestimates uncertainty when the predictor is
+    class-aggregated: it cannot vary the *class* composition. Here the
+    resampling unit is the **mechanism class** — we sample the classes with
+    replacement (renaming replicates so each is an independent cluster with its
+    own LOCO siblings), rebuild the ledger, recompute the class-LOCO predictor
+    and its AUROC. This propagates the genuine between-class variance (with only
+    ~11 classes, the resulting CI is much wider than the drug-level one).
+
+    Returns observed AUROC, class-level 90% CI, and the fraction of resamples
+    that were degenerate (all-success or all-failure class draws → AUROC
+    undefined, excluded)."""
+    rng = np.random.default_rng(seed)
+    classes = ledger["mechanism_class"].unique()
+    # observed (point estimate) on the real ledger
+    pred0 = class_loco_g(ledger, shrinkage_k0=shrinkage_k0)
+    s0 = np.array([pred0[c] for c in ledger["compound"]], float)
+    obs = auroc(s0, ledger["label"].to_numpy())
+
+    vals, degenerate = [], 0
+    for _ in range(n_boot):
+        draw = rng.choice(classes, size=len(classes), replace=True)
+        parts = []
+        for i, c in enumerate(draw):
+            sub = ledger[ledger["mechanism_class"] == c].copy()
+            sub["mechanism_class"] = f"{c}__rep{i}"        # independent cluster
+            sub["compound"] = sub["compound"].astype(str) + f"__rep{i}"
+            parts.append(sub)
+        rl = pd.concat(parts, ignore_index=True)
+        if rl["label"].nunique() < 2:
+            degenerate += 1
+            continue
+        pred = class_loco_g(rl, shrinkage_k0=shrinkage_k0)
+        s = np.array([pred[c] for c in rl["compound"]], float)
+        a = auroc(s, rl["label"].to_numpy())
+        if np.isfinite(a):
+            vals.append(a)
+    if not vals:
+        return {"auroc": obs, "ci_lo": float("nan"), "ci_hi": float("nan"),
+                "n_classes": int(len(classes)), "frac_degenerate": float("nan")}
+    return {
+        "auroc": float(obs),
+        "ci_lo": float(np.percentile(vals, 100 * alpha / 2)),
+        "ci_hi": float(np.percentile(vals, 100 * (1 - alpha / 2))),
+        "median": float(np.median(vals)),
+        "n_classes": int(len(classes)),
+        "frac_degenerate": float(degenerate / n_boot),
+    }
 
 
 def paired_auroc_bootstrap(scores_a: np.ndarray, scores_b: np.ndarray,

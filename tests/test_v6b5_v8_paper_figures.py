@@ -297,8 +297,8 @@ class TestProjectStatus:
     def test_project_status_reports_headline_metrics(self):
         path = ROOT / "PROJECT_STATUS.md"
         body = path.read_text(encoding="utf-8")
-        # Pytest pass rate (485 non-slow after Gaps 1-7 + panel→31)
-        assert "485" in body
+        # Pytest pass rate (490 non-slow after Gaps 1-7 + panel→31 + review-2 comparators)
+        assert "490" in body
         # Hypothesis audit
         assert "22" in body
         # R̂ = 1.000

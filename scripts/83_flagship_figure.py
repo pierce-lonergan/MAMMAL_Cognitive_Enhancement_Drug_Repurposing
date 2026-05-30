@@ -154,8 +154,8 @@ def main() -> int:
     axC.set_xticks(x); axC.set_xticklabels(labels, fontsize=8)
     axC.set_ylim(-0.05, 0.72)
     axC.set_ylabel("within-target Spearman ρ (297-pair LOTO)")
-    axC.set_title("C   The foundation model is dead-weight within target;\n"
-                  "      classic features do the ranking (Δ from MAMMAL = +0.02)",
+    axC.set_title("C   Within-target ranking at allosteric/transporter sites:\n"
+                  "      classic features carry it; MAMMAL adds Δρ = +0.02",
                   loc="left", fontsize=10.5)
 
     # Panel D — repurposing output

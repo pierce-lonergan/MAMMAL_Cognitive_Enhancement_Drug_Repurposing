@@ -215,3 +215,74 @@ def test_famous_failures_flagged():
     # every famous failure present must be predicted FAILURE
     assert (present["p2_predicted_outcome"] == "FAILURE").all()
     assert (present["clinical_outcome"] == "FAILURE").all()
+
+
+# ---------------------------------------------------------------------------
+# Review-driven additions: class-level CI, network + structure comparators
+# ---------------------------------------------------------------------------
+
+def test_class_cluster_bootstrap_pure_classes_stays_perfect(mini_ledger):
+    """With outcome-pure classes the class-level (cluster) bootstrap CI is
+    degenerate at [1, 1] — it does not widen, because resampling classes cannot
+    break a perfect separation when every class is uniformly one outcome."""
+    res = R.class_cluster_bootstrap_auroc(mini_ledger, n_boot=300, seed=0)
+    assert res["auroc"] == pytest.approx(1.0)
+    assert res["ci_lo"] == pytest.approx(1.0)
+    assert res["ci_hi"] == pytest.approx(1.0)
+    assert res["n_classes"] == 2
+
+
+def test_class_cluster_bootstrap_widens_with_mixed_class():
+    """A genuinely mixed class injects between-class variance, so the class-level
+    CI must widen below 1.0 — proving the estimator is not trivially pinned."""
+    led = pd.DataFrame({
+        "compound": ["a1", "a2", "b1", "b2", "c1", "c2"],
+        "mechanism_class": ["A", "A", "B", "B", "C", "C"],
+        "target_uniprot": ["P1"] * 6, "indication": ["x"] * 6,
+        "clinical_outcome": ["SUCCESS", "SUCCESS", "FAILURE", "FAILURE",
+                             "SUCCESS", "FAILURE"],   # class C is MIXED
+        "clinical_g": [0.5, 0.5, 0.0, 0.0, 0.5, 0.0],
+        "label": [1, 1, 0, 0, 1, 0],
+        "compound_lower": ["a1", "a2", "b1", "b2", "c1", "c2"],
+    })
+    res = R.class_cluster_bootstrap_auroc(led, n_boot=800, seed=1)
+    assert res["ci_lo"] < 1.0          # mixed class => genuine uncertainty
+
+
+def test_kg_network_score_maps_ppr(mini_ledger):
+    kg = pd.DataFrame({
+        "compound_name": ["A1", "B1", "zzz"],   # case-insensitive join
+        "kg_ppr_sum": [0.9, 0.1, 0.5],
+    })
+    led = mini_ledger.copy()
+    led["compound"] = ["A1", "x2", "x3", "B1", "x5"]
+    led["compound_lower"] = led["compound"].str.lower()
+    s = R.kg_network_score(led, kg)
+    assert s["A1"] == pytest.approx(0.9)
+    assert s["B1"] == pytest.approx(0.1)
+    assert "x2" not in s               # absent from kg table -> dropped
+
+
+def test_structure_nn_success_score_prefers_success_neighbour():
+    """The LOO structure score = max Tanimoto to another SUCCESS drug. A drug
+    chemically identical to a known success should score ~1.0."""
+    pytest.importorskip("rdkit")
+    led = pd.DataFrame({
+        "compound": ["aspirin", "aspirin_twin", "octane"],
+        "mechanism_class": ["A", "A", "B"],
+        "target_uniprot": ["P1", "P1", "P2"], "indication": ["x"] * 3,
+        "clinical_outcome": ["SUCCESS", "FAILURE", "FAILURE"],
+        "clinical_g": [0.5, 0.0, 0.0], "label": [1, 0, 0],
+        "compound_lower": ["aspirin", "aspirin_twin", "octane"],
+    })
+    comp = pd.DataFrame({
+        "name": ["aspirin", "aspirin_twin", "octane"],
+        "smiles": ["CC(=O)Oc1ccccc1C(=O)O",      # aspirin
+                   "CC(=O)Oc1ccccc1C(=O)O",      # identical twin (a FAILURE)
+                   "CCCCCCCC"],                  # dissimilar
+    })
+    s = R.structure_nn_success_score(led, comp)
+    # the failure twin is identical to the lone success -> ~1.0
+    assert s["aspirin_twin"] == pytest.approx(1.0, abs=1e-6)
+    # octane has no resemblance to the success -> low
+    assert s["octane"] < 0.3

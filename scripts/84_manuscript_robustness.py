@@ -65,6 +65,48 @@ def main() -> int:
     L.append("Reproducible answers to the predictable reviewer objections "
              "(`scripts/84_manuscript_robustness.py`).")
     L.append("")
+    # 0. CONSORT-style ledger assembly flow
+    n_total = len(led)
+    n_succ = int((led["label"] == 1).sum())
+    n_fail = int((led["label"] == 0).sum())
+    n_cls = led["mechanism_class"].nunique()
+    by_dis = led["indication"].value_counts().to_dict() if "indication" in led else {}
+    L.append("## 0. Clinical-ledger assembly (CONSORT-style flow)")
+    L.append("")
+    L.append("Pre-specified inclusion rule (Methods): a drug enters the binary analysis if "
+             "it (i) was evaluated on a cognition-relevant/functional primary endpoint in "
+             "its lead indication (index diseases AD/CIAS/FXS + cognition-adjacent "
+             "ADHD/narcolepsy that anchor the successful classes); (ii) reached ≥ Phase II "
+             "with a reported readout or obtained approval; (iii) has an assignable "
+             "mechanism class + human target UniProt; (iv) is a small molecule in the DTI "
+             "head's domain. Outcome coding is judged **within each drug's own indication**.")
+    L.append("")
+    L.append("```")
+    L.append("Cognition / cognition-adjacent drugs reviewed (literature)        ~45")
+    L.append("  │")
+    L.append("  ├─ excluded: peptide/biologic outside small-molecule DTI domain (e.g. GLP-1)")
+    L.append("  ├─ excluded: no adjudicable Phase II+ cognitive readout")
+    L.append("  ├─ excluded: outcome ambiguous / terminated for non-efficacy reasons")
+    L.append("  └─ excluded: no single assignable mechanism class / human target")
+    L.append("  │")
+    L.append(f"  ▼")
+    L.append(f"Ledger: {n_total} drugs, {n_cls} mechanism classes "
+             f"({n_succ} SUCCESS / {n_fail} FAILURE)")
+    L.append("```")
+    L.append("")
+    L.append("Per-indication composition (lead indication as coded):")
+    L.append("")
+    L.append("| Lead indication | n |")
+    L.append("|---|---|")
+    for dis, n in sorted(by_dis.items(), key=lambda kv: -kv[1]):
+        L.append(f"| {dis} | {n} |")
+    L.append("")
+    L.append("Intermediate exclusion counts are not individually logged (single-author "
+             "literature curation); the verifiable endpoints are the final 31 rows, each "
+             "with an indication, pivotal-trial identifier, readout year, and citation in "
+             "`data/raw/clinical_outcomes_ledger.csv`. A fully programmatic "
+             "ClinicalTrials.gov extraction is the natural next step.")
+    L.append("")
     L.append("## 1. Predictor coverage and label balance")
     L.append("")
     L.append("Each predictor is defined on a different subset of the 31-drug ledger. "
@@ -101,21 +143,92 @@ def main() -> int:
     common = set(bind) & set(rel) & set(cls)
     rows = led[led["compound"].isin(common)]
     y = rows["label"].to_numpy()
-    L.append("## 2. Common-subset comparison (all predictors, identical drugs)")
+    # 1b. class purity + class-level CI
+    L.append("## 1b. The AUROC = 1.00 is a readout of complete class homogeneity")
     L.append("")
-    L.append(f"Restricting every predictor to the **same {len(rows)} drugs** where binding "
-             "affinity is defined removes the differing-n objection entirely:")
+    pure, mixed = [], []
+    for c, g in led.groupby("mechanism_class"):
+        s = int((g["label"] == 1).sum()); f = int((g["label"] == 0).sum())
+        (pure if (s == 0 or f == 0) else mixed).append((c, s, f))
+    L.append(f"Every one of the **{len(pure) + len(mixed)} mechanism classes is "
+             f"outcome-pure** ({len(pure)}/{len(pure) + len(mixed)} uniformly SUCCESS "
+             f"or FAILURE; {len(mixed)} mixed). The class-leave-one-compound-out "
+             f"predictor is therefore, by construction, a historical class look-up, and "
+             f"its perfect separation is a direct readout of this homogeneity — not a "
+             f"predictive margin.")
     L.append("")
-    L.append("| Predictor (same drugs) | AUROC |")
-    L.append("|---|---|")
-    for name, s in [("Mechanism-class track record", cls),
-                    ("Target genetic relevance", rel),
-                    ("Target binding affinity", bind)]:
+    L.append("| Mechanism class | SUCCESS | FAILURE | purity |")
+    L.append("|---|---|---|---|")
+    for c, s, f in sorted(pure + mixed):
+        L.append(f"| {c} | {s} | {f} | {'PURE' if (c, s, f) in pure else 'MIXED'} |")
+    L.append("")
+    cb = R.class_cluster_bootstrap_auroc(led, n_boot=3000, seed=42)
+    L.append(f"**Class-level (cluster) bootstrap.** Resampling the *classes* "
+             f"themselves with replacement (the correct unit when the predictor is "
+             f"class-aggregated) gives a 90% CI of **[{cb['ci_lo']:.2f}, {cb['ci_hi']:.2f}]** "
+             f"(median {cb['median']:.2f}; {cb['frac_degenerate']:.1%} degenerate draws). "
+             f"It does not widen below 1.00 because the classes are outcome-pure — "
+             f"confirming that the relevant uncertainty is **not** sampling variance but "
+             f"out-of-sample generalisation to *new* mechanism classes, which the "
+             f"leave-one-class-out result (AUROC 0.00) bounds explicitly. The headline "
+             f"is therefore the *comparative* result (class history dominates target-level "
+             f"predictors), with perfect separation a downstream consequence of class "
+             f"homogeneity.")
+    L.append("")
+    L.append("## 2. Comparator predictors, all on the identical drugs")
+    L.append("")
+    # extra comparators: KG network-propagation, structure-NN, ensemble
+    kg = pd.read_parquet(ROOT / "data" / "results" / "v2" / "kg_scores.parquet")
+    comp = pd.read_parquet(ROOT / "data" / "interim" / "compounds.parquet")
+    kgn = R.kg_network_score(led, kg)
+    nn = R.structure_nn_success_score(led, comp)
+    common = set(bind) & set(rel) & set(cls) & set(kgn) & set(nn)
+    rows = led[led["compound"].isin(common)]
+    y = rows["label"].to_numpy()
+
+    def zmap(s):
+        v = np.array([s[c] for c in rows["compound"]], float)
+        return (v - v.mean()) / (v.std() + 1e-9)
+    ens = {c: float(z) for c, z in zip(rows["compound"],
+            (zmap(bind) + zmap(rel) + zmap(kgn)) / 3.0)}  # target-centric ensemble
+
+    L.append(f"Restricting **every** predictor to the same {len(rows)} drugs (where all "
+             "are defined) removes the differing-n objection and answers "
+             "\"compared to what?\" against four repurposing paradigms — affinity, "
+             "genetics, **network-propagation (KG personalised PageRank)**, and "
+             "**chemical-structure similarity** — plus their ensemble:")
+    L.append("")
+    L.append("| Predictor (same drugs) | paradigm | AUROC | leakage status |")
+    L.append("|---|---|---|---|")
+    comparators = [
+        ("Mechanism-class track record (ours)", "class history", cls, "leakage-audited (class-LOCO)"),
+        ("Structure NN-to-successes (LOO)", "chemical similarity", nn, "uses LOO outcomes"),
+        ("KG personalised-PageRank", "network propagation", kgn, "hindsight-confounded"),
+        ("Target genetic relevance", "genetics (Open Targets)", rel, "leakage-free"),
+        ("Target binding affinity (MAMMAL DTI)", "affinity", bind, "leakage-free"),
+        ("Target-centric ensemble (affinity+genetics+KG)", "ensemble", ens, "mixed"),
+    ]
+    res2 = {}
+    for name, para, s, leak in comparators:
         sv = np.array([s[c] for c in rows["compound"]], float)
-        L.append(f"| {name} | {R.auroc(sv, y):.3f} |")
+        au = R.auroc(sv, y); res2[name] = au
+        L.append(f"| {name} | {para} | {au:.3f} | {leak} |")
     L.append("")
-    L.append("The contrast is preserved apples-to-apples: class track record perfectly "
-             "separates; both target-centric predictors are at chance.")
+    L.append(f"On the identical {len(rows)} drugs, mechanism-class history separates "
+             f"perfectly (1.00). The two paradigms that show apparent signal — "
+             f"network-propagation ({res2['KG personalised-PageRank']:.2f}) and "
+             f"structure-similarity ({res2['Structure NN-to-successes (LOO)']:.2f}) — are "
+             f"precisely the two whose signal is **explainable as hindsight**: KG PageRank "
+             f"rewards node degree (a drug accrues edges *because* it was studied and "
+             f"succeeded), and structure-NN consumes the historical outcome labels "
+             f"directly. The genuinely a-priori target metrics (genetics "
+             f"{res2['Target genetic relevance']:.2f}, affinity "
+             f"{res2['Target binding affinity (MAMMAL DTI)']:.2f}) and even the "
+             f"target-centric **ensemble** ({res2['Target-centric ensemble (affinity+genetics+KG)']:.2f}) "
+             f"remain at or below chance. Given the *same* historical-outcome information, "
+             f"aggregating by **mechanism class** (1.00) beats aggregating by **chemical "
+             f"structure** ({res2['Structure NN-to-successes (LOO)']:.2f}) — the comparison "
+             f"that isolates the paper's claim.")
     L.append("")
 
     # 3. ablation
@@ -150,12 +263,15 @@ def main() -> int:
     L.append(f"**Honest attribution:** classic ligand-similarity + physicochemical "
              f"features alone reach ρ = {nofm:+.2f}; adding the foundation model and "
              f"3D-affinity lifts this only to {full:+.2f} (Δ = {full - nofm:+.2f}). "
-             f"The foundation model contributes marginally to within-target ranking — "
-             f"the recovery is driven by classic cheminformatics, and MAMMAL-alone "
-             f"({rho['MAMMAL pKd only']:+.2f}) is near-dead-weight for this task. This is "
-             f"reported as a feature, not hidden: the practical claim is that a "
-             f"sequence-only DTI score should not be relied on for within-target ligand "
-             f"ranking at allosteric/transporter sites.")
+             f"The recovery is driven by classic cheminformatics; the foundation model "
+             f"alone ({rho['MAMMAL pKd only']:+.2f}) contributes negligibly to this "
+             f"specific task. Scope (precise): this concerns **within-target ligand "
+             f"ranking at allosteric/transporter sites using the released "
+             f"`dti_bindingdb_pkd` head** — a task adversarial to a sequence-only DTI "
+             f"model trained on BindingDB pKd, not its intended cross-target affinity "
+             f"task. The practical claim is that a sequence-only DTI score should not be "
+             f"relied on for within-target ligand ranking at these sites, where "
+             f"inexpensive cheminformatics features suffice.")
     L.append("")
     L.append("Generated by `scripts/84_manuscript_robustness.py`.")
     out = ROOT / "reports" / "manuscript_robustness.md"
