@@ -220,10 +220,19 @@ def render_report(report_path: Path, per_disease: dict, ledger: pd.DataFrame) ->
              "failed). That homogeneity is the clinically-actionable finding, not a "
              "predictive miracle — the contrast against target relevance (≈ chance) "
              "is the scientific content.")
-    L.append("- The V6.A binding grid covers 13 of 28 panel targets; classes whose "
-             "targets are absent (e.g. M1/M4 muscarinic for CIAS) are scored in the "
-             "prior table but cannot yet surface a compound. Expanding the grid is "
-             "the documented follow-up.")
+    L.append("- The V6.A binding grid now covers **23 of 28 panel targets** (expanded "
+             "from 13 via `scripts/77`, merging real cached MMAtt-DTA + MAMMAL DTI; "
+             "peptides/biologics filtered as out-of-domain). The 5 still-missing "
+             "(GRM2/3/5, GlyT1, HTR4) need a re-score pass; **M1/M4 muscarinic and "
+             "5-HT6 are not in the panel at all** — so the CIAS M1/M4 winner and the "
+             "AD 5-HT6 failure class are priced in the prior table but cannot yet "
+             "surface a compound. Adding those 3 targets is the next panel-expansion step.")
+    L.append("- **Binding-percentile artifacts**: the non-anchor 'top compound' per class "
+             "is whatever MAMMAL ranks highest, and MAMMAL is structurally blind to "
+             "allosteric/transporter pharmacology — so noisy picks appear (e.g. a statin "
+             "or a promiscuous kinase inhibitor topping a GPCR class). Known anchor drugs "
+             "are placed correctly via the V7 override. This unreliability is precisely "
+             "what the Gap-4 allosteric learn-to-rank head targets.")
     L.append("- Disease buckets are assigned by indication/population string; a "
              "multi-indication drug contributes to every bucket it names.")
     L.append("")
@@ -237,7 +246,7 @@ def render_report(report_path: Path, per_disease: dict, ledger: pd.DataFrame) ->
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--v6a", type=Path,
-                    default=ROOT / "data" / "results" / "v2" / "mmatt_for_fusion.parquet")
+                    default=ROOT / "data" / "results" / "v2" / "v6a_grid_expanded.parquet")
     ap.add_argument("--v6b", type=Path,
                     default=ROOT / "data" / "results" / "v2"
                     / "cluster_d_posterior_expanded_v2_mh8_ta99.parquet")
@@ -255,7 +264,14 @@ def main() -> int:
     from mammal_repurposing.validation import retrospective as R
     from mammal_repurposing.validation import disease_reframe as D
 
-    # --- Load real inputs ---
+    # --- Load real inputs (fall back to the 13-target MMAtt grid if the
+    #     expanded 23-target grid hasn't been built yet via scripts/77) ---
+    if not args.v6a.exists():
+        fallback = ROOT / "data" / "results" / "v2" / "mmatt_for_fusion.parquet"
+        logger.warning("Expanded grid %s absent; falling back to %s (13 targets). "
+                       "Run scripts/77_expand_v6a_grid.py for full 23-target coverage.",
+                       args.v6a, fallback)
+        args.v6a = fallback
     v6a = pd.read_parquet(args.v6a)
     v6b = pd.read_parquet(args.v6b)
     ledger = R.load_clinical_ledger(args.ledger)

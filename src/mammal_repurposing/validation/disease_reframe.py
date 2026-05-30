@@ -135,6 +135,8 @@ TARGET_TO_MECHCLASS: dict[str, str] = {
     "O43525": "Kv7_opener",          # KCNQ3
     "O60741": "HCN_blocker",         # HCN1    (ivabradine)
     "P50406": "5HT6_antagonist",     # HTR6    (idalopirdine — not in V6.A grid)
+    "P08908": "5HT1A_partial_agonist",  # HTR1A (tandospirone — CIAS signal)
+    "Q13639": "5HT4_agonist",        # HTR4    (prucalopride)
     "Q14416": "mGluR",               # GRM2
     "Q14832": "mGluR",               # GRM3
     "P41594": "mGluR",               # GRM5

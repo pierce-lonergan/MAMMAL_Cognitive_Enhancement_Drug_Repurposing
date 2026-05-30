@@ -69,6 +69,35 @@ def test_nmda_subunits_share_class():
     assert D.TARGET_TO_MECHCLASS["Q12879"] == "NMDA_modulator"
 
 
+def test_htr1a_mapped_for_expanded_grid():
+    # HTR1A entered the grid via the 13->23 expansion; its class key must match
+    # the CIAS prior's tandospirone class so grid scoring and prior align.
+    assert D.TARGET_TO_MECHCLASS["P08908"] == "5HT1A_partial_agonist"
+
+
+# ---------------------------------------------------------------------------
+# V6.A grid expansion (scripts/77 output)
+# ---------------------------------------------------------------------------
+
+EXPANDED_GRID = ROOT / "data" / "results" / "v2" / "v6a_grid_expanded.parquet"
+
+
+@pytest.mark.skipif(not EXPANDED_GRID.exists(),
+                    reason="expanded grid not built (run scripts/77)")
+def test_expanded_grid_coverage_and_no_peptides():
+    g = pd.read_parquet(EXPANDED_GRID)
+    assert g["target_uniprot"].nunique() == 23          # 13 MMAtt + 9 MAMMAL + HTR1A
+    assert {"compound_name", "target_uniprot", "predicted_pkd",
+            "binding_source"} <= set(g.columns)
+    # out-of-domain peptides/biologics filtered (MAMMAL DTI is small-molecule)
+    cmpds = set(g["compound_name"])
+    assert "semaglutide" not in cmpds
+    assert "liraglutide" not in cmpds
+    # new targets present that the 13-grid lacked
+    for u in ("P36544", "Q12879", "Q99720", "P08908"):  # CHRNA7, GRIN2A, SIGMAR1, HTR1A
+        assert u in set(g["target_uniprot"].astype(str))
+
+
 # ---------------------------------------------------------------------------
 # Disease class priors
 # ---------------------------------------------------------------------------

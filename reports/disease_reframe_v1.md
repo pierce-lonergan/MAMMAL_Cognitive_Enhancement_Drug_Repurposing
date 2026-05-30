@@ -49,49 +49,56 @@ Ceiling-passing, ranked by disease-conditioned predicted g, capped at 2 hypothes
 
 | Rank | Compound | Target | Mechanism class | Binding %ile | Disease g | g₉₀ | Source |
 |---|---|---|---|---|---|---|---|
-| 1 | rivastigmine | ACHE/P22303 | AChE_inhibitor | 0.61 | +0.400 | +0.528 | v7_nuts_anchor |
+| 1 | rivastigmine | ACHE/P22303 | AChE_inhibitor | 0.62 | +0.400 | +0.528 | v7_nuts_anchor |
 | 2 | galantamine | ACHE/P22303 | AChE_inhibitor | 0.12 | +0.370 | +0.498 | v7_nuts_anchor |
-| 3 | memantine | GRIN2B/Q13224 | NMDA_modulator | 0.09 | +0.290 | +0.418 | v7_nuts_anchor |
+| 3 | memantine | GRIN2B/Q13224 | NMDA_modulator | 0.10 | +0.290 | +0.418 | v7_nuts_anchor |
 | 4 | chembl158737 | GRIN2B/Q13224 | NMDA_modulator | 1.00 | +0.233 | +0.407 | class_prior |
-| 5 | chembl42553 | SLC6A3/Q01959 | catecholaminergic | 1.00 | +0.042 | +0.255 | class_prior |
-| 6 | chembl494626 | SLC6A3/Q01959 | catecholaminergic | 1.00 | +0.042 | +0.255 | class_prior |
-| 7 | chembl413504 | HCRTR2/O43614 | orexin_antagonist | 1.00 | +0.042 | +0.254 | class_prior |
-| 8 | chembl441918 | HCRTR2/O43614 | orexin_antagonist | 1.00 | +0.042 | +0.253 | class_prior |
-| 9 | chembl1830646 | KCNQ2/O43526 | Kv7_opener | 1.00 | +0.040 | +0.248 | class_prior |
-| 10 | atorvastatin | KCNQ2/O43526 | Kv7_opener | 1.00 | +0.040 | +0.247 | class_prior |
-| 11 | chembl3288030 | PDE4D/Q08499 | PDE4_inhibitor | 1.00 | +0.040 | +0.246 | class_prior |
-| 12 | chembl3288029 | PDE4D/Q08499 | PDE4_inhibitor | 1.00 | +0.039 | +0.246 | class_prior |
-| 13 | chembl1256645 | DRD1/P21728 | D1_agonist | 1.00 | +0.039 | +0.245 | class_prior |
-| 14 | chembl1814790 | DRD1/P21728 | D1_agonist | 1.00 | +0.039 | +0.244 | class_prior |
-| 15 | chembl331696 | GRIA4/P48058 | AMPA_PAM | 1.00 | +0.016 | +0.107 | class_prior |
-| 16 | chembl1256414 | GRIA4/P48058 | AMPA_PAM | 1.00 | +0.015 | +0.106 | class_prior |
+| 5 | chembl4780352 | CHRNA7/P36544 | alpha7_nAChR | 1.00 | +0.197 | +0.388 | class_prior |
+| 6 | fenpropimorph | CHRNA7/P36544 | alpha7_nAChR | 1.00 | +0.196 | +0.387 | class_prior |
+| 7 | atorvastatin | SIGMAR1/Q99720 | sigma1 | 1.00 | +0.194 | +0.369 | class_prior |
+| 8 | lurasidone | SIGMAR1/Q99720 | sigma1 | 1.00 | +0.193 | +0.368 | class_prior |
+| 9 | cx-516 | GRIA1/P42261 | AMPA_PAM | 0.52 | +0.050 | +0.178 | v7_nuts_anchor |
+| 10 | chembl42553 | SLC6A3/Q01959 | catecholaminergic | 1.00 | +0.042 | +0.255 | class_prior |
+| 11 | chembl494626 | SLC6A3/Q01959 | catecholaminergic | 1.00 | +0.042 | +0.255 | class_prior |
+| 12 | chembl3099899 | HCRTR2/O43614 | orexin_antagonist | 1.00 | +0.042 | +0.254 | class_prior |
+| 13 | lemborexant | HCRTR2/O43614 | orexin_antagonist | 1.00 | +0.042 | +0.253 | class_prior |
+| 14 | staurosporine | HTR1A/P08908 | 5HT1A_partial_agonist | 1.00 | +0.040 | +0.249 | class_prior |
+| 15 | chembl4780352 | HTR1A/P08908 | 5HT1A_partial_agonist | 1.00 | +0.040 | +0.248 | class_prior |
+| 16 | chembl1830646 | KCNQ2/O43526 | Kv7_opener | 1.00 | +0.040 | +0.248 | class_prior |
 
 ### AD — per-mechanism-class best hypothesis
 
 | Mechanism class | Disease prior g | Best compound | Binding %ile | Predicted g |
 |---|---|---|---|---|
-| AChE_inhibitor | +0.371 | rivastigmine (ACHE) | 0.61 | +0.400 |
-| AMPA_PAM | +0.020 | chembl331696 (GRIA4) | 1.00 | +0.016 |
+| 5HT1A_partial_agonist | +0.050 | staurosporine (HTR1A) | 1.00 | +0.040 |
+| AChE_inhibitor | +0.371 | rivastigmine (ACHE) | 0.62 | +0.400 |
+| AMPA_PAM | +0.020 | cx-516 (GRIA1) | 0.52 | +0.050 |
 | D1_agonist | +0.050 | chembl1256645 (DRD1) | 1.00 | +0.039 |
-| H3_cognition | +0.000 | chembl63355 (HRH3) | 0.53 | +0.000 |
+| H3_cognition | +0.000 | chembl331644 (HRH3) | 0.50 | +0.000 |
+| HCN_blocker | +0.050 | staurosporine (HCN1) | 1.00 | +0.038 |
 | Kv7_opener | +0.050 | chembl1830646 (KCNQ2) | 1.00 | +0.040 |
-| NMDA_modulator | +0.287 | memantine (GRIN2B) | 0.09 | +0.290 |
+| NMDA_modulator | +0.287 | memantine (GRIN2B) | 0.10 | +0.290 |
 | PDE4_inhibitor | +0.050 | chembl3288030 (PDE4D) | 1.00 | +0.040 |
-| PDE9_PDE10 | -0.025 | bi-409306 (PDE9A) | 0.97 | +0.000 |
+| PDE9_PDE10 | -0.025 | bi-409306 (PDE9A) | 0.98 | +0.000 |
+| TrkB_agonist | +0.050 | lurasidone (NTRK2) | 1.00 | +0.037 |
+| alpha2A_agonist | +0.050 | staurosporine (ADRA2A) | 1.00 | +0.038 |
+| alpha7_nAChR | +0.200 | chembl4780352 (CHRNA7) | 1.00 | +0.197 |
 | catecholaminergic | +0.050 | chembl42553 (SLC6A3) | 1.00 | +0.042 |
-| orexin_antagonist | +0.050 | chembl413504 (HCRTR2) | 1.00 | +0.042 |
+| noradrenergic_NRI | +0.050 | atorvastatin (SLC6A2) | 1.00 | +0.039 |
+| orexin_antagonist | +0.050 | chembl3099899 (HCRTR2) | 1.00 | +0.042 |
+| sigma1 | +0.237 | atorvastatin (SIGMAR1) | 1.00 | +0.194 |
 
 ---
 
 ## CIAS  —  effect-size ceiling g ≤ 0.70
 
-**Gap-2 acceptance test: ✅ PASS** — top scorable class = `D1_agonist` (SUCCESS); all disease-SUCCESS classes out-rank all disease-FAILURE classes: True.
+**Gap-2 acceptance test: ✅ PASS** — top scorable class = `5HT1A_partial_agonist` (SUCCESS); all disease-SUCCESS classes out-rank all disease-FAILURE classes: True.
 
 ### Disease-conditioned mechanism-class prior (real pivotal record)
 
 | Mechanism class | Disease mean g | sd | n drugs | k RCTs | Verdict | Representative drugs |
 |---|---|---|---|---|---|---|
-| 5-HT1A partial agonist | +0.400 | 0.150 | 1 | 2 | SUCCESS | Tandospirone |
+| 5HT1A_partial_agonist | +0.400 | 0.150 | 1 | 2 | SUCCESS | Tandospirone |
 | D1_agonist | +0.400 | 0.150 | 1 | 2 | SUCCESS | Dihydrexidine |
 | M1_M4_agonist | +0.383 | 0.165 | 2 | 3 | SUCCESS | Emraclidine, Xanomeline |
 | atypical-AP w/ 5-HT7 affinity | +0.150 | 0.150 | 1 | 1 | FAILURE | Lurasidone |
@@ -115,37 +122,44 @@ Ceiling-passing, ranked by disease-conditioned predicted g, capped at 2 hypothes
 
 | Rank | Compound | Target | Mechanism class | Binding %ile | Disease g | g₉₀ | Source |
 |---|---|---|---|---|---|---|---|
-| 1 | chembl1256645 | DRD1/P21728 | D1_agonist | 1.00 | +0.313 | +0.484 | class_prior |
-| 2 | chembl1814790 | DRD1/P21728 | D1_agonist | 1.00 | +0.312 | +0.483 | class_prior |
-| 3 | chembl372202 | ACHE/P22303 | AChE_inhibitor | 1.00 | +0.049 | +0.278 | class_prior |
-| 4 | chembl4468781 | ACHE/P22303 | AChE_inhibitor | 1.00 | +0.049 | +0.278 | class_prior |
-| 5 | chembl42553 | SLC6A3/Q01959 | catecholaminergic | 1.00 | +0.042 | +0.255 | class_prior |
-| 6 | chembl494626 | SLC6A3/Q01959 | catecholaminergic | 1.00 | +0.042 | +0.255 | class_prior |
-| 7 | chembl413504 | HCRTR2/O43614 | orexin_antagonist | 1.00 | +0.042 | +0.254 | class_prior |
-| 8 | chembl441918 | HCRTR2/O43614 | orexin_antagonist | 1.00 | +0.042 | +0.253 | class_prior |
-| 9 | chembl1830646 | KCNQ2/O43526 | Kv7_opener | 1.00 | +0.040 | +0.248 | class_prior |
-| 10 | atorvastatin | KCNQ2/O43526 | Kv7_opener | 1.00 | +0.040 | +0.247 | class_prior |
-| 11 | chembl3288030 | PDE4D/Q08499 | PDE4_inhibitor | 1.00 | +0.040 | +0.246 | class_prior |
-| 12 | chembl3288029 | PDE4D/Q08499 | PDE4_inhibitor | 1.00 | +0.039 | +0.246 | class_prior |
-| 13 | chembl331696 | GRIA4/P48058 | AMPA_PAM | 1.00 | +0.039 | +0.209 | class_prior |
-| 14 | chembl1256414 | GRIA4/P48058 | AMPA_PAM | 1.00 | +0.039 | +0.209 | class_prior |
-| 15 | chembl382260 | HRH3/Q9Y5N1 | H3_cognition | 0.83 | +0.000 | +0.086 | class_prior |
-| 16 | chembl4532770 | HRH3/Q9Y5N1 | H3_cognition | 0.84 | +0.000 | +0.087 | class_prior |
+| 1 | staurosporine | HTR1A/P08908 | 5HT1A_partial_agonist | 1.00 | +0.323 | +0.496 | class_prior |
+| 2 | chembl4780352 | HTR1A/P08908 | 5HT1A_partial_agonist | 1.00 | +0.321 | +0.495 | class_prior |
+| 3 | chembl1256645 | DRD1/P21728 | D1_agonist | 1.00 | +0.313 | +0.484 | class_prior |
+| 4 | chembl1814790 | DRD1/P21728 | D1_agonist | 1.00 | +0.312 | +0.483 | class_prior |
+| 5 | cx-516 | GRIA1/P42261 | AMPA_PAM | 0.52 | +0.050 | +0.178 | v7_nuts_anchor |
+| 6 | chembl372202 | ACHE/P22303 | AChE_inhibitor | 1.00 | +0.049 | +0.278 | class_prior |
+| 7 | chembl4468781 | ACHE/P22303 | AChE_inhibitor | 1.00 | +0.049 | +0.278 | class_prior |
+| 8 | chembl42553 | SLC6A3/Q01959 | catecholaminergic | 1.00 | +0.042 | +0.255 | class_prior |
+| 9 | chembl494626 | SLC6A3/Q01959 | catecholaminergic | 1.00 | +0.042 | +0.255 | class_prior |
+| 10 | chembl3099899 | HCRTR2/O43614 | orexin_antagonist | 1.00 | +0.042 | +0.254 | class_prior |
+| 11 | lemborexant | HCRTR2/O43614 | orexin_antagonist | 1.00 | +0.042 | +0.253 | class_prior |
+| 12 | atorvastatin | GRIA1/P42261 | AMPA_PAM | 1.00 | +0.041 | +0.217 | class_prior |
+| 13 | atorvastatin | SIGMAR1/Q99720 | sigma1 | 1.00 | +0.041 | +0.251 | class_prior |
+| 14 | lurasidone | SIGMAR1/Q99720 | sigma1 | 1.00 | +0.041 | +0.250 | class_prior |
+| 15 | chembl1830646 | KCNQ2/O43526 | Kv7_opener | 1.00 | +0.040 | +0.248 | class_prior |
+| 16 | atorvastatin | KCNQ2/O43526 | Kv7_opener | 1.00 | +0.040 | +0.247 | class_prior |
 
 ### CIAS — per-mechanism-class best hypothesis
 
 | Mechanism class | Disease prior g | Best compound | Binding %ile | Predicted g |
 |---|---|---|---|---|
+| 5HT1A_partial_agonist | +0.400 | staurosporine (HTR1A) | 1.00 | +0.323 |
 | AChE_inhibitor | +0.050 | chembl372202 (ACHE) | 1.00 | +0.049 |
-| AMPA_PAM | +0.050 | chembl331696 (GRIA4) | 1.00 | +0.039 |
+| AMPA_PAM | +0.050 | cx-516 (GRIA1) | 0.52 | +0.050 |
 | D1_agonist | +0.400 | chembl1256645 (DRD1) | 1.00 | +0.313 |
-| H3_cognition | +0.000 | chembl2179877 (HRH3) | 0.90 | +0.000 |
+| H3_cognition | +0.000 | venlafaxine (HRH3) | 0.25 | +0.000 |
+| HCN_blocker | +0.050 | staurosporine (HCN1) | 1.00 | +0.038 |
 | Kv7_opener | +0.050 | chembl1830646 (KCNQ2) | 1.00 | +0.040 |
-| NMDA_modulator | +0.000 | troriluzole (GRIN2B) | 0.56 | +0.000 |
+| NMDA_modulator | +0.000 | chembl434215 (GRIN2B) | 0.40 | +0.000 |
 | PDE4_inhibitor | +0.050 | chembl3288030 (PDE4D) | 1.00 | +0.040 |
-| PDE9_PDE10 | +0.000 | tulrampator (PDE9A) | 0.74 | +0.000 |
+| PDE9_PDE10 | +0.000 | atomoxetine (PDE9A) | 0.30 | +0.000 |
+| TrkB_agonist | +0.050 | lurasidone (NTRK2) | 1.00 | +0.037 |
+| alpha2A_agonist | +0.050 | staurosporine (ADRA2A) | 1.00 | +0.038 |
+| alpha7_nAChR | +0.038 | chembl4780352 (CHRNA7) | 1.00 | +0.038 |
 | catecholaminergic | +0.050 | chembl42553 (SLC6A3) | 1.00 | +0.042 |
-| orexin_antagonist | +0.050 | chembl413504 (HCRTR2) | 1.00 | +0.042 |
+| noradrenergic_NRI | +0.050 | atorvastatin (SLC6A2) | 1.00 | +0.039 |
+| orexin_antagonist | +0.050 | chembl3099899 (HCRTR2) | 1.00 | +0.042 |
+| sigma1 | +0.050 | atorvastatin (SIGMAR1) | 1.00 | +0.041 |
 
 ---
 
@@ -175,34 +189,41 @@ Ceiling-passing, ranked by disease-conditioned predicted g, capped at 2 hypothes
 | 1 | chembl3288030 | PDE4D/Q08499 | PDE4_inhibitor | 1.00 | +0.562 | +0.734 | class_prior |
 | 2 | chembl3288029 | PDE4D/Q08499 | PDE4_inhibitor | 1.00 | +0.560 | +0.732 | class_prior |
 | 3 | chembl372202 | ACHE/P22303 | AChE_inhibitor | 1.00 | +0.049 | +0.278 | class_prior |
-| 4 | chembl4468781 | ACHE/P22303 | AChE_inhibitor | 1.00 | +0.049 | +0.278 | class_prior |
-| 5 | chembl42553 | SLC6A3/Q01959 | catecholaminergic | 1.00 | +0.042 | +0.255 | class_prior |
-| 6 | chembl494626 | SLC6A3/Q01959 | catecholaminergic | 1.00 | +0.042 | +0.255 | class_prior |
-| 7 | chembl429557 | PDE9A/O76083 | PDE9_PDE10 | 1.00 | +0.042 | +0.254 | class_prior |
-| 8 | chembl413504 | HCRTR2/O43614 | orexin_antagonist | 1.00 | +0.042 | +0.254 | class_prior |
+| 4 | chembl4780352 | CHRNA7/P36544 | alpha7_nAChR | 1.00 | +0.049 | +0.278 | class_prior |
+| 5 | chembl4468781 | ACHE/P22303 | AChE_inhibitor | 1.00 | +0.049 | +0.278 | class_prior |
+| 6 | fenpropimorph | CHRNA7/P36544 | alpha7_nAChR | 1.00 | +0.049 | +0.277 | class_prior |
+| 7 | chembl42553 | SLC6A3/Q01959 | catecholaminergic | 1.00 | +0.042 | +0.255 | class_prior |
+| 8 | chembl494626 | SLC6A3/Q01959 | catecholaminergic | 1.00 | +0.042 | +0.255 | class_prior |
 | 9 | chembl3288030 | PDE9A/O76083 | PDE9_PDE10 | 1.00 | +0.042 | +0.254 | class_prior |
-| 10 | chembl441918 | HCRTR2/O43614 | orexin_antagonist | 1.00 | +0.042 | +0.253 | class_prior |
-| 11 | chembl258349 | HRH3/Q9Y5N1 | H3_cognition | 1.00 | +0.041 | +0.251 | class_prior |
-| 12 | chembl272077 | HRH3/Q9Y5N1 | H3_cognition | 1.00 | +0.041 | +0.250 | class_prior |
-| 13 | chembl158737 | GRIN2B/Q13224 | NMDA_modulator | 1.00 | +0.041 | +0.250 | class_prior |
-| 14 | chembl159744 | GRIN2B/Q13224 | NMDA_modulator | 1.00 | +0.040 | +0.249 | class_prior |
-| 15 | chembl1830646 | KCNQ2/O43526 | Kv7_opener | 1.00 | +0.040 | +0.248 | class_prior |
-| 16 | atorvastatin | KCNQ2/O43526 | Kv7_opener | 1.00 | +0.040 | +0.247 | class_prior |
+| 10 | chembl3099899 | HCRTR2/O43614 | orexin_antagonist | 1.00 | +0.042 | +0.254 | class_prior |
+| 11 | chembl3288029 | PDE9A/O76083 | PDE9_PDE10 | 1.00 | +0.042 | +0.254 | class_prior |
+| 12 | lemborexant | HCRTR2/O43614 | orexin_antagonist | 1.00 | +0.042 | +0.253 | class_prior |
+| 13 | atorvastatin | GRIA1/P42261 | AMPA_PAM | 1.00 | +0.041 | +0.252 | class_prior |
+| 14 | lemborexant | GRIA1/P42261 | AMPA_PAM | 1.00 | +0.041 | +0.251 | class_prior |
+| 15 | atorvastatin | SIGMAR1/Q99720 | sigma1 | 1.00 | +0.041 | +0.251 | class_prior |
+| 16 | chembl258349 | HRH3/Q9Y5N1 | H3_cognition | 1.00 | +0.041 | +0.251 | class_prior |
 
 ### FXS — per-mechanism-class best hypothesis
 
 | Mechanism class | Disease prior g | Best compound | Binding %ile | Predicted g |
 |---|---|---|---|---|
+| 5HT1A_partial_agonist | +0.050 | staurosporine (HTR1A) | 1.00 | +0.040 |
 | AChE_inhibitor | +0.050 | chembl372202 (ACHE) | 1.00 | +0.049 |
-| AMPA_PAM | +0.050 | chembl331696 (GRIA4) | 1.00 | +0.039 |
+| AMPA_PAM | +0.050 | atorvastatin (GRIA1) | 1.00 | +0.041 |
 | D1_agonist | +0.050 | chembl1256645 (DRD1) | 1.00 | +0.039 |
 | H3_cognition | +0.050 | chembl258349 (HRH3) | 1.00 | +0.041 |
+| HCN_blocker | +0.050 | staurosporine (HCN1) | 1.00 | +0.038 |
 | Kv7_opener | +0.050 | chembl1830646 (KCNQ2) | 1.00 | +0.040 |
 | NMDA_modulator | +0.050 | chembl158737 (GRIN2B) | 1.00 | +0.041 |
 | PDE4_inhibitor | +0.710 | chembl3288030 (PDE4D) | 1.00 | +0.562 |
-| PDE9_PDE10 | +0.050 | chembl429557 (PDE9A) | 1.00 | +0.042 |
+| PDE9_PDE10 | +0.050 | chembl3288030 (PDE9A) | 1.00 | +0.042 |
+| TrkB_agonist | +0.050 | lurasidone (NTRK2) | 1.00 | +0.037 |
+| alpha2A_agonist | +0.050 | staurosporine (ADRA2A) | 1.00 | +0.038 |
+| alpha7_nAChR | +0.050 | chembl4780352 (CHRNA7) | 1.00 | +0.049 |
 | catecholaminergic | +0.050 | chembl42553 (SLC6A3) | 1.00 | +0.042 |
-| orexin_antagonist | +0.050 | chembl413504 (HCRTR2) | 1.00 | +0.042 |
+| noradrenergic_NRI | +0.050 | atorvastatin (SLC6A2) | 1.00 | +0.039 |
+| orexin_antagonist | +0.050 | chembl3099899 (HCRTR2) | 1.00 | +0.042 |
+| sigma1 | +0.050 | atorvastatin (SIGMAR1) | 1.00 | +0.041 |
 
 ---
 
@@ -210,7 +231,8 @@ Ceiling-passing, ranked by disease-conditioned predicted g, capped at 2 hypothes
 
 - The disease-conditioned prior is the **real meta-analytic effect size of validated modulators of each mechanism class in this disease**, scaled by how strongly each compound engages a cognition-relevant target. It is a mechanism-justified enrichment ranking, not a calibrated per-compound clinical prediction.
 - The within-disease AUROC is high for the same reason as Gap 3: mechanism classes are outcome-homogeneous *within a disease* (every AD cholinesterase inhibitor worked; every AD 5-HT6/AMPA/PDE9 drug failed). That homogeneity is the clinically-actionable finding, not a predictive miracle — the contrast against target relevance (≈ chance) is the scientific content.
-- The V6.A binding grid covers 13 of 28 panel targets; classes whose targets are absent (e.g. M1/M4 muscarinic for CIAS) are scored in the prior table but cannot yet surface a compound. Expanding the grid is the documented follow-up.
+- The V6.A binding grid now covers **23 of 28 panel targets** (expanded from 13 via `scripts/77`, merging real cached MMAtt-DTA + MAMMAL DTI; peptides/biologics filtered as out-of-domain). The 5 still-missing (GRM2/3/5, GlyT1, HTR4) need a re-score pass; **M1/M4 muscarinic and 5-HT6 are not in the panel at all** — so the CIAS M1/M4 winner and the AD 5-HT6 failure class are priced in the prior table but cannot yet surface a compound. Adding those 3 targets is the next panel-expansion step.
+- **Binding-percentile artifacts**: the non-anchor 'top compound' per class is whatever MAMMAL ranks highest, and MAMMAL is structurally blind to allosteric/transporter pharmacology — so noisy picks appear (e.g. a statin or a promiscuous kinase inhibitor topping a GPCR class). Known anchor drugs are placed correctly via the V7 override. This unreliability is precisely what the Gap-4 allosteric learn-to-rank head targets.
 - Disease buckets are assigned by indication/population string; a multi-indication drug contributes to every bucket it names.
 
 Generated by `scripts/76_disease_reframe_shortlist.py` via `validation/disease_reframe.py` + the unchanged `fusion/joint_composition.compose_grid_shortlist_v11`.

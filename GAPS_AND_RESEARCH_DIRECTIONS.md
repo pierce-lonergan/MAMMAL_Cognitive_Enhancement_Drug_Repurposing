@@ -8,6 +8,18 @@
 
 ## ✅ Recently resolved (this sprint)
 
+### V6.A grid expansion 13 → 23 targets (SHIPPED ✅ partial, 2026-05-29)
+
+**Was**: the v11 + disease shortlists scored only the 13 MMAtt-DTA targets, so clinically-important panel targets (GRIN2A, SIGMAR1, CHRNA7, ADRA2A, SLC6A2, HTR1A …) couldn't surface a compound.
+
+**Fix** (`scripts/77_expand_v6a_grid.py`): merged the REAL cached binding scores already on disk — 13 MMAtt-DTA + 9 MAMMAL DTI (`dti_scores.parquet`) + HTR1A from the 44-target liability grid — into one 23-target grid (`v6a_grid_expanded.parquet`), **no MAMMAL inference needed**. Within-target percentile is computed per target, so mixing heads across targets is sound. The v11 + disease composers now default to this grid.
+
+**New, principled small-molecule filter**: MAMMAL's `dti_bindingdb_pkd` head is a small-molecule model; the expansion surfaced peptides (semaglutide MW 4114, liraglutide, orexin-b) ranking as top "binders" at GPCR classes. Filtered by RDKit MW ≤ 900 → dropped 10 biologics/peptides, leaving 288 small molecules.
+
+**Result**: disease shortlists now score **17 mechanism classes (was ~10)**; CIAS now tops with 5-HT1A (HTR1A surfaced), AD gains CHRNA7/SIGMAR1/GRIN2A. Within-AD class AUROC 0.97 unchanged. `tests/test_disease_reframe.py` +2 (19 total).
+
+**Residual gaps surfaced** (now top of the sprint queue): (a) 5 panel targets added after the DTI runs (GRM2/3/5, GlyT1, HTR4) have no cached binding → re-score pass needed; (b) **CHRM1/4 (M1/M4) + HTR6 are not in the 28-panel at all** — the CIAS winner (xanomeline) and AD failure (idalopirdine) classes are priced but unscorable until added; (c) the noisy non-anchor "top binders" (staurosporine, a statin at GPCRs) are MAMMAL's structural blindness on display — the **Gap 4** motivation.
+
 ### GAP 3. Retrospective clinical-outcome validation — leakage-audited (SHIPPED ✅, 2026-05-29)
 
 **Was**: the pipeline was self-consistent (calibrated against the literature it was built
@@ -368,16 +380,19 @@ Currently V7 + V8 OSF pre-registrations are markdown-ready but not locked with a
 
 ## 🎯 Recommended sprint sequence (in priority order)
 
-**Done since last refresh** (struck from the queue): MH1, MH2, MH3, MH8 (research directions); #7, #11, #12 (real LINCS + cpg0000); Gap 1 (v11 grid shortlist); Gap 3 (retrospective clinical validation); **Gap 2 (disease-population reframe — SHIPPED, see below)**. The queue below is what remains.
+**Done since last refresh** (struck from the queue): MH1, MH2, MH3, MH8; #7, #11, #12; Gap 1; Gap 3; **Gap 2 (disease reframe — SHIPPED)**; **V6.A grid expansion 13→23 (PARTIAL — SHIPPED, see below)**. The queue below is what remains.
 
-1. **V6.A grid expansion (13 → 28 targets)** — the disease reframe (Gap 2) prices the M1/M4-muscarinic / 5-HT6 / mGluR / GlyT1 classes but can't yet surface a compound for them, because those targets aren't in the MMAtt-fusion binding grid. Expanding the grid is now the single highest-leverage step — it lets the CIAS shortlist surface xanomeline-class candidates and the AD shortlist surface 5-HT6 antagonists at their (correctly demoted) prior. **Highest scientific ROI.**
-2. **#5 + MH5** (V6.B Gate 2 + 3 with held-out GWAS + multi-modulator extension) — lifts V6.B Gate 2 from DEGRADE to PASS. The 70-anchor table is already built; needs held-out GWAS L2G (#13).
-3. **#8 + #9** (OSF DOI mint + bioRxiv submission) — public release of all 5 papers + the Gap 1 / Gap 2 / Gap 3 results.
-4. **MH4** (Mondrian conformal calibration) — V8 paper methodology refinement.
-5. **MH6** (allosteric vs orthosteric in V7 PBPK) — V7 paper methodology contribution.
-6. **MH7** (species translation random effect) — V8 Discussion refinement.
-7. **MH9** (Phase 1 healthy-volunteer trial) — external validation; 18-24 months but the single most important external step.
-8. **MH10** (target-deconvolution integration) — extends V8 paper scope.
+1. **V6.A grid expansion — finish 23 → 31** (`scripts/77` did 13→23 from cached signal): (a) re-score the 5 panel targets added after the DTI runs (GRM2/3/5, GlyT1, HTR4 — no cached binding); (b) **add CHRM1/CHRM4 (M1/M4) + HTR6 to the panel** — they are the CIAS and AD *winning/failing* mechanisms (xanomeline; idalopirdine) and are not in the 28-panel at all, so the disease shortlists price them but can't surface a compound. Both need MAMMAL DTI inference (env-gated here).
+2. **Gap 4 — allosteric learn-to-rank head** (NEW, see below). The grid expansion exposed MAMMAL's structural blindness vividly: peptides (semaglutide) and promiscuous binders (staurosporine, a statin) score as top "binders" at GPCR classes. A fused learn-to-rank head is the real ML fix and the project's clearest novel-method contribution.
+3. **Gap 5 — clinician-legible evidence dossier** (NEW). Per-compound one-page g + CI + GRADE quality + liability flags + provenance — the artifact a doctor actually reads.
+4. **Gap 6 — external benchmark** (NEW). Beat a published-style repurposing baseline on the held-out cognition-drug ranking to answer "compared to what?".
+5. **#5 + MH5** (V6.B Gate 2 + 3 with held-out GWAS + multi-modulator extension) — lifts V6.B Gate 2 from DEGRADE to PASS. The 70-anchor table is already built; needs held-out GWAS L2G (#13).
+6. **#8 + #9** (OSF DOI mint + bioRxiv submission) — public release of all papers + Gap 1/2/3 results.
+7. **MH4** (Mondrian conformal calibration) — V8 paper methodology refinement.
+8. **MH6** (allosteric vs orthosteric in V7 PBPK) — V7 paper methodology contribution.
+9. **MH7** (species translation random effect) — V8 Discussion refinement.
+10. **MH9** (Phase 1 healthy-volunteer trial) — external validation; 18-24 months but the single most important external step.
+11. **MH10** (target-deconvolution integration) — extends V8 paper scope.
 
 ---
 

@@ -204,7 +204,7 @@ def render_report(grid: pd.DataFrame, best: pd.DataFrame,
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--v6a", type=Path,
-                        default=ROOT / "data" / "results" / "v2" / "mmatt_for_fusion.parquet")
+                        default=ROOT / "data" / "results" / "v2" / "v6a_grid_expanded.parquet")
     parser.add_argument("--v6b", type=Path,
                         default=ROOT / "data" / "results" / "v2"
                         / "cluster_d_posterior_expanded_v2_mh8_ta99.parquet")
@@ -230,6 +230,11 @@ def main() -> int:
         COMPOUND_TO_TARGET_UNIPROT,
     )
 
+    if not args.v6a.exists():
+        fallback = ROOT / "data" / "results" / "v2" / "mmatt_for_fusion.parquet"
+        logger.warning("Expanded grid %s absent; falling back to %s (13 targets).",
+                       args.v6a, fallback)
+        args.v6a = fallback
     if not args.v6a.exists():
         logger.error("V6.A grid missing: %s", args.v6a)
         return 2

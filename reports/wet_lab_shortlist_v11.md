@@ -1,6 +1,6 @@
 # Wet-Lab Shortlist v11 — Grid Composition (real, differentiated)
 
-**The first non-degenerate end-to-end shortlist.** Replaces v10, which collapsed every compound onto ACHE via `.iloc[0]`. v11 scores the full **298 compound × 13 target** grid (3874 repurposing hypotheses) on real differentiated signal — no stubs.
+**The first non-degenerate end-to-end shortlist.** Replaces v10, which collapsed every compound onto ACHE via `.iloc[0]`. v11 scores the full **288 compound × 23 target** grid (6624 repurposing hypotheses) on real differentiated signal — no stubs.
 
 ## How each (compound, target) hypothesis is scored
 
@@ -21,11 +21,11 @@ The v10 failure was *degeneracy* — 1 target (ACHE), near-identical g, 100% Rob
 
 **✅ PASS**
 
-- Unique targets in top-25: **7** (gate ≥3; v10 was 1)
+- Unique targets in top-25: **10** (gate ≥3; v10 was 1)
 - g spread (std) in top-25: **0.017** (gate >0.015)
-- Distinct g values in top-25: **13** (gate ≥5; v10 was ~1)
+- Distinct g values in top-25: **12** (gate ≥5; v10 was ~1)
 - Roberts-ceiling PASS rate (full grid): **100.0%** (gate ≥80%)
-- Max g₉₀ across all 3874 hypotheses: **+0.390** (gate ≤0.55 — honest small cognition effects cannot exceed the ceiling; the v10 bug forced all g₉₀ > 0.50)
+- Max g₉₀ across all 6624 hypotheses: **+0.390** (gate ≤0.55 — honest small cognition effects cannot exceed the ceiling; the v10 bug forced all g₉₀ > 0.50)
 
 ## View A — Best target per compound (clinician view)
 
@@ -35,29 +35,29 @@ The v10 failure was *degeneracy* — 1 target (ACHE), near-identical g, 100% Rob
 |---|---|---|---|---|---|---|---|---|
 | 1 | donepezil | ACHE/P22303 | AChE-I | 0.96 | +0.45 | +0.223 | +0.272 | v7_nuts_anchor |
 | 2 | huperzine A | ACHE/P22303 | AChE-I | 0.90 | +0.45 | +0.221 | +0.276 | v7_nuts_anchor |
-| 3 | rivastigmine | ACHE/P22303 | AChE-I | 0.61 | +0.45 | +0.217 | +0.267 | v7_nuts_anchor |
+| 3 | rivastigmine | ACHE/P22303 | AChE-I | 0.62 | +0.45 | +0.217 | +0.267 | v7_nuts_anchor |
 | 4 | galantamine | ACHE/P22303 | AChE-I | 0.12 | +0.45 | +0.217 | +0.267 | v7_nuts_anchor |
 | 5 | methylphenidate | SLC6A3/Q01959 | NDRI | 0.92 | +0.10 | +0.215 | +0.258 | v7_nuts_anchor |
-| 6 | lisdexamfetamine | SLC6A3/Q01959 | NDRI | 0.61 | +0.10 | +0.206 | +0.250 | v7_nuts_anchor |
-| 7 | modafinil | SLC6A3/Q01959 | NDRI | 0.27 | +0.10 | +0.189 | +0.234 | v7_nuts_anchor |
-| 8 | pitolisant | HRH3/Q9Y5N1 | wake_promoting | 0.44 | +0.03 | +0.186 | +0.230 | v7_nuts_anchor |
-| 9 | suvorexant | HCRTR2/O43614 | wake_promoting | 0.94 | +0.08 | +0.179 | +0.226 | v7_nuts_anchor |
-| 10 | memantine | GRIN2B/Q13224 | NMDA_antagonist | 0.09 | +0.01 | +0.179 | +0.223 | v7_nuts_anchor |
-| 11 | pf-04447943 | PDE9A/O76083 | AMPA_pos_mod | 0.92 | +0.08 | +0.179 | +0.217 | v7_nuts_anchor |
-| 12 | bpn14770 | PDE4D/Q08499 | AMPA_pos_mod | 0.79 | -0.04 | +0.178 | +0.219 | v7_nuts_anchor |
-| 13 | chembl42553 | SLC6A3/Q01959 | NDRI | 1.00 | +0.10 | +0.178 | +0.390 | class_prior |
-| 14 | chembl372202 | ACHE/P22303 | AChE-I | 1.00 | +0.45 | +0.177 | +0.368 | class_prior |
-| 15 | chembl494626 | SLC6A3/Q01959 | NDRI | 1.00 | +0.10 | +0.177 | +0.390 | class_prior |
-| 16 | chembl4468781 | ACHE/P22303 | AChE-I | 1.00 | +0.45 | +0.177 | +0.367 | class_prior |
-| 17 | chembl495464 | SLC6A3/Q01959 | NDRI | 0.99 | +0.10 | +0.176 | +0.389 | class_prior |
-| 18 | chembl382260 | ACHE/P22303 | AChE-I | 0.99 | +0.45 | +0.176 | +0.366 | class_prior |
-| 19 | chembl28394 | SLC6A3/Q01959 | NDRI | 0.99 | +0.10 | +0.176 | +0.388 | class_prior |
-| 20 | chembl4532770 | ACHE/P22303 | AChE-I | 0.99 | +0.45 | +0.175 | +0.365 | class_prior |
-| 21 | chembl91184 | SLC6A3/Q01959 | NDRI | 0.99 | +0.10 | +0.175 | +0.387 | class_prior |
-| 22 | chembl199454 | ACHE/P22303 | AChE-I | 0.99 | +0.45 | +0.175 | +0.364 | class_prior |
-| 23 | chembl353333 | SLC6A3/Q01959 | NDRI | 0.98 | +0.10 | +0.175 | +0.386 | class_prior |
-| 24 | chembl4455677 | ACHE/P22303 | AChE-I | 0.98 | +0.45 | +0.174 | +0.363 | class_prior |
-| 25 | chembl1818445 | SLC6A3/Q01959 | NDRI | 0.98 | +0.10 | +0.174 | +0.384 | class_prior |
+| 6 | lisdexamfetamine | SLC6A3/Q01959 | NDRI | 0.60 | +0.10 | +0.206 | +0.250 | v7_nuts_anchor |
+| 7 | encenicline | CHRNA7/P36544 | AChE-I | 0.07 | +0.45 | +0.202 | +0.255 | v7_nuts_anchor |
+| 8 | atomoxetine | SLC6A2/P23975 | NRI | 0.39 | -0.07 | +0.189 | +0.230 | v7_nuts_anchor |
+| 9 | modafinil | SLC6A3/Q01959 | NDRI | 0.26 | +0.10 | +0.189 | +0.234 | v7_nuts_anchor |
+| 10 | pitolisant | HRH3/Q9Y5N1 | wake_promoting | 0.44 | +0.03 | +0.186 | +0.230 | v7_nuts_anchor |
+| 11 | suvorexant | HCRTR2/O43614 | wake_promoting | 0.95 | +0.08 | +0.179 | +0.226 | v7_nuts_anchor |
+| 12 | memantine | GRIN2B/Q13224 | NMDA_antagonist | 0.10 | +0.01 | +0.179 | +0.223 | v7_nuts_anchor |
+| 13 | pf-04447943 | PDE9A/O76083 | AMPA_pos_mod | 0.93 | +0.08 | +0.179 | +0.217 | v7_nuts_anchor |
+| 14 | blarcamesine | SIGMAR1/Q99720 | multimodal_5HT | 0.58 | +0.03 | +0.178 | +0.224 | v7_nuts_anchor |
+| 15 | bpn14770 | PDE4D/Q08499 | AMPA_pos_mod | 0.80 | -0.04 | +0.178 | +0.219 | v7_nuts_anchor |
+| 16 | chembl42553 | SLC6A3/Q01959 | NDRI | 1.00 | +0.10 | +0.178 | +0.390 | class_prior |
+| 17 | chembl372202 | ACHE/P22303 | AChE-I | 1.00 | +0.45 | +0.177 | +0.368 | class_prior |
+| 18 | chembl4780352 | CHRNA7/P36544 | AChE-I | 1.00 | +0.45 | +0.177 | +0.368 | class_prior |
+| 19 | chembl494626 | SLC6A3/Q01959 | NDRI | 1.00 | +0.10 | +0.177 | +0.390 | class_prior |
+| 20 | chembl4468781 | ACHE/P22303 | AChE-I | 1.00 | +0.45 | +0.177 | +0.367 | class_prior |
+| 21 | fenpropimorph | CHRNA7/P36544 | AChE-I | 1.00 | +0.45 | +0.177 | +0.367 | class_prior |
+| 22 | chembl495464 | SLC6A3/Q01959 | NDRI | 0.99 | +0.10 | +0.176 | +0.389 | class_prior |
+| 23 | chembl382260 | ACHE/P22303 | AChE-I | 0.99 | +0.45 | +0.176 | +0.366 | class_prior |
+| 24 | chembl4532770 | CHRNA7/P36544 | AChE-I | 0.99 | +0.45 | +0.176 | +0.366 | class_prior |
+| 25 | chembl28394 | SLC6A3/Q01959 | NDRI | 0.99 | +0.10 | +0.176 | +0.388 | class_prior |
 
 ## View B — Top (compound, target) repurposing hypotheses
 
@@ -67,47 +67,57 @@ The strongest individual hypotheses across the whole grid (ceiling-passing).
 |---|---|---|---|---|---|---|---|
 | 1 | donepezil | ACHE/P22303 | +0.223 | +0.272 | 0.96 | target_true.phenotype_failed | v7_nuts_anchor |
 | 2 | huperzine A | ACHE/P22303 | +0.221 | +0.276 | 0.90 | target_true.phenotype_failed | v7_nuts_anchor |
-| 3 | rivastigmine | ACHE/P22303 | +0.217 | +0.267 | 0.61 | target_true.phenotype_failed | v7_nuts_anchor |
+| 3 | rivastigmine | ACHE/P22303 | +0.217 | +0.267 | 0.62 | target_true.phenotype_failed | v7_nuts_anchor |
 | 4 | galantamine | ACHE/P22303 | +0.217 | +0.267 | 0.12 | genetic_only | v7_nuts_anchor |
 | 5 | methylphenidate | SLC6A3/Q01959 | +0.215 | +0.258 | 0.92 | target_only | v7_nuts_anchor |
-| 6 | lisdexamfetamine | SLC6A3/Q01959 | +0.206 | +0.250 | 0.61 | target_only | v7_nuts_anchor |
-| 7 | modafinil | SLC6A3/Q01959 | +0.189 | +0.234 | 0.27 | no_evidence | v7_nuts_anchor |
-| 8 | pitolisant | HRH3/Q9Y5N1 | +0.186 | +0.230 | 0.44 | no_evidence | v7_nuts_anchor |
-| 9 | suvorexant | HCRTR2/O43614 | +0.179 | +0.226 | 0.94 | target_only | v7_nuts_anchor |
-| 10 | memantine | GRIN2B/Q13224 | +0.179 | +0.223 | 0.09 | no_evidence | v7_nuts_anchor |
-| 11 | pf-04447943 | PDE9A/O76083 | +0.179 | +0.217 | 0.92 | target_only | v7_nuts_anchor |
-| 12 | bpn14770 | PDE4D/Q08499 | +0.178 | +0.219 | 0.79 | target_only | v7_nuts_anchor |
-| 13 | chembl42553 | SLC6A3/Q01959 | +0.178 | +0.390 | 1.00 | target_only | class_prior |
-| 14 | chembl372202 | ACHE/P22303 | +0.177 | +0.368 | 1.00 | target_true.phenotype_failed | class_prior |
-| 15 | chembl494626 | SLC6A3/Q01959 | +0.177 | +0.390 | 1.00 | target_only | class_prior |
-| 16 | chembl4468781 | ACHE/P22303 | +0.177 | +0.367 | 1.00 | target_true.phenotype_failed | class_prior |
-| 17 | chembl495464 | SLC6A3/Q01959 | +0.176 | +0.389 | 0.99 | target_only | class_prior |
-| 18 | chembl382260 | ACHE/P22303 | +0.176 | +0.366 | 0.99 | target_true.phenotype_failed | class_prior |
-| 19 | chembl28394 | SLC6A3/Q01959 | +0.176 | +0.388 | 0.99 | target_only | class_prior |
-| 20 | chembl4532770 | ACHE/P22303 | +0.175 | +0.365 | 0.99 | target_true.phenotype_failed | class_prior |
-| 21 | chembl91184 | SLC6A3/Q01959 | +0.175 | +0.387 | 0.99 | target_only | class_prior |
-| 22 | chembl199454 | ACHE/P22303 | +0.175 | +0.364 | 0.99 | target_true.phenotype_failed | class_prior |
-| 23 | chembl353333 | SLC6A3/Q01959 | +0.175 | +0.386 | 0.98 | target_only | class_prior |
-| 24 | chembl4455677 | ACHE/P22303 | +0.174 | +0.363 | 0.98 | target_true.phenotype_failed | class_prior |
-| 25 | chembl1818444 | SLC6A3/Q01959 | +0.174 | +0.384 | 0.98 | target_only | class_prior |
+| 6 | lisdexamfetamine | SLC6A3/Q01959 | +0.206 | +0.250 | 0.60 | target_only | v7_nuts_anchor |
+| 7 | encenicline | CHRNA7/P36544 | +0.202 | +0.255 | 0.07 | genetic_only | v7_nuts_anchor |
+| 8 | atomoxetine | SLC6A2/P23975 | +0.189 | +0.230 | 0.39 | no_evidence | v7_nuts_anchor |
+| 9 | modafinil | SLC6A3/Q01959 | +0.189 | +0.234 | 0.26 | no_evidence | v7_nuts_anchor |
+| 10 | pitolisant | HRH3/Q9Y5N1 | +0.186 | +0.230 | 0.44 | no_evidence | v7_nuts_anchor |
+| 11 | suvorexant | HCRTR2/O43614 | +0.179 | +0.226 | 0.95 | target_only | v7_nuts_anchor |
+| 12 | memantine | GRIN2B/Q13224 | +0.179 | +0.223 | 0.10 | no_evidence | v7_nuts_anchor |
+| 13 | pf-04447943 | PDE9A/O76083 | +0.179 | +0.217 | 0.93 | target_only | v7_nuts_anchor |
+| 14 | blarcamesine | SIGMAR1/Q99720 | +0.178 | +0.224 | 0.58 | no_evidence | v7_nuts_anchor |
+| 15 | bpn14770 | PDE4D/Q08499 | +0.178 | +0.219 | 0.80 | target_only | v7_nuts_anchor |
+| 16 | chembl42553 | SLC6A3/Q01959 | +0.178 | +0.390 | 1.00 | target_only | class_prior |
+| 17 | chembl372202 | ACHE/P22303 | +0.177 | +0.368 | 1.00 | target_true.phenotype_failed | class_prior |
+| 18 | chembl4780352 | CHRNA7/P36544 | +0.177 | +0.368 | 1.00 | target_true.phenotype_failed | class_prior |
+| 19 | chembl494626 | SLC6A3/Q01959 | +0.177 | +0.390 | 1.00 | target_only | class_prior |
+| 20 | chembl4468781 | ACHE/P22303 | +0.177 | +0.367 | 1.00 | target_true.phenotype_failed | class_prior |
+| 21 | fenpropimorph | CHRNA7/P36544 | +0.177 | +0.367 | 1.00 | target_true.phenotype_failed | class_prior |
+| 22 | chembl495464 | SLC6A3/Q01959 | +0.176 | +0.389 | 0.99 | target_only | class_prior |
+| 23 | chembl382260 | ACHE/P22303 | +0.176 | +0.366 | 0.99 | target_true.phenotype_failed | class_prior |
+| 24 | chembl4532770 | CHRNA7/P36544 | +0.176 | +0.366 | 0.99 | target_true.phenotype_failed | class_prior |
+| 25 | chembl28394 | SLC6A3/Q01959 | +0.176 | +0.388 | 0.99 | target_only | class_prior |
 
 ## Per-target hypothesis distribution (full grid)
 
 | Target | Mechanism | Class-prior g | Ceiling-pass pairs | Top compound (g) |
 |---|---|---|---|---|
-| ACHE/P22303 | AChE-I | +0.180 | 298 | donepezil (+0.223) |
-| DRD1/P21728 | wake_promoting | +0.120 | 298 | chembl1256645 (+0.094) |
-| GRIA2/P42262 | AMPA_pos_mod | +0.050 | 298 | chembl331696 (+0.038) |
-| GRIA4/P48058 | AMPA_pos_mod | +0.050 | 298 | chembl331696 (+0.039) |
-| GRIN2B/Q13224 | NMDA_antagonist | +0.050 | 298 | memantine (+0.179) |
-| HCRTR1/O43613 | wake_promoting | +0.120 | 298 | suvorexant (+0.098) |
-| HCRTR2/O43614 | wake_promoting | +0.120 | 298 | suvorexant (+0.179) |
-| HRH3/Q9Y5N1 | wake_promoting | +0.120 | 298 | pitolisant (+0.186) |
-| KCNQ2/O43526 | alpha2A_agonist | +0.150 | 298 | chembl1830646 (+0.120) |
-| KCNQ3/O43525 | alpha2A_agonist | +0.150 | 298 | pitolisant (+0.120) |
-| PDE4D/Q08499 | AMPA_pos_mod | +0.050 | 298 | bpn14770 (+0.178) |
-| PDE9A/O76083 | AMPA_pos_mod | +0.050 | 298 | pf-04447943 (+0.179) |
-| SLC6A3/Q01959 | NDRI | +0.210 | 298 | methylphenidate (+0.215) |
+| ACHE/P22303 | AChE-I | +0.180 | 288 | donepezil (+0.223) |
+| ADRA2A/P08913 | alpha2A_agonist | +0.150 | 288 | staurosporine (+0.113) |
+| CHRNA7/P36544 | AChE-I | +0.180 | 288 | encenicline (+0.202) |
+| DRD1/P21728 | wake_promoting | +0.120 | 288 | chembl1256645 (+0.094) |
+| GRIA1/P42261 | AMPA_pos_mod | +0.050 | 288 | cx-516 (+0.175) |
+| GRIA2/P42262 | AMPA_pos_mod | +0.050 | 288 | chembl331696 (+0.038) |
+| GRIA3/P42263 | AMPA_pos_mod | +0.050 | 288 | atorvastatin (+0.038) |
+| GRIA4/P48058 | AMPA_pos_mod | +0.050 | 288 | chembl331696 (+0.039) |
+| GRIN2A/Q12879 | NMDA_antagonist | +0.050 | 288 | atorvastatin (+0.038) |
+| GRIN2B/Q13224 | NMDA_antagonist | +0.050 | 288 | memantine (+0.179) |
+| HCN1/O60741 | alpha2A_agonist | +0.150 | 288 | staurosporine (+0.113) |
+| HCRTR1/O43613 | wake_promoting | +0.120 | 288 | suvorexant (+0.098) |
+| HCRTR2/O43614 | wake_promoting | +0.120 | 288 | suvorexant (+0.179) |
+| HRH3/Q9Y5N1 | wake_promoting | +0.120 | 288 | pitolisant (+0.186) |
+| HTR1A/P08908 | AMPA_pos_mod | +0.050 | 288 | staurosporine (+0.040) |
+| KCNQ2/O43526 | alpha2A_agonist | +0.150 | 288 | chembl1830646 (+0.120) |
+| KCNQ3/O43525 | alpha2A_agonist | +0.150 | 288 | pitolisant (+0.120) |
+| NTRK2/Q16620 | creatine | +0.080 | 288 | lurasidone (+0.060) |
+| PDE4D/Q08499 | AMPA_pos_mod | +0.050 | 288 | bpn14770 (+0.178) |
+| PDE9A/O76083 | AMPA_pos_mod | +0.050 | 288 | pf-04447943 (+0.179) |
+| SIGMAR1/Q99720 | multimodal_5HT | +0.120 | 288 | blarcamesine (+0.178) |
+| SLC6A2/P23975 | NRI | +0.100 | 288 | atomoxetine (+0.189) |
+| SLC6A3/Q01959 | NDRI | +0.210 | 288 | methylphenidate (+0.215) |
 
 ## Honest scope
 
