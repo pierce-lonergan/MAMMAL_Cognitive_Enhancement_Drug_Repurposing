@@ -122,3 +122,27 @@ def test_fused_beats_mammal_on_benchmark():
     assert res.pooled_rho["mammal_only"] < 0.15
     assert res.pooled_rho["fused_ltr"] > 0.30
     assert res.pooled_rho["fused_ltr"] > res.pooled_rho["mammal_only"]
+
+
+@pytest.mark.skipif(not (CHEMBL.exists() and DTI.exists()),
+                    reason="chembl / dti artifacts absent")
+def test_loto_scale_fused_beats_mammal():
+    """Publication-strength scale-up: leave-one-target-out CV on the 297 real
+    ChEMBL pChEMBL pairs (21 targets). The fused head must beat MAMMAL-alone
+    within-target ranking across independent held-out targets."""
+    dti = pd.read_parquet(DTI)
+    tani = pd.read_parquet(TANI) if TANI.exists() else None
+    ch = pd.read_parquet(CHEMBL)
+    ch = ch[ch["best_pchembl"].notna()].copy()
+    ch["pact"] = ch["best_pchembl"].astype(float)
+    feat = A.build_feature_table(ch[["compound_name", "target_uniprot", "smiles"]],
+                                 mammal=dti, tanimoto=tani)
+    feat = feat.merge(ch[["compound_name", "target_uniprot", "pact"]],
+                      on=["compound_name", "target_uniprot"], how="left")
+    feat = feat[feat["pact"].notna()].reset_index(drop=True)
+    res = A.loto_evaluate(feat, label_col="pact", seed=0)
+    assert res.n_eval >= 250
+    assert int(res.feature_importance["n_folds"]) >= 15
+    assert res.pooled_rho["mammal_only"] < 0.2          # MAMMAL ~chance at scale
+    assert res.pooled_rho["fused_ltr"] > 0.45           # fusion strong
+    assert res.pooled_rho["fused_ltr"] > res.pooled_rho["mammal_only"]

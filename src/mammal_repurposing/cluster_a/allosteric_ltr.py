@@ -233,6 +233,48 @@ def evaluate(train: pd.DataFrame, benchmark: pd.DataFrame, *,
     )
 
 
+def loto_evaluate(labeled: pd.DataFrame, *, label_col: str = "pact",
+                  features: list[str] | None = None, min_n: int = 4,
+                  seed: int = 0) -> LTRResult:
+    """Leave-one-TARGET-out cross-validation on a real-affinity labeled set
+    (the 297 ChEMBL pChEMBL pairs): for each target with >= min_n compounds,
+    train the fusion head on ALL OTHER targets and predict the held-out
+    target's within-target affinity ranking. Pooled within-target Spearman over
+    the held-out folds — a leakage-clean, real-data benchmark much larger than
+    the 21-compound binding-mode set.
+
+    Compared against MAMMAL-alone and Tanimoto-alone on the SAME held-out folds.
+    """
+    features = features or FUSION_FEATURES
+    df = labeled.copy()
+    df["target_uniprot"] = df["target_uniprot"].astype(str)
+    counts = df.groupby("target_uniprot").size()
+    folds = [t for t, n in counts.items() if n >= min_n]
+
+    held: list[pd.DataFrame] = []
+    for t in folds:
+        train = df[df["target_uniprot"] != t]
+        test = df[df["target_uniprot"] == t].copy()
+        model, feats = train_fusion_ranker(train, label_col, features, seed=seed)
+        test["fused_score"] = model.predict(test[feats].to_numpy(float))
+        held.append(test)
+    allheld = pd.concat(held, ignore_index=True) if held else df.iloc[0:0]
+
+    conds = {"mammal_only": "mammal_pkd", "tanimoto_only": "tanimoto",
+             "fused_ltr": "fused_score"}
+    pooled, per = {}, {}
+    for name, col in conds.items():
+        p, pt = within_target_spearman(allheld, col, label_col)
+        pooled[name] = p
+        per[name] = pt
+    return LTRResult(
+        pooled_rho=pooled, per_target_rho=per,
+        flatness=mammal_flatness(df), n_train=int(len(df)),
+        n_eval=int(len(allheld)),
+        feature_importance={"n_folds": float(len(folds))},
+    )
+
+
 def availability() -> dict:
     try:
         import sklearn  # noqa

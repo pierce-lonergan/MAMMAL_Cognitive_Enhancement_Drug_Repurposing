@@ -52,6 +52,18 @@ Trained on **289** ChEMBL-labelled pairs (benchmark compounds excluded), evaluat
 | fraction_csp3 | 0.014 |
 | n_rotatable | 0.012 |
 
+## Larger real-data benchmark: leave-one-TARGET-out CV (297 ChEMBL pairs)
+
+To move past the 21-compound binding-mode set, the same fusion head is evaluated by **leave-one-target-out cross-validation** on all **297 real ChEMBL pChEMBL pairs** across **21 targets** (train on every other target, predict the held-out target's within-target affinity ranking). No fabricated data; no binding-mode labels, but a much larger, leakage-clean affinity benchmark.
+
+| Predictor | Pooled within-target Spearman ρ (LOTO) |
+|---|---|
+| MAMMAL pKd alone | -0.115 |
+| Tanimoto-to-actives alone | +0.533 |
+| **Fused learn-to-rank** | **+0.613** |
+
+The conclusion holds at scale: MAMMAL-alone within-target ranking is near-flat (-0.12), and the fusion recovers a substantially better ranking (+0.61) across 21 independent held-out targets.
+
 ## Honest scope
 
 - The allosteric benchmark is small (n=21, 5 targets); this is a **proof-of-concept** that the fusion direction works + a quantified negative result on MAMMAL's within-target ranking, not a production affinity predictor.
