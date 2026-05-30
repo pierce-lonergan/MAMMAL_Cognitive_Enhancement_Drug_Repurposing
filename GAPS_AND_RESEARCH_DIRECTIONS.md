@@ -2,11 +2,38 @@
 
 **Brutally honest catalogue** of what's blocking the pipeline, what's MUST-HAVE for the publishable contribution, and what would change the publication trajectory if executed. Companion to `README.md` + `PROJECT_STATUS.md` + the 5-paper manuscript suite.
 
-**Last refreshed**: 2026-05-29 — Gap 1 (differentiated v11 grid shortlist) + Gap 3 (leakage-audited retrospective clinical validation) shipped; chemCPA trained on real LINCS L1000; V8 hierarchical on real cpg0000. Next active direction: **Gap 2** (disease-population reframe), scoped at the bottom of this doc.
+**Last refreshed**: 2026-05-29 — **Gaps 1–6 all shipped** (v11 grid; disease reframe; retrospective clinical validation; allosteric learn-to-rank; clinician dossiers; external benchmark) + V6.A grid 13→23 + chemCPA real-LINCS + V8 cpg0000. Next: finish the panel to 31 targets (CHRM1/4 + HTR6), then OSF/bioRxiv release.
 
 ---
 
 ## ✅ Recently resolved (this sprint)
+
+### GAP 4. Allosteric learn-to-rank head — MAMMAL's structural blindness (SHIPPED ✅, 2026-05-29)
+
+**Was**: the honestly-disclosed core weakness — MAMMAL's sequence-only DTI head is structurally blind to allosteric/transporter pharmacology, and the Boltz-2 Tier-A patch failed at the transporters. Unsolved.
+
+**Shipped** (`src/mammal_repurposing/cluster_a/allosteric_ltr.py`, `scripts/78`, `reports/allosteric_ltr_v1.md`, `tests/test_allosteric_ltr.py` — 7 tests). First, the problem is *quantified*: on the cited 21-compound allosteric benchmark MAMMAL's within-target predicted-pKd std is **0.01–0.05** across ligands spanning 3 log-units of affinity — it cannot rank binders within a target (a publishable negative result). Then a **learn-to-rank head** fusing [MAMMAL pKd ⊕ Tanimoto-to-actives ⊕ Boltz affinity ⊕ RDKit physicochemistry], trained on 289 real ChEMBL pChEMBL pairs (benchmark compounds excluded) and evaluated **held-out** on the benchmark, lifts pooled within-target Spearman ρ:
+
+| Predictor | within-target ρ |
+|---|---|
+| MAMMAL pKd alone | +0.02 |
+| Tanimoto alone | +0.47 |
+| Physicochemical-only | +0.05 |
+| **Fused learn-to-rank** | **+0.51** |
+
+Per-target the fusion rescues PDE9A (+1.00 vs −1.00) and PDE4D (+0.80 vs −0.40), ties HRH3, and is slightly worse at CHRNA7 (−0.10 vs +0.20) — reported honestly. Honest scope: n=21 proof-of-concept, not a production predictor; the takeaway is that MAMMAL must NOT be used for within-target ranking at allosteric/transporter sites (the targets that dominate cognition).
+
+### GAP 5. Clinician-legible evidence dossier (SHIPPED ✅, 2026-05-29)
+
+**Was**: the pipeline produced the right currency (Hedges' g + CrI) but no per-compound artifact in the language a doctor reads.
+
+**Shipped** (`src/mammal_repurposing/reporting/clinician_dossier.py`, `scripts/80`, `reports/clinician_dossiers_v1.md`, `tests/test_clinician_dossier.py` — 7 tests): a one-page **GRADE-style** card per (compound, indication) — predicted g + 90% CrI, Cochrane evidence-quality rating with explicit up/down-grade reasons, mechanism-class pivotal track record, predicted off-target liability flags mapped to clinical concerns (hERG/D2/H1/α1/muscarinic/opioid…), provenance trail, and explicit failure-mode caveats. Correctly grades donepezil/memantine HIGH-SUCCESS, MPH-ADHD MODERATE (g=0.50), and idalopirdine/encenicline HIGH-quality evidence of a NULL effect (FAILURE + warning).
+
+### GAP 6. External benchmark — ours vs the repurposing paradigms (SHIPPED ✅, 2026-05-29)
+
+**Was**: nothing compared the pipeline against a published-style baseline on a shared held-out task ("compared to what?").
+
+**Shipped** (`scripts/79`, `reports/external_benchmark_v1.md`, `retrospective.target_popularity_score` + `paired_auroc_bootstrap`, +3 tests): on the held-out 31-drug task, the mechanism-class track record (AUROC **1.00**) beats the two genuinely leakage-free target-centric paradigms — affinity (0.47) and genetics (0.59). A target-popularity "knowledge" baseline scores 0.96 but is shown to be a **hindsight confound** (a target accrues ChEMBL records *because* a drug succeeded there) — reported honestly, not hidden. Each with bootstrap CI + permutation p + paired bootstrap. A full TxGNN/PrimeKG run is env-gated (documented).
 
 ### V6.A grid expansion 13 → 23 targets (SHIPPED ✅ partial, 2026-05-29)
 
@@ -380,14 +407,12 @@ Currently V7 + V8 OSF pre-registrations are markdown-ready but not locked with a
 
 ## 🎯 Recommended sprint sequence (in priority order)
 
-**Done since last refresh** (struck from the queue): MH1, MH2, MH3, MH8; #7, #11, #12; Gap 1; Gap 3; **Gap 2 (disease reframe — SHIPPED)**; **V6.A grid expansion 13→23 (PARTIAL — SHIPPED, see below)**. The queue below is what remains.
+**Done since last refresh** (struck from the queue): MH1, MH2, MH3, MH8; #7, #11, #12; Gap 1; Gap 2; Gap 3; **Gap 4 (allosteric learn-to-rank — SHIPPED)**; **Gap 5 (clinician dossiers — SHIPPED)**; **Gap 6 (external benchmark — SHIPPED)**; **V6.A grid 13→23 (PARTIAL — SHIPPED)**. All six gaps closed; the queue below is what remains.
 
 1. **V6.A grid expansion — finish 23 → 31** (`scripts/77` did 13→23 from cached signal): (a) re-score the 5 panel targets added after the DTI runs (GRM2/3/5, GlyT1, HTR4 — no cached binding); (b) **add CHRM1/CHRM4 (M1/M4) + HTR6 to the panel** — they are the CIAS and AD *winning/failing* mechanisms (xanomeline; idalopirdine) and are not in the 28-panel at all, so the disease shortlists price them but can't surface a compound. Both need MAMMAL DTI inference (env-gated here).
-2. **Gap 4 — allosteric learn-to-rank head** (NEW, see below). The grid expansion exposed MAMMAL's structural blindness vividly: peptides (semaglutide) and promiscuous binders (staurosporine, a statin) score as top "binders" at GPCR classes. A fused learn-to-rank head is the real ML fix and the project's clearest novel-method contribution.
-3. **Gap 5 — clinician-legible evidence dossier** (NEW). Per-compound one-page g + CI + GRADE quality + liability flags + provenance — the artifact a doctor actually reads.
-4. **Gap 6 — external benchmark** (NEW). Beat a published-style repurposing baseline on the held-out cognition-drug ranking to answer "compared to what?".
-5. **#5 + MH5** (V6.B Gate 2 + 3 with held-out GWAS + multi-modulator extension) — lifts V6.B Gate 2 from DEGRADE to PASS. The 70-anchor table is already built; needs held-out GWAS L2G (#13).
-6. **#8 + #9** (OSF DOI mint + bioRxiv submission) — public release of all papers + Gap 1/2/3 results.
+2. **Scale Gap 4** — expand the allosteric benchmark beyond n=21 + add fuller Boltz coverage (currently 6/21); the held-out ρ +0.02→+0.51 is a proof-of-concept on small n.
+3. **#5 + MH5** (V6.B Gate 2 + 3 with held-out GWAS + multi-modulator extension) — lifts V6.B Gate 2 from DEGRADE to PASS. The 70-anchor table is already built; needs held-out GWAS L2G (#13).
+4. **#8 + #9** (OSF DOI mint + bioRxiv submission) — public release of all papers + Gap 1-6 results.
 7. **MH4** (Mondrian conformal calibration) — V8 paper methodology refinement.
 8. **MH6** (allosteric vs orthosteric in V7 PBPK) — V7 paper methodology contribution.
 9. **MH7** (species translation random effect) — V8 Discussion refinement.
@@ -425,8 +450,8 @@ The AD within-disease result is the clinically-pointed strengthening of Gap 3: *
 
 This is the **brutally honest** companion to `PROJECT_STATUS.md`. When a reviewer / collaborator / grant officer asks "what's missing?", the answer should be: "see GAPS_AND_RESEARCH_DIRECTIONS.md — we've documented every limitation, every blocker, and every must-have research direction with effort estimates and priority ordering. No surprises."
 
-The pipeline is end-to-end shipped + tested + publishable across 5 manuscripts, now **runs on real LINCS L1000 + real cpg0000**, produces a **differentiated v11 (compound × target) shortlist**, has been **validated against real pivotal-trial outcomes** (Gap 3: mechanism-class track record discriminates clinical SUCCESS vs FAILURE at AUROC 1.00), and produces **disease-specific shortlists** (Gap 2: AD / CIAS / FXS, each recovering its real winning mechanism with a within-disease leakage audit). But it is still **not** wet-lab-validated, **not** OSF-locked, **not** independent of the Roberts 2020 ceiling, and the V6.A binding grid still covers only 13/28 targets (so the disease shortlists can't yet surface M1/M4 or 5-HT6 candidates). This document tells you exactly what would change each of those statements.
+The pipeline is end-to-end shipped + tested + publishable, now **runs on real LINCS L1000 + real cpg0000**, produces a **differentiated v11 shortlist on the 23-target expanded grid**, is **validated against real pivotal-trial outcomes** (Gap 3 + Gap 6: class track record AUROC 1.00 vs the target-centric paradigms ≈ chance), produces **disease-specific shortlists** (Gap 2: AD/CIAS/FXS, each recovering its real winning mechanism), has an **allosteric learn-to-rank head** that lifts within-target ranking where MAMMAL is blind (Gap 4: ρ +0.02→+0.51), and emits **clinician-legible GRADE dossiers** (Gap 5). But it is still **not** wet-lab-validated, **not** OSF-locked, **not** independent of the Roberts 2020 ceiling, and the binding grid covers 23/28 targets (CHRM1/4 + HTR6 still absent, so the CIAS muscarinic winner / AD 5-HT6 failure are priced but unscorable). This document tells you exactly what would change each of those statements.
 
 ---
 
-*Generated by `GAPS_AND_RESEARCH_DIRECTIONS.md`. Companion to README.md + PROJECT_STATUS.md + 5-paper manuscript suite + wet-lab handoff. Last refreshed 2026-05-29 — Gap 1 (v11 grid shortlist) + Gap 2 (disease-population reframe) + Gap 3 (retrospective clinical validation) shipped; chemCPA on real LINCS; V8 hierarchical on real cpg0000. Next: V6.A grid expansion to all 28 targets.*
+*Generated by `GAPS_AND_RESEARCH_DIRECTIONS.md`. Companion to README.md + PROJECT_STATUS.md + manuscript suite + wet-lab handoff. Last refreshed 2026-05-29 — Gaps 1–6 all shipped (v11 grid; disease reframe; retrospective validation; allosteric learn-to-rank; clinician dossiers; external benchmark) + V6.A grid 13→23. Next: finish the panel to 31 targets (CHRM1/4 + HTR6), then OSF/bioRxiv release.*
