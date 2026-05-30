@@ -1,11 +1,11 @@
-# OSF Pre-registration — Mechanism-class prognostic prior for cognition-drug repurposing
+# OSF Pre-registration: Mechanism-class prognostic prior for cognition-drug repurposing
 
 **Author:** Pierce Lonergan · ORCID [0009-0008-4235-396X](https://orcid.org/0009-0008-4235-396X)
 **Date created:** lock via OSF timestamp on upload.
 **Associated preprint:** `reports/manuscript_class_prognostic_biorxiv.md`
 **Repository (frozen at submission commit):** https://github.com/pierce-lonergan/MAMMAL_Cognitive_Enhancement_Drug_Repurposing
 
-This document follows the OSF "Preregistration" template. It separates **(A) completed, transparently-reported analyses** from **(B) a genuinely prospective, timestamped prediction commitment** — the only part that is pre-registered in the strict sense.
+This document follows the OSF "Preregistration" template. It separates **(A) completed, transparently-reported analyses** from **(B) a genuinely prospective, timestamped prediction commitment**: the only part that is pre-registered in the strict sense.
 
 ---
 
@@ -15,7 +15,7 @@ This document follows the OSF "Preregistration" template. It separates **(A) com
 
 **Hypotheses (confirmatory).**
 - **H1.** A mechanism-class prognostic prior (class leave-one-compound-out effect size) discriminates clinical SUCCESS vs FAILURE on held-out cognition drugs with AUROC ≥ 0.85.
-- **H2.** Two leakage-free target-centric predictors — target-binding affinity (foundation-model DTI) and target genetic relevance — do **not** exceed AUROC 0.70.
+- **H2.** Two leakage-free target-centric predictors (target-binding affinity (foundation-model DTI) and target genetic relevance) do **not** exceed AUROC 0.70.
 - **H3 (prospective, the pre-registered commitment).** For each drug on the prospective watchlist (§B), the deterministic class rule's SUCCESS/FAILURE call will agree with the eventual pivotal-trial cognitive-endpoint outcome more often than the target-affinity call.
 
 ## 2. Design plan
@@ -37,7 +37,7 @@ Observational / predictive. No manipulation. Each drug is a unit; the outcome is
 - **Decision rule for a binary class call:** SUCCESS iff the class prior mean g ≥ 0.20 (the field's minimal clinically-relevant cognition SMD); else FAILURE.
 - **Stopping rule:** none (fixed dataset for A; readout-driven for B).
 
-## 5. (A) Completed analyses — reported transparently, NOT pre-registered
+## 5. (A) Completed analyses: reported transparently, NOT pre-registered
 
 These were run before this document and are reported in full in the preprint and companion reports. They are exploratory in the strict pre-registration sense (results known at write-time) but are leakage-audited and fully reproducible (`scripts/75`, `79`, `76`, `78`, `83`):
 
@@ -48,7 +48,7 @@ These were run before this document and are reported in full in the preprint and
 
 We do **not** claim these as pre-registered confirmations. They motivate the pre-registered prospective test below.
 
-## 6. (B) Prospective prediction commitment — the pre-registered component
+## 6. (B) Prospective prediction commitment: the pre-registered component
 
 We commit, at OSF timestamp, to the deterministic class-rule predictions below for drugs whose pivotal cognitive-endpoint outcomes are not yet in our ledger. Predictions follow mechanically from each drug's mechanism class (§4 decision rule). At each pivotal readout we will append the adjudicated outcome and score H3 without altering the rule.
 
@@ -73,7 +73,7 @@ Two watchlist classes have read out since lock, both as predicted:
 | iclepertin (GlyT1 / NMDA-coagonist enhancer) | CONNEX Ph3 (2025) | FAILURE | **FAILURE** (no MCCB effect; programme discontinued) | ✓ |
 | luvadaxistat (DAAO / NMDA-coagonist enhancer) | INTERACT Ph2 (2024) | FAILURE | **FAILURE** (missed primary; development halted) | ✓ |
 
-The NMDA-coagonist-enhancement axis (GlyT1 + DAAO) was predicted to fail from the bitopertin precedent and did, in two independent 2024–2025 readouts — an out-of-sample confirmation of H3's GlyT1 call. **Pending** (genuinely prospective): PDE4 (zatolmilast EXPERIENCE-301/204, NCT05358886/NCT05163808) → SUCCESS; M1/M4 (KarXT MINDSET-2, NCT06976203) → SUCCESS, population-uncertain in AD. The honest counter-signal on record — emraclidine's M4 EMPOWER Ph2 psychosis miss (2024) — is retained and tempers the M1/M4 confidence rather than being discarded.
+The NMDA-coagonist-enhancement axis (GlyT1 + DAAO) was predicted to fail from the bitopertin precedent and did, in two independent 2024–2025 readouts: an out-of-sample confirmation of H3's GlyT1 call. **Pending** (genuinely prospective): PDE4 (zatolmilast EXPERIENCE-301/204, NCT05358886/NCT05163808) → SUCCESS; M1/M4 (KarXT MINDSET-2, NCT06976203) → SUCCESS, population-uncertain in AD. The honest counter-signal on record (emraclidine's M4 EMPOWER Ph2 psychosis miss (2024)) is retained and tempers the M1/M4 confidence rather than being discarded.
 
 ## 7. Other
 
