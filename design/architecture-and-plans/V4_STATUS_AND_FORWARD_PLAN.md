@@ -1015,7 +1015,7 @@ This composition produces the V6 wet-lab shortlist: ranked by joint posterior me
 |---|---|---|---|---|
 | **V5: Multi Head DTI ensemble** | 12 | 5 heads + bias decomposition + Bayesian router + eMOSAIC OOD + Venn-ABERS + disagreement facet + validation | None (heads are pip-installable) | `fusion/bayesian_router.py` + `diagnostics/per_head_bias.py` + `diagnostics/ood_emosaic.py` + `diagnostics/disagreement_axis.py` + paper draft (J Cheminform / Nat Mach Intell) |
 | **V6: Bayesian Cluster D prior** | 16 | abagen + BrainSMASH + OT L2G + cellxgene + PyMC NUTS + 4-gate validation + §7.11 integration + paper | abagen / BrainSMASH / PyMC installs; cellxgene-census brain slice (~10 GB local cache) | `src/mammal_repurposing/cluster_d/bayesian_prior.py` + 5 validation reports + paper draft (Cell Reports Methods / Bioinformatics) |
-| **Composition** | 4 | Joint-posterior plumbing + V6 wet-lab shortlist re-render | V5 + V6 both shipped | `reports/wet_lab_shortlist_v7_joint.md` |
+| **Composition** | 4 | Joint-posterior plumbing + V6 wet-lab shortlist re-render | V5 + V6 both shipped | `reports/wet-lab/wet_lab_shortlist_v7_full.md` |
 
 **Total V5 + V6**: ~32 weeks (~8 months) of focused engineering. Two distinct papers, two distinct validation regimes, two distinct publication venues. The shortlist that lands at the end is the first cognition-enhancement candidate set in the literature with:
 - formal credible intervals on every compound's rank,

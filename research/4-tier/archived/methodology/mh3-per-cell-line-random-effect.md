@@ -330,15 +330,15 @@ This section is for the V8 Discussion as a Limitations subsection. None of these
 | Day | Task | Deliverable |
 |-----|------|-------------|
 | 1 | cpg0000 ETL: download compound subset well-aggregated profiles for A549 + U2OS | `data/cache/cpg0000/profiles_compound_a549_u2os.parquet` |
-| 2 | Fit two-cell-line stripped-down §3 model on cpg0000 | `reports/v8_mh3_cpg0000_calibration.md`, posterior parquet |
+| 2 | Fit two-cell-line stripped-down §3 model on cpg0000 | `reports/pipeline/v8_hierarchical_cpg0000_calibration_v1.md`, posterior parquet |
 | 3 | Generate cpg0000 ICC table by endpoint category | calibration table for V8 Methods §X |
 | 4–5 | Refactor V8 joint posterior to add α, γ, δ random effects (PyMC + numpyro) | `scripts/v8_joint_with_random_effects.py` |
 | 6–7 | Run full V8 fit with informative cpg0000 priors on σ_α, σ_δ | inference data parquet, divergence triage notes |
 | 8 | Compute per-compound T_c for all V8 (L, L, H) shortlist | `reports/v8_transferability_index_per_compound.csv` |
-| 9 | Pre-registered gate evaluation (G1–G6) | `reports/v8_mh3_gate_evaluation.md` |
+| 9 | Pre-registered gate evaluation (G1–G6) | (planned, not built; see `FUTURE_WORK.md`) |
 | 10 | Gorgogietas concordance check (G5) | overlap table + visualization |
 | 11–12 | V8 Methods + Discussion writing for MH3 + MH7 paragraph | V8 manuscript updates |
-| 13 | OSF §7 amendment (informative prior values, gate criteria) | `reports/v8_osf_amendment_mh3.md` |
+| 13 | OSF §7 amendment (informative prior values, gate criteria) | (planned, not built; see `FUTURE_WORK.md`) |
 | 14 | Sanity-check holdout: refit with one cell-line withheld, check β recovery | sensitivity analysis notes |
 
 **Dependencies**: cpg0000 must be downloaded (S3 boto3 UNSIGNED is already validated per recently-resolved gap #3); numpyro must be installed (resolved per recently-resolved gap #1); RTX 5070 GPU should be available for the full V8 fit if it exceeds CPU-feasible time.

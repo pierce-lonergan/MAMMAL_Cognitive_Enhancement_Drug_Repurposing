@@ -220,7 +220,7 @@ For each head, compute MD for each training compound against training cluster ce
 
 ### 4.4 Cross-head OOD consensus and the liability HARD CUT
 
-Define n_OOD(q) = Σ_k 1[MD_k(q) > MD*_k]. When n_OOD(q) ≥ 3 of 5 heads, compound is hard-flagged as "out-of-manifold" and routed to `reports/out_of_manifold_review.md`, not the wet-lab shortlist. This is the analog of v4 §8.0b liability HARD CUT.
+Define n_OOD(q) = Σ_k 1[MD_k(q) > MD*_k]. When n_OOD(q) ≥ 3 of 5 heads, compound is hard-flagged as "out-of-manifold" and routed to a planned out-of-manifold review queue (not built; see `FUTURE_WORK.md`), not the wet-lab shortlist. This is the analog of v4 §8.0b liability HARD CUT.
 
 The 3-of-5 threshold: (a) under null (in-distribution), false-positive rate per head ≈ 0.01 at 99th-percentile thresholds; probability of 3+ false flags out of 5 independent heads ≈ C(5,3)·0.01³·0.99² + ... ≈ 1e-4 (acceptable Type-I); (b) under alternative (truly OOD), expected number of flags ≥ 3 if OOD-ness is at least moderate, because overlapping training data (ChEMBL/PubChem, BindingDB) makes head-OOD flags positively correlated.
 

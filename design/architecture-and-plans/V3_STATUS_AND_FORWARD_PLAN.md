@@ -801,7 +801,7 @@ This subsection proposed DeepPurpose as the first additional ranker. **§7.7 now
 
 **Gap**: the panel asks "what binds these 22 targets?" The complementary question is "what binds *like* the 30 known nootropics?"
 
-**Concept**: for each known nootropic (donepezil, modafinil, methylphenidate, galantamine, ...) compute its 22-target binding fingerprint (MAMMAL pKd vector). For every compound in the library, compute cosine similarity to each known-nootropic fingerprint. Rank compounds by *max-similarity* across the known-nootropic set. Surface as `reports/nootropic_similarity_ranking.md` — a parallel ranking to the panel-based one.
+**Concept**: for each known nootropic (donepezil, modafinil, methylphenidate, galantamine, ...) compute its 22-target binding fingerprint (MAMMAL pKd vector). For every compound in the library, compute cosine similarity to each known-nootropic fingerprint. Rank compounds by *max-similarity* across the known-nootropic set. Surface as `reports/pipeline/nootropic_similarity_v1.md`, a parallel ranking to the panel-based one.
 
 **Why now**: the calibration is uncertain at individual targets; multi-target fingerprint similarity is more robust to per-target noise (it averages it out).
 
@@ -825,7 +825,7 @@ This subsection proposed DeepPurpose as the first additional ranker. **§7.7 now
 
 **Gap**: when new Boltz data lands, the v3 calibrated weights are silently stale. There's no automation to detect this.
 
-**Concept**: a `scripts/_v3_watch_and_recalibrate.sh` that, when `boltzina_affinity.parquet` mtime is newer than `weights_calibrated.yaml` mtime, re-runs Phase A.7 → C → D → `26_v3_wet_lab_shortlist.py`. Schedule via cron / Windows Task Scheduler. Outputs a diff vs the prior calibration to `reports/calibration_drift_log.md`.
+**Concept**: a `scripts/_v3_watch_and_recalibrate.sh` that, when `boltzina_affinity.parquet` mtime is newer than `weights_calibrated.yaml` mtime, re-runs Phase A.7 → C → D → `26_v3_wet_lab_shortlist.py`. Schedule via cron / Windows Task Scheduler. Outputs a diff vs the prior calibration to a planned calibration drift log (not built; see `FUTURE_WORK.md`).
 
 **Why now**: closes the operational loop. The pipeline becomes self-updating as Boltz coverage grows.
 

@@ -320,7 +320,7 @@ Same Phase A.7 approach: per-target Spearman ρ vs ChEMBL ground truth.
 
 ### 4.5 Reporting
 
-`reports/liability_audit.md` — one row per shortlisted compound:
+`reports/pipeline/liability_audit_v1.md` — one row per shortlisted compound:
 ```markdown
 ## modafinil (CHEMBL1373)
 | Target | pKi (pred) | pKi (ChEMBL gt) | Tier | Threshold | Verdict |
@@ -428,7 +428,7 @@ Same Phase A.7 approach: per-target Spearman ρ vs ChEMBL ground truth.
 1. Extend `targets_seed.csv` with the 44 rows in Section 1.3 + new schema columns.
 2. Implement `gates/liability_panel.py` per Section 3.3.
 3. Re-run MAMMAL on 298 compounds × 44 liability targets (~1 hr wall-clock on RTX 5070).
-4. Apply gates to v3 shortlist; emit `reports/liability_audit.md` and `wet_lab_shortlist_v4.csv`.
+4. Apply gates to v3 shortlist; emit `reports/pipeline/liability_audit_v1.md` and `wet_lab_shortlist_v4.csv`.
 5. Spot-check against Section 5 predictions — aripiprazole CUT, amitriptyline CUT, modafinil/aniracetam/BPN14770 PASS. If they don't, debug before proceeding.
 
 **Stage 2 — Calibration & validation (~1 week)**:
