@@ -2,6 +2,8 @@
 
 **One-pager executive summary** suitable for grant applications, sprint reviews, or stakeholder briefings. Last refreshed 2026-05-29 (Gap 1 v11 grid composer + Gap 3 retrospective clinical validation + MH 1-8 sprint suite + chemCPA real-LINCS training + V8 cpg0000 calibration).
 
+**Pre-registration:** OSF DOI 10.17605/OSF.IO/V7GP5 (registered 2026-05-30; project https://osf.io/rnj3k). Manuscript prepared for *Nature Communications*; preprint planned on bioRxiv.
+
 ---
 
 ## What this is

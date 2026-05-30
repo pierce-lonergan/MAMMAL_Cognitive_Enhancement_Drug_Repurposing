@@ -158,6 +158,5 @@ retrospective option, consistent with Step 2.)*
 Paste each block into the matching OSF wizard field, and attach the named files in
 the per-question upload slots. If a sub-field shown in the wizard is not represented
 above, answer "Not applicable (observational and computational study)". After
-completing Review (Step 8), Register to mint the timestamp and DOI, then copy the
-registration DOI back into the manuscript Data-availability section,
+completing Review (Step 8), Register to mint the timestamp and DOI. STATUS: REGISTERED 2026-05-30, DOI 10.17605/OSF.IO/V7GP5 (https://osf.io/v7gp5; project https://osf.io/rnj3k). The DOI has been threaded into the manuscript Data-availability section,
 `PROJECT_STATUS.md`, and `CITATIONS.bib`.

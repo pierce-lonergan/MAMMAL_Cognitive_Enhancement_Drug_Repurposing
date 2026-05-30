@@ -11,7 +11,7 @@ can be uploaded to bioRxiv's optional graphical-abstract slot.)*
 - **License:** CC-BY-4.0
 - **Competing interests / funding:** none
 - **Data & code:** GitHub repository (Apache-2.0): link in the manuscript's Data-availability section
-- **Pre-registration:** OSF (analysis plan + time-stamped prospective class-prediction commitment)
+- **Pre-registration:** OSF, DOI 10.17605/OSF.IO/V7GP5 (https://osf.io/v7gp5; analysis plan + time-stamped prospective class-prediction commitment)
 
 **Two-sentence framing (for the optional "comments to the editor" box):**
 

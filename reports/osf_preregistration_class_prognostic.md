@@ -1,7 +1,7 @@
 # OSF Pre-registration: Mechanism-class prognostic prior for cognition-drug repurposing
 
 **Author:** Pierce Lonergan · ORCID [0009-0008-4235-396X](https://orcid.org/0009-0008-4235-396X)
-**Date created:** lock via OSF timestamp on upload.
+**Date registered:** May 30, 2026 (OSF Registries; DOI 10.17605/OSF.IO/V7GP5; project https://osf.io/rnj3k).
 **Associated preprint:** `reports/manuscript_class_prognostic_biorxiv.md`
 **Repository (frozen at submission commit):** https://github.com/pierce-lonergan/MAMMAL_Cognitive_Enhancement_Drug_Repurposing
 
