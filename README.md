@@ -311,10 +311,10 @@ If you use this pipeline in your work, please cite:
             Bayesian pipeline with multi-head DTI ensemble, Bayesian
             neurobiological prior, PBPK-anchored effect-size translation,
             and target-agnostic perturbational evidence axis},
-  author = {Lonergan, Pierce and {Claude Opus 4.7 (1M context)}},
+  author = {Lonergan, Pierce},
   year   = {2026},
   url    = {https://github.com/pierce-lonergan/MAMMAL_Cognitive_Enhancement_Drug_Repurposing},
-  note   = {V4 + V5 + V6 + V7 + V8 architecture; OSF pre-registered at TBD}
+  note   = {ORCID 0009-0008-4235-396X; AI-assisted; OSF pre-registered}
 }
 ```
 
