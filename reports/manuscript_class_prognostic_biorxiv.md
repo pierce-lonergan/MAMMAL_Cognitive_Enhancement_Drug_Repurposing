@@ -6,7 +6,7 @@
 
 Correspondence: Pierce Lonergan.
 
-*Preprint — prepared for bioRxiv (Neuroscience / Pharmacology and Toxicology). Code and data: GitHub (pierce-lonergan); full repository link in Data and code availability.*
+*Manuscript prepared for submission to Nature Communications; preprint planned on bioRxiv (Neuroscience / Pharmacology and Toxicology). Code and data: GitHub (pierce-lonergan); full repository link in Data and code availability.*
 
 ---
 
@@ -20,7 +20,7 @@ Computational drug repurposing for cognitive impairment is dominated by target-c
 
 ## Introduction
 
-Cognitive impairment across Alzheimer's disease (AD), schizophrenia (cognitive impairment associated with schizophrenia, CIAS) and Fragile X syndrome (FXS) has resisted pharmacological progress despite intensive effort. The clinical attrition landscape for cognitive enhancers is well documented: α7-nicotinic agonists (encenicline), 5-HT6 antagonists (idalopirdine, intepirdine), mGluR agonists (pomaglumetad), AMPA potentiators, and PDE9 inhibitors all reached Phase II/III and failed on cognitive endpoints [1–5].
+Cognitive impairment across Alzheimer's disease (AD), schizophrenia (cognitive impairment associated with schizophrenia, CIAS) and Fragile X syndrome (FXS) has resisted pharmacological progress despite intensive effort. The clinical attrition landscape for cognitive enhancers is well documented: α7-nicotinic agonists (encenicline), 5-HT6 antagonists (idalopirdine, intepirdine), AMPA potentiators, and PDE9 inhibitors all reached Phase II/III and failed on cognitive endpoints, and mGluR2/3 agonists (pomaglumetad) failed across the schizophrenia programme on their primary CNS endpoints [1–5].
 
 Computational repurposing pipelines typically prioritise candidates by one of two signals. The first is **target-binding affinity**: score how tightly a compound binds a cognition-relevant target, increasingly with large protein–ligand foundation models such as IBM's MAMMAL [6]. The second is **target genetic evidence**: weight targets by GWAS / functional-genomic support, as in Open Targets [7]. Both encode a reasonable prior — engage a relevant target — but neither was designed to answer the operative clinical question: *will a drug of this kind actually improve cognition in patients?*
 
@@ -168,7 +168,7 @@ Gradient-boosted regressor (scikit-learn `GradientBoostingRegressor`, n_estimato
 
 ## Data and code availability
 
-All code, curated data, and figures are available under Apache-2.0 at <https://github.com/pierce-lonergan/MAMMAL_Cognitive_Enhancement_Drug_Repurposing>; the MAMMAL model is Apache-2.0 (IBM Research). Key reproductions: `scripts/83` (Fig. 1), `scripts/84` (robustness supplement), `scripts/85` (Fig. 2, temporal + taxonomy), `scripts/86` (calibrated constructive predictor), `scripts/87` (prospective predictions, `data/raw/prospective_predictions.csv`), `scripts/88` (ledger expansion), `scripts/89` (unbiased ClinicalTrials.gov pull + 294-trial denominator). 503 automated tests pass. A companion OSF pre-registration documents the analysis plan and the time-stamped prospective class-prediction commitment (two predictions already confirmed at readout).
+All code, curated data, and figures are available under Apache-2.0 at <https://github.com/pierce-lonergan/MAMMAL_Cognitive_Enhancement_Drug_Repurposing>; the MAMMAL model is Apache-2.0 (IBM Research). Key reproductions: `scripts/83` (Fig. 1), `scripts/84` (robustness supplement), `scripts/85` (Fig. 2, temporal + taxonomy), `scripts/86` (calibrated constructive predictor), `scripts/87` (prospective predictions, `data/raw/prospective_predictions.csv`), `scripts/88` (ledger expansion), `scripts/89` (unbiased ClinicalTrials.gov pull + 294-trial denominator). The analysis is continuous-integration-tested and fully reproducible from the public code and data. A companion OSF pre-registration documents the analysis plan and the time-stamped prospective class-prediction commitment (two predictions already confirmed at readout).
 
 ## References
 
@@ -176,7 +176,7 @@ All code, curated data, and figures are available under Apache-2.0 at <https://g
 
 1. Keefe RSE, Meltzer HA, Dgetluck N, Gawryl M, Koenig G, Moebius HJ, Lombardo I, Hilt DC. Randomized, double-blind, placebo-controlled study of encenicline, an α7 nicotinic acetylcholine receptor agonist, for cognitive impairment in schizophrenia. *Neuropsychopharmacology* 2015;40(13):3053–3060. doi:10.1038/npp.2015.176.
 2. Atri A, Frölich L, Ballard C, Tariot PN, Molinuevo JL, Boneva N, Windfeld K, Raket LL, Cummings JL. Effect of idalopirdine as adjunct to cholinesterase inhibitors on change in cognition in patients with Alzheimer disease: three randomized clinical trials (STARSHINE/STARBEAM/STARBRIGHT). *JAMA* 2018;319(2):130–142. doi:10.1001/jama.2017.20373.
-3. Stauffer VL, Millen BA, Andersen S, Kinon BJ, LaGrandeur L, Lindenmayer J-P, Gomez JC. Pomaglumetad methionil (mGluR2/3 agonist): no significant efficacy versus placebo in schizophrenia. *Schizophr Res* 2013;150(2–3):434–441. doi:10.1016/j.schres.2013.08.020. *(Long-term comparative safety: Adams DH, et al. BMC Psychiatry 2013;13:143.)*
+3. Stauffer VL, Millen BA, Andersen S, Kinon BJ, LaGrandeur L, Lindenmayer J-P, Gomez JC. Pomaglumetad methionil: no significant difference as an adjunctive treatment for patients with prominent negative symptoms of schizophrenia compared to placebo. *Schizophr Res* 2013;150(2–3):434–441. doi:10.1016/j.schres.2013.08.020. *(mGluR2/3 agonist; NSA-16 negative-symptom primary. Long-term comparative safety: Adams DH, et al. BMC Psychiatry 2013;13:143; monotherapy pivotal HBBM: Downing 2014, BMC Psychiatry 13:351.)*
 4. Schwam EM, Nicholas T, Chew R, Billing CB, Davidson W, Ambrose D, Altstiel LD. A multicenter, double-blind, placebo-controlled trial of the PDE9A inhibitor PF-04447943 in Alzheimer's disease. *Curr Alzheimer Res* 2014;11(5):413–421. doi:10.2174/1567205011666140505100858.
 5. Roberts CA, Jones A, Sumnall H, Gage SH, Montgomery C. How effective are pharmaceuticals for cognitive enhancement in healthy adults? A series of meta-analyses of modafinil, methylphenidate and D-amphetamine. *Eur Neuropsychopharmacol* 2020;38:40–62. doi:10.1016/j.euroneuro.2020.07.002. *(healthy-adult psychostimulant effect-size ceiling)*
 6. Shoshan Y, Raboh M, Ozery-Flato M, Ratner V, Golts A, Barkan E, Rabinovici-Cohen S, Polaczek S, Amos I, Shapira B, Hazan L, Ninio M, Ravid S, Danziger MM, Weber JK, Morrone JA, Suryanarayanan P, Rosen-Zvi M, Hexter E. MAMMAL — Molecular Aligned Multi-Modal Architecture and Language for biomedical discovery. *npj Drug Discovery* 2026;3(1):14. doi:10.1038/s44386-026-00047-4; arXiv:2410.22367.
