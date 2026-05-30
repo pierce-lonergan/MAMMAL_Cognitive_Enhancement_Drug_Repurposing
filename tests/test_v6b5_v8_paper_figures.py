@@ -277,7 +277,7 @@ class TestProjectStatus:
         "Four publishable manuscripts",
         "Pre-registration",
         "Repository content",
-        "What's externally blocked",
+        "still externally blocked",   # post Gap-1/Gap-3 refresh (was "What's externally blocked")
         "What's actionable now",
         "License",
         "Citation",
@@ -297,8 +297,8 @@ class TestProjectStatus:
     def test_project_status_reports_headline_metrics(self):
         path = ROOT / "PROJECT_STATUS.md"
         body = path.read_text(encoding="utf-8")
-        # Pytest pass rate
-        assert "250" in body
+        # Pytest pass rate (459 non-slow after Gap-1 v11 + Gap-3 retrospective + Gap-2 disease reframe)
+        assert "459" in body
         # Hypothesis audit
         assert "22" in body
         # R̂ = 1.000

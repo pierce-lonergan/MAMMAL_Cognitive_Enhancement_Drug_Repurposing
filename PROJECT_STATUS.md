@@ -8,7 +8,7 @@
 
 A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built around IBM Research's [MAMMAL](https://github.com/BiomedSciAI/biomed-multi-alignment) foundation model. Five architectural layers (V4 → V5 → V6 → V7 → V8) compose into a single ranked set of **(compound, target) repurposing hypotheses** with predicted cognition Hedges' *g*, pre-filtered by the Roberts 2020 SMD ceiling (g ≤ 0.50).
 
-**Honest scope**: this pipeline does NOT discover smart drugs. It enriches a candidate set so wet-lab cycles spend money on plausibility, not chemistry-lottery tickets. Its sharpest validated claim is *negative-and-useful*: target-binding affinity and target genetic-relevance do **not** predict cognition-drug clinical success — mechanism-class track record does (see retrospective validation, below).
+**Honest scope**: this pipeline does NOT discover smart drugs. It enriches a candidate set so wet-lab cycles spend money on plausibility, not chemistry-lottery tickets. Its sharpest validated claim is *negative-and-useful*: target-binding affinity and target genetic-relevance do **not** predict cognition-drug clinical success — mechanism-class track record does (see retrospective validation, below). Gap 2 operationalises that into a **disease-specific** prioritisation: re-scored per disease, the pipeline recovers cholinesterase inhibitors for Alzheimer's, muscarinic M1/M4 for schizophrenia, and PDE4 for Fragile X — each matching the real clinical record.
 
 ---
 
@@ -16,9 +16,10 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 
 | Metric | Value | Status |
 |---|---|---|
-| Pytest pass rate (non-slow) | **442 / 443** (1 skip intentional; +23 from Gap 1 v11 grid + Gap 3 retrospective) | ✅ |
+| Pytest pass rate (non-slow) | **459** pass / 1 skip (+40 from Gap 1 v11 grid + Gap 3 retrospective + Gap 2 disease reframe; `test_fetchers.py` needs the `respx` dev dep) | ✅ |
 | Pytest pass rate (slow) | **12 / 14** (2 fail = real MAMMAL `biomed-multi-alignment` package not in this env, not a regression) | ✅ |
 | **Gap 3 — retrospective clinical-outcome validation** | **mechanism-class track record AUROC 1.00 (perm p=0.0002) vs target affinity 0.12 / relevance 0.59; 9/9 famous Phase III failures flagged** (`reports/retrospective_clinical_validation_v1.md`) | 🏆 |
+| **Gap 2 — disease-population reframe** | **each disease recovers its real winning mechanism**: AD→AChE-I (within-disease class AUROC **0.97**, p=0.003, 10/10 AD failures flagged), CIAS→muscarinic M1/M4 (xanomeline-KarXT), FXS→PDE4 (zatolmilast) (`reports/disease_reframe_v1.md`) | 🏆 |
 | **Gap 1 — v11 grid shortlist** (replaces degenerate v10) | **top-25 spans 7 targets** (was 1); positive controls land correctly (donepezil→ACHE, MPH→SLC6A3, memantine→GRIN2B); max g₉₀=0.39<0.50 | ✅ |
 | chemCPA real-LINCS production training (Sprint 5.2) | **107K real LINCS sigs, Val R²=0.46, OOD R²=0.33** on the 9-compound canonical holdout — 8.3 min on RTX 5070 | ✅ |
 | V8 hierarchical real cpg0000 calibration (Sprint 4.3) | **R̂=1.010, 0 div; ICC_cell=0.018, ICC_inter=0.149; 60/60 compounds T>0.6** (U2OS→brain transfer defended) | ✅ |
@@ -38,8 +39,8 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 | Target panel (V6.B core) | **28 targets** (was 22) — +6 cognitive (HTR1A, HTR4, SLC6A9, GRM2/3/5) + `substrate_mediated` column | ✅ |
 | V6.B.5 expanded panel | **191 targets** with 22-panel ✅ strict subset; MAO-A/MAO-B/COMT/ACHE substrate-mediated | ✅ |
 | Multi-modulator anchor table | **70 rows / 38 targets / 59 compounds / 24 Phase III nulls** (Sprint 2.1) | ✅ |
-| Total scripts shipped | **83** (added `scripts/74_wet_lab_shortlist_v11_grid.py` + `scripts/75_retrospective_clinical_validation.py`) | ✅ |
-| Total source modules shipped | **110** across cluster_a / cluster_b / cluster_c / cluster_d / cluster_e / translation / calibration / fusion / **validation** / pockets / selectivity / diagnostics / fetchers / scoring | ✅ |
+| Total scripts shipped | **84** (added `scripts/74_wet_lab_shortlist_v11_grid.py` + `75_retrospective_clinical_validation.py` + `76_disease_reframe_shortlist.py`) | ✅ |
+| Total source modules shipped | **111** across cluster_a / cluster_b / cluster_c / cluster_d / cluster_e / translation / calibration / fusion / **validation** (retrospective + disease_reframe) / pockets / selectivity / diagnostics / fetchers / scoring | ✅ |
 | MH implementation roadmap | **all core sprints complete** (1.1-1.4 + 2.1-2.2 + 3.1-3.5 + 4.1-4.3 + 5.1-5.2 + 6.2/6.4) + Gap 1 + Gap 3; reports/MH_IMPLEMENTATION_ROADMAP.md | 🚀 |
 
 ---
@@ -108,8 +109,8 @@ Both documents are publication-ready markdown. OSF.io account + DOI mint is the 
 │   ├── fusion/                   (Bayesian router + RRF + faceted + LambdaMART + v10/v11-grid composition)
 │   ├── validation/               (Gap 3 leakage-audited retrospective clinical validation)
 │   └── ...                       (pockets / selectivity / diagnostics / fetchers / scoring)
-├── scripts/                      83 end-to-end pipeline scripts
-├── tests/                        442 non-slow pytest cases + 14 slow (28 files)
+├── scripts/                      84 end-to-end pipeline scripts
+├── tests/                        459 non-slow pytest cases + 14 slow (29 files)
 ├── CITATIONS.bib                 Full BibTeX bibliography (~50 entries)
 ├── README.md                     Public-facing entry point with V4→V8 architecture diagram
 └── PROJECT_STATUS.md             This file
@@ -137,11 +138,11 @@ Previously "externally blocked" items that have since been executed in-session:
 
 ## What's actionable now (in priority order)
 
-1. **Gap 2 — disease reframe** (next sprint): re-point the v11 differentiated shortlist + retrospective-validation machinery at a disease population (CIAS / Alzheimer's / FXS) where mechanism-class effect sizes (g≈0.3-0.4) and clinical need are real, rather than healthy-adult enhancement (g≈0.12).
-2. **V6.A grid expansion** — extend the MMAtt-fusion binding grid from 13 → all 28 panel targets so the v11 shortlist covers CHRNA7/5-HT6/mGluR/GlyT1 (the failure-prone classes the retrospective validation flagged).
+1. ✅ **Gap 2 — disease reframe** (DONE, 2026-05-29): the v11 differentiated grid is now re-scored per disease (AD / CIAS / FXS) using each disease's own pivotal-trial track record, with a within-disease leakage audit (`reports/disease_reframe_v1.md`, `scripts/76`, `src/mammal_repurposing/validation/disease_reframe.py`). AD within-disease class AUROC 0.97; CIAS surfaces muscarinic M1/M4 (xanomeline-KarXT); FXS surfaces PDE4 (zatolmilast).
+2. **V6.A grid expansion** — extend the MMAtt-fusion binding grid from 13 → all 28 panel targets so the disease shortlists can surface CHRNA7/5-HT6/mGluR/GlyT1/**M1-M4** (the classes the reframe prices but cannot yet score for lack of a grid target).
 3. **V8 phenotype axis wiring into v11** — populate the (L,L,H) novel-mechanism cell with real chemCPA/transferability per compound.
 4. **OSF.io project creation** — upload V7 + V8 pre-registrations + lock + DOI mint.
-5. **Public release on bioRxiv** — V6.A + V6.B + V7 + V8 + retrospective-validation manuscripts.
+5. **Public release on bioRxiv** — V6.A + V6.B + V7 + V8 + retrospective-validation + disease-reframe manuscripts.
 
 ---
 
@@ -185,4 +186,4 @@ Full BibTeX bibliography: `CITATIONS.bib`. Per-paper drafts: `reports/v6a_paper_
 
 ---
 
-*Last updated 2026-05-29 (Gap 1 v11 grid composer + Gap 3 retrospective clinical-outcome validation + MH 1-8 sprint suite + chemCPA real-LINCS training + V8 cpg0000 calibration). The pipeline is end-to-end shipped with a real differentiated shortlist (v11) and a leakage-audited retrospective validation; what remains is the disease reframe (Gap 2), wet-lab validation, and OSF/bioRxiv release.*
+*Last updated 2026-05-29 (Gap 1 v11 grid composer + Gap 2 disease-population reframe + Gap 3 retrospective clinical-outcome validation + MH 1-8 sprint suite + chemCPA real-LINCS training + V8 cpg0000 calibration). The pipeline is end-to-end shipped with a real differentiated shortlist (v11), a leakage-audited retrospective validation, and disease-specific shortlists (AD/CIAS/FXS) each validated against the real per-disease pivotal record; what remains is V6.A grid expansion to all 28 targets, wet-lab validation, and OSF/bioRxiv release.*
