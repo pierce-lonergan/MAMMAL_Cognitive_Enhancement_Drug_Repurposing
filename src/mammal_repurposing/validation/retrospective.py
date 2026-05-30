@@ -132,6 +132,32 @@ def target_relevance_score(ledger: pd.DataFrame,
     return out
 
 
+def target_popularity_score(ledger: pd.DataFrame,
+                            chembl_evidence: pd.DataFrame) -> dict[str, float]:
+    """Gap-6 baseline — 'well-studied target' / knowledge-hubness proxy: the
+    log10 total ChEMBL bioactivity records at the drug's target. Stands in for
+    the knowledge-graph repurposing paradigm (target popularity).
+
+    CAVEAT (hindsight confound — NOT leakage-free): a target accrues ChEMBL
+    records partly *because* a drug succeeded there (ACHE is saturated with
+    cholinesterase-inhibitor records because donepezil worked). The count is a
+    contemporaneous snapshot, so high popularity is partly a CONSEQUENCE of the
+    clinical outcome, not an a-priori predictor. Reported as an instructive
+    confound, not a clean baseline — contrast with the genuinely leakage-free
+    affinity / genetics predictors."""
+    col = "n_records" if "n_records" in chembl_evidence.columns else None
+    if col is None:
+        return {}
+    pop = (chembl_evidence.assign(_u=chembl_evidence["target_uniprot"].astype(str))
+           .groupby("_u")[col].sum().to_dict())
+    out: dict[str, float] = {}
+    for _, row in ledger.iterrows():
+        u = str(row["target_uniprot"])
+        if u in pop:
+            out[row["compound"]] = float(np.log10(pop[u] + 1.0))
+    return out
+
+
 def binding_score(ledger: pd.DataFrame, v6a_grid: pd.DataFrame) -> dict[str, float]:
     """P1b — V6.A within-target binding percentile at the drug's known target.
     Leakage-free (ChEMBL bioactivity never saw cognition trials). Only defined
@@ -215,6 +241,36 @@ def permutation_p(scores: np.ndarray, labels: np.ndarray,
         if auroc(scores, perm) >= obs:
             ge += 1
     return (ge + 1) / (n_perm + 1)
+
+
+def paired_auroc_bootstrap(scores_a: np.ndarray, scores_b: np.ndarray,
+                           labels: np.ndarray, n_boot: int = 2000,
+                           seed: int = 42) -> dict:
+    """Gap-6 — paired bootstrap of AUROC_a − AUROC_b on the SAME resampled rows
+    (so the two predictors are compared on identical bootstrap draws). Returns
+    the observed delta, a 90% CI, and P(AUROC_a > AUROC_b)."""
+    rng = np.random.default_rng(seed)
+    n = len(labels)
+    obs = auroc(scores_a, labels) - auroc(scores_b, labels)
+    deltas, wins = [], 0
+    for _ in range(n_boot):
+        idx = rng.integers(0, n, n)
+        l = labels[idx]
+        if l.sum() == 0 or l.sum() == len(l):
+            continue
+        da = auroc(scores_a[idx], l) - auroc(scores_b[idx], l)
+        if np.isfinite(da):
+            deltas.append(da)
+            wins += int(da > 0)
+    if not deltas:
+        return {"delta": obs, "ci_lo": float("nan"), "ci_hi": float("nan"),
+                "p_a_gt_b": float("nan")}
+    return {
+        "delta": float(obs),
+        "ci_lo": float(np.percentile(deltas, 5)),
+        "ci_hi": float(np.percentile(deltas, 95)),
+        "p_a_gt_b": float(wins / len(deltas)),
+    }
 
 
 def spearman(pred: np.ndarray, obs: np.ndarray) -> float:

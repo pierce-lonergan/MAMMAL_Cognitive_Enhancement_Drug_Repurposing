@@ -157,6 +157,55 @@ def test_real_headline_contrast():
     assert correct >= int(0.9 * len(led))
 
 
+# ---------------------------------------------------------------------------
+# Gap 6 — external benchmark helpers
+# ---------------------------------------------------------------------------
+
+def test_paired_auroc_bootstrap_detects_winner():
+    # a ranks perfectly, b is inverted -> delta strongly positive
+    a = np.array([0.1, 0.2, 0.3, 0.8, 0.9, 1.0])
+    b = np.array([0.9, 0.8, 0.7, 0.2, 0.1, 0.0])
+    y = np.array([0, 0, 0, 1, 1, 1])
+    d = R.paired_auroc_bootstrap(a, b, y, n_boot=1000, seed=1)
+    assert d["delta"] == pytest.approx(1.0, abs=1e-9)   # 1.0 - 0.0
+    assert d["p_a_gt_b"] > 0.95
+
+
+def test_target_popularity_score_log_records():
+    led = pd.DataFrame({
+        "compound": ["d1", "d2"], "mechanism_class": ["A", "B"],
+        "target_uniprot": ["P1", "P2"], "indication": ["x", "y"],
+        "clinical_outcome": ["SUCCESS", "FAILURE"], "clinical_g": [0.4, 0.0],
+        "label": [1, 0], "compound_lower": ["d1", "d2"],
+    })
+    chembl = pd.DataFrame({
+        "target_uniprot": ["P1", "P1", "P2"],
+        "n_records": [99.0, 0.0, 9.0],   # P1 -> 99, P2 -> 9
+    })
+    s = R.target_popularity_score(led, chembl)
+    assert s["d1"] == pytest.approx(np.log10(100.0))
+    assert s["d2"] == pytest.approx(np.log10(10.0))
+
+
+@pytest.mark.skipif(not LEDGER.exists(), reason="ledger absent")
+def test_class_beats_leakagefree_target_predictors():
+    """Gap-6 headline: the class track record out-ranks the genuinely
+    leakage-free target-centric paradigms (affinity + genetic relevance)."""
+    led = R.load_clinical_ledger(LEDGER)
+    p2 = R.class_loco_g(led)
+    s2 = np.array([p2[c] for c in led["compound"]])
+    auroc_class = R.auroc(s2, led["label"].to_numpy())
+    v6b_path = ROOT / "data" / "results" / "v2" / "cluster_d_posterior_expanded_v2_mh8_ta99.parquet"
+    if v6b_path.exists():
+        v6b = pd.read_parquet(v6b_path)
+        rel = R.target_relevance_score(led, v6b)
+        rows = led[led["compound"].isin(rel)]
+        au_rel = R.auroc(np.array([rel[c] for c in rows["compound"]]),
+                         rows["label"].to_numpy())
+        assert auroc_class > au_rel        # class >> genetics
+    assert auroc_class >= 0.95
+
+
 @pytest.mark.skipif(not PRED.exists(), reason="predictions parquet not generated")
 def test_famous_failures_flagged():
     pred = pd.read_parquet(PRED)
