@@ -8,7 +8,8 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing, buil
 
 ## Headline metrics (current sprint)
 
-- **478 non-slow pytest tests pass** (1 skip intentional); **12 / 14 slow pass** (2 require the real MAMMAL `biomed-multi-alignment` package, absent in this env)
+- **479 non-slow pytest tests pass** (1 skip intentional); **12 / 14 slow pass**
+- ✅ **Full 31-target panel scored with the real MAMMAL DTI head** (RTX 5070): added CHRM1/CHRM4 (M1/M4) + HTR6 (5-HT6) + GRM2/3/5 + GlyT1 + HTR4. The CIAS shortlist now **surfaces the muscarinic M1/M4 mechanism** (xanomeline-KarXT's class, FDA-approved 2024) it previously could only price; AD scores HTR6 correctly demoted as a Phase III failure class. (MAMMAL runs in a Python-3.12 venv — see `docs/MAMMAL_SETUP.md`.)
 - 🏆 **Retrospective clinical-outcome validation** (`reports/retrospective_clinical_validation_v1.md`): on a leakage-audited ledger of 31 real cognition drugs, **mechanism-class track record discriminates clinical SUCCESS vs Phase III FAILURE at AUROC 1.00** (perm p = 0.0002), flagging **9 / 9 famous Phase III failures** (encenicline, idalopirdine, intepirdine, pomaglumetad, PF-04447943, SUVN-502, ABT-126, TC-5619, MK-0249) it was never told about — while **target-binding affinity (AUROC 0.12) and target genetic-relevance (0.59) sit at or below chance.** The empirical case that cognition repurposing must be class-aware, not affinity-driven.
 - 🔬 **Allosteric learn-to-rank head** (`reports/allosteric_ltr_v1.md`, Gap 4): MAMMAL's sequence-only binding is **flat within target** (std 0.01–0.05 across ligands spanning 3 log-units of affinity — it cannot rank binders). A fused head [MAMMAL ⊕ Tanimoto ⊕ Boltz ⊕ physicochemistry] trained on ChEMBL and evaluated **held-out** on the cited allosteric benchmark lifts within-target Spearman ρ from **+0.02 (MAMMAL alone) to +0.51** — recovering the ranking the foundation model cannot.
 - 🩺 **Clinician evidence dossiers** (`reports/clinician_dossiers_v1.md`, Gap 5): one-page **GRADE-style** cards — effect size + credible interval, evidence quality with explicit reasons, mechanism-class track record, off-target liability flags, provenance, failure-mode caveats — the artifact a doctor actually reads.
@@ -180,7 +181,7 @@ python scripts/41_v5_hypothesis_audit.py
 ### Test suite
 
 ```powershell
-pytest tests/ -m "not slow"   # 478 pass / 1 skip; ~30 s (test_fetchers.py needs the respx dev dep)
+pytest tests/ -m "not slow"   # 479 pass / 1 skip; ~30 s (test_fetchers.py needs the respx dev dep)
 pytest tests/ -m slow         # 12 pass / 2 env-gated (real MAMMAL package); GPU smoke + real model load
 ```
 
@@ -318,4 +319,4 @@ If you use this pipeline in your work, please cite:
 
 ---
 
-*Build status: **V4 → V8 architecture complete + Gaps 1–6 shipped.** V6.B.5 PyMC NUTS converged on the 191-target panel post-MH8 (R̂=1.000, 0 divergences). chemCPA trained on real LINCS L1000 (Val R²=0.46); V8 hierarchical on real cpg0000 (R̂=1.010). Wet-lab shortlist **v11** on the **23-target** expanded grid. **Retrospective clinical validation** (Gap 3): class track record AUROC 1.00 (9/9 famous failures flagged) vs affinity at chance. **Disease reframe** (Gap 2): recovers cholinesterase inhibitors for AD (within-disease AUROC 0.97), muscarinic M1/M4 for schizophrenia, PDE4 for Fragile X. **Allosteric learn-to-rank** (Gap 4): fused head lifts within-target ρ +0.02→+0.51. **Clinician dossiers** (Gap 5) + **external benchmark** (Gap 6). 478 non-slow + 12/14 slow pytest pass. See `PROJECT_STATUS.md` and `design/V4_STATUS_AND_FORWARD_PLAN.md` for full status.*
+*Build status: **V4 → V8 architecture complete + Gaps 1–6 shipped.** V6.B.5 PyMC NUTS converged on the 191-target panel post-MH8 (R̂=1.000, 0 divergences). chemCPA trained on real LINCS L1000 (Val R²=0.46); V8 hierarchical on real cpg0000 (R̂=1.010). Wet-lab shortlist **v11** on the **complete 31-target panel** (all scored with the real MAMMAL DTI head; CHRM1/CHRM4/HTR6 added so CIAS surfaces M1/M4 and AD scores 5-HT6). **Retrospective clinical validation** (Gap 3): class track record AUROC 1.00 (9/9 famous failures flagged) vs affinity at chance. **Disease reframe** (Gap 2): recovers cholinesterase inhibitors for AD (within-disease AUROC 0.97), muscarinic M1/M4 for schizophrenia, PDE4 for Fragile X. **Allosteric learn-to-rank** (Gap 4): fused head lifts within-target ρ +0.02→+0.51. **Clinician dossiers** (Gap 5) + **external benchmark** (Gap 6). 479 non-slow + 12/14 slow pytest pass. See `PROJECT_STATUS.md` and `design/V4_STATUS_AND_FORWARD_PLAN.md` for full status.*

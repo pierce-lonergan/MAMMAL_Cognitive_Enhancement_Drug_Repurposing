@@ -2,7 +2,7 @@
 
 **Brutally honest catalogue** of what's blocking the pipeline, what's MUST-HAVE for the publishable contribution, and what would change the publication trajectory if executed. Companion to `README.md` + `PROJECT_STATUS.md` + the 5-paper manuscript suite.
 
-**Last refreshed**: 2026-05-29 — **Gaps 1–6 all shipped** (v11 grid; disease reframe; retrospective clinical validation; allosteric learn-to-rank; clinician dossiers; external benchmark) + V6.A grid 13→23 + chemCPA real-LINCS + V8 cpg0000. Next: finish the panel to 31 targets (CHRM1/4 + HTR6), then OSF/bioRxiv release.
+**Last refreshed**: 2026-05-29 — **Gaps 1–6 all shipped + panel finished to 31 targets** with the real MAMMAL DTI head (v11 grid; disease reframe; retrospective clinical validation; allosteric learn-to-rank; clinician dossiers; external benchmark; CHRM1/CHRM4/HTR6 scored → CIAS surfaces M1/M4) + chemCPA real-LINCS + V8 cpg0000. Next: wet-lab validation + OSF/bioRxiv release.
 
 ---
 
@@ -407,10 +407,9 @@ Currently V7 + V8 OSF pre-registrations are markdown-ready but not locked with a
 
 ## 🎯 Recommended sprint sequence (in priority order)
 
-**Done since last refresh** (struck from the queue): MH1, MH2, MH3, MH8; #7, #11, #12; Gap 1; Gap 2; Gap 3; **Gap 4 (allosteric learn-to-rank — SHIPPED)**; **Gap 5 (clinician dossiers — SHIPPED)**; **Gap 6 (external benchmark — SHIPPED)**; **V6.A grid 13→23 (PARTIAL — SHIPPED)**. All six gaps closed; the queue below is what remains.
+**Done since last refresh** (struck from the queue): MH1, MH2, MH3, MH8; #7, #11, #12; Gap 1; Gap 2; Gap 3; **Gap 4 (allosteric learn-to-rank)**; **Gap 5 (clinician dossiers)**; **Gap 6 (external benchmark)**; **V6.A grid 13→31 — panel FINISHED with the real MAMMAL DTI head (CHRM1/CHRM4/HTR6 added; CIAS now surfaces M1/M4, AD scores 5-HT6)**. All six gaps + the panel closed; the queue below is what remains.
 
-1. **V6.A grid expansion — finish 23 → 31** (`scripts/77` did 13→23 from cached signal): (a) re-score the 5 panel targets added after the DTI runs (GRM2/3/5, GlyT1, HTR4 — no cached binding); (b) **add CHRM1/CHRM4 (M1/M4) + HTR6 to the panel** — they are the CIAS and AD *winning/failing* mechanisms (xanomeline; idalopirdine) and are not in the 28-panel at all, so the disease shortlists price them but can't surface a compound. Both need MAMMAL DTI inference (env-gated here).
-2. **Scale Gap 4** — expand the allosteric benchmark beyond n=21 + add fuller Boltz coverage (currently 6/21); the held-out ρ +0.02→+0.51 is a proof-of-concept on small n.
+1. **Scale Gap 4** — expand the allosteric benchmark beyond n=21 + add fuller Boltz coverage (currently 6/21); the held-out ρ +0.02→+0.51 is a proof-of-concept on small n.
 3. **#5 + MH5** (V6.B Gate 2 + 3 with held-out GWAS + multi-modulator extension) — lifts V6.B Gate 2 from DEGRADE to PASS. The 70-anchor table is already built; needs held-out GWAS L2G (#13).
 4. **#8 + #9** (OSF DOI mint + bioRxiv submission) — public release of all papers + Gap 1-6 results.
 7. **MH4** (Mondrian conformal calibration) — V8 paper methodology refinement.

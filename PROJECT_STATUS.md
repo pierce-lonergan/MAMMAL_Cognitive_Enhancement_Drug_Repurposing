@@ -16,7 +16,8 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 
 | Metric | Value | Status |
 |---|---|---|
-| Pytest pass rate (non-slow) | **478** pass / 1 skip (+59 across Gaps 1–6 + grid expansion; `test_fetchers.py` needs the `respx` dev dep) | ✅ |
+| Pytest pass rate (non-slow) | **479** pass / 1 skip (+60 across Gaps 1–6 + grid expansion + panel→31; `test_fetchers.py` needs the `respx` dev dep) | ✅ |
+| **Panel finished to 31 targets** (real MAMMAL DTI) | CHRM1/CHRM4 (M1/M4) + HTR6 (5-HT6) + GRM2/3/5/GlyT1/HTR4 scored on RTX 5070; **CIAS now surfaces muscarinic M1/M4** (xanomeline class), AD scores 5-HT6 (demoted). MAMMAL runs in a Py-3.12 venv (`docs/MAMMAL_SETUP.md`) | ✅ |
 | Pytest pass rate (slow) | **12 / 14** (2 fail = real MAMMAL `biomed-multi-alignment` package not in this env, not a regression) | ✅ |
 | **Gap 3 — retrospective clinical-outcome validation** | **mechanism-class track record AUROC 1.00 (perm p=0.0002) vs target affinity 0.12 / relevance 0.59; 9/9 famous Phase III failures flagged** (`reports/retrospective_clinical_validation_v1.md`) | 🏆 |
 | **Gap 2 — disease-population reframe** | **each disease recovers its real winning mechanism**: AD→AChE-I (within-disease class AUROC **0.97**, p=0.003, 10/10 AD failures flagged), CIAS→muscarinic M1/M4 (xanomeline-KarXT), FXS→PDE4 (zatolmilast) (`reports/disease_reframe_v1.md`) | 🏆 |
@@ -39,10 +40,10 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 | V8.6 Hierarchical (MH3 + MH7 bundled) | `build_v8_hierarchical_with_cell_random_effect` shipped; β/α/γ/δ random effects + ICC + transferability index T_{c,k}; synthetic round-trip validated — Sprint 4.1 + 4.2 | ✅ |
 | V8.2 chemCPA synthetic-LINCS smoke | Loss 0.1728→0.1068 (1.62× reduction); test R² = +0.485 (gate ≥ 0.30) | ✅ |
 | V8.4 Gate 1 dry-run on synthetic phenotype | **AMI = 1.000, ARI = 1.000** (Agglomerative + HDBSCAN min∈{15,25}) | ✅ |
-| Target panel (V6.B core) | **28 targets** (was 22) — +6 cognitive (HTR1A, HTR4, SLC6A9, GRM2/3/5) + `substrate_mediated` column | ✅ |
+| Target panel (V6.B core) | **31 targets** (was 22→28→31) — +CHRM1/CHRM4 (M1/M4) + HTR6 (5-HT6); all scored with the real MAMMAL DTI head | ✅ |
 | V6.B.5 expanded panel | **191 targets** with 22-panel ✅ strict subset; MAO-A/MAO-B/COMT/ACHE substrate-mediated | ✅ |
 | Multi-modulator anchor table | **70 rows / 38 targets / 59 compounds / 24 Phase III nulls** (Sprint 2.1) | ✅ |
-| Total scripts shipped | **88** (74 v11 grid, 75 retrospective, 76 disease reframe, 77 grid expansion, 78 allosteric LTR, 79 external benchmark, 80 clinician dossier) | ✅ |
+| Total scripts shipped | **89** (74 v11 grid, 75 retrospective, 76 disease reframe, 77 grid expansion, 78 allosteric LTR, 79 external benchmark, 80 clinician dossier, 81 MAMMAL scoring of new targets) | ✅ |
 | Total source modules shipped | **114** across cluster_a (+ allosteric_ltr) / cluster_b/c/d/e / translation / calibration / fusion / **validation** (retrospective + disease_reframe) / **reporting** (clinician_dossier) / pockets / selectivity / diagnostics / fetchers / scoring | ✅ |
 | MH implementation roadmap | **all core sprints complete** (1.1-1.4 + 2.1-2.2 + 3.1-3.5 + 4.1-4.3 + 5.1-5.2 + 6.2/6.4) + Gap 1 + Gap 3; reports/MH_IMPLEMENTATION_ROADMAP.md | 🚀 |
 
@@ -112,8 +113,8 @@ Both documents are publication-ready markdown. OSF.io account + DOI mint is the 
 │   ├── fusion/                   (Bayesian router + RRF + faceted + LambdaMART + v10/v11-grid composition)
 │   ├── validation/               (Gap 3 leakage-audited retrospective clinical validation)
 │   └── ...                       (pockets / selectivity / diagnostics / fetchers / scoring)
-├── scripts/                      88 end-to-end pipeline scripts
-├── tests/                        478 non-slow pytest cases + 14 slow (31 files)
+├── scripts/                      89 end-to-end pipeline scripts
+├── tests/                        479 non-slow pytest cases + 14 slow (31 files)
 ├── CITATIONS.bib                 Full BibTeX bibliography (~50 entries)
 ├── README.md                     Public-facing entry point with V4→V8 architecture diagram
 └── PROJECT_STATUS.md             This file
@@ -141,9 +142,8 @@ Previously "externally blocked" items that have since been executed in-session:
 
 ## What's actionable now (in priority order)
 
-1. ✅ **Gaps 2–6 + grid expansion — DONE (2026-05-29)**: disease reframe (Gap 2), retrospective validation (Gap 3), allosteric learn-to-rank (Gap 4), clinician dossiers (Gap 5), external benchmark (Gap 6), and V6.A grid 13→23. See the headline table + `reports/`.
-2. **Finish V6.A grid 23 → 31**: re-score the 5 panel targets added after the DTI runs (GRM2/3/5, GlyT1, HTR4 — no cached binding) and **add CHRM1/4 + HTR6 to the panel** (the CIAS winner / AD failure mechanisms, absent from the 28-panel). Both need MAMMAL DTI inference (env-gated).
-3. **Scale Gap 4**: expand the allosteric benchmark beyond n=21 and add fuller Boltz coverage; the n=21 result is a proof-of-concept.
+1. ✅ **Gaps 2–6 + grid expansion + panel→31 — DONE (2026-05-29)**: disease reframe (Gap 2), retrospective validation (Gap 3), allosteric learn-to-rank (Gap 4), clinician dossiers (Gap 5), external benchmark (Gap 6), V6.A grid 13→**31** with the real MAMMAL DTI head (CHRM1/4 + HTR6 added). See the headline table + `reports/`.
+2. **Scale Gap 4**: expand the allosteric benchmark beyond n=21 and add fuller Boltz coverage; the n=21 result is a proof-of-concept.
 4. **V8 phenotype axis wiring into v11** — populate the (L,L,H) novel-mechanism cell with real chemCPA/transferability per compound.
 5. **OSF.io project creation** + **bioRxiv release** — V6.A/B + V7 + V8 + retrospective + disease-reframe + allosteric-LTR manuscripts.
 
@@ -189,4 +189,4 @@ Full BibTeX bibliography: `CITATIONS.bib`. Per-paper drafts: `reports/v6a_paper_
 
 ---
 
-*Last updated 2026-05-29 (Gaps 1–6 shipped: v11 grid + disease reframe + retrospective validation + allosteric learn-to-rank + clinician dossiers + external benchmark; V6.A grid 13→23; plus the MH 1-8 sprint suite + chemCPA real-LINCS + V8 cpg0000). The pipeline is end-to-end shipped with a differentiated shortlist, leakage-audited retrospective + external benchmarks (class track record AUROC 1.00 vs target paradigms ≈ chance), disease-specific shortlists (AD/CIAS/FXS) each validated within-disease, an allosteric learn-to-rank head that lifts within-target ρ +0.02→+0.51, and clinician-legible GRADE dossiers; what remains is finishing the panel to 31 targets (CHRM1/4 + HTR6), wet-lab validation, and OSF/bioRxiv release.*
+*Last updated 2026-05-29 (Gaps 1–6 shipped + **panel finished to 31 targets with the real MAMMAL DTI head**: v11 grid + disease reframe + retrospective validation + allosteric learn-to-rank + clinician dossiers + external benchmark; V6.A grid 13→31; plus the MH 1-8 sprint suite + chemCPA real-LINCS + V8 cpg0000). The pipeline is end-to-end shipped with a differentiated shortlist on the complete 31-target panel, leakage-audited retrospective + external benchmarks (class track record AUROC 1.00 vs target paradigms ≈ chance), disease-specific shortlists (AD/CIAS/FXS — CIAS now surfaces M1/M4) each validated within-disease, an allosteric learn-to-rank head that lifts within-target ρ +0.02→+0.51, and clinician-legible GRADE dossiers; what remains is wet-lab validation and OSF/bioRxiv release.*
