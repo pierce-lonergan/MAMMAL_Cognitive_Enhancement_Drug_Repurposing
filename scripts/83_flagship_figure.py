@@ -141,20 +141,22 @@ def main() -> int:
     axB.set_title("B   Validated per disease: each recovers\n      its real winning mechanism",
                   loc="left")
 
-    # Panel C — allosteric fix
+    # Panel C — allosteric ablation (LOTO, 297 ChEMBL pairs): the honest attribution
     axC = fig.add_subplot(gs[1, 0])
-    labels = ["MAMMAL\nalone", "Tanimoto\nalone", "Fused\nLTR"]
-    bench21 = [0.022, 0.469, 0.514]
-    loto297 = [-0.115, 0.533, 0.613]
-    x = np.arange(len(labels)); w = 0.38
-    axC.bar(x - w/2, bench21, w, label="binding-mode set (n=21)", color="#9ecae1")
-    axC.bar(x + w/2, loto297, w, label="ChEMBL LOTO (n=297, 21 targets)", color="#2e8b57")
+    labels = ["MAMMAL\nalone", "Classic features\n(Tanimoto+physchem)", "Full fused\n(+MAMMAL+Boltz)"]
+    vals = [0.055, 0.592, 0.611]
+    colors = ["#b22222", "#4682b4", "#2e8b57"]
+    x = np.arange(len(labels))
+    axC.bar(x, vals, 0.6, color=colors)
+    for i, v in enumerate(vals):
+        axC.text(i, v + 0.02, f"{v:+.2f}", ha="center", fontsize=9, fontweight="bold")
     axC.axhline(0, color="k", lw=0.8)
-    axC.set_xticks(x); axC.set_xticklabels(labels)
-    axC.set_ylabel("within-target Spearman ρ")
-    axC.legend(fontsize=7.5, loc="upper left")
-    axC.set_title("C   Fixing the foundation model: MAMMAL is\n      flat within target; fusion recovers ranking",
-                  loc="left")
+    axC.set_xticks(x); axC.set_xticklabels(labels, fontsize=8)
+    axC.set_ylim(-0.05, 0.72)
+    axC.set_ylabel("within-target Spearman ρ (297-pair LOTO)")
+    axC.set_title("C   The foundation model is dead-weight within target;\n"
+                  "      classic features do the ranking (Δ from MAMMAL = +0.02)",
+                  loc="left", fontsize=10.5)
 
     # Panel D — repurposing output
     axD = fig.add_subplot(gs[1, 1]); axD.axis("off")
