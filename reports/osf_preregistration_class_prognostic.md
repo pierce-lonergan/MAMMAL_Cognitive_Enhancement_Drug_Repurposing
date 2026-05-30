@@ -62,6 +62,19 @@ We commit, at OSF timestamp, to the deterministic class-rule predictions below f
 
 **Falsifier.** If, across the watchlist, the class-rule prediction does not out-agree the target-affinity prediction with the eventual outcomes, H3 is refuted and the central claim weakened.
 
+**Operational instrument.** The watchlist is implemented as a structured, NCT-linked, time-stamped table (`data/raw/prospective_predictions.csv`, scored by `scripts/87_prospective_predictions.py` → `reports/prospective_predictions_v1.md`) so each prediction is machine-checkable as trials read out.
+
+### 6.1 Results to date (appended at readout, rule unchanged)
+
+Two watchlist classes have read out since lock, both as predicted:
+
+| Drug (class) | Trial | Predicted | Actual | Agree |
+|---|---|---|---|---|
+| iclepertin (GlyT1 / NMDA-coagonist enhancer) | CONNEX Ph3 (2025) | FAILURE | **FAILURE** (no MCCB effect; programme discontinued) | ✓ |
+| luvadaxistat (DAAO / NMDA-coagonist enhancer) | INTERACT Ph2 (2024) | FAILURE | **FAILURE** (missed primary; development halted) | ✓ |
+
+The NMDA-coagonist-enhancement axis (GlyT1 + DAAO) was predicted to fail from the bitopertin precedent and did, in two independent 2024–2025 readouts — an out-of-sample confirmation of H3's GlyT1 call. **Pending** (genuinely prospective): PDE4 (zatolmilast EXPERIENCE-301/204, NCT05358886/NCT05163808) → SUCCESS; M1/M4 (KarXT MINDSET-2, NCT06976203) → SUCCESS, population-uncertain in AD. The honest counter-signal on record — emraclidine's M4 EMPOWER Ph2 psychosis miss (2024) — is retained and tempers the M1/M4 confidence rather than being discarded.
+
 ## 7. Other
 
 **Author contributions.** P.L. conceived, implemented, and validated the work. **Conflicts.** None. **Funding.** None. **License.** Apache-2.0 (code), CC-BY-4.0 (this document). **Computational environment.** Single consumer GPU (RTX 5070); MAMMAL in a Python-3.12 venv (`docs/MAMMAL_SETUP.md`).

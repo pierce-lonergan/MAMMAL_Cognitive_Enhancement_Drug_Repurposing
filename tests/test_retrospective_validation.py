@@ -341,6 +341,28 @@ def test_taxonomy_perturbation_observed_above_null(mini_ledger):
     assert 0.0 <= res["frac_reaching_observed"] <= 1.0
 
 
+def test_brier_score_bounds():
+    assert R.brier_score(np.array([1.0, 0.0]), np.array([1, 0])) == pytest.approx(0.0)
+    assert R.brier_score(np.array([0.0, 1.0]), np.array([1, 0])) == pytest.approx(1.0)
+    assert R.brier_score(np.array([0.5, 0.5]), np.array([1, 0])) == pytest.approx(0.25)
+
+
+def test_reliability_curve_perfect():
+    p = np.array([0.1, 0.1, 0.9, 0.9]); y = np.array([0, 0, 1, 1])
+    cen, obs, cnt = R.reliability_curve(p, y, n_bins=5)
+    # low-prob bin observes 0, high-prob bin observes 1
+    assert obs[0] == pytest.approx(0.0)
+    assert obs[-1] == pytest.approx(1.0)
+    assert cnt.sum() == 4
+
+
+def test_leave_one_out_logistic_separable():
+    pytest.importorskip("sklearn")
+    X = np.array([[0.0], [0.1], [0.9], [1.0]]); y = np.array([0, 0, 1, 1])
+    p = R.leave_one_out_logistic_proba(X, y)
+    assert p[0] < 0.5 and p[-1] > 0.5      # held-out points fall on the right side
+
+
 @pytest.mark.skipif(not LEDGER.exists(), reason="ledger absent")
 def test_real_taxonomy_bracket():
     """Headline round-3: real mechanism-class taxonomy >> coarse >> random."""

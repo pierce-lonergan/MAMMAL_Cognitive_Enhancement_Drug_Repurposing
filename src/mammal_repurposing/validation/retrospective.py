@@ -400,6 +400,51 @@ def structure_nn_success_score(ledger: pd.DataFrame, compounds: pd.DataFrame,
 # Metrics (numpy-only)
 # ---------------------------------------------------------------------------
 
+def brier_score(probs: np.ndarray, labels: np.ndarray) -> float:
+    """Mean squared error between predicted probabilities and {0,1} outcomes.
+    Lower is better; 0.25 is the no-skill baseline at base rate 0.5."""
+    probs = np.asarray(probs, float); labels = np.asarray(labels, float)
+    return float(np.mean((probs - labels) ** 2))
+
+
+def reliability_curve(probs: np.ndarray, labels: np.ndarray, n_bins: int = 5):
+    """Binned reliability (calibration) curve. Returns (bin_centres, observed
+    frequency, count) over equal-width probability bins, skipping empty bins."""
+    probs = np.asarray(probs, float); labels = np.asarray(labels, float)
+    edges = np.linspace(0, 1, n_bins + 1)
+    centres, obs, cnt = [], [], []
+    for lo, hi in zip(edges[:-1], edges[1:]):
+        m = (probs >= lo) & (probs < hi if hi < 1 else probs <= hi)
+        if m.sum() == 0:
+            continue
+        centres.append(float(probs[m].mean()))
+        obs.append(float(labels[m].mean()))
+        cnt.append(int(m.sum()))
+    return np.array(centres), np.array(obs), np.array(cnt)
+
+
+def leave_one_out_logistic_proba(X: np.ndarray, y: np.ndarray) -> np.ndarray:
+    """Leave-one-out cross-validated logistic-regression probabilities. For each
+    row i, fit L2 logistic on all other rows and predict row i. Returns the
+    held-out probability for every row. Degrades gracefully if a fold's training
+    labels are single-class (returns that class's base rate)."""
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.preprocessing import StandardScaler
+    X = np.asarray(X, float); y = np.asarray(y, int)
+    n = len(y); out = np.zeros(n)
+    for i in range(n):
+        tr = np.arange(n) != i
+        ytr = y[tr]
+        if len(np.unique(ytr)) < 2:
+            out[i] = float(ytr.mean())
+            continue
+        sc = StandardScaler().fit(X[tr])
+        clf = LogisticRegression(C=1.0, max_iter=1000)
+        clf.fit(sc.transform(X[tr]), ytr)
+        out[i] = float(clf.predict_proba(sc.transform(X[i:i + 1]))[0, 1])
+    return out
+
+
 def auroc(scores: np.ndarray, labels: np.ndarray) -> float:
     """AUROC via the Mann–Whitney U relationship. labels ∈ {0,1}."""
     pos = scores[labels == 1]

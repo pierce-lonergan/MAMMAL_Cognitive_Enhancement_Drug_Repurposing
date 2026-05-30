@@ -46,7 +46,7 @@ The manuscript reference list is author/journal/year only (deliberately, to avoi
 - [x] Honest-scope / limitations section present (n=31, Roberts ceiling, no wet-lab, LOCO ceiling = 0).
 - [x] The popularity confound is disclosed, not hidden.
 - [x] Pre-registration cleanly separates completed (exploratory) from prospective (committed) analyses.
-- [x] 495 automated tests pass.
+- [x] 502 automated tests pass.
 
 ## Notes / honest caveats for the cover letter
 

@@ -1,0 +1,17 @@
+# Pre-registered prospective class predictions for ongoing/recent cognition trials.
+# Each row: a class-prognostic-prior prediction for a REAL trial, frozen with a
+# prediction_date. predicted_outcome follows ONLY from the drug's mechanism-class
+# historical track record (the validated class prior) — no trial-specific tuning.
+# status: RESOLVED (read out; actual_outcome filled) | PENDING (awaiting readout).
+# RESOLVED rows that post-date the original 31-drug ledger curation are
+# out-of-sample confirmations; PENDING rows are genuinely prospective and
+# falsifiable. nct_verified: Y if the NCT was confirmed on clinicaltrials.gov in
+# this session; PROGRAM if cited by trial-program name + peer-reviewed readout.
+# Sources are real and citable; reconcile NCTs before OSF lock.
+drug,trial_program,nct,mechanism_class,indication,predicted_outcome,pred_g_low,pred_g_high,primary_endpoint,prediction_basis,status,actual_outcome,readout_year,prediction_date,nct_verified,source
+iclepertin,CONNEX (3x Ph3),NCT04846868,GlyT1_NMDA_coagonist,CIAS,FAILURE,-0.1,0.1,MCCB composite,"GlyT1/NMDA-coagonist-enhancer precedent: bitopertin (Roche) failed in schizophrenia",RESOLVED,FAILURE,2025,2026-05-30,PROGRAM,"Lancet Psychiatry 2025 (CONNEX); Boehringer 2025-01-16 discontinuation"
+luvadaxistat,INTERACT (Ph2),NCT03821207,DAAO_NMDA_coagonist,CIAS,FAILURE,-0.1,0.2,PANSS-negative (primary),"NMDA-coagonist-enhancer class (same axis as GlyT1); primary endpoint",RESOLVED,FAILURE,2024,2026-05-30,PROGRAM,"INTERACT, Schizophr Res 2024; development halted 2024-09 (pro-cognitive secondary BACS p=0.03 noted)"
+zatolmilast,EXPERIENCE-301,NCT05358886,PDE4_inhibitor,FXS,SUCCESS,0.3,0.6,cognition/function,"PDE4 success precedent: BPN14770/zatolmilast Phase 2 positive in FXS",PENDING,,,2026-05-30,Y,"FRAXA / Shionogi EXPERIENCE programme"
+zatolmilast,EXPERIENCE-204,NCT05163808,PDE4_inhibitor,FXS,SUCCESS,0.3,0.6,cognition/function,"PDE4 success precedent: BPN14770 Phase 2 positive in FXS",PENDING,,,2026-05-30,Y,"FRAXA / Shionogi EXPERIENCE programme (adolescent)"
+xanomeline-trospium (KarXT),MINDSET 2,NCT06976203,M1_M4_agonist,AD-cognition,SUCCESS,0.2,0.5,cognition (per protocol),"M1/M4 success precedent: xanomeline-trospium approved for schizophrenia (Cobenfy 2024); population-uncertain in AD",PENDING,,,2026-05-30,Y,"clinicaltrials.gov NCT06976203 (KarXT + KarX-EC, AD)"
+emraclidine,Ph2 (post-EMPOWER),NCT07145918,M4_PAM_muscarinic,schizophrenia-cognition,SUCCESS,0.0,0.4,cognition (secondary/exploratory),"M4 muscarinic class; CAUTION: EMPOWER Ph2 (2024) missed PANSS primary — drug-level counter-signal within the muscarinic class",PENDING,,,2026-05-30,Y,"clinicaltrials.gov NCT07145918 (start 2025-08, est. 2028); AbbVie EMPOWER 2024-11 miss"
