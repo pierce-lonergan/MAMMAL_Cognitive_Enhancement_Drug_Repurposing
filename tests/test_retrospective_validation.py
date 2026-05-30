@@ -286,3 +286,70 @@ def test_structure_nn_success_score_prefers_success_neighbour():
     assert s["aspirin_twin"] == pytest.approx(1.0, abs=1e-6)
     # octane has no resemblance to the success -> low
     assert s["octane"] < 0.3
+
+
+# ---------------------------------------------------------------------------
+# Review-3 additions: temporal validation + taxonomy sensitivity
+# ---------------------------------------------------------------------------
+
+def _temporal_ledger():
+    # class A succeeds (2000, 2005); class B fails (2001, 2006) — later members
+    # are predictable from earlier same-class members
+    return pd.DataFrame({
+        "compound": ["a_old", "b_old", "a_new", "b_new"],
+        "mechanism_class": ["A", "B", "A", "B"],
+        "target_uniprot": ["P1", "P2", "P1", "P2"], "indication": ["x"] * 4,
+        "clinical_outcome": ["SUCCESS", "FAILURE", "SUCCESS", "FAILURE"],
+        "clinical_g": [0.5, 0.0, 0.5, 0.0], "label": [1, 0, 1, 0],
+        "readout_year": [2000, 2001, 2005, 2006],
+        "compound_lower": ["a_old", "b_old", "a_new", "b_new"],
+    })
+
+
+def test_temporal_holdout_predicts_later_from_earlier():
+    led = _temporal_ledger()
+    r = R.temporal_holdout_auroc(led, 2002)
+    assert r["n_train"] == 2 and r["n_test"] == 2
+    assert r["auroc"] == pytest.approx(1.0)   # earlier classes predict later members
+    assert r["coverage"] == pytest.approx(1.0)
+
+
+def test_prequential_excludes_first_of_class():
+    led = _temporal_ledger()
+    pq = R.prequential_class_loco(led)
+    # only the 2nd member of each class has a strictly-earlier same-class sibling
+    assert pq["n_informed"] == 2
+    assert pq["auroc_informed"] == pytest.approx(1.0)
+    tab = pq["table"]
+    assert not bool(tab[tab["compound"] == "a_old"]["informed"].iloc[0])
+    assert bool(tab[tab["compound"] == "a_new"]["informed"].iloc[0])
+
+
+def test_auroc_under_coarse_taxonomy_can_drop(mini_ledger):
+    # identity taxonomy reproduces the perfect separation
+    ident = dict(zip(mini_ledger["mechanism_class"], mini_ledger["mechanism_class"]))
+    assert R.auroc_under_taxonomy(mini_ledger, ident) == pytest.approx(1.0)
+    # collapsing the two (pure, opposite-outcome) classes into one destroys it
+    lumped = {"A": "all", "B": "all"}
+    assert R.auroc_under_taxonomy(mini_ledger, lumped) < 1.0
+
+
+def test_taxonomy_perturbation_observed_above_null(mini_ledger):
+    res = R.taxonomy_perturbation_test(mini_ledger, n_perm=500, seed=0)
+    assert res["observed"] == pytest.approx(1.0)
+    assert res["null_mean"] < res["observed"]      # random grouping is worse
+    assert 0.0 <= res["frac_reaching_observed"] <= 1.0
+
+
+@pytest.mark.skipif(not LEDGER.exists(), reason="ledger absent")
+def test_real_taxonomy_bracket():
+    """Headline round-3: real mechanism-class taxonomy >> coarse >> random."""
+    led = R.load_clinical_ledger(LEDGER)
+    medium = R.auroc_under_taxonomy(led, dict(zip(led["mechanism_class"],
+                                                  led["mechanism_class"])))
+    coarse = R.auroc_under_taxonomy(led, R.COARSE_SYSTEM_MAP)
+    pert = R.taxonomy_perturbation_test(led, n_perm=500, seed=0)
+    assert medium == pytest.approx(1.0)
+    assert coarse < 0.8                          # lumping mechanisms hurts
+    assert pert["null_mean"] < 0.7               # random is near chance
+    assert pert["frac_reaching_observed"] < 0.01  # ~0/N reach 1.0

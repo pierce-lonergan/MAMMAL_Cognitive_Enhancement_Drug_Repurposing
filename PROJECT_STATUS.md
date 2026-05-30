@@ -16,7 +16,7 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 
 | Metric | Value | Status |
 |---|---|---|
-| Pytest pass rate (non-slow) | **490** pass / 1 skip (+71 across Gaps 1–7 + grid expansion + panel→31 + review-round-2 comparators; `test_fetchers.py` needs the `respx` dev dep) | ✅ |
+| Pytest pass rate (non-slow) | **495** pass / 1 skip (+76 across Gaps 1–7 + grid expansion + panel→31 + review rounds 2–3 (comparators, temporal, taxonomy); `test_fetchers.py` needs the `respx` dev dep) | ✅ |
 | **Gap 7 — prospective repurposing shortlist** (capstone) | approved drugs ranked as mechanism-justified repurposing hypotheses per disease (class prognostic prior × engagement, SUCCESS classes only); **CIAS→buspirone/M1, FXS→roflumilast (PDE4), AD→σ1**; xanomeline correctly flagged *standard* (`reports/repurposing_shortlist_v1.md`) | 🎯 |
 | **Panel finished to 31 targets** (real MAMMAL DTI) | CHRM1/CHRM4 (M1/M4) + HTR6 (5-HT6) + GRM2/3/5/GlyT1/HTR4 scored on RTX 5070; **CIAS now surfaces muscarinic M1/M4** (xanomeline class), AD scores 5-HT6 (demoted). MAMMAL runs in a Py-3.12 venv (`docs/MAMMAL_SETUP.md`) | ✅ |
 | Pytest pass rate (slow) | **12 / 14** (2 fail = real MAMMAL `biomed-multi-alignment` package not in this env, not a regression) | ✅ |
@@ -115,7 +115,7 @@ Both documents are publication-ready markdown. OSF.io account + DOI mint is the 
 │   ├── validation/               (Gap 3 leakage-audited retrospective clinical validation)
 │   └── ...                       (pockets / selectivity / diagnostics / fetchers / scoring)
 ├── scripts/                      90 end-to-end pipeline scripts
-├── tests/                        490 non-slow pytest cases + 14 slow (32 files)
+├── tests/                        495 non-slow pytest cases + 14 slow (32 files)
 ├── CITATIONS.bib                 Full BibTeX bibliography (~50 entries)
 ├── README.md                     Public-facing entry point with V4→V8 architecture diagram
 └── PROJECT_STATUS.md             This file

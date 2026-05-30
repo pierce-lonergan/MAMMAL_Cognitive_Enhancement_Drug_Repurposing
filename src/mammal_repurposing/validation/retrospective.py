@@ -112,6 +112,166 @@ def leave_one_class_out_g(ledger: pd.DataFrame) -> dict[str, float]:
     return out
 
 
+# ---------------------------------------------------------------------------
+# Class-taxonomy sensitivity — is the result an artifact of the grouping?
+# ---------------------------------------------------------------------------
+
+# Coarser grouping: collapse the 11 mechanism classes into ~4 neurotransmitter
+# systems. This deliberately lumps success and failure classes (AChE-inhibitors
+# with α7 agonists under 'cholinergic'), so a drop in AUROC under this map shows
+# the signal is specific to the mechanism-class granularity, not any grouping.
+COARSE_SYSTEM_MAP = {
+    "AChE_inhibitor": "cholinergic", "alpha7_nAChR": "cholinergic",
+    "catecholaminergic_ADHD": "monoaminergic", "wake_promoting": "monoaminergic",
+    "H3_cognition": "monoaminergic", "multimodal_5HT": "monoaminergic",
+    "5HT6_antagonist": "monoaminergic",
+    "AMPA_PAM": "glutamatergic", "mGluR": "glutamatergic",
+    "NMDA_modulator": "glutamatergic", "PDE9_PDE10": "phosphodiesterase",
+}
+
+
+def auroc_under_taxonomy(ledger: pd.DataFrame, taxonomy, *,
+                         shrinkage_k0: float = 1.0) -> float:
+    """Class-LOCO AUROC after remapping mechanism_class through `taxonomy`
+    (a dict old→new, or a same-length array of new labels)."""
+    l2 = ledger.copy().reset_index(drop=True)
+    if isinstance(taxonomy, dict):
+        l2["mechanism_class"] = l2["mechanism_class"].map(taxonomy)
+    else:
+        l2["mechanism_class"] = list(taxonomy)
+    pred = class_loco_g(l2, shrinkage_k0=shrinkage_k0)
+    s = np.array([pred[c] for c in l2["compound"]], float)
+    return auroc(s, l2["label"].to_numpy())
+
+
+def taxonomy_perturbation_test(ledger: pd.DataFrame, *, n_perm: int = 2000,
+                               seed: int = 0, shrinkage_k0: float = 1.0) -> dict:
+    """Permute the class labels across drugs (preserving class sizes) and
+    recompute the class-LOCO AUROC. If the real taxonomy carries genuine signal,
+    the observed AUROC sits far above this null. Returns the null mean/SD, 95%
+    interval, the fraction of permutations reaching the observed AUROC, and a
+    permutation p-value."""
+    rng = np.random.default_rng(seed)
+    obs = auroc_under_taxonomy(ledger, dict(zip(ledger["mechanism_class"],
+                                                 ledger["mechanism_class"])),
+                               shrinkage_k0=shrinkage_k0)
+    labels = ledger["mechanism_class"].to_numpy()
+    vals = []
+    for _ in range(n_perm):
+        perm = labels.copy(); rng.shuffle(perm)
+        vals.append(auroc_under_taxonomy(ledger, perm, shrinkage_k0=shrinkage_k0))
+    vals = np.array(vals, float)
+    ge = int(np.sum(vals >= obs - 1e-9))
+    return {"observed": float(obs), "null_mean": float(vals.mean()),
+            "null_sd": float(vals.std()), "null_lo": float(np.percentile(vals, 2.5)),
+            "null_hi": float(np.percentile(vals, 97.5)),
+            "frac_reaching_observed": float(ge / n_perm),
+            "perm_p": float((ge + 1) / (n_perm + 1))}
+
+
+# ---------------------------------------------------------------------------
+# Temporal validation (pseudo-prospective) — the curation-proof test
+# ---------------------------------------------------------------------------
+
+def temporal_holdout_auroc(ledger: pd.DataFrame, cutoff_year: int, *,
+                           shrinkage_k0: float = 1.0) -> dict:
+    """Train the class prior ONLY on drugs that read out ≤ cutoff_year; predict
+    the strictly-later drugs. This is a pseudo-prospective test: every prediction
+    uses only information available before the test drug's readout.
+
+    A held-out drug is scored by the empirical-Bayes-shrunken mean clinical_g of
+    its mechanism-class siblings *in the training window*; drugs whose class is
+    unseen before the cutoff fall back to the training-window global mean (an
+    honest 'no class history' prediction). Returns the test AUROC plus coverage
+    (how many test drugs had a same-class precedent)."""
+    train = ledger[ledger["readout_year"] <= cutoff_year]
+    test = ledger[ledger["readout_year"] > cutoff_year]
+    if len(train) == 0 or test["label"].nunique() < 2:
+        # AUROC undefined (test set one-class); still report coverage + recall
+        gmean = float(train["clinical_g"].mean()) if len(train) else 0.0
+        cls_mean = train.groupby("mechanism_class")["clinical_g"].mean().to_dict()
+        seen = {c for c in train["mechanism_class"].unique()}
+        scores, labels, covered = [], [], 0
+        for _, r in test.iterrows():
+            c = r["mechanism_class"]
+            covered += int(c in seen)
+            n = int((train["mechanism_class"] == c).sum())
+            s = ((n * cls_mean[c] + shrinkage_k0 * gmean) / (n + shrinkage_k0)
+                 if c in seen else gmean)
+            scores.append(s); labels.append(int(r["label"]))
+        scores = np.array(scores, float); labels = np.array(labels)
+        # failure-recall: of test FAILURES in a class already failing by cutoff,
+        # how many are predicted below the train global mean
+        fail_mask = labels == 0
+        recall = (float(np.mean(scores[fail_mask] < gmean)) if fail_mask.any()
+                  else float("nan"))
+        return {"cutoff": int(cutoff_year), "auroc": float("nan"),
+                "n_train": int(len(train)), "n_test": int(len(test)),
+                "test_pos": int(labels.sum()), "test_neg": int((1 - labels).sum()),
+                "coverage": covered / max(1, len(test)),
+                "failure_recall_vs_trainmean": recall}
+    gmean = float(train["clinical_g"].mean())
+    cls_mean = train.groupby("mechanism_class")["clinical_g"].mean().to_dict()
+    seen = set(train["mechanism_class"].unique())
+    scores, labels, covered = [], [], 0
+    for _, r in test.iterrows():
+        c = r["mechanism_class"]; covered += int(c in seen)
+        n = int((train["mechanism_class"] == c).sum())
+        s = ((n * cls_mean[c] + shrinkage_k0 * gmean) / (n + shrinkage_k0)
+             if c in seen else gmean)
+        scores.append(s); labels.append(int(r["label"]))
+    scores = np.array(scores, float); labels = np.array(labels)
+    return {"cutoff": int(cutoff_year), "auroc": float(auroc(scores, labels)),
+            "n_train": int(len(train)), "n_test": int(len(test)),
+            "test_pos": int(labels.sum()), "test_neg": int((1 - labels).sum()),
+            "coverage": covered / len(test),
+            "failure_recall_vs_trainmean": float("nan")}
+
+
+def prequential_class_loco(ledger: pd.DataFrame, *,
+                           shrinkage_k0: float = 1.0) -> dict:
+    """As-of (prequential) evaluation: predict EACH drug using only drugs that
+    read out STRICTLY BEFORE it. The gold-standard temporal design — no fixed
+    cutoff, every drug judged against the knowledge available at its own readout.
+
+    For drug d (readout year y_d), siblings = same-class drugs with
+    readout_year < y_d. If ≥1, predicted score = EB-shrunken sibling mean g vs
+    the strictly-earlier global mean; otherwise the drug is 'uninformed'
+    (no same-class precedent) and excluded from the informed AUROC (its
+    fallback = earlier global mean is still recorded for the full-coverage AUROC).
+
+    Returns AUROC over informed predictions, AUROC over all (with fallback),
+    coverage, and the per-drug table."""
+    rows = []
+    for _, r in ledger.iterrows():
+        y = r["readout_year"]; c = r["mechanism_class"]
+        earlier = ledger[ledger["readout_year"] < y]
+        sibs = earlier[earlier["mechanism_class"] == c]
+        gmean = float(earlier["clinical_g"].mean()) if len(earlier) else float("nan")
+        informed = len(sibs) > 0 and np.isfinite(gmean)
+        if informed:
+            n = len(sibs)
+            score = (n * float(sibs["clinical_g"].mean()) + shrinkage_k0 * gmean) / (n + shrinkage_k0)
+        else:
+            score = gmean
+        rows.append({"compound": r["compound"], "year": int(y),
+                     "mechanism_class": c, "label": int(r["label"]),
+                     "informed": bool(informed),
+                     "n_prior_sibs": int(len(sibs)), "score": score})
+    tab = pd.DataFrame(rows)
+    inf = tab[tab["informed"] & np.isfinite(tab["score"])]
+    full = tab[np.isfinite(tab["score"])]
+    au_inf = (float(auroc(inf["score"].to_numpy(), inf["label"].to_numpy()))
+              if inf["label"].nunique() == 2 else float("nan"))
+    au_full = (float(auroc(full["score"].to_numpy(), full["label"].to_numpy()))
+               if full["label"].nunique() == 2 else float("nan"))
+    return {"auroc_informed": au_inf, "n_informed": int(len(inf)),
+            "informed_pos": int(inf["label"].sum()),
+            "informed_neg": int((1 - inf["label"]).sum()),
+            "auroc_full_with_fallback": au_full, "n_full": int(len(full)),
+            "coverage_informed": len(inf) / len(tab), "table": tab}
+
+
 def target_relevance_score(ledger: pd.DataFrame,
                            v6b_theta: pd.DataFrame) -> dict[str, float]:
     """P1a — target cognition-relevance σ(θ̄) at the drug's known target,
