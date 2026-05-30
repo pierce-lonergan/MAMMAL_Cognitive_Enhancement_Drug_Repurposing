@@ -2,11 +2,34 @@
 
 **Brutally honest catalogue** of what's blocking the pipeline, what's MUST-HAVE for the publishable contribution, and what would change the publication trajectory if executed. Companion to `README.md` + `PROJECT_STATUS.md` + the 5-paper manuscript suite.
 
-**Last refreshed**: 2026-05-29 — **Gaps 1–6 all shipped + panel finished to 31 targets** with the real MAMMAL DTI head (v11 grid; disease reframe; retrospective clinical validation; allosteric learn-to-rank; clinician dossiers; external benchmark; CHRM1/CHRM4/HTR6 scored → CIAS surfaces M1/M4) + chemCPA real-LINCS + V8 cpg0000. Next: wet-lab validation + OSF/bioRxiv release.
+**Last refreshed**: 2026-05-30 — **Gaps 1–7 all shipped + panel finished to 31 targets** (Gap 7 = the prospective repurposing-hypothesis shortlist capstone) with the real MAMMAL DTI head (v11 grid; disease reframe; retrospective clinical validation; allosteric learn-to-rank; clinician dossiers; external benchmark; CHRM1/CHRM4/HTR6 scored → CIAS surfaces M1/M4) + chemCPA real-LINCS + V8 cpg0000. Next: wet-lab validation + OSF/bioRxiv release.
 
 ---
 
 ## ✅ Recently resolved (this sprint)
+
+### GAP 7. Prospective repurposing shortlist — the capstone (SHIPPED ✅, 2026-05-30)
+
+**The deliverable everything was building toward**: approved drugs ranked as
+**mechanism-justified repurposing hypotheses** per cognitive-impairment disease.
+Integrates Gap 2 (disease-class prognostic priors) + the 31-target engagement
+grid + Gap 4 (engagement-reliability flag) + Gap 5 (GRADE dossiers) into one
+clinician-facing artifact (`src/mammal_repurposing/reporting/repurposing_shortlist.py`,
+`scripts/82`, `reports/repurposing_shortlist_v1.md`, 6 tests). Each candidate is
+ranked by `disease-class-prior × engagement`, restricted to SUCCESS-track-record
+classes, with a disease-aware NOVELTY flag (schizophrenia covers CIAS) and
+liability flags. A curated approved-drug supplement maps real drugs to the
+newly-scored panel targets (M1/M4, 5-HT1A, PDE4, 5-HT4, GlyT1).
+
+**Result — real, literature-grounded repurposing hypotheses**:
+- **AD** → huperzine A (AChE-I), blarcamesine / fluvoxamine (σ1)
+- **CIAS** → buspirone / tandospirone (5-HT1A), cevimeline / pilocarpine (M1/M4) —
+  with **xanomeline correctly flagged STANDARD** (it IS the approved M1/M4 CIAS
+  drug), validating the approach
+- **FXS** → roflumilast (approved COPD), rolipram (PDE4 — zatolmilast's class)
+
+Honest: these are hypotheses worth evaluation, NOT predicted cures; the Roberts
+ceiling and the Gap-4 binding-reliability caveats are retained per candidate.
 
 ### GAP 4. Allosteric learn-to-rank head — MAMMAL's structural blindness (SHIPPED ✅, 2026-05-29)
 

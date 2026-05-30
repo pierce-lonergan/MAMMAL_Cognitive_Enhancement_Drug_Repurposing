@@ -16,7 +16,8 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 
 | Metric | Value | Status |
 |---|---|---|
-| Pytest pass rate (non-slow) | **479** pass / 1 skip (+60 across Gaps 1–6 + grid expansion + panel→31; `test_fetchers.py` needs the `respx` dev dep) | ✅ |
+| Pytest pass rate (non-slow) | **485** pass / 1 skip (+66 across Gaps 1–7 + grid expansion + panel→31; `test_fetchers.py` needs the `respx` dev dep) | ✅ |
+| **Gap 7 — prospective repurposing shortlist** (capstone) | approved drugs ranked as mechanism-justified repurposing hypotheses per disease (class prognostic prior × engagement, SUCCESS classes only); **CIAS→buspirone/M1, FXS→roflumilast (PDE4), AD→σ1**; xanomeline correctly flagged *standard* (`reports/repurposing_shortlist_v1.md`) | 🎯 |
 | **Panel finished to 31 targets** (real MAMMAL DTI) | CHRM1/CHRM4 (M1/M4) + HTR6 (5-HT6) + GRM2/3/5/GlyT1/HTR4 scored on RTX 5070; **CIAS now surfaces muscarinic M1/M4** (xanomeline class), AD scores 5-HT6 (demoted). MAMMAL runs in a Py-3.12 venv (`docs/MAMMAL_SETUP.md`) | ✅ |
 | Pytest pass rate (slow) | **12 / 14** (2 fail = real MAMMAL `biomed-multi-alignment` package not in this env, not a regression) | ✅ |
 | **Gap 3 — retrospective clinical-outcome validation** | **mechanism-class track record AUROC 1.00 (perm p=0.0002) vs target affinity 0.12 / relevance 0.59; 9/9 famous Phase III failures flagged** (`reports/retrospective_clinical_validation_v1.md`) | 🏆 |
@@ -43,8 +44,8 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 | Target panel (V6.B core) | **31 targets** (was 22→28→31) — +CHRM1/CHRM4 (M1/M4) + HTR6 (5-HT6); all scored with the real MAMMAL DTI head | ✅ |
 | V6.B.5 expanded panel | **191 targets** with 22-panel ✅ strict subset; MAO-A/MAO-B/COMT/ACHE substrate-mediated | ✅ |
 | Multi-modulator anchor table | **70 rows / 38 targets / 59 compounds / 24 Phase III nulls** (Sprint 2.1) | ✅ |
-| Total scripts shipped | **89** (74 v11 grid, 75 retrospective, 76 disease reframe, 77 grid expansion, 78 allosteric LTR, 79 external benchmark, 80 clinician dossier, 81 MAMMAL scoring of new targets) | ✅ |
-| Total source modules shipped | **114** across cluster_a (+ allosteric_ltr) / cluster_b/c/d/e / translation / calibration / fusion / **validation** (retrospective + disease_reframe) / **reporting** (clinician_dossier) / pockets / selectivity / diagnostics / fetchers / scoring | ✅ |
+| Total scripts shipped | **90** (74 v11 grid, 75 retrospective, 76 disease reframe, 77 grid expansion, 78 allosteric LTR, 79 external benchmark, 80 clinician dossier, 81 MAMMAL scoring, 82 repurposing shortlist) | ✅ |
+| Total source modules shipped | **115** across cluster_a (+ allosteric_ltr) / cluster_b/c/d/e / translation / calibration / fusion / **validation** (retrospective + disease_reframe) / **reporting** (clinician_dossier + repurposing_shortlist) / pockets / selectivity / diagnostics / fetchers / scoring | ✅ |
 | MH implementation roadmap | **all core sprints complete** (1.1-1.4 + 2.1-2.2 + 3.1-3.5 + 4.1-4.3 + 5.1-5.2 + 6.2/6.4) + Gap 1 + Gap 3; reports/MH_IMPLEMENTATION_ROADMAP.md | 🚀 |
 
 ---
@@ -113,8 +114,8 @@ Both documents are publication-ready markdown. OSF.io account + DOI mint is the 
 │   ├── fusion/                   (Bayesian router + RRF + faceted + LambdaMART + v10/v11-grid composition)
 │   ├── validation/               (Gap 3 leakage-audited retrospective clinical validation)
 │   └── ...                       (pockets / selectivity / diagnostics / fetchers / scoring)
-├── scripts/                      89 end-to-end pipeline scripts
-├── tests/                        479 non-slow pytest cases + 14 slow (31 files)
+├── scripts/                      90 end-to-end pipeline scripts
+├── tests/                        485 non-slow pytest cases + 14 slow (32 files)
 ├── CITATIONS.bib                 Full BibTeX bibliography (~50 entries)
 ├── README.md                     Public-facing entry point with V4→V8 architecture diagram
 └── PROJECT_STATUS.md             This file
@@ -189,4 +190,4 @@ Full BibTeX bibliography: `CITATIONS.bib`. Per-paper drafts: `reports/v6a_paper_
 
 ---
 
-*Last updated 2026-05-29 (Gaps 1–6 shipped + **panel finished to 31 targets with the real MAMMAL DTI head**: v11 grid + disease reframe + retrospective validation + allosteric learn-to-rank + clinician dossiers + external benchmark; V6.A grid 13→31; plus the MH 1-8 sprint suite + chemCPA real-LINCS + V8 cpg0000). The pipeline is end-to-end shipped with a differentiated shortlist on the complete 31-target panel, leakage-audited retrospective + external benchmarks (class track record AUROC 1.00 vs target paradigms ≈ chance), disease-specific shortlists (AD/CIAS/FXS — CIAS now surfaces M1/M4) each validated within-disease, an allosteric learn-to-rank head that lifts within-target ρ +0.02→+0.51, and clinician-legible GRADE dossiers; what remains is wet-lab validation and OSF/bioRxiv release.*
+*Last updated 2026-05-29 (Gaps 1–7 shipped + **panel finished to 31 targets with the real MAMMAL DTI head**: v11 grid + disease reframe + retrospective validation + allosteric learn-to-rank + clinician dossiers + external benchmark; V6.A grid 13→31; plus the MH 1-8 sprint suite + chemCPA real-LINCS + V8 cpg0000). The pipeline is end-to-end shipped with a differentiated shortlist on the complete 31-target panel, leakage-audited retrospective + external benchmarks (class track record AUROC 1.00 vs target paradigms ≈ chance), disease-specific shortlists (AD/CIAS/FXS — CIAS now surfaces M1/M4) each validated within-disease, an allosteric learn-to-rank head that lifts within-target ρ +0.02→+0.51, clinician-legible GRADE dossiers, and a prospective mechanism-justified repurposing shortlist (Gap 7: CIAS→buspirone/M1, FXS→roflumilast, AD→σ1); what remains is wet-lab validation and OSF/bioRxiv release.*
