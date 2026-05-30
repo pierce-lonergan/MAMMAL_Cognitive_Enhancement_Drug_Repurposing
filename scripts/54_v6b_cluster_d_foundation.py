@@ -19,7 +19,7 @@ Steps:
 
 Output:
   data/results/v2/ahba_expression_v1.parquet
-  reports/cluster_d_foundation_v1.md
+  reports/pipeline/cluster_d_foundation_v1.md
 
 Honest caveat: this is V6.B.1 Stage 1. The full Bayesian model (§B.2)
 needs OT Genetics L2G + cellxgene-census single-cell before it can fire.
@@ -64,7 +64,7 @@ def main() -> int:
     parser.add_argument("--out", type=Path,
                         default=ROOT / "data" / "results" / "v2" / "ahba_expression_v1.parquet")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports" / "cluster_d_foundation_v1.md")
+                        default=ROOT / "reports" / "pipeline" / "cluster_d_foundation_v1.md")
     parser.add_argument("--cache-dir", type=Path,
                         default=ROOT / "data" / "cache" / "abagen")
     args = parser.parse_args()

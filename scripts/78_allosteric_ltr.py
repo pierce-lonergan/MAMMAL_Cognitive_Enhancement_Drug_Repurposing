@@ -9,7 +9,7 @@ MAMMAL alone (near-flat within target) cannot?
 Benchmark compounds are excluded from the training set for a clean held-out test.
 
 Outputs:
-  reports/allosteric_ltr_v1.md
+  reports/pipeline/allosteric_ltr_v1.md
   figures/gap4/allosteric_ltr_spearman.png
   data/results/v2/allosteric_ltr_benchmark_scored.parquet
 
@@ -202,7 +202,7 @@ def main() -> int:
     ap.add_argument("--boltz", type=Path,
                     default=ROOT / "data" / "results" / "v2" / "boltzina_affinity.parquet")
     ap.add_argument("--report", type=Path,
-                    default=ROOT / "reports" / "allosteric_ltr_v1.md")
+                    default=ROOT / "reports" / "pipeline" / "allosteric_ltr_v1.md")
     ap.add_argument("--figure", type=Path,
                     default=ROOT / "figures" / "gap4" / "allosteric_ltr_spearman.png")
     ap.add_argument("--seed", type=int, default=0)

@@ -15,7 +15,7 @@ Inputs (real):
   data/results/v2/mmatt_for_fusion.parquet                          (V6.A)
 
 Outputs:
-  reports/retrospective_clinical_validation_v1.md
+  reports/pipeline/retrospective_clinical_validation_v1.md
   figures/v11/retrospective_roc.png
   data/results/v2/retrospective_validation_predictions.parquet
 
@@ -61,7 +61,7 @@ def main() -> int:
     parser.add_argument("--v6a", type=Path,
                         default=ROOT / "data" / "results" / "v2" / "mmatt_for_fusion.parquet")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports" / "retrospective_clinical_validation_v1.md")
+                        default=ROOT / "reports" / "pipeline" / "retrospective_clinical_validation_v1.md")
     parser.add_argument("--figure", type=Path,
                         default=ROOT / "figures" / "v11" / "retrospective_roc.png")
     parser.add_argument("--out-pred", type=Path,

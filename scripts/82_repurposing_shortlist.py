@@ -5,7 +5,7 @@ disease-class-prognostic-prior × target engagement (success-track-record
 classes only), flags NOVEL repurposing hypotheses vs known uses, and emits GRADE
 dossiers for the top novel picks.
 
-Output: reports/repurposing_shortlist_v1.md
+Output: reports/pipeline/repurposing_shortlist_v1.md
 
 Usage:
   python scripts/82_repurposing_shortlist.py
@@ -112,7 +112,7 @@ def main() -> int:
     ap.add_argument("--panel", type=Path,
                     default=ROOT / "data" / "interim" / "targets.parquet")
     ap.add_argument("--report", type=Path,
-                    default=ROOT / "reports" / "repurposing_shortlist_v1.md")
+                    default=ROOT / "reports" / "pipeline" / "repurposing_shortlist_v1.md")
     args = ap.parse_args()
 
     from mammal_repurposing.validation import retrospective as R

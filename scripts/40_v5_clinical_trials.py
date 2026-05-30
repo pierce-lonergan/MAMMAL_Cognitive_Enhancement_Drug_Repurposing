@@ -6,7 +6,7 @@ Pareto axis 5 ("IP / clinical maturity") in the V4 §8.0a roadmap.
 
 Output:
     data/results/v2/clinical_trials_v1.parquet
-    reports/clinical_trials_v1.md
+    reports/pipeline/clinical_trials_v1.md
 
 Network: ClinicalTrials.gov v2 API. 100ms per request throttle. ~5-10 s
 for the 43-compound PASS-only shortlist.
@@ -35,7 +35,7 @@ logger = logging.getLogger("v5_clinical_trials")
 
 DEFAULT_RANKING = ROOT / "data" / "results" / "v2" / "final_ranking_v6_calibrated_znorm.parquet"
 DEFAULT_OUT = ROOT / "data" / "results" / "v2" / "clinical_trials_v1.parquet"
-DEFAULT_REPORT = ROOT / "reports" / "clinical_trials_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "clinical_trials_v1.md"
 
 
 def main() -> int:

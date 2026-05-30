@@ -19,14 +19,14 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 | Metric | Value | Status |
 |---|---|---|
 | Pytest pass rate (non-slow) | **503** pass / 1 skip (+84 across Gaps 1–7 + grid expansion + panel→31 + review rounds 2–4 (comparators, temporal, taxonomy, calibration, prospective, expansion, unbiased CT.gov pull); `test_fetchers.py` needs the `respx` dev dep) | ✅ |
-| **Gap 7 — prospective repurposing shortlist** (capstone) | approved drugs ranked as mechanism-justified repurposing hypotheses per disease (class prognostic prior × engagement, SUCCESS classes only); **CIAS→buspirone/M1, FXS→roflumilast (PDE4), AD→σ1**; xanomeline correctly flagged *standard* (`reports/repurposing_shortlist_v1.md`) | 🎯 |
+| **Gap 7 — prospective repurposing shortlist** (capstone) | approved drugs ranked as mechanism-justified repurposing hypotheses per disease (class prognostic prior × engagement, SUCCESS classes only); **CIAS→buspirone/M1, FXS→roflumilast (PDE4), AD→σ1**; xanomeline correctly flagged *standard* (`reports/pipeline/repurposing_shortlist_v1.md`) | 🎯 |
 | **Panel finished to 31 targets** (real MAMMAL DTI) | CHRM1/CHRM4 (M1/M4) + HTR6 (5-HT6) + GRM2/3/5/GlyT1/HTR4 scored on RTX 5070; **CIAS now surfaces muscarinic M1/M4** (xanomeline class), AD scores 5-HT6 (demoted). MAMMAL runs in a Py-3.12 venv (`docs/MAMMAL_SETUP.md`) | ✅ |
 | Pytest pass rate (slow) | **12 / 14** (2 fail = real MAMMAL `biomed-multi-alignment` package not in this env, not a regression) | ✅ |
-| **Gap 3 — retrospective clinical-outcome validation** | **mechanism-class track record AUROC 1.00 (perm p=0.0002) vs target affinity 0.12 / relevance 0.59; 9/9 famous Phase III failures flagged** (`reports/retrospective_clinical_validation_v1.md`) | 🏆 |
-| **Gap 2 — disease-population reframe** | **each disease recovers its real winning mechanism**: AD→AChE-I (within-disease class AUROC **0.97**, p=0.003, 10/10 AD failures flagged), CIAS→muscarinic M1/M4 (xanomeline-KarXT), FXS→PDE4 (zatolmilast) (`reports/disease_reframe_v1.md`) | 🏆 |
-| **Gap 4 — allosteric learn-to-rank head** | MAMMAL flat within-target (std 0.01–0.05); fused [MAMMAL⊕Tanimoto⊕Boltz⊕physchem] lifts within-target Spearman ρ **+0.02→+0.51** held-out on the cited allosteric benchmark (`reports/allosteric_ltr_v1.md`) | 🔬 |
-| **Gap 5 — clinician evidence dossiers** | one-page GRADE-style cards: g+CrI, evidence quality, class track record, off-target liability flags, provenance, caveats (`reports/clinician_dossiers_v1.md`) | 🩺 |
-| **Gap 6 — external benchmark** | class track record AUROC 1.00 vs affinity 0.47 / genetics 0.59 (leakage-free); popularity 0.96 flagged hindsight-confound (`reports/external_benchmark_v1.md`) | 📊 |
+| **Gap 3 — retrospective clinical-outcome validation** | **mechanism-class track record AUROC 1.00 (perm p=0.0002) vs target affinity 0.12 / relevance 0.59; 9/9 famous Phase III failures flagged** (`reports/pipeline/retrospective_clinical_validation_v1.md`) | 🏆 |
+| **Gap 2 — disease-population reframe** | **each disease recovers its real winning mechanism**: AD→AChE-I (within-disease class AUROC **0.97**, p=0.003, 10/10 AD failures flagged), CIAS→muscarinic M1/M4 (xanomeline-KarXT), FXS→PDE4 (zatolmilast) (`reports/pipeline/disease_reframe_v1.md`) | 🏆 |
+| **Gap 4 — allosteric learn-to-rank head** | MAMMAL flat within-target (std 0.01–0.05); fused [MAMMAL⊕Tanimoto⊕Boltz⊕physchem] lifts within-target Spearman ρ **+0.02→+0.51** held-out on the cited allosteric benchmark (`reports/pipeline/allosteric_ltr_v1.md`) | 🔬 |
+| **Gap 5 — clinician evidence dossiers** | one-page GRADE-style cards: g+CrI, evidence quality, class track record, off-target liability flags, provenance, caveats (`reports/pipeline/clinician_dossiers_v1.md`) | 🩺 |
+| **Gap 6 — external benchmark** | class track record AUROC 1.00 vs affinity 0.47 / genetics 0.59 (leakage-free); popularity 0.96 flagged hindsight-confound (`reports/pipeline/external_benchmark_v1.md`) | 📊 |
 | **Gap 1 — v11 grid shortlist** (replaces degenerate v10) + **V6.A grid 13→23** | top-25 spans 10 targets; positive controls correct; peptides filtered (MW≤900); 23/28 panel targets scored | ✅ |
 | chemCPA real-LINCS production training (Sprint 5.2) | **107K real LINCS sigs, Val R²=0.46, OOD R²=0.33** on the 9-compound canonical holdout — 8.3 min on RTX 5070 | ✅ |
 | V8 hierarchical real cpg0000 calibration (Sprint 4.3) | **R̂=1.010, 0 div; ICC_cell=0.018, ICC_inter=0.149; 60/60 compounds T>0.6** (U2OS→brain transfer defended) | ✅ |
@@ -34,7 +34,7 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 | V6.B PyMC NUTS production (22-target) | **R̂ max = 1.000, ESS min = 12,780** (4 chains × 2000 draws, real AHBA) | ✅ |
 | V6.B.5 PyMC NUTS production (191-target, **post-MH8**) | **R̂ max = 1.000, ESS min = 1,808, divergences = 0** (was 37 pre-fix) | ✅ |
 | V6.B Gate 1 (Roberts ceiling, HARD) | **0 violations on 191-target posterior** | ✅ |
-| V6.B Gate 2 (multi-modulator Spearman, 70 anchors / 38 targets) | **ρ = +0.10 (DEGRADE best case) / -0.35 (FAIL worst case)** — publishable falsification (see reports/gate2_multi_modulator_v1.md) | 📄 |
+| V6.B Gate 2 (multi-modulator Spearman, 70 anchors / 38 targets) | **ρ = +0.10 (DEGRADE best case) / -0.35 (FAIL worst case)** — publishable falsification (see reports/pipeline/gate2_multi_modulator_v1.md) | 📄 |
 | V7 NUTS with 15-compound anchor likelihood | **R̂ = 1.000, ESS = 2,332, MAE = 0.073, 0 Roberts ceiling violations** | ✅ |
 | V7.4 Gate 1 (P1-P8 prediction bands) | 5 PASS / 1 FAIL / 2 NO_COMPOUND in stub mode; 4 PASS / 3 FAIL / 1 NO_COMPOUND in full NUTS (honest partial-pool — Sprint 3.2 addresses) | ⏳ |
 | V7.2 Stage 3 PRISMA prior coverage | **73 / 96 cells populated (76%)**, up from 32 (33%) — Sprint 3.1 | ✅ |
@@ -48,7 +48,7 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 | Multi-modulator anchor table | **70 rows / 38 targets / 59 compounds / 24 Phase III nulls** (Sprint 2.1) | ✅ |
 | Total scripts shipped | **90** (74 v11 grid, 75 retrospective, 76 disease reframe, 77 grid expansion, 78 allosteric LTR, 79 external benchmark, 80 clinician dossier, 81 MAMMAL scoring, 82 repurposing shortlist) | ✅ |
 | Total source modules shipped | **115** across cluster_a (+ allosteric_ltr) / cluster_b/c/d/e / translation / calibration / fusion / **validation** (retrospective + disease_reframe) / **reporting** (clinician_dossier + repurposing_shortlist) / pockets / selectivity / diagnostics / fetchers / scoring | ✅ |
-| MH implementation roadmap | **all core sprints complete** (1.1-1.4 + 2.1-2.2 + 3.1-3.5 + 4.1-4.3 + 5.1-5.2 + 6.2/6.4) + Gap 1 + Gap 3; reports/MH_IMPLEMENTATION_ROADMAP.md | 🚀 |
+| MH implementation roadmap | **all core sprints complete** (1.1-1.4 + 2.1-2.2 + 3.1-3.5 + 4.1-4.3 + 5.1-5.2 + 6.2/6.4) + Gap 1 + Gap 3; reports/paper-drafts/MH_IMPLEMENTATION_ROADMAP.md | 🚀 |
 
 ---
 
@@ -71,18 +71,18 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 
 | Paper | Venue | Headline finding | Status |
 |---|---|---|---|
-| **V6.A** | *J Cheminform* / *Nat Mach Intell* | MMAtt-DTA ρ +0.65 vs Tanimoto +0.90 at SLC6A3 → **Tier-A FAIL**; INVERT-mask architecture drops 6 panel targets; per-target Bayesian router empirically necessary | `reports/v6a_paper_draft.md` ✅ |
-| **V6.B** | *Cell Reports Methods* / *Bioinformatics* | PyMC NUTS R̂=1.000 on real AHBA; ACHE substrate-mediated flag correctly fires; reference-anchor pull recovers CHRNA7 from y_AHBA=-0.53 → θ̄=+0.44 | `reports/v6b_paper_draft.md` ✅ |
-| **V7** | *Clinical Pharmacology & Therapeutics* (Wiley, IF 7.3); fallback *CPT:PSP* (IF 4.2) | Real Bayesian inference within Roberts ceiling: R̂=1.000, MAE=0.073, zero ceiling violations; honest Gate 1 partial-pool finding (4/8 PASS by tight margins) | `reports/v7_paper_draft.md` ✅ |
-| **V8** | *Nature Machine Intelligence* (A realistic); stretch *Nature Methods* (A+) | First multi-modal phenotypic prior + I_novel mutual-information novel-mechanism score identifying (L, L, H) clemastine-class candidates; OSF pre-reg locked | `reports/v8_paper_draft.md` ✅ |
+| **V6.A** | *J Cheminform* / *Nat Mach Intell* | MMAtt-DTA ρ +0.65 vs Tanimoto +0.90 at SLC6A3 → **Tier-A FAIL**; INVERT-mask architecture drops 6 panel targets; per-target Bayesian router empirically necessary | `reports/paper-drafts/v6a_paper_draft.md` ✅ |
+| **V6.B** | *Cell Reports Methods* / *Bioinformatics* | PyMC NUTS R̂=1.000 on real AHBA; ACHE substrate-mediated flag correctly fires; reference-anchor pull recovers CHRNA7 from y_AHBA=-0.53 → θ̄=+0.44 | `reports/paper-drafts/v6b_paper_draft.md` ✅ |
+| **V7** | *Clinical Pharmacology & Therapeutics* (Wiley, IF 7.3); fallback *CPT:PSP* (IF 4.2) | Real Bayesian inference within Roberts ceiling: R̂=1.000, MAE=0.073, zero ceiling violations; honest Gate 1 partial-pool finding (4/8 PASS by tight margins) | `reports/paper-drafts/v7_paper_draft.md` ✅ |
+| **V8** | *Nature Machine Intelligence* (A realistic); stretch *Nature Methods* (A+) | First multi-modal phenotypic prior + I_novel mutual-information novel-mechanism score identifying (L, L, H) clemastine-class candidates; OSF pre-reg locked | `reports/paper-drafts/v8_paper_draft.md` ✅ |
 
 ---
 
 ## Pre-registration
 
 Two OSF-pre-registration documents locked before unblinding:
-- `reports/v7_osf_preregistration.md` — V7 hierarchical Bayes priors, 12-class PRISMA, 5 moderators, 8 P1-P8 predictions with falsifiers, 4 validation gates, 15-compound held-out anchor set, CPT venue
-- `reports/v8_osf_preregistration.md` — V8 MOFA+ K=30, Leiden γ sweep, AMI/ARI bands, 30-class mechanism taxonomy, 9+1 nootropic anchor set, I_novel novel-mechanism gate, Nat Mach Intell venue
+- `reports/paper-drafts/v7_osf_preregistration.md` — V7 hierarchical Bayes priors, 12-class PRISMA, 5 moderators, 8 P1-P8 predictions with falsifiers, 4 validation gates, 15-compound held-out anchor set, CPT venue
+- `reports/paper-drafts/v8_osf_preregistration.md` — V8 MOFA+ K=30, Leiden γ sweep, AMI/ARI bands, 30-class mechanism taxonomy, 9+1 nootropic anchor set, I_novel novel-mechanism gate, Nat Mach Intell venue
 
 Both documents are publication-ready markdown. OSF.io account + DOI mint is the only remaining step before locking.
 
@@ -188,7 +188,7 @@ If you use this pipeline:
 }
 ```
 
-Full BibTeX bibliography: `CITATIONS.bib`. Per-paper drafts: `reports/v6a_paper_draft.md`, `reports/v6b_paper_draft.md`, `reports/v7_paper_draft.md`, `reports/v8_paper_draft.md`.
+Full BibTeX bibliography: `CITATIONS.bib`. Per-paper drafts: `reports/paper-drafts/v6a_paper_draft.md`, `reports/paper-drafts/v6b_paper_draft.md`, `reports/paper-drafts/v7_paper_draft.md`, `reports/paper-drafts/v8_paper_draft.md`.
 
 ---
 

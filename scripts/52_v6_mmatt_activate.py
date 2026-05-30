@@ -16,7 +16,7 @@ Steps:
 
 Output:
   data/results/v2/mmatt_dta_predictions.parquet
-  reports/mmatt_dta_activation_v1.md
+  reports/pipeline/mmatt_dta_activation_v1.md
 """
 
 from __future__ import annotations
@@ -186,7 +186,7 @@ def main() -> int:
     parser.add_argument("--out-parquet", type=Path,
                         default=ROOT / "data" / "results" / "v2" / "mmatt_dta_predictions.parquet")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports" / "mmatt_dta_activation_v1.md")
+                        default=ROOT / "reports" / "pipeline" / "mmatt_dta_activation_v1.md")
     parser.add_argument("--skip-unzip", action="store_true")
     parser.add_argument("--skip-predict", action="store_true",
                         help="If predictions CSV exists, skip the MMAtt-DTA run.")

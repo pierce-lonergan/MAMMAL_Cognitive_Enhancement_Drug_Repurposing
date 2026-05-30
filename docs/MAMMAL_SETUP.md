@@ -81,7 +81,7 @@ library compounds) on cuda:0, writing `data/results/dti_scores_new8.parquet`
 - The model is cached at `~/.cache/huggingface/hub/models--ibm--biomed.omics.bl.sm.ma-ted-458m.dti_bindingdb_pkd`.
 - MAMMAL's within-target predicted-pKd has very low variance (std ≈ 0.08–0.12) —
   this is the documented structural-blindness limitation (see Gap 4 /
-  `reports/allosteric_ltr_v1.md`); use the disease-conditioned class prior, not
+  `reports/pipeline/allosteric_ltr_v1.md`); use the disease-conditioned class prior, not
   raw pKd, for within-target ligand ranking.
 - The `.venv-mammal/` directory and `data/results/*.parquet` are git-ignored;
   re-run the scripts above to regenerate.

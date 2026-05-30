@@ -13,7 +13,7 @@ Validates against hard gates G1, G2 from the research doc:
 
 Outputs:
   data/results/v2/selectivity_scores.parquet — full table (one row per compound)
-  reports/selectivity_v1.md — Gini distribution, top mono-selective, gate report
+  reports/pipeline/selectivity_v1.md — Gini distribution, top mono-selective, gate report
 """
 
 from __future__ import annotations
@@ -63,7 +63,7 @@ def _build_tanimoto_grid(
     Rescales the Tanimoto [0, 1] into a pKd-like [4, 9] range so the selectivity
     vector and Gini computation continue to operate on familiar scales.
 
-    Per the breakthrough finding (reports/tanimoto_baseline_v1.md), this baseline
+    Per the breakthrough finding (reports/pipeline/tanimoto_baseline_v1.md), this baseline
     beats MAMMAL at every audited target — and crucially, it has REAL dynamic
     range so the Gini scorecard is not degenerate.
     """
@@ -103,7 +103,7 @@ def main() -> int:
     parser.add_argument("--out", type=Path,
                         default=ROOT / "data" / "results" / "v2" / "selectivity_scores.parquet")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports" / "selectivity_v1.md")
+                        default=ROOT / "reports" / "pipeline" / "selectivity_v1.md")
     parser.add_argument("--use-tanimoto", action="store_true",
                         help="Replace MAMMAL pKd with Tanimoto-to-actives (rescaled "
                              "to pKd-like 4..9). The breakthrough finding (commit "
@@ -287,7 +287,7 @@ def main() -> int:
     flat_count = cat_counts.get("flat", 0)
     if flat_count > 50:
         L.append(f"⚠️ {flat_count}/{len(sel_df)} compounds in `flat` category — confirms the "
-                 f"prior-collapse finding from reports/diagnostics_v1.md.")
+                 f"prior-collapse finding from reports/pipeline/diagnostics_v1.md.")
         L.append("")
 
     # Mechanism-class distribution among top-50 by Gini

@@ -334,7 +334,7 @@ class HighDisagreementFacet:
         return f"{max_pair[0][0]} (rank {max_pair[0][1]}) vs {max_pair[1][0]} (rank {max_pair[1][1]})"
 ```
 
-Facet output in `reports/wet_lab_shortlist_v4_faceted.md` as separate top-5 list: (compound, D_τ, classification, head-pair, mechanism class).
+Facet output in `reports/wet-lab/wet_lab_shortlist_v4_faceted.md` as separate top-5 list: (compound, D_τ, classification, head-pair, mechanism class).
 
 ### 6.4 Theoretical foundation: disagreement-as-signal references
 
@@ -436,7 +436,7 @@ New columns: `mmatt_dta_score`, `psichic_score`, `balm_score`, `mmatt_dta_calibr
 
 ### 8.4 Dashboard outputs
 
-Extend `reports/wet_lab_shortlist_v4_faceted.md` with:
+Extend `reports/wet-lab/wet_lab_shortlist_v4_faceted.md` with:
 
 1. **High-disagreement facet** (top-5 by D_τ, with classification label + head-pair attribution).
 2. **Per-head bias-decomposition summary** (5 rows × 5 columns: PC range, SN mean, OOD rate, Tier-A count, Tier-D count).

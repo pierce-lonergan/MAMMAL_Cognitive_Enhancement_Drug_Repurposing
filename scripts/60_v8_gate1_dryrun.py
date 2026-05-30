@@ -24,7 +24,7 @@ verdicts on data where the answer is known. If Leiden/HDBSCAN can't recover
 
 Outputs:
   data/results/v2/v8_gate1_dryrun_v1.parquet
-  reports/v8_gate1_dryrun_v1.md
+  reports/pipeline/v8_gate1_dryrun_v1.md
 """
 
 from __future__ import annotations
@@ -198,7 +198,7 @@ def main() -> int:
                         default=ROOT / "data" / "results" / "v2"
                         / "v8_gate1_dryrun_v1.parquet")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports" / "v8_gate1_dryrun_v1.md")
+                        default=ROOT / "reports" / "pipeline" / "v8_gate1_dryrun_v1.md")
     args = parser.parse_args()
 
     if not SKLEARN_AVAILABLE:

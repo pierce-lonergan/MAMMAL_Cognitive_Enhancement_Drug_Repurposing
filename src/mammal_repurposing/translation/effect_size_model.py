@@ -440,7 +440,7 @@ def fit_effect_size_nuts_v2(
 ) -> EffectSizePosterior:
     """V7.3 Stage 2 — refit with per-class τ²_class + population × class interaction.
 
-    Sprint 3.2 deliverable per `reports/MH_IMPLEMENTATION_ROADMAP.md` § 3
+    Sprint 3.2 deliverable per `reports/paper-drafts/MH_IMPLEMENTATION_ROADMAP.md` § 3
     (V7 model-structure refit BEFORE anchor expansion).
 
     Model (canonical form per MH1+MH2 V7 CPT doc § 5):

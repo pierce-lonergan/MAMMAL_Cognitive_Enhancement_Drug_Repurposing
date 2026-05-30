@@ -14,7 +14,7 @@ Gates (per user spec):
                                  atomoxetine/SLC6A2, pitolisant/HRH3 all
                                  in Boltz top 10 at their cognate target
 
-Writes: reports/boltzina_allosteric_audit.md
+Writes: reports/pipeline/boltzina_allosteric_audit.md
 Exit:   0 = all gates pass; 2 = positive control retention fails (STOP).
         Other failures are logged but do not gate exit (per user: CHRNA7
         also failing under Boltz is itself a publishable methods finding).
@@ -41,7 +41,7 @@ logger = logging.getLogger("allosteric_gate")
 
 V2_DIR = RESULTS_DIR / "v2"
 DEFAULT_BOLTZ = V2_DIR / "boltzina_affinity.parquet"
-DEFAULT_REPORT = ROOT / "reports" / "boltzina_allosteric_audit.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "boltzina_allosteric_audit.md"
 
 # Same panels as v1 analysis/allosteric_audit.py
 ALLOSTERIC_PANELS = {

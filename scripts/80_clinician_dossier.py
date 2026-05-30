@@ -6,7 +6,7 @@ methylphenidate, pitolisant), FAILURE-class drugs the dossier should correctly
 DOWN-grade and flag (idalopirdine, encenicline), and a repurposing pick that
 exercises the allosteric-reliability caveat.
 
-Output: reports/clinician_dossiers_v1.md
+Output: reports/pipeline/clinician_dossiers_v1.md
 
 Usage:
   python scripts/80_clinician_dossier.py
@@ -57,7 +57,7 @@ def main() -> int:
     ap.add_argument("--panel", type=Path,
                     default=ROOT / "data" / "interim" / "targets.parquet")
     ap.add_argument("--report", type=Path,
-                    default=ROOT / "reports" / "clinician_dossiers_v1.md")
+                    default=ROOT / "reports" / "pipeline" / "clinician_dossiers_v1.md")
     args = ap.parse_args()
 
     from mammal_repurposing.validation import retrospective as R

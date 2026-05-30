@@ -52,7 +52,7 @@ finding is the publishable contribution.
   superfamily-conditional architecture works as Schulman 2024 claimed
 - **Reframed publishable contribution**: per-target Bayesian router is now
   empirically necessary (uniform ensembling would degrade SLC6A2/ADRA2A/CHRNA7)
-- See `reports/mmatt_dta_activation_v1.md` for the full empirical table
+- See `reports/pipeline/mmatt_dta_activation_v1.md` for the full empirical table
 
 ### Phased plan
 
@@ -62,7 +62,7 @@ finding is the publishable contribution.
 | **V6.A.2 Bias decomposition** | 4-5 | Wire `diagnostics/per_head_bias.py` to compute PC_k, SN_k, OOD_k, CT_k per (head, target). Bonett-Wright CIs | 5-head × 22-target trust matrix T(t, k) ∈ [0.02, 0.7] with row entropy logged |
 | **V6.A.3 Bayesian router** | 6-7 | `fusion/bayesian_router.py` is shipped; activate by passing real T(t, k); add identifiability diagnostic report | Per-target router weights logged; identifiability theorem confirms n*=720 >> v4 n=7-26 (priors, not posteriors) |
 | **V6.A.4 Calibrated uncertainty** | 8 | Per-head Venn-ABERS (Mervin 2020 J Chem Inf Model 60:4546). Cross-head correlation matrix Σ_kk' from 133-tuple calibration set. Replace router's Gaussian-CI with VA MC propagation | CI width inflation factor √(1+(K-1)·r̄) ≈ 1.41 confirmed |
-| **V6.A.5 Disagreement facet** | 9-10 | Extend `35_v3_disagreement_signal.py` to multi-head: pairwise Kendall-τ + rank-distance + facet-tag {novel_scaffold / activity_cliff / ood / noise} | `reports/disagreement_axis_v1.md` per-compound bucket |
+| **V6.A.5 Disagreement facet** | 9-10 | Extend `35_v3_disagreement_signal.py` to multi-head: pairwise Kendall-τ + rank-distance + facet-tag {novel_scaffold / activity_cliff / ood / noise} | `reports/pipeline/disagreement_axis_v1.md` per-compound bucket |
 | **V6.A.6 Validation + paper** | 11-12 | Run hypothesis audit; Tier-A criterion check. If PASS → J Cheminform / Nat Mach Intell draft. If FAIL → publish the negative result + 3-head fallback architecture | Pre-committed predictions in §13.1 |
 
 ### Pre-committed predictions (per Multi Head DTI.md §0)
@@ -395,7 +395,7 @@ three venues:
 - V8 → Nature Machine Intelligence (A realistic) / Nature Methods (A+ stretch)
 
 If **no engineer time** is available — the current
-`reports/wet_lab_shortlist_v6_full.md` is the production deliverable.
+`reports/wet-lab/wet_lab_shortlist_v6_full.md` is the production deliverable.
 43 PASS compounds with all V4 + V5 gates flowing through. V6.A.1 MMAtt-DTA
 empirical activation + V6.B.1 Cluster D foundation shipped this sprint and
 ready to bolt on when engineering capacity resumes.
@@ -498,7 +498,7 @@ When V7/V8 work begins, the next assistant should:
    territory)
 5. Run V8.1 LINCS+JUMP-CP ingestion in parallel with V7.1 — they share no
    dependencies and use disjoint compute resources
-6. Maintain `reports/hypothesis_audit_v1.md` as the standing falsifiability check
+6. Maintain `reports/pipeline/hypothesis_audit_v1.md` as the standing falsifiability check
 7. Honor OSF pre-registration timing for V7.5 + V8.4 — they must lock
    priors and validation thresholds BEFORE unblinding the held-out anchor
    sets

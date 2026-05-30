@@ -40,7 +40,7 @@ logger = logging.getLogger("v5_pocket_liability")
 
 DEFAULT_GATES = ROOT / "data" / "results" / "v2" / "liability_gates.parquet"
 DEFAULT_GATES_OUT = ROOT / "data" / "results" / "v2" / "liability_gates_pocket_aware.parquet"
-DEFAULT_REPORT = ROOT / "reports" / "liability_pocket_aware_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "liability_pocket_aware_v1.md"
 
 
 def main() -> int:

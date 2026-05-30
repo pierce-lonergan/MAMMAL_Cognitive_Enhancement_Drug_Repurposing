@@ -11,7 +11,7 @@ Inputs (any can be missing; the composer collapses to neutral defaults):
 
 Outputs:
   data/results/v2/wet_lab_shortlist_v10.parquet
-  reports/wet_lab_shortlist_v10.md
+  reports/wet-lab/wet_lab_shortlist_v10.md
 
 Honest caveat: this is the **architectural composition** demonstration.
 Real-data v10 awaits all 4 posteriors flowing (V6.A.4 Venn-ABERS shipped,
@@ -210,7 +210,7 @@ def main() -> int:
                         default=ROOT / "data" / "results" / "v2"
                         / "wet_lab_shortlist_v10.parquet")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports" / "wet_lab_shortlist_v10.md")
+                        default=ROOT / "reports" / "wet-lab" / "wet_lab_shortlist_v10.md")
     parser.add_argument("--top-n", type=int, default=50)
     parser.add_argument("--no-roberts", action="store_true",
                         help="Skip the Roberts 2020 SMD ceiling pre-filter")

@@ -17,7 +17,7 @@ computed here).
 Output:
   data/results/v2/per_head_bias_v1.parquet
   data/results/v2/trust_matrix_v1.parquet
-  reports/per_head_bias_v1.md
+  reports/pipeline/per_head_bias_v1.md
 """
 
 from __future__ import annotations
@@ -49,7 +49,7 @@ DEFAULT_ROUTER = ROOT / "data" / "calibration" / "router_decisions.csv"
 DEFAULT_TARGETS = ROOT / "data" / "interim" / "targets.parquet"
 DEFAULT_OUT_BIAS = ROOT / "data" / "results" / "v2" / "per_head_bias_v1.parquet"
 DEFAULT_OUT_TRUST = ROOT / "data" / "results" / "v2" / "trust_matrix_v1.parquet"
-DEFAULT_REPORT = ROOT / "reports" / "per_head_bias_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "per_head_bias_v1.md"
 
 
 def main() -> int:

@@ -12,7 +12,7 @@ it's already a canonical nootropic.
 
 Output:
     data/results/final_ranked.parquet  (full sorted table)
-    reports/wet_lab_shortlist.md       (top-N with rich per-compound profile)
+    reports/wet-lab/wet_lab_shortlist.md       (top-N with rich per-compound profile)
 """
 
 from __future__ import annotations
@@ -48,7 +48,7 @@ DEFAULT_CHEMBL = RESULTS_DIR / "chembl_evidence.parquet"
 DEFAULT_OT = RESULTS_DIR / "opentargets_context.parquet"
 DEFAULT_COMP = RESULTS_DIR / "cognitive_composites.parquet"
 DEFAULT_OUT = RESULTS_DIR / "final_ranked.parquet"
-DEFAULT_REPORT = ROOT / "reports" / "wet_lab_shortlist.md"
+DEFAULT_REPORT = ROOT / "reports" / "wet-lab" / "wet_lab_shortlist.md"
 
 # Compounds in the canonical healthy-cognition RCT literature (lower novelty).
 # Penalize these because we're trying to surface NEW chemistry, not recapitulate
@@ -205,7 +205,7 @@ def render_markdown(top: pd.DataFrame, full_n: int) -> str:
     lines.append("")
     lines.append("**Important caveats**:")
     lines.append("- All `predicted_pkd` values are MAMMAL DTI head outputs. "
-                 "Trust rank-order, not absolute Kd — see `reports/calibration_report.md`.")
+                 "Trust rank-order, not absolute Kd — see `reports/pipeline/calibration_report.md`.")
     lines.append("- These are computational predictions, NOT proven cognitive enhancers. "
                  "Wet-lab confirmation required before any further investment.")
     lines.append("- Novelty score down-weights canonical healthy-RCT drugs (methylphenidate, modafinil, etc.) "

@@ -20,7 +20,7 @@ PRAGMATIC NOTE on cell-line assignment:
 
 Outputs:
   data/interim/cpg0000_v8_obs.parquet — long-format observations
-  reports/cpg0000_v8_etl_v1.md — coverage + per-batch summary report
+  reports/pipeline/cpg0000_v8_etl_v1.md — coverage + per-batch summary report
 
 Usage:
   python scripts/70_cpg0000_etl_v8_calibration.py
@@ -159,7 +159,7 @@ def main() -> int:
     parser.add_argument("--out-parquet", type=Path,
                         default=ROOT / "data" / "interim" / "cpg0000_v8_obs.parquet")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports" / "cpg0000_v8_etl_v1.md")
+                        default=ROOT / "reports" / "pipeline" / "cpg0000_v8_etl_v1.md")
     args = parser.parse_args()
 
     if not PROFILES_DIR.exists():

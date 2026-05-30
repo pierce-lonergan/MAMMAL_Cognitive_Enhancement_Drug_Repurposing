@@ -24,7 +24,7 @@ Then `scripts/19_v2_allosteric_gate.py` re-ranked each target's compounds by Bol
 
 ## The Result
 
-**`reports/boltzina_allosteric_audit.md`** — formal report. Summary:
+**`reports/pipeline/boltzina_allosteric_audit.md`** — formal report. Summary:
 
 ### CHRNA7 — ✅ ALLOSTERIC RESCUE WORKS
 

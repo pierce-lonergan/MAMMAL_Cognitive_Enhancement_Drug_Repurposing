@@ -16,7 +16,7 @@ For each disease (Alzheimer's, CIAS-schizophrenia), this script:
 Outputs:
   data/results/v2/disease_shortlist_<DISEASE>.parquet  (full grid, per disease)
   data/results/v2/disease_class_priors.parquet         (prior provenance)
-  reports/disease_reframe_v1.md                         (clinician-legible)
+  reports/pipeline/disease_reframe_v1.md                         (clinician-legible)
 
 Gap-2 acceptance test (per disease): the #1 ceiling-passing mechanism class
 must be a disease-SUCCESS class, and every disease-SUCCESS class must out-rank
@@ -255,7 +255,7 @@ def main() -> int:
     ap.add_argument("--anchors", type=Path,
                     default=ROOT / "data" / "raw" / "modulator_anchors_seed.csv")
     ap.add_argument("--report", type=Path,
-                    default=ROOT / "reports" / "disease_reframe_v1.md")
+                    default=ROOT / "reports" / "pipeline" / "disease_reframe_v1.md")
     args = ap.parse_args()
 
     from mammal_repurposing.fusion.joint_composition import (

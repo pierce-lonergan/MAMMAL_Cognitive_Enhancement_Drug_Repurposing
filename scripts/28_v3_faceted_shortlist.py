@@ -12,7 +12,7 @@ Validates gates G3-G6:
   G5 (faceted HRH3):   top-5 must contain pitolisant
   G6 (cross-facet):    pitolisant in HRH3 facet but NOT in HRH3+DRD1 pair
 
-Output: reports/wet_lab_shortlist_v4_faceted.md +
+Output: reports/wet-lab/wet_lab_shortlist_v4_faceted.md +
         data/results/v2/faceted_shortlist.parquet
 """
 
@@ -66,7 +66,7 @@ def main() -> int:
     parser.add_argument("--out", type=Path,
                         default=V2_DIR / "faceted_shortlist.parquet")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports" / "wet_lab_shortlist_v4_faceted.md")
+                        default=ROOT / "reports" / "wet-lab" / "wet_lab_shortlist_v4_faceted.md")
     parser.add_argument("--top-n", type=int, default=5)
     args = parser.parse_args()
 

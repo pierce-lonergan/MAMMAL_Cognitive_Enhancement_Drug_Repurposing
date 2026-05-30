@@ -1,8 +1,8 @@
 """Big-runs sprint pytest:
-- Integration umbrella paper (reports/integration_paper_draft.md)
+- Integration umbrella paper (reports/paper-drafts/integration_paper_draft.md)
 - V6.B.5 real NUTS posterior (data/results/v2/cluster_d_posterior_expanded_v1.parquet)
 - V7 production NUTS posterior (data/results/v2/v7_nuts_posterior_production_v1.parquet)
-- Wet-lab handoff document (reports/wet_lab_handoff_v1.md)
+- Wet-lab handoff document (reports/wet-lab/wet_lab_handoff_v1.md)
 - chemCPA larger-scale run artifacts (when present)
 """
 
@@ -37,38 +37,38 @@ class TestIntegrationPaper:
     )
 
     def test_integration_paper_exists(self):
-        path = ROOT / "reports" / "integration_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "integration_paper_draft.md"
         assert path.exists(), "Integration umbrella paper missing"
 
     def test_integration_paper_has_required_sections(self):
-        path = ROOT / "reports" / "integration_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "integration_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         for section in self.REQUIRED_SECTIONS:
             assert section.lower() in body, \
                 f"Integration paper missing section: {section}"
 
     def test_integration_paper_references_all_4_layer_papers(self):
-        path = ROOT / "reports" / "integration_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "integration_paper_draft.md"
         body = path.read_text(encoding="utf-8")
         for fname in ("v6a_paper_draft.md", "v6b_paper_draft.md",
                        "v7_paper_draft.md", "v8_paper_draft.md"):
             assert fname in body, f"Integration paper missing layer ref: {fname}"
 
     def test_integration_paper_targets_top_tier_venues(self):
-        path = ROOT / "reports" / "integration_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "integration_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         # Must reference top-tier venues
         assert ("nature" in body or "nature medicine" in body
                 or "nature biotechnology" in body or "cell" in body)
 
     def test_integration_paper_includes_all_5_layers(self):
-        path = ROOT / "reports" / "integration_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "integration_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         for layer in ("v4", "v5", "v6.a", "v6.b", "v7", "v8"):
             assert layer in body, f"Integration paper missing layer: {layer}"
 
     def test_integration_paper_includes_8_cell_taxonomy(self):
-        path = ROOT / "reports" / "integration_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "integration_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         # Key 8-cell tags
         for tag in ("agreement.all_high", "target_true.phenotype_failed",
@@ -76,14 +76,14 @@ class TestIntegrationPaper:
             assert tag in body, f"Integration paper missing 8-cell tag: {tag}"
 
     def test_integration_paper_references_roberts_ceiling(self):
-        path = ROOT / "reports" / "integration_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "integration_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         assert "roberts" in body
         assert "0.50" in body or "0.5" in body
         assert "ceiling" in body
 
     def test_integration_paper_reports_production_metrics(self):
-        path = ROOT / "reports" / "integration_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "integration_paper_draft.md"
         body = path.read_text(encoding="utf-8")
         # Real production metrics
         assert "1.000" in body                    # R̂ from V6.B NUTS
@@ -91,7 +91,7 @@ class TestIntegrationPaper:
         assert "12,780" in body or "12780" in body # V6.B ESS
 
     def test_integration_paper_lists_5_paper_suite(self):
-        path = ROOT / "reports" / "integration_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "integration_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         # Should explicitly mention "5-paper" or "4 + 1" suite
         assert ("5-paper" in body or "five-paper" in body
@@ -116,7 +116,7 @@ class TestV7ProductionNuts:
             assert col in df.columns
 
     def test_v7_production_report_reports_R_hat_1_000(self):
-        path = ROOT / "reports" / "v7_nuts_production_v1.md"
+        path = ROOT / "reports" / "pipeline" / "v7_nuts_production_v1.md"
         if not path.exists():
             pytest.skip("V7 production report not yet generated")
         body = path.read_text(encoding="utf-8")
@@ -175,18 +175,18 @@ class TestWetLabHandoff:
     )
 
     def test_wet_lab_handoff_exists(self):
-        path = ROOT / "reports" / "wet_lab_handoff_v1.md"
+        path = ROOT / "reports" / "wet-lab" / "wet_lab_handoff_v1.md"
         assert path.exists(), "Wet-lab handoff document missing"
 
     def test_wet_lab_handoff_has_required_sections(self):
-        path = ROOT / "reports" / "wet_lab_handoff_v1.md"
+        path = ROOT / "reports" / "wet-lab" / "wet_lab_handoff_v1.md"
         body = path.read_text(encoding="utf-8").lower()
         for section in self.REQUIRED_SECTIONS:
             assert section.lower() in body, \
                 f"Wet-lab handoff missing: {section}"
 
     def test_wet_lab_handoff_lists_top_compounds(self):
-        path = ROOT / "reports" / "wet_lab_handoff_v1.md"
+        path = ROOT / "reports" / "wet-lab" / "wet_lab_handoff_v1.md"
         body = path.read_text(encoding="utf-8").lower()
         # Canonical top-N compounds must be referenced
         for compound in ("methylphenidate", "donepezil", "modafinil",
@@ -196,7 +196,7 @@ class TestWetLabHandoff:
             assert compound in body, f"Wet-lab handoff missing: {compound}"
 
     def test_wet_lab_handoff_references_bima8_cluster(self):
-        path = ROOT / "reports" / "wet_lab_handoff_v1.md"
+        path = ROOT / "reports" / "wet-lab" / "wet_lab_handoff_v1.md"
         body = path.read_text(encoding="utf-8").lower()
         # BIMA-8 cluster must be referenced for (L, L, H) tier C
         for compound in ("benztropine", "atropine", "oxybutynin",
@@ -204,7 +204,7 @@ class TestWetLabHandoff:
             assert compound in body, f"Wet-lab handoff missing BIMA-8: {compound}"
 
     def test_wet_lab_handoff_includes_3_collaboration_options(self):
-        path = ROOT / "reports" / "wet_lab_handoff_v1.md"
+        path = ROOT / "reports" / "wet-lab" / "wet_lab_handoff_v1.md"
         body = path.read_text(encoding="utf-8").lower()
         # Should offer ≥3 collaboration tiers
         assert "option a" in body
@@ -212,20 +212,20 @@ class TestWetLabHandoff:
         assert "option c" in body
 
     def test_wet_lab_handoff_specifies_cost_estimate(self):
-        path = ROOT / "reports" / "wet_lab_handoff_v1.md"
+        path = ROOT / "reports" / "wet-lab" / "wet_lab_handoff_v1.md"
         body = path.read_text(encoding="utf-8")
         # Should have explicit dollar estimates
         assert "$" in body
         assert "k" in body.lower()    # thousands
 
     def test_wet_lab_handoff_specifies_roberts_ceiling_status(self):
-        path = ROOT / "reports" / "wet_lab_handoff_v1.md"
+        path = ROOT / "reports" / "wet-lab" / "wet_lab_handoff_v1.md"
         body = path.read_text(encoding="utf-8").lower()
         assert "roberts" in body
         assert "0.50" in body or "0.5" in body
 
     def test_wet_lab_handoff_references_8_cell_taxonomy(self):
-        path = ROOT / "reports" / "wet_lab_handoff_v1.md"
+        path = ROOT / "reports" / "wet-lab" / "wet_lab_handoff_v1.md"
         body = path.read_text(encoding="utf-8").lower()
         # The two most informative cells should be highlighted
         assert "target_true.phenotype_failed" in body
@@ -268,7 +268,7 @@ class TestSprintArtifactIntegration:
         for fname in ("v6a_paper_draft.md", "v6b_paper_draft.md",
                        "v7_paper_draft.md", "v8_paper_draft.md",
                        "integration_paper_draft.md"):
-            p = ROOT / "reports" / fname
+            p = ROOT / "reports" / "paper-drafts" / fname
             assert p.exists(), f"Paper draft missing: {fname}"
 
     def test_3_documentation_artifacts_at_repo_root(self):
@@ -277,4 +277,4 @@ class TestSprintArtifactIntegration:
             assert p.exists(), f"Documentation artifact missing: {fname}"
 
     def test_wet_lab_handoff_at_reports_root(self):
-        assert (ROOT / "reports" / "wet_lab_handoff_v1.md").exists()
+        assert (ROOT / "reports" / "wet-lab" / "wet_lab_handoff_v1.md").exists()

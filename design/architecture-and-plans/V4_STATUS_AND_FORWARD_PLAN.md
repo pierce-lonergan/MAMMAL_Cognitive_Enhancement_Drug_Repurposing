@@ -2,7 +2,7 @@
 
 **Read this first.** This is the source-of-truth status document for the project after **four post-V3 breakthroughs** (diagnostics + Tanimoto; selectivity + faceted shortlist; isotonic calibration; pocket-conditioned MVP) plus the **V5 transition sprint** (Boltz overnight sweep + Phase A.7 refresh + §8.0b-zn liability + §7.18 Z-norm + §8.15 disagreement + calibrated MAMMAL into fusion + wet-lab shortlist v6). Supersedes [V3_STATUS_AND_FORWARD_PLAN.md](V3_STATUS_AND_FORWARD_PLAN.md) as the live state-of-the-world; v3 remains as the historical anchor. The V5/V6 forward path is documented in §13 below.
 
-**Snapshot (post V5 + Tier 2 + Tier 3 + Tier 3b + V6 scaffold + V6.A.1 + V6.B.1 sprint + V7/V8 architecture planning)**: V4 architecture + V5 transition + Tier 2 + Tier 3 + Tier 3b sprints + V6 scaffold + V6.A.1 MMAtt-DTA empirical activation + V6.B.1 Cluster D Foundation all complete. **V6.A phase 2 shipped** (PSICHIC adapter + Venn-ABERS calibrated uncertainty propagation with correlated MC). **V6.B Stage 1 shipped** (abagen + AHBA cache + 20/22 cognition genes × 83 regions in `data/results/v2/ahba_expression_v1.parquet`). **Two new architectural layers planned**: §13.Y **V7 Clinical Effect-Size Translation** (~3-4 mo; downstream of V6.A pchembl + V6.B θ̄; PBPK-anchored hierarchical Bayes → predicted Hedges' g; CPT target venue) and §13.Z **V8/Cluster E πphen Perturbational Evidence Axis** (~22 wk; parallel third Bayesian factor; LINCS L1000 + JUMP-CP + iPSC-MEA + chemCPA imputation; Nat Mach Intell target venue). **6 of 7 Tier-1 items shipped** (Phase B Cluster C: txgnn_env mostly built — DGL graphbolt wheel pinned to torch 2.4.0+cu121 in this sprint, TxGNN API rewrite queued). **8 of 8 Tier-2 items shipped**. **14 of 14 Tier-3 items shipped**. Production wet-lab handoff: **`reports/wet_lab_shortlist_v6_full.md`** + **`reports/pareto_ranking_v1.md`** (12-compound Pareto front, 10 PASS). **V6 SCAFFOLDS SHIPPED**: `cluster_a/{mmatt_dta_adapter.py, psichic_adapter.py}`, `calibration/venn_abers.py`, `diagnostics/per_head_bias.py`, `fusion/bayesian_router.py`, `cluster_d/{bayesian_prior.py, data_fetchers.py}`, `pockets/detector_ensemble.py`, plus **`design/architecture-and-plans/V6_ARCHITECTURE_PLAN.md`** (phased 32-week implementation roadmap; now extended with V7+V8 sections this sprint). **Methodology v2 + §14 Hypothesis Ledger shipped**. **Test coverage**: 96/96 non-slow pytest tests passing (9 V6 phase-2 + 20 V6 scaffold + 14 Tier-3b + 14 Tier-3 + 26 V5 + 13 pre-existing). **Hypothesis audit**: 10 PASS / 2 DEGRADE / 0 FAIL. **LambdaMART headline**: NDCG@25 = 0.891 vs baseline 0.774 on held-out targets (+15% lift).
+**Snapshot (post V5 + Tier 2 + Tier 3 + Tier 3b + V6 scaffold + V6.A.1 + V6.B.1 sprint + V7/V8 architecture planning)**: V4 architecture + V5 transition + Tier 2 + Tier 3 + Tier 3b sprints + V6 scaffold + V6.A.1 MMAtt-DTA empirical activation + V6.B.1 Cluster D Foundation all complete. **V6.A phase 2 shipped** (PSICHIC adapter + Venn-ABERS calibrated uncertainty propagation with correlated MC). **V6.B Stage 1 shipped** (abagen + AHBA cache + 20/22 cognition genes × 83 regions in `data/results/v2/ahba_expression_v1.parquet`). **Two new architectural layers planned**: §13.Y **V7 Clinical Effect-Size Translation** (~3-4 mo; downstream of V6.A pchembl + V6.B θ̄; PBPK-anchored hierarchical Bayes → predicted Hedges' g; CPT target venue) and §13.Z **V8/Cluster E πphen Perturbational Evidence Axis** (~22 wk; parallel third Bayesian factor; LINCS L1000 + JUMP-CP + iPSC-MEA + chemCPA imputation; Nat Mach Intell target venue). **6 of 7 Tier-1 items shipped** (Phase B Cluster C: txgnn_env mostly built — DGL graphbolt wheel pinned to torch 2.4.0+cu121 in this sprint, TxGNN API rewrite queued). **8 of 8 Tier-2 items shipped**. **14 of 14 Tier-3 items shipped**. Production wet-lab handoff: **`reports/wet-lab/wet_lab_shortlist_v6_full.md`** + **`reports/pipeline/pareto_ranking_v1.md`** (12-compound Pareto front, 10 PASS). **V6 SCAFFOLDS SHIPPED**: `cluster_a/{mmatt_dta_adapter.py, psichic_adapter.py}`, `calibration/venn_abers.py`, `diagnostics/per_head_bias.py`, `fusion/bayesian_router.py`, `cluster_d/{bayesian_prior.py, data_fetchers.py}`, `pockets/detector_ensemble.py`, plus **`design/architecture-and-plans/V6_ARCHITECTURE_PLAN.md`** (phased 32-week implementation roadmap; now extended with V7+V8 sections this sprint). **Methodology v2 + §14 Hypothesis Ledger shipped**. **Test coverage**: 96/96 non-slow pytest tests passing (9 V6 phase-2 + 20 V6 scaffold + 14 Tier-3b + 14 Tier-3 + 26 V5 + 13 pre-existing). **Hypothesis audit**: 10 PASS / 2 DEGRADE / 0 FAIL. **LambdaMART headline**: NDCG@25 = 0.891 vs baseline 0.774 on held-out targets (+15% lift).
 
 Two new research deep-dives landed during the transition sprint and define V5 + V6:
 - `research/4-tier/Multi Head DTI.md` — V5 priority (5-head DTI ensemble with bias decomposition + Bayesian routing + eMOSAIC OOD + disagreement-as-signal facet, ~12 weeks)
@@ -42,7 +42,7 @@ The v3 → v4 transition was driven by **four research deep-dives** (`research/4
 | **Cluster B' — 44-target off-target liability panel** | **🟡 INFRASTRUCTURE READY** | UniProt enrichment shipped; needs ~1hr MAMMAL re-run |
 | Cluster C — PrimeKG + TxGNN | 🟡 CODE LIVE, NOT RUN | `txgnn_env` venv ready; blocked on overnight Boltz sweep |
 | ChEMBL 36 SQLite mirror | ✅ live | A.5 PASS (19/20); 99-min full backstop |
-| Phase A.7 calibration linchpin | ✅ shipped | `reports/calibration_report.md`; per-target Spearman ρ |
+| Phase A.7 calibration linchpin | ✅ shipped | `reports/pipeline/calibration_report.md`; per-target Spearman ρ |
 | **§7.11 isotonic per-target calibration** | **✅ NEW (v4)** | SLC6A3 +0.62 Tier A, SLC6A2 +0.40 Tier B |
 | **§7.5 pocket-conditioned classifier (MVP)** | **✅ NEW (v4)** | 7 priority targets, 13 pockets, 13/13 gates pass |
 | **Selectivity layer (Graczyk Gini + S(10×))** | **✅ NEW (v4)** | `selectivity/` package; ships with Tanimoto vector |
@@ -51,7 +51,7 @@ The v3 → v4 transition was driven by **four research deep-dives** (`research/4
 | Phase C 4-cluster RRF (calibrated + uncalibrated) | ✅ live | both passes ship; +1 cluster (Tanimoto) → 5-cluster fusion |
 | Phase D calibration diff | ✅ shipped | Spearman ρ = +0.994 |
 | Phase E methodology note v1 | ✅ shipped | + 2 post-ship update callouts for v4 |
-| **Wet-lab shortlist v4 (faceted)** | **✅ NEW (v4)** | `reports/wet_lab_shortlist_v4_faceted.md` |
+| **Wet-lab shortlist v4 (faceted)** | **✅ NEW (v4)** | `reports/wet-lab/wet_lab_shortlist_v4_faceted.md` |
 | ChEMBL evidence backstop (Phase A.4) | ✅ complete | 6,556 rows; 275 CORROBORATED / 6,257 NOVEL |
 | Phase 0.5 CHRNA7 rescue gate | ✅ PASSED | TC-5619 100%, encenicline 80% (vs v1 19%, 7%) |
 | Phase A.4 backstop | ✅ COMPLETE | 99 min for 6,556 rows |
@@ -119,7 +119,7 @@ This section is the v4 equivalent of v3's "what the calibration linchpin exposed
    - G3 fails (TC-5619 / encenicline have novel α7-PAM scaffolds Tanimoto under-rates)
 
 **Consequence**:
-- The faceted shortlist is the new wet-lab handoff format (`reports/wet_lab_shortlist_v4_faceted.md`).
+- The faceted shortlist is the new wet-lab handoff format (`reports/wet-lab/wet_lab_shortlist_v4_faceted.md`).
 - Pitolisant correctly anchors histaminergic facet at #2; atomoxetine/duloxetine/fluoxetine/clonidine dominate noradrenergic; ampakines + AMPA agonists dominate glutamatergic AMPA — each facet contains the canonical compounds for its class.
 - Cross-facet provenance prevents triple-counting (lurasidone appears in 10 facets, but is one compound — the count column makes this explicit).
 - **Tanimoto-on-Morgan-FP under-rates novel scaffolds** is a known deployment caveat that becomes the motivation for §7.7 cross-DTI ensemble (a contrastive-trained DTI like PSICHIC may correct this).
@@ -128,7 +128,7 @@ This section is the v4 equivalent of v3's "what the calibration linchpin exposed
 
 **Prediction (V3 §7.11 from `Isotonic-PerTarget-Calibration.md`)**: `IsotonicRegression(increasing='auto')` naturally absorbs sign inversion at MAMMAL_ONLY_INVERTED targets. Predicted SLC6A3 post-cal ρ ∈ [+0.45, +0.65]; SLC6A2 ∈ [+0.30, +0.55]. GRIN2A/2B confirmed Scenario 3 (structural blindness at ifenprodil dimer interface) — calibration ceiling ~+0.2.
 
-**Outcome** (per `reports/calibration_comparison_v1.md`):
+**Outcome** (per `reports/pipeline/calibration_comparison_v1.md`):
 
 | Target | n | Raw ρ | Post-cal ρ | Δρ | CI | Tier |
 |---|---|---|---|---|---|---|
@@ -259,7 +259,7 @@ src/mammal_repurposing/cluster_a/mmatt_dta_adapter.py (§7.7 V5.1) ✅ CODE LIVE
 pytest tests/ --ignore=test_scoring.py --ignore=test_fetchers.py        39/39 pass (V5 test suite: 26 cases)
 ```
 
-**Reproducibility**: every artifact lands in `data/results/` or `data/results/v2/`. Configs at `configs/{thresholds,weights,weights_calibrated}.yaml`. Calibrators at `data/calibration/isotonic/<uniprot>.pkl`. Pocket centroids at `data/pockets/centroids/<target>.json`. Reports at `reports/`. Sprint history = git log; methodology at `reports/methodology_v1.md` (post-ship update callouts for v4 breakthroughs).
+**Reproducibility**: every artifact lands in `data/results/` or `data/results/v2/`. Configs at `configs/{thresholds,weights,weights_calibrated}.yaml`. Calibrators at `data/calibration/isotonic/<uniprot>.pkl`. Pocket centroids at `data/pockets/centroids/<target>.json`. Reports at `reports/`. Sprint history = git log; methodology at `reports/paper-drafts/methodology_v1.md` (post-ship update callouts for v4 breakthroughs).
 
 ---
 
@@ -289,7 +289,7 @@ Option 2 is preferred — keeps the parquet self-contained. ~1-day implementatio
 ```bash
 python scripts/29_v3_liability_panel.py
 ```
-~1hr DTI run + ~10s gating + `reports/liability_audit_v1.md`.
+~1hr DTI run + ~10s gating + `reports/pipeline/liability_audit_v1.md`.
 
 ### 4.3 Cluster C (PrimeKG + TxGNN) still coded but not run
 
@@ -354,11 +354,11 @@ The methodology note already permits all three.
 
 ### 4.10 Methodology note v1 has 2 post-ship update callouts (deferred to v2)
 
-**Symptom**: `reports/methodology_v1.md` got post-ship update banners after each breakthrough. The note is now 3 commits behind the actual architecture.
+**Symptom**: `reports/paper-drafts/methodology_v1.md` got post-ship update banners after each breakthrough. The note is now 3 commits behind the actual architecture.
 
 **Severity**: LOW — the callouts are honest; new contributors get pointed to the right artifacts.
 
-**Remediation**: write `reports/methodology_v2.md` after the next sprint that bundles the v4 architecture into a coherent narrative. ~1-day rewrite.
+**Remediation**: write `reports/paper-drafts/methodology_v2.md` after the next sprint that bundles the v4 architecture into a coherent narrative. ~1-day rewrite.
 
 ---
 
@@ -524,7 +524,7 @@ The methodology note already permits all three.
                                      ▼
             ┌────────────────────────────────────────────────────┐
             │            V4 WET-LAB SHORTLIST DELIVERABLE         │
-            │  reports/wet_lab_shortlist_v4_faceted.md            │
+            │  reports/wet-lab/wet_lab_shortlist_v4_faceted.md            │
             │  Gates: P1/P2/P3 (pocket) + G3-G6 (faceted) live   │
             │  Honest caveats: scaffold novelty bias on Tanimoto, │
             │  HRH3 BOLTZ verdict on n=3, GRIN2A/2B deprecation   │
@@ -743,39 +743,39 @@ Unchanged. **Updated scope**: when *any* of `boltzina_affinity.parquet`, `dti_sc
 
 - [x] **Liability panel Stages 2-3** (`scripts/29_v3_liability_panel.py`) — ✅ shipped as **§8.0b-zn**: absolute-mode CUT 115/115 revealed MAMMAL prior collapse on liability targets (per-target std 0.02-0.17); fixed with within-target z-norm gating (Tier 1 CUT @ z≥+2σ). Final verdicts: CUT=14 / FLAG=21 / PASS=80, pharmacology-consistent
 - [x] **Phase A.7 re-run** with full Boltz coverage — ✅ shipped: SLC6A2 rescued from INVERTED to **BOLTZ_2X_MAMMAL** (structure rescues the inversion); ADRA2A jumped to BOLTZ_2X_MAMMAL; HRH3 holds; SLC6A3 confirmed DE_WEIGHT (both MAMMAL and Boltz agree on anti-correlation — structure does NOT rescue DAT)
-- [x] **Phase B Cluster C** run — ✅ **shipped this sprint**: txgnn_env built (torch 2.4.0+cu121 + PyG 2.7.0 + DGL 2.4.0), PrimeKG downloaded (937 MB, 8.1M edges), compound + target resolvers fixed (V3 stub returned 0/117; V5 fix returns 62/117 + all 22 targets via gene-symbol-based resolver). `cluster_c_primekg` wired as 6th ranker in v8 fusion → top-10 reshuffled with rivastigmine/donepezil/modafinil promoted by PrimeKG topology. Encenicline #1 by PPR sum (CHRNA7 PAM with rich PrimeKG edges). Reports: `reports/cluster_c_v1.md` + `wet_lab_shortlist_v8_kg_full.md`. **TxGNN deferred**: shipped wrapper assumed `predict_indication(drug, disease)` methods; the public TxGNN class exposes `predict_disease(idx)` returning ranked lists — 1-day API rewrite + ~2GB PrimeKG re-download for TxData init. PrimeKG path scoring IS the headline KG signal regardless.
+- [x] **Phase B Cluster C** run — ✅ **shipped this sprint**: txgnn_env built (torch 2.4.0+cu121 + PyG 2.7.0 + DGL 2.4.0), PrimeKG downloaded (937 MB, 8.1M edges), compound + target resolvers fixed (V3 stub returned 0/117; V5 fix returns 62/117 + all 22 targets via gene-symbol-based resolver). `cluster_c_primekg` wired as 6th ranker in v8 fusion → top-10 reshuffled with rivastigmine/donepezil/modafinil promoted by PrimeKG topology. Encenicline #1 by PPR sum (CHRNA7 PAM with rich PrimeKG edges). Reports: `reports/pipeline/cluster_c_v1.md` + `wet_lab_shortlist_v8_kg_full.md`. **TxGNN deferred**: shipped wrapper assumed `predict_indication(drug, disease)` methods; the public TxGNN class exposes `predict_disease(idx)` returning ranked lists — 1-day API rewrite + ~2GB PrimeKG re-download for TxData init. PrimeKG path scoring IS the headline KG signal regardless.
 - [x] **Wire calibrated MAMMAL into fusion** (`--calibrated-mammal` + `--znorm-mammal` flags on `scripts/15_v2_fusion.py`) — ✅ shipped this sprint: d-amphetamine/methylphenidate/bupropion now lead the calibrated+znorm top-3 (canonical stimulants where calibrated DAT/NET signal is real); risperidone/lemborexant dropped (correctly CUT in §8.0b-zn)
 - [x] **Z-normalisation within target for selectivity** (§7.18) — ✅ shipped: per-target std uniform [1.250]; restored mechanism-class diversity in top-10 (7 classes vs all-PDE9A artifact before)
 - [x] **Tanimoto-vs-MAMMAL rank-disagreement column** (§8.15) — ✅ shipped: caught liraglutide/semaglutide at SLC6A2/ADRA2A/DRD1 as MAMMAL hallucinations (novel_scaffold_suspect); caught (R,S)-AMPA + (S)-AMPA at GRIA3 as activity_cliff_suspect (MAMMAL ranks #297-298, Tanimoto ranks #3-7)
-- [x] **Re-render wet-lab shortlist** with all v4 pieces flowing through — ✅ shipped as **`reports/wet_lab_shortlist_v6_full.md`** via `scripts/36_v5_wet_lab_shortlist.py`: §1 raw v6 ranking with ADMET+liability annotation, §2 PASS-only wet-lab-eligible set (43 compounds), §3 faceted shortlist + liability annotation, §4 FLAG triage list, §5 CUT exclusion list with reason
+- [x] **Re-render wet-lab shortlist** with all v4 pieces flowing through — ✅ shipped as **`reports/wet-lab/wet_lab_shortlist_v6_full.md`** via `scripts/36_v5_wet_lab_shortlist.py`: §1 raw v6 ranking with ADMET+liability annotation, §2 PASS-only wet-lab-eligible set (43 compounds), §3 faceted shortlist + liability annotation, §4 FLAG triage list, §5 CUT exclusion list with reason
 
 ### Tier 2 — DO SOON (1-2 weeks each, ordered by signal-to-effort)
 
 - [x] **Pose-saving Boltz wrapper** (§7.17) — ✅ shipped (code) this sprint: `scripts/_wsl2_boltz_full_sweep_pose.py` + `src/mammal_repurposing/pockets/pose_extract.py` with `--backfill-only` mode. Pose-only re-run on WSL2 still pending (~6-10h GPU). Pose centroid extractor unit-tested in `tests/test_v5_modules.py::TestPoseExtractor` (3 tests pass)
 - [x] **Cross-DTI ensemble — MMAtt-DTA adapter** (§7.7 V5.1) — ✅ shipped (code) this sprint: `src/mammal_repurposing/cluster_a/mmatt_dta_adapter.py` with 22/22 cognition-target superfamily map (transporter / GPCR / ion_channel / enzyme / kinase). Operationally awaits manual `git clone https://github.com/AronSchulman/MMAtt-DTA.git` + Zenodo weights download (~2 GB); pre-committed Tier-A criterion at SLC6A3 (>+0.90 Tanimoto floor) is the falsifiability test.
-- [x] **Pocket-class-conditioned liability gating** (§8.13) — ✅ shipped this sprint: `gates/liability_panel.py::pocket_aware_liability_gate()` + literature-grounded `POCKET_AWARE_DEMOTABLE` table (HTR2B/KCNH2/HRH1/CNR1/CHRM1/OPRM1/MAOA → demotable allosteric classes). Demo + audit at `scripts/39_v5_pocket_conditional_liability.py` + `reports/liability_pocket_aware_v1.md`. 3 pytest cases pass.
+- [x] **Pocket-class-conditioned liability gating** (§8.13) — ✅ shipped this sprint: `gates/liability_panel.py::pocket_aware_liability_gate()` + literature-grounded `POCKET_AWARE_DEMOTABLE` table (HTR2B/KCNH2/HRH1/CNR1/CHRM1/OPRM1/MAOA → demotable allosteric classes). Demo + audit at `scripts/39_v5_pocket_conditional_liability.py` + `reports/pipeline/liability_pocket_aware_v1.md`. 3 pytest cases pass.
 - [x] **Mechanism-of-action ranker** (§8.7) — ✅ shipped this sprint as 5th fusion cluster: `src/mammal_repurposing/cluster_b/moa_ranker.py` with 22-target preferred-MoA table (CHRNA7 PAM > AGONIST > ANTAGONIST etc.). Wired via `--add-moa-ranker` on `scripts/15_v2_fusion.py`. ChEMBL action_type loader at `fetchers/chembl_sqlite.py::chembl_moa_for_target`. 5 pytest cases pass.
-- [x] **Methodology note v2** — ✅ shipped this sprint: `reports/methodology_v2.md` — coherent V4 + V5 architecture narrative; supersedes v1 (which had post-ship update banners). Includes Roberts 2020 ceiling, 5-cluster matrix, decision flow, 7 honest failure modes.
-- [x] **Patent / clinical-trial cross-reference** (§8.3 — Pareto axis 5) — ✅ shipped this sprint: ClinicalTrials.gov v2 API fetcher at `src/mammal_repurposing/fetchers/clinicaltrials.py` + annotator at `scripts/40_v5_clinical_trials.py`. Top-50 V6 PASS: 17 approved (donepezil/methylphenidate/bupropion/rasagiline/etc.), 7 investigational, 2 early, 24 IP-novel (no cognition-relevant trials). Output: `reports/clinical_trials_v1.md`.
-- [x] **Reverse-engineering known nootropics** (§8.10) — ✅ shipped this sprint: `src/mammal_repurposing/analysis/nootropic_similarity.py` (Morgan ECFP4 vs 14 canonical nootropics) + `scripts/37_v5_nootropic_similarity.py`. Output: `reports/nootropic_similarity_v1.md` + `data/results/v2/nootropic_similarity_v1.parquet`. Pipeline-wide: 279 novel_scaffold (T<0.30) + 19 intermediate; racetam family correctly clusters with piracetam, amphetamine analogs correctly cluster with d-amphetamine, self-matching suppressed. 3 pytest cases pass.
-- [x] **Combination-screening via DrugComb** (§8.2) — ✅ shipped: `src/mammal_repurposing/fetchers/drugcomb.py` + `scripts/46_v5_drugcomb_combinations.py` + `reports/drugcomb_combinations_v1.md`. Code-complete adapter tries `api.drugcomb.org` then `drugcomb.fimm.fi/api` with 5s timeout; both unreachable at commit time → fallback report ships canonical FDA combinations (donepezil+memantine Namzaric, etc.). 3 pytest cases pass. Activates when network reachable.
+- [x] **Methodology note v2** — ✅ shipped this sprint: `reports/paper-drafts/methodology_v2.md` — coherent V4 + V5 architecture narrative; supersedes v1 (which had post-ship update banners). Includes Roberts 2020 ceiling, 5-cluster matrix, decision flow, 7 honest failure modes.
+- [x] **Patent / clinical-trial cross-reference** (§8.3 — Pareto axis 5) — ✅ shipped this sprint: ClinicalTrials.gov v2 API fetcher at `src/mammal_repurposing/fetchers/clinicaltrials.py` + annotator at `scripts/40_v5_clinical_trials.py`. Top-50 V6 PASS: 17 approved (donepezil/methylphenidate/bupropion/rasagiline/etc.), 7 investigational, 2 early, 24 IP-novel (no cognition-relevant trials). Output: `reports/pipeline/clinical_trials_v1.md`.
+- [x] **Reverse-engineering known nootropics** (§8.10) — ✅ shipped this sprint: `src/mammal_repurposing/analysis/nootropic_similarity.py` (Morgan ECFP4 vs 14 canonical nootropics) + `scripts/37_v5_nootropic_similarity.py`. Output: `reports/pipeline/nootropic_similarity_v1.md` + `data/results/v2/nootropic_similarity_v1.parquet`. Pipeline-wide: 279 novel_scaffold (T<0.30) + 19 intermediate; racetam family correctly clusters with piracetam, amphetamine analogs correctly cluster with d-amphetamine, self-matching suppressed. 3 pytest cases pass.
+- [x] **Combination-screening via DrugComb** (§8.2) — ✅ shipped: `src/mammal_repurposing/fetchers/drugcomb.py` + `scripts/46_v5_drugcomb_combinations.py` + `reports/pipeline/drugcomb_combinations_v1.md`. Code-complete adapter tries `api.drugcomb.org` then `drugcomb.fimm.fi/api` with 5s timeout; both unreachable at commit time → fallback report ships canonical FDA combinations (donepezil+memantine Namzaric, etc.). 3 pytest cases pass. Activates when network reachable.
 
 ### Tier 3 — DO AFTER (2-4 weeks each)
 
-- [x] **Pareto NSGA-III restructure** (§8.0a) — ✅ shipped this sprint: `src/mammal_repurposing/fusion/pareto.py` (5-axis non-dominated sort + Monte-Carlo hypervolume + crowding distance) + `scripts/42_v5_pareto_shortlist.py` + `reports/pareto_ranking_v1.md`. **12-compound Pareto front, 10 PASS**: d-amphetamine, bupropion, aniracetam, pridopidine, levetiracetam, cx-516, chembl1255723, pramipexole, cep-26401, chembl302231, riluzole, chembl294061. 5 pytest cases pass.
+- [x] **Pareto NSGA-III restructure** (§8.0a) — ✅ shipped this sprint: `src/mammal_repurposing/fusion/pareto.py` (5-axis non-dominated sort + Monte-Carlo hypervolume + crowding distance) + `scripts/42_v5_pareto_shortlist.py` + `reports/pipeline/pareto_ranking_v1.md`. **12-compound Pareto front, 10 PASS**: d-amphetamine, bupropion, aniracetam, pridopidine, levetiracetam, cx-516, chembl1255723, pramipexole, cep-26401, chembl302231, riluzole, chembl294061. 5 pytest cases pass.
 - [x] **PyMC hierarchical for GRIN pool** (§7.15) — ✅ shipped: `src/mammal_repurposing/calibration/hierarchical_bayes.py` (full PyMC NUTS path + James-Stein shrinkage fallback) + `scripts/49_v5_hierarchical_grin.py`. PyMC not yet installed → shrinkage path active. **Hypothesis DEGRADE**: GRIN2A has only n=1 joined ChEMBL truth (no family partner to pool with); SLC6 family pooled but linear-Gaussian shrinkage doesn't rescue the inversion (the isotonic-based PyMC path will when `pip install pymc numpyro` lands). 3 pytest cases pass.
 - [x] **§7.5 detector ensemble** Sprint 2 (P2Rank + PocketMiner + CryptoBench) (§7.16) — ✅ shipped this sprint: `src/mammal_repurposing/pockets/detector_ensemble.py` with uniform `DetectorAdapter` interface + 3 detector adapters + consensus voting. Each adapter ships with graceful-degradation stubs; real-mode wiring activates by setting `P2RANK_HOME` / `POCKETMINER_HOME` / `CRYPTOBENCH_HOME` env vars. 4 pytest cases pass (stub mode + 3-detector cryptic_consensus + distance-threshold separation).
-- [x] **Pocket-routed isotonic at SLC6A3** (§8.14) — ✅ shipped: `src/mammal_repurposing/calibration/pocket_routed.py` (per-pocket isotonic + fallback + lift evaluator) + `scripts/48_v5_pocket_routed_calibration.py` + `reports/pocket_routed_calibration_v1.md`. Demo uses synthetic 70/30 S1/S2 split for SLC6A3 (real pose-class data awaits §7.17 pose-only Boltz re-run). 3 pytest cases pass including a synthetic two-slope dataset that confirms +10%+ SSR lift when per-pocket relationships truly differ.
+- [x] **Pocket-routed isotonic at SLC6A3** (§8.14) — ✅ shipped: `src/mammal_repurposing/calibration/pocket_routed.py` (per-pocket isotonic + fallback + lift evaluator) + `scripts/48_v5_pocket_routed_calibration.py` + `reports/pipeline/pocket_routed_calibration_v1.md`. Demo uses synthetic 70/30 S1/S2 split for SLC6A3 (real pose-class data awaits §7.17 pose-only Boltz re-run). 3 pytest cases pass including a synthetic two-slope dataset that confirms +10%+ SSR lift when per-pocket relationships truly differ.
 - [ ] **Cluster D neurobiological prior** (§7.9 / §8.0c) — V6 priority per §13.2 — Moodie 2024 + AHBA + OT Genetics + cellxgene + Roberts ceiling
 - [ ] **GWAS-anchored panel expansion** (§7.3) — folded into V6 Cluster D (panel grows to ~210)
-- [x] **Brain region selectivity** (§8.6) — ✅ shipped this sprint as V6 Cluster D preview: `src/mammal_repurposing/analysis/brain_region.py` (22-target curated AHBA + Siletti 2023 single-cell synthesis) + `scripts/45_v5_brain_region.py` + `reports/brain_region_v1.md`. **Hypothesis PASS**: top-25 v7 spans 4 distinct brain-region biases (cortex-biased, subcortical, brainstem, mixed). Full PyMC pipeline remains the V6 deliverable.
-- [x] **Selectivity entropy + Partition Index** (§7.4 v2 metrics) — ✅ shipped this sprint: `selectivity/gini_scorecard.py::selectivity_entropy` (Uitdehaag & Zaman 2011) + `partition_index` / `top_target_partition_index` (Cheng 2010). Re-rendered `reports/selectivity_v6_tanimoto_4metrics.md` with all 4 metrics. 4 pytest cases pass; pitolisant correctly anchors HRH3 with PI_top=0.36, mono-selective compounds get entropy<0.5+PI>0.95.
-- [x] **Tier-A calibrator round-trip QC** (§8.16) — ✅ shipped this sprint: `scripts/38_v5_calibrator_qc.py` audits every isotonic calibrator against latest ChEMBL release with WARN (|Δρ|>0.05) and REFIT_NEEDED (|Δρ|>0.10) thresholds. Per-target JSON at `data/calibration/qc/<uniprot>.json`. **First audit finding**: SLC6A3 Tier A audit ρ=+0.43 vs fit ρ=+0.62, Δ=-0.19 → **REFIT_NEEDED**. Documented in `reports/calibrator_qc_v1.md` (status counts: REFIT_NEEDED=10, INSUFFICIENT_OVERLAP=5, NO_TRUTH=1, WARN=1, OK=1).
+- [x] **Brain region selectivity** (§8.6) — ✅ shipped this sprint as V6 Cluster D preview: `src/mammal_repurposing/analysis/brain_region.py` (22-target curated AHBA + Siletti 2023 single-cell synthesis) + `scripts/45_v5_brain_region.py` + `reports/pipeline/brain_region_v1.md`. **Hypothesis PASS**: top-25 v7 spans 4 distinct brain-region biases (cortex-biased, subcortical, brainstem, mixed). Full PyMC pipeline remains the V6 deliverable.
+- [x] **Selectivity entropy + Partition Index** (§7.4 v2 metrics) — ✅ shipped this sprint: `selectivity/gini_scorecard.py::selectivity_entropy` (Uitdehaag & Zaman 2011) + `partition_index` / `top_target_partition_index` (Cheng 2010). Re-rendered `reports/pipeline/selectivity_v6_tanimoto_4metrics.md` with all 4 metrics. 4 pytest cases pass; pitolisant correctly anchors HRH3 with PI_top=0.36, mono-selective compounds get entropy<0.5+PI>0.95.
+- [x] **Tier-A calibrator round-trip QC** (§8.16) — ✅ shipped this sprint: `scripts/38_v5_calibrator_qc.py` audits every isotonic calibrator against latest ChEMBL release with WARN (|Δρ|>0.05) and REFIT_NEEDED (|Δρ|>0.10) thresholds. Per-target JSON at `data/calibration/qc/<uniprot>.json`. **First audit finding**: SLC6A3 Tier A audit ρ=+0.43 vs fit ρ=+0.62, Δ=-0.19 → **REFIT_NEEDED**. Documented in `reports/pipeline/calibrator_qc_v1.md` (status counts: REFIT_NEEDED=10, INSUFFICIENT_OVERLAP=5, NO_TRUTH=1, WARN=1, OK=1).
 - [x] **Cron-driven auto-recalibration** (§8.12) — ✅ shipped this sprint: `configs/auto_recalibration.yaml` (6-step cascade with §8.16 QC gating) + `scripts/_pwsh_auto_recalibration.ps1` (PowerShell driver registrable as Windows Scheduled Task). Block-on-REFIT-NEEDED policy keeps Tier-A SLC6A3 / SLC6A2 honest; degraded steps logged not blocked. YAML config validated.
 - [x] **ANI-2x pose validation on top-25** (§8.9) — ✅ shipped (stub): `src/mammal_repurposing/scoring/ani2x_validator.py`. ANI_AVAILABLE flag auto-detects whether `torchani` is installed; when absent (the case today), `_compute_energy_stub` returns a deterministic energy = −50 kcal/mol × n_heavy_atoms so downstream code flows. Real `torchani.models.ANI2x()` path written and ready. 2 pytest cases pass. Activates by `pip install torchani` + the §7.17 pose data.
-- [x] **LambdaMART promotion** — ✅ shipped: `src/mammal_repurposing/fusion/lambdamart_meta.py` (LightGBM `lambdarank` on 275 CORROBORATED ChEMBL labels) + `scripts/47_v5_lambdamart_meta.py` + `reports/lambdamart_meta_v1.md`. **Hypothesis PASS**: NDCG@25 = **0.891** (held-out targets) vs baseline raw MAMMAL pkd 0.774 — **+15% lift**. Top feature: `target_phase_a7_rho` (per-target calibration ρ is the most predictive feature). 3 pytest cases pass.
-- [x] **Conformal prediction per-target gating** (§7.12) — ✅ shipped this sprint: `src/mammal_repurposing/calibration/conformal.py` (inductive split-conformal isotonic wrap at α=0.20) + `scripts/43_v5_conformal_calibration.py` + `reports/conformal_calibration_v1.md`. **4 calibrators fit** with held-out coverage 1.00: SLC6A3 q_α=1.47, ADRA2A=0.41, PDE9A=0.40, NTRK2=1.51. 15 targets honestly reported as INSUFFICIENT_N (n<10). 3 pytest cases pass.
-- [x] **Scaffold-aware active learning** (§7.13) — ✅ shipped this sprint: `src/mammal_repurposing/diagnostics/scaffold_aware_al.py` (Murcko + scaffold density + exploration bonus) + `scripts/44_v5_scaffold_aware_al.py` + `reports/scaffold_aware_v1.md`. **Hypothesis PASS**: AL re-ranking added +8 distinct Murcko scaffolds in top-25 (16 baseline → 24 AL). 2 pytest cases pass.
+- [x] **LambdaMART promotion** — ✅ shipped: `src/mammal_repurposing/fusion/lambdamart_meta.py` (LightGBM `lambdarank` on 275 CORROBORATED ChEMBL labels) + `scripts/47_v5_lambdamart_meta.py` + `reports/pipeline/lambdamart_meta_v1.md`. **Hypothesis PASS**: NDCG@25 = **0.891** (held-out targets) vs baseline raw MAMMAL pkd 0.774 — **+15% lift**. Top feature: `target_phase_a7_rho` (per-target calibration ρ is the most predictive feature). 3 pytest cases pass.
+- [x] **Conformal prediction per-target gating** (§7.12) — ✅ shipped this sprint: `src/mammal_repurposing/calibration/conformal.py` (inductive split-conformal isotonic wrap at α=0.20) + `scripts/43_v5_conformal_calibration.py` + `reports/pipeline/conformal_calibration_v1.md`. **4 calibrators fit** with held-out coverage 1.00: SLC6A3 q_α=1.47, ADRA2A=0.41, PDE9A=0.40, NTRK2=1.51. 15 targets honestly reported as INSUFFICIENT_N (n<10). 3 pytest cases pass.
+- [x] **Scaffold-aware active learning** (§7.13) — ✅ shipped this sprint: `src/mammal_repurposing/diagnostics/scaffold_aware_al.py` (Murcko + scaffold density + exploration bonus) + `scripts/44_v5_scaffold_aware_al.py` + `reports/pipeline/scaffold_aware_v1.md`. **Hypothesis PASS**: AL re-ranking added +8 distinct Murcko scaffolds in top-25 (16 baseline → 24 AL). 2 pytest cases pass.
 
 ### Tier 4 — RESEARCH (3-10 days, parallelism / cloud burst)
 
@@ -851,7 +851,7 @@ Push-Location $repo
 # === V4 NEW: §7.4 selectivity (use Tanimoto vector — DON'T use raw MAMMAL) ===
 & $envPython scripts\27_v3_selectivity_scoring.py --use-tanimoto `
     --out data/results/v2/selectivity_scores_tanimoto.parquet `
-    --report reports/selectivity_v1_tanimoto.md
+    --report reports/pipeline/selectivity_v1_tanimoto.md
 
 # === V4 NEW: §8.1 multi-class faceted shortlist ===
 & $envPython scripts\28_v3_faceted_shortlist.py `
@@ -902,7 +902,7 @@ Life would be a lot better if people had better cognition. The contribution here
 
 ## 13. V5 + V6 Path Forward (integrating Multi Head DTI + Cluster D research)
 
-The v4 → v5 transition this sprint resolved **6 of 7 Tier-1 items** (§4.4 calibrated MAMMAL into fusion; §4.8 Z-norm within target; §7.18 selectivity Z-norm; §8.0b-zn liability gating; §8.15 disagreement-as-signal column; §49 Phase A.7 with full Boltz). The shipped wet-lab handoff is `reports/wet_lab_shortlist_v6_full.md` (43 PASS / 60 FLAG / 195 CUT, with d-amphetamine, methylphenidate, bupropion leading the calibrated+znorm fusion and modafinil/donepezil/atomoxetine flagged appropriately by gates).
+The v4 → v5 transition this sprint resolved **6 of 7 Tier-1 items** (§4.4 calibrated MAMMAL into fusion; §4.8 Z-norm within target; §7.18 selectivity Z-norm; §8.0b-zn liability gating; §8.15 disagreement-as-signal column; §49 Phase A.7 with full Boltz). The shipped wet-lab handoff is `reports/wet-lab/wet_lab_shortlist_v6_full.md` (43 PASS / 60 FLAG / 195 CUT, with d-amphetamine, methylphenidate, bupropion leading the calibrated+znorm fusion and modafinil/donepezil/atomoxetine flagged appropriately by gates).
 
 The Tier 2/3 sprint that followed shipped a further **8 items**:
 
@@ -915,7 +915,7 @@ The Tier 2/3 sprint that followed shipped a further **8 items**:
 - §8.13 — pocket-class-conditioned liability gate (`gates/liability_panel.py::pocket_aware_liability_gate`, `39_v5_pocket_conditional_liability.py`)
 - §8.16 — Tier-A calibrator round-trip QC (`38_v5_calibrator_qc.py` — first audit found SLC6A3 REFIT_NEEDED, Δρ=-0.19)
 
-Plus: methodology v2 narrative (`reports/methodology_v2.md`) and 26-test pytest coverage (`tests/test_v5_modules.py`). All 39 non-slow tests pass.
+Plus: methodology v2 narrative (`reports/paper-drafts/methodology_v2.md`) and 26-test pytest coverage (`tests/test_v5_modules.py`). All 39 non-slow tests pass.
 
 **Remaining Tier 2**: §8.2 DrugComb combination screening (deferred until V6 Cluster D lands).
 **Remaining Tier 3** (11 items): Pareto NSGA-III (§8.0a, now unblocked by §8.3 + §8.16); PyMC hierarchical GRIN pool (§7.15); §7.5 detector ensemble Sprint 2 (§7.16); pocket-routed isotonic SLC6A3 (§8.14); brain-region selectivity (§8.6); cron auto-recalibration (§8.12); ANI-2x pose validation (§8.9, depends on §7.17 pose-only re-run); LambdaMART promotion; conformal prediction (§7.12); scaffold-aware AL (§7.13); GWAS panel expansion (§7.3, folded into V6 Cluster D).
@@ -955,7 +955,7 @@ Tier-A criterion: at the two transporter targets, the ensemble must beat the +0.
 | **V5.2 Bias decomposition battery** | 4-5 | Three new modules in `diagnostics/`: `per_head_bias.py` (PC_k, SN_k, OOD_k, CT_k per head per target with Bonett-Wright CIs); `ood_emosaic.py` (per-head Mahalanobis OOD against training embeddings); `disagreement_axis.py` (per-compound disagreement vector + facet-tag {novel_scaffold, activity_cliff, ood, noise}) | 5-head × 22-target × 4-feature trust matrix T(t,k) ∈ [0.02, 0.7] with Σ_k T(t,k) = 1 |
 | **V5.3 Bayesian per-target router** | 6-7 | `src/mammal_repurposing/fusion/bayesian_router.py` extending EnsDTI (Park 2024 bioRxiv): w_k(q,t) ∝ T(t,k) · g(MD_k) · h(σ_k), explicit hyperpriors (α, β, γ, δ), §7 sensitivity analysis | Predictive distribution propagated via Venn-ABERS Monte Carlo with Gaussian copula for cross-head correlation. Identifiability theorem: per-target router weights NOT identifiable from data at n=7-26 → T(t,k) is a *prior*, not a posterior. |
 | **V5.4 Calibrated uncertainty propagation** | 8 | Per-head Venn-ABERS / isotonic / beta-calibration recommendation; Neelon-Dunson hierarchical isotonic with family-level pools (SLC6, GRIN, GPCR) | Cross-head correlation Σ_kk' estimated on the 133-tuple calibration set; CI inflation factor √(1+(K-1)·r̄) ≈ 1.41 applied |
-| **V5.5 Disagreement-as-signal facet** | 9-10 | New facet in `fusion/faceted_shortlist.py`: "high information value" — compounds where any pair of heads disagree by Kendall-τ > 0.5 or pairwise rank distance > 50. These are the wet-lab-priority discovery candidates: MAMMAL says binds, Tanimoto says no scaffold similarity, MMAtt-DTA says... | Output: `reports/disagreement_axis_v1.md` with discoveries pre-classified into 4 buckets (novel_scaffold / activity_cliff / ood / noise) |
+| **V5.5 Disagreement-as-signal facet** | 9-10 | New facet in `fusion/faceted_shortlist.py`: "high information value" — compounds where any pair of heads disagree by Kendall-τ > 0.5 or pairwise rank distance > 50. These are the wet-lab-priority discovery candidates: MAMMAL says binds, Tanimoto says no scaffold similarity, MMAtt-DTA says... | Output: `reports/pipeline/disagreement_axis_v1.md` with discoveries pre-classified into 4 buckets (novel_scaffold / activity_cliff / ood / noise) |
 | **V5.6 Validation gates + publication** | 11-12 | Tier-A criterion: ensemble beats Tanimoto +0.90 at SLC6A3 by ≥0.01 OR adds discovery value via disagreement axis that single-head can't deliver. Tier-B fallback: production Tanimoto-only deployment if Tier-A fails. | Methodology paper draft → J Cheminform / Nat Mach Intell |
 
 **Falsifiability fallback**: if MMAtt-DTA / PSICHIC / BALM cannot beat Tanimoto +0.90 at the transporters (Tier-A criterion fails), the negative result is the publishable contribution — parallel to the v3 MAMMAL prior-collapse precedent. The architecture stays at the 3-head (MAMMAL + Tanimoto + Cluster D) configuration.
@@ -1037,7 +1037,7 @@ If 2-3 months are available — ship the full **V5.1-5.4** Multi Head DTI core (
 
 If 6+ months are available — ship V5 in full, then begin V6 Cluster D. The V6 Bayesian model requires V5's calibrated uncertainty propagation as input.
 
-If no engineer time is available — the current `reports/wet_lab_shortlist_v6_full.md` is the production deliverable. 43 PASS compounds with all V4 gates flowing through. The contribution is honest and defensible as-is.
+If no engineer time is available — the current `reports/wet-lab/wet_lab_shortlist_v6_full.md` is the production deliverable. 43 PASS compounds with all V4 gates flowing through. The contribution is honest and defensible as-is.
 
 ---
 
@@ -1045,7 +1045,7 @@ If no engineer time is available — the current `reports/wet_lab_shortlist_v6_f
 
 **Headline**: Per Multi Head DTI.md §0 pre-commitment, ensemble must beat Tanimoto +0.90 at SLC6A3. **Measured MMAtt-DTA ρ at SLC6A3 = +0.65** — FAILS Tier-A criterion. Falsifiability fallback triggers per §0: 3-head ensemble (MAMMAL + Tanimoto + PrimeKG) remains production; MMAtt becomes a 4th conditional ranker at the targets where it actually demonstrates lift.
 
-**Build path** (`reports/mmatt_dta_activation_v1.md`):
+**Build path** (`reports/pipeline/mmatt_dta_activation_v1.md`):
 - 8.4 GB Zenodo `pchembl_models.zip` downloaded
 - Ray-pickle compatibility patch: `RobustUnpickler` synthesises stub classes for `ray.air.checkpoint.*` symbols (the actual state_dict is plain torch tensors)
 - Blackwell sm_120 compatibility: torch 2.4 (txgnn_env) fails with "no kernel image"; mammal_env's torch 2.12 nightly cu128 works first try
@@ -1308,7 +1308,7 @@ These are the **clemastine-class** high-information-value candidates that justif
 
 The §14 ledger is the standing falsifiable-claim audit. Re-run any time the
 pipeline state changes via `python scripts/41_v5_hypothesis_audit.py`. The
-audit emits `reports/hypothesis_audit_v1.md` + a JSON ledger at
+audit emits `reports/pipeline/hypothesis_audit_v1.md` + a JSON ledger at
 `data/results/v2/hypothesis_audit_v1.json`. Exit code is 0 (all PASS),
 1 (any FAIL), or 2 (any DEGRADE).
 

@@ -15,7 +15,7 @@
 Integrates Gap 2 (disease-class prognostic priors) + the 31-target engagement
 grid + Gap 4 (engagement-reliability flag) + Gap 5 (GRADE dossiers) into one
 clinician-facing artifact (`src/mammal_repurposing/reporting/repurposing_shortlist.py`,
-`scripts/82`, `reports/repurposing_shortlist_v1.md`, 6 tests). Each candidate is
+`scripts/82`, `reports/pipeline/repurposing_shortlist_v1.md`, 6 tests). Each candidate is
 ranked by `disease-class-prior × engagement`, restricted to SUCCESS-track-record
 classes, with a disease-aware NOVELTY flag (schizophrenia covers CIAS) and
 liability flags. A curated approved-drug supplement maps real drugs to the
@@ -35,7 +35,7 @@ ceiling and the Gap-4 binding-reliability caveats are retained per candidate.
 
 **Was**: the honestly-disclosed core weakness — MAMMAL's sequence-only DTI head is structurally blind to allosteric/transporter pharmacology, and the Boltz-2 Tier-A patch failed at the transporters. Unsolved.
 
-**Shipped** (`src/mammal_repurposing/cluster_a/allosteric_ltr.py`, `scripts/78`, `reports/allosteric_ltr_v1.md`, `tests/test_allosteric_ltr.py` — 7 tests). First, the problem is *quantified*: on the cited 21-compound allosteric benchmark MAMMAL's within-target predicted-pKd std is **0.01–0.05** across ligands spanning 3 log-units of affinity — it cannot rank binders within a target (a publishable negative result). Then a **learn-to-rank head** fusing [MAMMAL pKd ⊕ Tanimoto-to-actives ⊕ Boltz affinity ⊕ RDKit physicochemistry], trained on 289 real ChEMBL pChEMBL pairs (benchmark compounds excluded) and evaluated **held-out** on the benchmark, lifts pooled within-target Spearman ρ:
+**Shipped** (`src/mammal_repurposing/cluster_a/allosteric_ltr.py`, `scripts/78`, `reports/pipeline/allosteric_ltr_v1.md`, `tests/test_allosteric_ltr.py` — 7 tests). First, the problem is *quantified*: on the cited 21-compound allosteric benchmark MAMMAL's within-target predicted-pKd std is **0.01–0.05** across ligands spanning 3 log-units of affinity — it cannot rank binders within a target (a publishable negative result). Then a **learn-to-rank head** fusing [MAMMAL pKd ⊕ Tanimoto-to-actives ⊕ Boltz affinity ⊕ RDKit physicochemistry], trained on 289 real ChEMBL pChEMBL pairs (benchmark compounds excluded) and evaluated **held-out** on the benchmark, lifts pooled within-target Spearman ρ:
 
 | Predictor | within-target ρ |
 |---|---|
@@ -50,13 +50,13 @@ Per-target the fusion rescues PDE9A (+1.00 vs −1.00) and PDE4D (+0.80 vs −0.
 
 **Was**: the pipeline produced the right currency (Hedges' g + CrI) but no per-compound artifact in the language a doctor reads.
 
-**Shipped** (`src/mammal_repurposing/reporting/clinician_dossier.py`, `scripts/80`, `reports/clinician_dossiers_v1.md`, `tests/test_clinician_dossier.py` — 7 tests): a one-page **GRADE-style** card per (compound, indication) — predicted g + 90% CrI, Cochrane evidence-quality rating with explicit up/down-grade reasons, mechanism-class pivotal track record, predicted off-target liability flags mapped to clinical concerns (hERG/D2/H1/α1/muscarinic/opioid…), provenance trail, and explicit failure-mode caveats. Correctly grades donepezil/memantine HIGH-SUCCESS, MPH-ADHD MODERATE (g=0.50), and idalopirdine/encenicline HIGH-quality evidence of a NULL effect (FAILURE + warning).
+**Shipped** (`src/mammal_repurposing/reporting/clinician_dossier.py`, `scripts/80`, `reports/pipeline/clinician_dossiers_v1.md`, `tests/test_clinician_dossier.py` — 7 tests): a one-page **GRADE-style** card per (compound, indication) — predicted g + 90% CrI, Cochrane evidence-quality rating with explicit up/down-grade reasons, mechanism-class pivotal track record, predicted off-target liability flags mapped to clinical concerns (hERG/D2/H1/α1/muscarinic/opioid…), provenance trail, and explicit failure-mode caveats. Correctly grades donepezil/memantine HIGH-SUCCESS, MPH-ADHD MODERATE (g=0.50), and idalopirdine/encenicline HIGH-quality evidence of a NULL effect (FAILURE + warning).
 
 ### GAP 6. External benchmark — ours vs the repurposing paradigms (SHIPPED ✅, 2026-05-29)
 
 **Was**: nothing compared the pipeline against a published-style baseline on a shared held-out task ("compared to what?").
 
-**Shipped** (`scripts/79`, `reports/external_benchmark_v1.md`, `retrospective.target_popularity_score` + `paired_auroc_bootstrap`, +3 tests): on the held-out 31-drug task, the mechanism-class track record (AUROC **1.00**) beats the two genuinely leakage-free target-centric paradigms — affinity (0.47) and genetics (0.59). A target-popularity "knowledge" baseline scores 0.96 but is shown to be a **hindsight confound** (a target accrues ChEMBL records *because* a drug succeeded there) — reported honestly, not hidden. Each with bootstrap CI + permutation p + paired bootstrap. A full TxGNN/PrimeKG run is env-gated (documented).
+**Shipped** (`scripts/79`, `reports/pipeline/external_benchmark_v1.md`, `retrospective.target_popularity_score` + `paired_auroc_bootstrap`, +3 tests): on the held-out 31-drug task, the mechanism-class track record (AUROC **1.00**) beats the two genuinely leakage-free target-centric paradigms — affinity (0.47) and genetics (0.59). A target-popularity "knowledge" baseline scores 0.96 but is shown to be a **hindsight confound** (a target accrues ChEMBL records *because* a drug succeeded there) — reported honestly, not hidden. Each with bootstrap CI + permutation p + paired bootstrap. A full TxGNN/PrimeKG run is env-gated (documented).
 
 ### V6.A grid expansion 13 → 23 targets (SHIPPED ✅ partial, 2026-05-29)
 
@@ -101,13 +101,13 @@ it cannot forecast an unseen mechanism.
 
 This demonstrates **directly against pivotal-trial outcomes** the same lesson as the V6.B Gate-2
 falsification, and is the empirical case for a class-aware + phenotype-aware (not affinity-driven)
-cognition repurposing pipeline. Report: `reports/retrospective_clinical_validation_v1.md`;
+cognition repurposing pipeline. Report: `reports/pipeline/retrospective_clinical_validation_v1.md`;
 figure: `figures/v11/retrospective_roc.png`; tests: `tests/test_retrospective_validation.py`
 (14 tests). Full suite 442 passed.
 
 ### GAP 1. Degenerate end-to-end shortlist — every compound collapsed onto ACHE (FIXED ✅, 2026-05-29)
 
-**Was**: `reports/wet_lab_shortlist_v10.md` mapped all 298 compounds to `ACHE/P22303`,
+**Was**: `reports/wet-lab/wet_lab_shortlist_v10.md` mapped all 298 compounds to `ACHE/P22303`,
 with g ≈ +0.07 and 100% Roberts-ceiling **violation**. Two coupled bugs:
 1. **Target collapse**: `joint_composition.compose_wet_lab_shortlist_v10` + `scripts/56`
    reduced each compound to `g["target_uniprot"].iloc[0]`; the V6.A parquet is ordered
@@ -121,7 +121,7 @@ overriding with the real V7 NUTS g for anchor drugs **at their known mechanism t
 (authoritative `COMPOUND_TO_TARGET_UNIPROT`, not MAMMAL's structurally-unreliable binding
 argmax). Two views: best-target-per-compound (clinician) + top (compound, target) pairs.
 
-**Result** (`reports/wet_lab_shortlist_v11.md`, `scripts/74`):
+**Result** (`reports/wet-lab/wet_lab_shortlist_v11.md`, `scripts/74`):
 - Top-25 spans **7 unique targets** (was 1), **13 distinct g values** (was ~1).
 - Positive controls land at correct targets: donepezil→ACHE (g=0.22), methylphenidate→SLC6A3,
   memantine→GRIN2B, pitolisant→HRH3, BPN14770→PDE4D, suvorexant→HCRTR2.
@@ -180,7 +180,7 @@ Reference anchor recovery preserved: ACHE θ̄ = +0.45, COMT +0.46, CHRNA7 +0.45
 
 **Interpretation**: Cluster D θ̄ correctly identifies cognition-relevant TARGETS (ACHE, COMT, CHRNA7, BDNF all anchored at θ̄ ≈ +0.45) BUT those same targets have catalogues of Phase III failures (encenicline at CHRNA7, idalopirdine at HTR6, intepirdine, pomaglumetad at GRM2/3, bitopertin at SLC6A9). The negative ρ shows that *high-affinity binders at cognition-validated targets are not predictive of clinical success* — this is the lesson of cognition drug development and the central justification for the V4→V5→V6→V7→V8 multi-layer pipeline.
 
-Full audit: `reports/gate2_multi_modulator_v1.md`. Tests: `tests/test_gate2_multi_modulator.py` (12 tests, all PASS).
+Full audit: `reports/pipeline/gate2_multi_modulator_v1.md`. Tests: `tests/test_gate2_multi_modulator.py` (12 tests, all PASS).
 
 **Action items**:
 - ✅ Scaffolded `data/raw/modulator_anchors_seed.csv` (70 rows, 38 targets, 24 Phase III nulls)
@@ -276,7 +276,7 @@ Full audit: `reports/gate2_multi_modulator_v1.md`. Tests: `tests/test_gate2_mult
 
 ### 8. OSF.io DOI mint (account required)
 
-**Action**: someone needs to create an OSF.io account at osf.io, upload `reports/v7_osf_preregistration.md` + `reports/v8_osf_preregistration.md`, and lock them with a DOI BEFORE unblinding.
+**Action**: someone needs to create an OSF.io account at osf.io, upload `reports/paper-drafts/v7_osf_preregistration.md` + `reports/paper-drafts/v8_osf_preregistration.md`, and lock them with a DOI BEFORE unblinding.
 
 **Time**: 30 minutes.
 
@@ -288,7 +288,7 @@ Full audit: `reports/gate2_multi_modulator_v1.md`. Tests: `tests/test_gate2_mult
 
 ### 10. Wet-lab validation of (L, L, H) candidates ($60K-110K + CRO partnership)
 
-**Action**: per `reports/wet_lab_handoff_v1.md`, partner with a CRO (Charles River, WuXi, Sygnature, etc.) for BIMA-8 remyelination assay on top-N (L, L, H) compounds.
+**Action**: per `reports/wet-lab/wet_lab_handoff_v1.md`, partner with a CRO (Charles River, WuXi, Sygnature, etc.) for BIMA-8 remyelination assay on top-N (L, L, H) compounds.
 
 **Time**: ~6-9 months end-to-end including compound ordering + assay development.
 
@@ -406,7 +406,7 @@ Full audit: `reports/gate2_multi_modulator_v1.md`. Tests: `tests/test_gate2_mult
 
 The pipeline is in-silico-only. All predictions are calibrated against published meta-analytic literature.
 
-**Recommendation**: explicit honest framing in every manuscript; the wet-lab handoff document (`reports/wet_lab_handoff_v1.md`) is the path forward.
+**Recommendation**: explicit honest framing in every manuscript; the wet-lab handoff document (`reports/wet-lab/wet_lab_handoff_v1.md`) is the path forward.
 
 ### CL3. Roberts 2020 ceiling is unmodifiable
 
@@ -447,7 +447,7 @@ Currently V7 + V8 OSF pre-registrations are markdown-ready but not locked with a
 
 **The opportunity Gap 3 created**: the retrospective validation proved that *mechanism-class track record* — not target binding affinity, not target genetic relevance — discriminates clinical SUCCESS from FAILURE in cognition drugs (AUROC 1.00 vs 0.12/0.59). Gap 2 *acts on* that signal: it re-scores the v11 differentiated (compound × target) grid **for a specific disease**, using that disease's own pivotal-trial track record as the per-mechanism-class prior.
 
-**Shipped** (`src/mammal_repurposing/validation/disease_reframe.py`, `scripts/76_disease_reframe_shortlist.py`, `reports/disease_reframe_v1.md`, `tests/test_disease_reframe.py` — 17 tests):
+**Shipped** (`src/mammal_repurposing/validation/disease_reframe.py`, `scripts/76_disease_reframe_shortlist.py`, `reports/pipeline/disease_reframe_v1.md`, `tests/test_disease_reframe.py` — 17 tests):
 1. **Disease bucketing**: indication/population → canonical disease (AD / CIAS / FXS / ADHD / narcolepsy / MDD), with the AD-vs-ADHD false-friend handled; multi-indication drugs contribute to every bucket they name.
 2. **Clean target→mechanism map** that FIXES the v11 panel's coarse lump of CHRNA7 under "AChE-I" — α7 agonists (encenicline, a FAILURE class) no longer contaminate the cholinesterase prior.
 3. **k-weighted disease-conditioned class prior** from the clinical ledger + 70-row modulator-anchor table, restricted per disease; evidence-free classes get a weak, high-variance fallback (never zeroed). Disease-specific Roberts ceiling (AD 0.75, FXS 0.95, …) replaces the healthy-adult 0.50.

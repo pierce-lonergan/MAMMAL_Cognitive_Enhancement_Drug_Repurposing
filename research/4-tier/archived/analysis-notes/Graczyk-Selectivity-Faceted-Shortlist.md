@@ -165,7 +165,7 @@ Within-pair ranking: `(pkd_A + pkd_B) − λ × max(pkd_off_pair)` where λ = 0.
 
 #### 2.3 Display format and cross-facet provenance
 
-One markdown report `reports/wet_lab_shortlist_v4_faceted.md`:
+One markdown report `reports/wet-lab/wet_lab_shortlist_v4_faceted.md`:
 - Section per facet
 - Columns: rank, compound, RRF_efficacy, gini, S10x, top_targets, MoA_class, ADMET_clean, liability_v8.0b, regulatory_status, **cross_facet_provenance**
 - The cross_facet_provenance column lists every other facet the compound appears in (e.g., "donepezil: cholinergic #1; CHRNA7+ACHE #3; SIGMAR1+NTRK2 #4"). This is the single most important addition — it stops a reviewer from triple-counting one compound as if it were three independent hits.

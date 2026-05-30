@@ -6,7 +6,7 @@ FAILS against the current shipped data. No claim is grandfathered.
 
 Claims tested (per V4_STATUS_AND_FORWARD_PLAN.md):
   H1. **Tanimoto beats MAMMAL 7/0** at every audited cognition target
-      (reports/tanimoto_baseline_v1.md)
+      (reports/pipeline/tanimoto_baseline_v1.md)
   H2. **§7.11 SLC6A3 isotonic post-cal ρ ∈ [+0.45, +0.65]** at fit time
       (paper-commitment from Isotonic-PerTarget-Calibration.md)
   H3. **§7.11 SLC6A2 isotonic post-cal ρ ∈ [+0.30, +0.55]**
@@ -33,7 +33,7 @@ Claims tested (per V4_STATUS_AND_FORWARD_PLAN.md):
   H12. **MoA ranker preserves top-10**: adding cluster_b_moa shouldn't
        displace any of d-amph/methylphenidate/bupropion from top-3
 
-Output: reports/hypothesis_audit_v1.md + JSON per-claim ledger at
+Output: reports/pipeline/hypothesis_audit_v1.md + JSON per-claim ledger at
 data/results/v2/hypothesis_audit_v1.json.
 
 Exit code: 0 if no claim FAILED, 1 if any FAILED, 2 if any DEGRADED.
@@ -76,7 +76,7 @@ class HypothesisVerdict:
 # H1 — Tanimoto-beats-MAMMAL 7/0
 # ---------------------------------------------------------------------------
 def h1_tanimoto_beats_mammal() -> HypothesisVerdict:
-    path = ROOT / "reports" / "tanimoto_baseline_v1.md"
+    path = ROOT / "reports" / "pipeline" / "tanimoto_baseline_v1.md"
     if not path.exists():
         return HypothesisVerdict(
             id="H1", claim="Tanimoto ρ beats MAMMAL ρ at every audited cognition target (7/0)",
@@ -113,7 +113,7 @@ def h1_tanimoto_beats_mammal() -> HypothesisVerdict:
                ("DEGRADE" if wins >= 5 else "FAIL"),
         measured=f"{wins} wins, {losses} losses",
         expected="≥7 wins, 0 losses",
-        note="Parsed from reports/tanimoto_baseline_v1.md table",
+        note="Parsed from reports/pipeline/tanimoto_baseline_v1.md table",
     )
 
 
@@ -377,7 +377,7 @@ def h7_liability_pharmacology() -> HypothesisVerdict:
 # H8 — Pocket DB 13/13 validation
 # ---------------------------------------------------------------------------
 def h8_pocket_db_gates() -> HypothesisVerdict:
-    report = ROOT / "reports" / "pocket_database_v1.md"
+    report = ROOT / "reports" / "pipeline" / "pocket_database_v1.md"
     if not report.exists():
         return HypothesisVerdict(
             id="H8", claim="§7.5 13/13 validation gates pass",
@@ -851,7 +851,7 @@ def main() -> int:
     parser.add_argument("--out", type=Path,
                         default=ROOT / "data" / "results" / "v2" / "hypothesis_audit_v1.json")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports" / "hypothesis_audit_v1.md")
+                        default=ROOT / "reports" / "pipeline" / "hypothesis_audit_v1.md")
     args = parser.parse_args()
 
     tests = [

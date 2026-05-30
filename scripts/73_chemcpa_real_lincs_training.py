@@ -31,7 +31,7 @@ Held-out OOD evaluation:
 Outputs:
     data/results/v2/chemcpa_real_lincs_weights_{scale}.pt       — trained model
     data/results/v2/chemcpa_real_lincs_metrics_{scale}.json     — metrics
-    reports/chemcpa_real_lincs_training_{scale}.md              — report
+    reports/pipeline/chemcpa_real_lincs_training_{scale}.md     — report
 
 Usage:
     python scripts/73_chemcpa_real_lincs_training.py --scale cognition
@@ -481,7 +481,7 @@ def main() -> int:
         ROOT / "data" / "results" / "v2" / f"chemcpa_real_lincs_metrics_{scale.name}.json"
     )
     args.report = args.report or (
-        ROOT / "reports" / f"chemcpa_real_lincs_training_{scale.name}.md"
+        ROOT / "reports" / "pipeline" / f"chemcpa_real_lincs_training_{scale.name}.md"
     )
 
     hparams = dict(LINCS_CHEMCPA_HPARAMS)

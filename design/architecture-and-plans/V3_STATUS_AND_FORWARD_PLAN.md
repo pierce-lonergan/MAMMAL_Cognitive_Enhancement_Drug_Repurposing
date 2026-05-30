@@ -13,8 +13,8 @@
 > been added as a real ranker in fusion** — donepezil leapt from rank #42 to
 > #4 in the 5-cluster output. This RE-PRIORITISES §7.6 (LoRA fine-tune is
 > NOT the right next move) and PROMOTES §7.7 (cross-DTI ensemble with
-> MMAtt-DTA) to Tier 1. See `reports/diagnostics_v1.md`,
-> `reports/tanimoto_baseline_v1.md`, `reports/fusion_tanimoto_addition_diff.md`.
+> MMAtt-DTA) to Tier 1. See `reports/pipeline/diagnostics_v1.md`,
+> `reports/pipeline/tanimoto_baseline_v1.md`, `reports/pipeline/fusion_tanimoto_addition_diff.md`.
 
 > **🔥 POST-SPRINT BREAKTHROUGH #2 (commit `b3fddfa`)** — *Selectivity layer
 > + faceted shortlist + 44-target liability panel*. The HRH3-23/25 lock-in
@@ -27,7 +27,7 @@
 > (UniProt enrichment) shipped; Stages 2+3 (MAMMAL DTI + gating) queued for
 > when WSL2 Boltz frees the GPU. Expected effect: 2 hard CUTs (aripiprazole,
 > amitriptyline on 5-HT2B+HRH1) + ~7 FLAGs that ADMET-AI alone misses.
-> See `reports/wet_lab_shortlist_v4_faceted.md`, `reports/selectivity_v1_tanimoto.md`.
+> See `reports/wet-lab/wet_lab_shortlist_v4_faceted.md`, `reports/pipeline/selectivity_v1_tanimoto.md`.
 
 > **🔥 POST-SPRINT BREAKTHROUGH #3 (commit `d0b4bd7`)** — *§7.11 Isotonic
 > per-target post-hoc calibration*. `IsotonicRegression(increasing='auto')`
@@ -41,8 +41,8 @@
 > implements §1D matrix + Tier A/B/C/D post-fit classifier. Calibrated DTI
 > grid at `data/results/dti_scores_calibrated.parquet`. Beta-calibration
 > deferred (betacal package is binary-classifier-only); PyMC hierarchical
-> deferred to v2. See `reports/calibration_comparison_v1.md`,
-> `reports/calibration_apply_v1.md`, `data/calibration/router_decisions.csv`.
+> deferred to v2. See `reports/pipeline/calibration_comparison_v1.md`,
+> `reports/pipeline/calibration_apply_v1.md`, `data/calibration/router_decisions.csv`.
 
 > **🔥 POST-SPRINT BREAKTHROUGH #4 (this commit)** — *§7.5 Pocket-conditioned
 > Boltz-2 MVP: curated centroid database + geometric classifier, all 13
@@ -57,7 +57,7 @@
 > Sprint 2 (P2Rank + PocketMiner + CryptoBench consensus) and Sprint 3
 > (§8.0b liability split + §8.1 new facets) deferred. Pose-conditioning
 > goes operational once a pose-saving Boltz wrapper is added. See
-> `reports/pocket_database_v1.md`, `data/pockets/pocket_database.yml`,
+> `reports/pipeline/pocket_database_v1.md`, `data/pockets/pocket_database.yml`,
 > `src/mammal_repurposing/pockets/`.
 
 ---
@@ -74,18 +74,18 @@ This is not a pipeline failure — this is the *first time we measured* per-targ
 
 | Component | Status | Evidence at this snapshot |
 |---|---|---|
-| Cluster A.1 — MAMMAL DTI | ✅ LIVE | 6,556 pairs; per-target ρ in `reports/calibration_report.md` |
+| Cluster A.1 — MAMMAL DTI | ✅ LIVE | 6,556 pairs; per-target ρ in `reports/pipeline/calibration_report.md` |
 | Cluster A.2 — ESM2-650M cache | ✅ LIVE | 22 targets cached |
 | Cluster A.3 — Boltz-2 / Boltzina (WSL2 + cuequivariance) | ✅ LIVE | 92 pairs done; **overnight sweep 22% of 1,165** |
 | Cluster B — ADMET-AI 41 EP + hard gates | ✅ LIVE | 53 PASS / 64 FLAG / 181 CUT |
 | Cluster C — PrimeKG + TxGNN | 🟡 CODE LIVE, NOT RUN | WSL2 venv ready; blocked on overnight sweep freeing GPU |
 | ChEMBL 36 SQLite mirror | ✅ LIVE | `~/.data/chembl/36/chembl_36.db`; A.5 PASS 19/20 |
-| Phase A.7 Calibration linchpin | ✅ SHIPPED | `reports/calibration_report.md`, `configs/weights_calibrated.yaml` |
+| Phase A.7 Calibration linchpin | ✅ SHIPPED | `reports/pipeline/calibration_report.md`, `configs/weights_calibrated.yaml` |
 | Phase C 4-cluster RRF (calibrated + uncalibrated) | ✅ LIVE | both passes produce versioned parquets |
-| Phase D calibrated-vs-uncalibrated diff | ✅ SHIPPED | `reports/fusion_calibration_diff.md` (ρ = +0.994) |
-| Phase E methodology note v1 | ✅ SHIPPED | `reports/methodology_v1.md` |
+| Phase D calibrated-vs-uncalibrated diff | ✅ SHIPPED | `reports/pipeline/fusion_calibration_diff.md` (ρ = +0.994) |
+| Phase E methodology note v1 | ✅ SHIPPED | `reports/paper-drafts/methodology_v1.md` |
 | ChEMBL evidence backstop (Phase A.4) | ✅ COMPLETE | 6,556 rows; 275 CORROBORATED / 18 AMBIGUOUS / 6 CONTRADICTED / 6,257 NOVEL |
-| Wet-lab shortlist v3 (4-cluster scorecards) | ✅ SHIPPED | `reports/wet_lab_shortlist_v3.md` |
+| Wet-lab shortlist v3 (4-cluster scorecards) | ✅ SHIPPED | `reports/wet-lab/wet_lab_shortlist_v3.md` |
 
 **The single most important pending result**: when the overnight Boltz sweep completes (~17h from this snapshot), re-running Phase A.7 → C → D will tell us whether Boltzina's structure-aware affinity *rescues* the 4 INVERTED-MAMMAL targets (flipping them to `BOLTZ_2X_MAMMAL`) or *confirms* they are structurally bad targets (flipping them to `DE_WEIGHT_TARGET`). That distinction reshapes the next sprint.
 
@@ -93,7 +93,7 @@ This is not a pipeline failure — this is the *first time we measured* per-targ
 
 ## 2. What the Calibration Linchpin Actually Exposed
 
-The Phase A.7 report (`reports/calibration_report.md`) is the new ground truth about pipeline trustworthiness. This section unpacks it because the rest of v3 hangs off it.
+The Phase A.7 report (`reports/pipeline/calibration_report.md`) is the new ground truth about pipeline trustworthiness. This section unpacks it because the rest of v3 hangs off it.
 
 ### 2.1 The four MAMMAL_ONLY_INVERTED targets
 
@@ -177,7 +177,7 @@ PrimeKG download: _wsl2_download_primekg.sh                            ✅ scrip
 Isolated venv: _wsl2_setup_cluster_c.sh                                🟡 setup script ready
 ```
 
-**Reproducibility**: every artifact lands in `data/results/v2/` or `data/results/`. Configs at `configs/{thresholds,weights,weights_calibrated}.yaml`. Module API at `src/mammal_repurposing/{cluster_a,cluster_b,cluster_c,gates,fusion,provenance,pipeline,fetchers}/`. Reports at `reports/`. Sprint history is the git log; methodology note at `reports/methodology_v1.md`.
+**Reproducibility**: every artifact lands in `data/results/v2/` or `data/results/`. Configs at `configs/{thresholds,weights,weights_calibrated}.yaml`. Module API at `src/mammal_repurposing/{cluster_a,cluster_b,cluster_c,gates,fusion,provenance,pipeline,fetchers}/`. Reports at `reports/`. Sprint history is the git log; methodology note at `reports/paper-drafts/methodology_v1.md`.
 
 ---
 
@@ -811,7 +811,7 @@ This subsection proposed DeepPurpose as the first additional ranker. **§7.7 now
 
 ### 8.11 Open-source LLM literature agent for the methodology note
 
-**Gap**: the methodology note v1 (`reports/methodology_v1.md`) needs to be readable by someone who's never seen the project. A future-proof version of "what is this thing" is a working LLM that can answer questions against the methodology note + the reports + the code.
+**Gap**: the methodology note v1 (`reports/paper-drafts/methodology_v1.md`) needs to be readable by someone who's never seen the project. A future-proof version of "what is this thing" is a working LLM that can answer questions against the methodology note + the reports + the code.
 
 **Concept**: spin up a tiny RAG over `reports/`, `design/`, `configs/`. Local Qwen 7B or similar on CPU. Bind to a Slack bot or Claude-Desktop MCP. Anyone can ask "why is SLC6A3 down-weighted?" and get the right citation back.
 

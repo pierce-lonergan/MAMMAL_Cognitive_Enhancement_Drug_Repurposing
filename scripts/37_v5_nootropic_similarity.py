@@ -35,7 +35,7 @@ logger = logging.getLogger("v5_nootropic_sim")
 DEFAULT_RANKING = ROOT / "data" / "results" / "v2" / "final_ranking_v6_calibrated_znorm.parquet"
 DEFAULT_COMPOUNDS = ROOT / "data" / "interim" / "compounds.parquet"
 DEFAULT_OUT = ROOT / "data" / "results" / "v2" / "nootropic_similarity_v1.parquet"
-DEFAULT_REPORT = ROOT / "reports" / "nootropic_similarity_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "nootropic_similarity_v1.md"
 
 
 def main() -> int:

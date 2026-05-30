@@ -13,7 +13,7 @@ with the matching --out-suffix flags) and reports:
     weight overrides from configs/weights_calibrated.yaml that touched
     that compound's mammal_best_target).
 
-Output: reports/fusion_calibration_diff.md.
+Output: reports/pipeline/fusion_calibration_diff.md.
 """
 
 from __future__ import annotations
@@ -41,7 +41,7 @@ logging.basicConfig(
 logger = logging.getLogger("v3_fusion_diff")
 
 V2_DIR = RESULTS_DIR / "v2"
-REPORT_OUT = ROOT / "reports" / "fusion_calibration_diff.md"
+REPORT_OUT = ROOT / "reports" / "pipeline" / "fusion_calibration_diff.md"
 CALIBRATED_WEIGHTS = ROOT / "configs" / "weights_calibrated.yaml"
 
 

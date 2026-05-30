@@ -83,7 +83,7 @@ class TestV6b5NumpyroPosterior:
             assert col in df.columns
 
     def test_v6b5_report_reports_R_hat_convergence(self):
-        path = ROOT / "reports" / "cluster_d_nuts_expanded_v1.md"
+        path = ROOT / "reports" / "pipeline" / "cluster_d_nuts_expanded_v1.md"
         if not path.exists():
             pytest.skip("V6.B.5 expanded report not yet generated")
         body = path.read_text(encoding="utf-8")

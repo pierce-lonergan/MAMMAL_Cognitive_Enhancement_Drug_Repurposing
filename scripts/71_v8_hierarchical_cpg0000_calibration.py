@@ -10,7 +10,7 @@ on real morphological feature data (not synthetic).
 
 Outputs:
   data/results/v2/v8_hierarchical_cpg0000_posterior.parquet
-  reports/v8_hierarchical_cpg0000_calibration_v1.md
+  reports/pipeline/v8_hierarchical_cpg0000_calibration_v1.md
 
 Usage:
   python scripts/71_v8_hierarchical_cpg0000_calibration.py
@@ -43,7 +43,7 @@ def main() -> int:
                         default=ROOT / "data" / "results" / "v2"
                         / "v8_hierarchical_cpg0000_posterior.parquet")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports"
+                        default=ROOT / "reports" / "pipeline"
                         / "v8_hierarchical_cpg0000_calibration_v1.md")
     parser.add_argument("--n-chains", type=int, default=4)
     parser.add_argument("--n-draws", type=int, default=1000,

@@ -18,7 +18,7 @@ Inputs:
     data/results/v2/combined_gates.parquet                     (ADMET + liability)
 
 Output:
-    reports/wet_lab_shortlist_v6_full.md
+    reports/wet-lab/wet_lab_shortlist_v6_full.md
 """
 
 from __future__ import annotations
@@ -41,7 +41,7 @@ logger = logging.getLogger("v5_shortlist")
 DEFAULT_V6_RANKING = ROOT / "data" / "results" / "v2" / "final_ranking_v6_calibrated_znorm.parquet"
 DEFAULT_FACETED = ROOT / "data" / "results" / "v2" / "faceted_shortlist_v5.parquet"
 DEFAULT_COMBINED_GATES = ROOT / "data" / "results" / "v2" / "combined_gates.parquet"
-DEFAULT_REPORT = ROOT / "reports" / "wet_lab_shortlist_v6_full.md"
+DEFAULT_REPORT = ROOT / "reports" / "wet-lab" / "wet_lab_shortlist_v6_full.md"
 
 
 def _ascii(s: object) -> str:

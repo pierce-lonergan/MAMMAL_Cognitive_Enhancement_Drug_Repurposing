@@ -4,7 +4,7 @@
   observation builder; gate evaluation; sensitivity sweep robustness
 - V8.2 chemCPA smoke (scripts/59_v8_chemcpa_smoke.py): synthetic LINCS
   generation; chemCPA architecture trains end-to-end; reconstruction R²
-- V6.B paper draft (reports/v6b_paper_draft.md): structural validator for
+- V6.B paper draft (reports/paper-drafts/v6b_paper_draft.md): structural validator for
   manuscript outline; required sections per Cell Reports Methods template
 """
 
@@ -201,18 +201,18 @@ class TestV6bPaperDraft:
     )
 
     def test_v6b_paper_draft_exists(self):
-        path = ROOT / "reports" / "v6b_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v6b_paper_draft.md"
         assert path.exists(), "v6b_paper_draft.md missing"
 
     def test_v6b_paper_has_required_sections(self):
-        path = ROOT / "reports" / "v6b_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v6b_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         for section in self.REQUIRED_SECTIONS:
             assert section.lower() in body, \
                 f"V6.B paper draft missing required section: '{section}'"
 
     def test_v6b_paper_cites_key_methods(self):
-        path = ROOT / "reports" / "v6b_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v6b_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         # Must cite the core methodology papers
         required_citations = ("markello", "moodie", "davies", "hill",
@@ -221,7 +221,7 @@ class TestV6bPaperDraft:
             assert c in body, f"V6.B paper missing key citation: {c}"
 
     def test_v6b_paper_reports_real_convergence(self):
-        path = ROOT / "reports" / "v6b_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v6b_paper_draft.md"
         body = path.read_text(encoding="utf-8")
         # R̂ = 1.000 must appear (production NUTS converged metric)
         assert "1.000" in body
@@ -233,21 +233,21 @@ class TestV6bPaperDraft:
         assert "0.50" in body or "0.5" in body
 
     def test_v6b_paper_specifies_target_venue(self):
-        path = ROOT / "reports" / "v6b_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v6b_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         # Cell Reports Methods OR Bioinformatics must be referenced
         assert ("cell reports methods" in body
                 or "bioinformatics" in body)
 
     def test_v6b_paper_includes_per_target_table(self):
-        path = ROOT / "reports" / "v6b_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v6b_paper_draft.md"
         body = path.read_text(encoding="utf-8")
         # Top targets per posterior table
         for gene in ("ACHE", "CHRNA7", "GRIN2B"):
             assert gene in body, f"V6.B paper missing per-target row for {gene}"
 
     def test_v6b_paper_has_code_availability_section(self):
-        path = ROOT / "reports" / "v6b_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v6b_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         assert "code" in body and "data" in body
         # Must reference the GitHub repo + Apache-2.0 license

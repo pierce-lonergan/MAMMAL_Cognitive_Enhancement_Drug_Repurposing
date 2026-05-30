@@ -17,7 +17,7 @@ Per (compound, target):
 Outputs:
   data/results/v2/wet_lab_shortlist_v11_grid.parquet         — full grid (all pairs)
   data/results/v2/wet_lab_shortlist_v11_best_target.parquet  — best target / compound
-  reports/wet_lab_shortlist_v11.md                           — clinician-legible report
+  reports/wet-lab/wet_lab_shortlist_v11.md                           — clinician-legible report
 
 Differentiation guard (the Gap-1 acceptance test): the top-25 hypotheses MUST
 span ≥3 unique targets, have g-spread std > 0.02, and a Roberts-ceiling pass
@@ -219,7 +219,7 @@ def main() -> int:
                         default=ROOT / "data" / "results" / "v2"
                         / "wet_lab_shortlist_v11_best_target.parquet")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports" / "wet_lab_shortlist_v11.md")
+                        default=ROOT / "reports" / "wet-lab" / "wet_lab_shortlist_v11.md")
     parser.add_argument("--no-roberts", action="store_true")
     args = parser.parse_args()
 

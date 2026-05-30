@@ -19,7 +19,7 @@ The two signal-bearing tags are:
 
 Per V4 doc §8.15 (zero engineering cost, surfaces as wet-lab shortlist column).
 
-Output: data/results/v2/disagreement_signal.parquet + reports/disagreement_signal_v1.md
+Output: data/results/v2/disagreement_signal.parquet + reports/pipeline/disagreement_signal_v1.md
 """
 
 from __future__ import annotations
@@ -53,7 +53,7 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger("v4_disagreement")
 
 DEFAULT_OUT = RESULTS_DIR / "v2" / "disagreement_signal.parquet"
-DEFAULT_REPORT = ROOT / "reports" / "disagreement_signal_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "disagreement_signal_v1.md"
 
 
 def _classify_disagreement(rank_delta: int, rank_mammal: int, rank_tanimoto: int) -> str:

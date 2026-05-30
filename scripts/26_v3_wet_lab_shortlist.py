@@ -12,7 +12,7 @@ gets a 4-cluster scorecard:
     ChEMBL ground truth:        per-compound verdict counts (CORROB/AMBIG/NOVEL)
                                 when chembl_evidence.parquet exists (Phase A.4)
 
-Output: reports/wet_lab_shortlist_v3.md
+Output: reports/wet-lab/wet_lab_shortlist_v3.md
 """
 
 from __future__ import annotations
@@ -43,7 +43,7 @@ DEFAULT_FINAL = V2_DIR / "final_ranking_calibrated.parquet"
 DEFAULT_BOLTZINA = V2_DIR / "boltzina_affinity.parquet"
 DEFAULT_KG = V2_DIR / "kg_scores.parquet"
 DEFAULT_CHEMBL_EV = RESULTS_DIR / "chembl_evidence.parquet"
-REPORT_OUT = ROOT / "reports" / "wet_lab_shortlist_v3.md"
+REPORT_OUT = ROOT / "reports" / "wet-lab" / "wet_lab_shortlist_v3.md"
 
 
 def _top_targets_for_compound(mammal: pd.DataFrame, compound: str,
@@ -125,7 +125,7 @@ def main() -> int:
     md.append("Source: `data/results/v2/final_ranking_calibrated.parquet` "
               "(produced by `scripts/15_v2_fusion.py --out-suffix _calibrated`).")
     md.append(f"Per-target weights from `configs/weights_calibrated.yaml` "
-              f"(see `reports/calibration_report.md` for verdicts).")
+              f"(see `reports/pipeline/calibration_report.md` for verdicts).")
     md.append("")
     md.append("Coverage at this snapshot:")
     md.append(f"  - MAMMAL DTI: {len(mammal):,} (target, compound) pairs")
@@ -136,7 +136,7 @@ def main() -> int:
               f"{'absent (Phase A.4 still running)' if chembl_ev is None else f'{len(chembl_ev):,} rows'}")
     md.append("")
     md.append("**This shortlist is a PRIORITISATION, not a wet-lab recommendation.** "
-              "Read `reports/methodology_v1.md` for the known failure modes "
+              "Read `reports/paper-drafts/methodology_v1.md` for the known failure modes "
               "(4 MAMMAL_ONLY_INVERTED targets including DAT/NET, Boltz coverage "
               "still partial). Each compound's calibrated rank reflects which "
               "targets it scores well on AFTER down-weighting WEAK / INVERTED targets.")

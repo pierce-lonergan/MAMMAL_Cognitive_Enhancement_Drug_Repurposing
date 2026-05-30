@@ -47,7 +47,7 @@ class TestV6bGatesLive:
             assert col in df.columns
 
     def test_v6b_gates_report_present(self):
-        path = ROOT / "reports" / "v6b_validation_gates_v1.md"
+        path = ROOT / "reports" / "pipeline" / "v6b_validation_gates_v1.md"
         if not path.exists():
             pytest.skip("V6.B gates report not yet generated")
         body = path.read_text(encoding="utf-8")
@@ -141,7 +141,7 @@ class TestFigureScripts:
 # ---------------------------------------------------------------------------
 class TestPaperFigureEmbedding:
     def test_v6a_paper_references_all_4_figures(self):
-        path = ROOT / "reports" / "v6a_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v6a_paper_draft.md"
         body = path.read_text(encoding="utf-8")
         for fname in ("fig1_rho_heatmap.png", "fig2_tier_a_fail.png",
                        "fig3_v9_fusion_top10.png",
@@ -149,7 +149,7 @@ class TestPaperFigureEmbedding:
             assert fname in body, f"V6.A paper missing figure ref: {fname}"
 
     def test_v6b_paper_references_all_4_figures(self):
-        path = ROOT / "reports" / "v6b_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v6b_paper_draft.md"
         body = path.read_text(encoding="utf-8")
         for fname in ("fig1_theta_posterior.png",
                        "fig2_source_contribution.png",
@@ -158,14 +158,14 @@ class TestPaperFigureEmbedding:
             assert fname in body, f"V6.B paper missing figure ref: {fname}"
 
     def test_v7_paper_references_all_4_figures(self):
-        path = ROOT / "reports" / "v7_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v7_paper_draft.md"
         body = path.read_text(encoding="utf-8")
         for fname in ("fig1_pbpk_traces.png", "fig2_p1_p8_bands.png",
                        "fig3_loo_mae.png", "fig4_sensitivity_sweep.png"):
             assert fname in body, f"V7 paper missing figure ref: {fname}"
 
     def test_v8_paper_references_all_4_figures(self):
-        path = ROOT / "reports" / "v8_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v8_paper_draft.md"
         body = path.read_text(encoding="utf-8")
         for fname in ("fig1_chemcpa_loss.png", "fig2_gate1_ami_sweep.png",
                        "fig3_8cell_scatter.png", "fig4_i_novel_rank.png"):
@@ -180,7 +180,7 @@ class TestPaperFigureEmbedding:
             ("v7_paper_draft.md", "v7"),
             ("v8_paper_draft.md", "v8"),
         ]:
-            path = ROOT / "reports" / paper
+            path = ROOT / "reports" / "paper-drafts" / paper
             body = path.read_text(encoding="utf-8")
             assert f"../figures/{figures_dir}/" in body, \
                 f"{paper} missing ../figures/{figures_dir}/ path prefix"
@@ -200,7 +200,7 @@ class TestProductionRunner:
         assert len(m.STAGES) >= 14    # 14-15 stages
 
     def test_production_run_report_present(self):
-        path = ROOT / "reports" / "production_run_v1.md"
+        path = ROOT / "reports" / "pipeline" / "production_run_v1.md"
         if not path.exists():
             pytest.skip("Production run report not yet generated")
         body = path.read_text(encoding="utf-8")
@@ -217,13 +217,13 @@ class TestProductionRunner:
         result = subprocess.run(
             [sys.executable, str(SCRIPTS / "68_production_runner.py"),
              "--skip-if-exists",
-             "--report", str(ROOT / "reports" / "production_run_test.md")],
+             "--report", str(ROOT / "reports" / "pipeline" / "production_run_test.md")],
             capture_output=True, text=True, timeout=60, cwd=str(ROOT),
         )
         assert result.returncode == 0, \
             f"production runner failed with skip-if-exists: {result.stderr[-400:]}"
         # Clean up test report
-        test_report = ROOT / "reports" / "production_run_test.md"
+        test_report = ROOT / "reports" / "pipeline" / "production_run_test.md"
         if test_report.exists():
             test_report.unlink()
 
@@ -246,22 +246,22 @@ class TestSprintArtifactInventory:
     )
 
     EXPECTED_REPORTS = (
-        "v6b_validation_gates_v1.md",
-        "v7_validation_v1.md",
-        "v7_nuts_v1.md",
-        "v8_chemcpa_smoke_v1.md",
-        "v8_gate1_dryrun_v1.md",
-        "cluster_d_nuts_v1.md",
-        "cluster_d_nuts_expanded_v1.md",
-        "wet_lab_shortlist_v10.md",
-        "v6a_paper_draft.md",
-        "v6b_paper_draft.md",
-        "v7_paper_draft.md",
-        "v8_paper_draft.md",
-        "v7_osf_preregistration.md",
-        "v8_osf_preregistration.md",
-        "methodology_v3.md",
-        "hypothesis_audit_v1.md",
+        "pipeline/v6b_validation_gates_v1.md",
+        "pipeline/v7_validation_v1.md",
+        "pipeline/v7_nuts_v1.md",
+        "pipeline/v8_chemcpa_smoke_v1.md",
+        "pipeline/v8_gate1_dryrun_v1.md",
+        "pipeline/cluster_d_nuts_v1.md",
+        "pipeline/cluster_d_nuts_expanded_v1.md",
+        "wet-lab/wet_lab_shortlist_v10.md",
+        "paper-drafts/v6a_paper_draft.md",
+        "paper-drafts/v6b_paper_draft.md",
+        "paper-drafts/v7_paper_draft.md",
+        "paper-drafts/v8_paper_draft.md",
+        "paper-drafts/v7_osf_preregistration.md",
+        "paper-drafts/v8_osf_preregistration.md",
+        "paper-drafts/methodology_v3.md",
+        "pipeline/hypothesis_audit_v1.md",
     )
 
     def test_all_expected_parquets_present(self):

@@ -114,7 +114,7 @@ def main() -> int:
                            r["sql_status"], r["sql_n"], r["rest_status"], r["rest_n"])
 
     # Write evidence to reports/ for auditability
-    report_dir = ROOT / "reports"
+    report_dir = ROOT / "reports" / "pipeline"
     report_dir.mkdir(parents=True, exist_ok=True)
     md = ["# Phase A.5 — SQLite vs REST agreement smoke test",
           "",

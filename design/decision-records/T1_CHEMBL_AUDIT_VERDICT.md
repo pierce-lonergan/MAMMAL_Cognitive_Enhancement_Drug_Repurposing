@@ -8,7 +8,7 @@
 
 ## Result table
 
-`reports/chembl_target_id_audit.md` queried ChEMBL's `/target.json` for each panel UniProt accession without filtering by target_type, then ranked candidate ChEMBL target IDs by activity count.
+`reports/pipeline/chembl_target_id_audit.md` queried ChEMBL's `/target.json` for each panel UniProt accession without filtering by target_type, then ranked candidate ChEMBL target IDs by activity count.
 
 | Status | Count | Targets |
 |---|---|---|

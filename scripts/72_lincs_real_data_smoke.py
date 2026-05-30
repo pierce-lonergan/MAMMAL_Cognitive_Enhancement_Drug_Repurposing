@@ -12,7 +12,7 @@ which replaces the synthetic-LINCS smoke in chemcpa_train.py.
 Outputs:
   data/interim/lincs_cognition_subset.parquet — N_sigs × 12,328 genes
   data/interim/lincs_cognition_metadata.parquet — N_sigs × (compound, cell, dose, time)
-  reports/lincs_real_smoke_v1.md
+  reports/pipeline/lincs_real_smoke_v1.md
 
 Usage:
   python scripts/72_lincs_real_data_smoke.py
@@ -74,7 +74,7 @@ def main() -> int:
                         default=ROOT / "data" / "interim"
                         / "lincs_cognition_metadata.parquet")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports" / "lincs_real_smoke_v1.md")
+                        default=ROOT / "reports" / "pipeline" / "lincs_real_smoke_v1.md")
     parser.add_argument("--max-sigs", type=int, default=0,
                         help="Cap total signatures loaded (0 = no cap)")
     args = parser.parse_args()

@@ -38,7 +38,7 @@ plt.rcParams.update({
 })
 
 
-# V6.A.1 empirical per-target ρ (from reports/mmatt_dta_activation_v1.md)
+# V6.A.1 empirical per-target ρ (from reports/pipeline/mmatt_dta_activation_v1.md)
 # Columns: target, gene, n, MMAtt, MAMMAL, Tanimoto, invert_mask
 V6A_PER_TARGET_RHOS: list[dict] = [
     # GPCRs (MMAtt wins)
@@ -184,7 +184,7 @@ def figure_3_v9_fusion_top10(output_path: Path) -> dict:
 
 def figure_4_disagreement_axis(output_path: Path) -> dict:
     """Fig 4: multi-head disagreement axis facet-tag distribution."""
-    # 4-bucket distribution per V6.A.5 (from reports/disagreement_axis_v1.md)
+    # 4-bucket distribution per V6.A.5 (from reports/pipeline/disagreement_axis_v1.md)
     buckets = ["novel_scaffold", "activity_cliff", "ood", "noise"]
     pair_counts_3head = [180, 220, 150, 198]    # was 748 total (3-head ensemble)
     pair_counts_4head = [145, 175, 130, 153]    # was 603 total (4-head ensemble)

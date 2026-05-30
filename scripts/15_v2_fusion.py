@@ -86,7 +86,7 @@ def main() -> int:
                         help="Add a per-target Tanimoto-to-ChEMBL-actives ranker "
                              "as a 5th cluster (cluster_a_tanimoto). Empirically "
                              "beats MAMMAL ρ at every target — see "
-                             "reports/tanimoto_baseline_v1.md.")
+                             "reports/pipeline/tanimoto_baseline_v1.md.")
     parser.add_argument("--tanimoto-active-pchembl", type=float, default=8.0,
                         help="ChEMBL pchembl threshold for 'active' (default 8.0).")
     parser.add_argument("--calibrated-mammal", action="store_true",
@@ -265,7 +265,7 @@ def main() -> int:
 
     # --- Cluster A.4 — Tanimoto-to-known-actives baseline ranker --------------
     # Empirically beats MAMMAL ρ at every audited cognition target (see
-    # reports/tanimoto_baseline_v1.md). Adding it as a real ranker is the v4
+    # reports/pipeline/tanimoto_baseline_v1.md). Adding it as a real ranker is the v4
     # quickest win — zero training cost, deterministic, no GPU.
     if args.add_tanimoto_ranker:
         from mammal_repurposing.cluster_a.tanimoto_ranker import (  # noqa: PLC0415

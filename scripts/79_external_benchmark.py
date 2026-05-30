@@ -18,7 +18,7 @@ Honest note: a full TxGNN knowledge-graph run is environment-gated (txgnn_env);
 the ChEMBL target-popularity score is the offline stand-in for that paradigm.
 
 Outputs:
-  reports/external_benchmark_v1.md
+  reports/pipeline/external_benchmark_v1.md
   figures/gap6/benchmark_auroc_forest.png
 
 Usage:
@@ -193,7 +193,7 @@ def main() -> int:
     ap.add_argument("--chembl", type=Path,
                     default=ROOT / "data" / "results" / "chembl_evidence.parquet")
     ap.add_argument("--report", type=Path,
-                    default=ROOT / "reports" / "external_benchmark_v1.md")
+                    default=ROOT / "reports" / "pipeline" / "external_benchmark_v1.md")
     ap.add_argument("--figure", type=Path,
                     default=ROOT / "figures" / "gap6" / "benchmark_auroc_forest.png")
     args = ap.parse_args()

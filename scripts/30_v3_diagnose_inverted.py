@@ -18,7 +18,7 @@ Targets:
   2 STRONG controls (P21728 DRD1, O43613 HCRTR1)
   1 WEAK control (P22303 ACHE — ρ=+0.20 n=10)
 
-Output: reports/diagnostics_v1.md + reports/diagnostics_v1.parquet
+Output: reports/pipeline/diagnostics_v1.md + reports/data/diagnostics_v1.parquet
 """
 
 from __future__ import annotations
@@ -94,9 +94,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--scores", type=Path, default=DTI_SCORES_PARQUET)
     parser.add_argument("--targets", type=Path, default=TARGETS_PARQUET)
-    parser.add_argument("--out", type=Path, default=ROOT / "reports" / "diagnostics_v1.md")
+    parser.add_argument("--out", type=Path, default=ROOT / "reports" / "pipeline" / "diagnostics_v1.md")
     parser.add_argument("--parquet-out", type=Path,
-                        default=ROOT / "reports" / "diagnostics_v1.parquet")
+                        default=ROOT / "reports" / "data" / "diagnostics_v1.parquet")
     parser.add_argument("--n-perm", type=int, default=10000)
     parser.add_argument("--active-pchembl", type=float, default=8.0,
                         help="Active threshold for Diagnostic D (≥10nM = 8.0)")

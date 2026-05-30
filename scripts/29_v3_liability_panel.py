@@ -5,7 +5,7 @@ Three stages:
      data/interim/targets_liability.parquet
   2. (GPU, ~1 hr) Run MAMMAL DTI on 298 compounds × 44 liability targets →
      data/results/liability_dti.parquet  -- skipped if already exists
-  3. (CPU) Apply tier-stratified gates → reports/liability_audit_v1.md +
+  3. (CPU) Apply tier-stratified gates → reports/pipeline/liability_audit_v1.md +
      data/results/v2/liability_gates.parquet + combined-with-ADMET parquet
 
 Flags:
@@ -54,7 +54,7 @@ DEFAULT_INTERIM = INTERIM_DIR / "targets_liability.parquet"
 DEFAULT_DTI = RESULTS_DIR / "liability_dti.parquet"
 DEFAULT_GATES = RESULTS_DIR / "v2" / "liability_gates.parquet"
 DEFAULT_COMBINED = RESULTS_DIR / "v2" / "combined_gates.parquet"
-DEFAULT_REPORT = ROOT / "reports" / "liability_audit_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "liability_audit_v1.md"
 
 
 def enrich_targets(seed_csv: Path, out_parquet: Path) -> pd.DataFrame:

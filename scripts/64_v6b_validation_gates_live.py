@@ -14,7 +14,7 @@ and evaluates:
 
 Outputs:
   data/results/v2/v6b_gate_verdicts_v1.parquet
-  reports/v6b_validation_gates_v1.md
+  reports/pipeline/v6b_validation_gates_v1.md
 
 Production-quality numbers for the V6.B paper Methods + Results sections.
 """
@@ -47,7 +47,7 @@ def main() -> int:
                         default=ROOT / "data" / "results" / "v2"
                         / "v6b_gate_verdicts_v1.parquet")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports"
+                        default=ROOT / "reports" / "pipeline"
                         / "v6b_validation_gates_v1.md")
     parser.add_argument("--roberts-ceiling", type=float, default=0.50)
     parser.add_argument("--gate2-threshold", type=float, default=0.30)

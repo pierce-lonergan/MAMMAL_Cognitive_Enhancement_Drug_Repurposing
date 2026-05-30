@@ -37,7 +37,7 @@ PANEL_22: list[str] = [
     "KCNQ2", "KCNQ3", "HCN1",
 ]
 
-# MAMMAL_ONLY_INVERTED — per reports/calibration_report.md (Phase A.7).
+# MAMMAL_ONLY_INVERTED — per reports/pipeline/calibration_report.md (Phase A.7).
 # At these targets we substitute rank-percentile for raw MAMMAL pKd in the
 # selectivity vector.
 INVERTED: set[str] = {"SLC6A3", "SLC6A2", "GRIN2A", "GRIN2B"}

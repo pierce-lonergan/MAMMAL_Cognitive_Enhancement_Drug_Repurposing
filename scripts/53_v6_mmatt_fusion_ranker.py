@@ -6,7 +6,7 @@ per-target Tier mask from V6.A.1 empirical ρ (INVERT targets get zeroed
 out — they would actively hurt the ensemble), and emits a parquet in the
 shape that `scripts/15_v2_fusion.py` consumes.
 
-INVERT mask per `reports/mmatt_dta_activation_v1.md`:
+INVERT mask per `reports/pipeline/mmatt_dta_activation_v1.md`:
   ADRA2A, CHRNA7, GRIA1, SIGMAR1, NTRK2, SLC6A2 → zero out (rho < +0.10)
   All others → keep prediction as-is
 

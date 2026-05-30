@@ -180,7 +180,7 @@ class TestPaperDrafts:
     )
 
     def test_v6a_paper_draft_exists_with_required_sections(self):
-        path = ROOT / "reports" / "v6a_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v6a_paper_draft.md"
         assert path.exists(), "V6.A paper draft missing"
         body = path.read_text(encoding="utf-8").lower()
         for section in self.REQUIRED_SECTIONS:
@@ -188,7 +188,7 @@ class TestPaperDrafts:
                 f"V6.A paper missing section: {section}"
 
     def test_v6a_paper_reports_tier_a_fail(self):
-        path = ROOT / "reports" / "v6a_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v6a_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         # Tier-A FAIL at SLC6A3 must be the headline finding
         assert "tier-a fail" in body or "tier-a fails" in body or "tier-a failed" in body or "tier-a criterion: fail" in body or "fails the tier-a criterion" in body
@@ -200,14 +200,14 @@ class TestPaperDrafts:
         assert "invert-mask" in body or "invert mask" in body
 
     def test_v6a_paper_cites_key_dti_methods(self):
-        path = ROOT / "reports" / "v6a_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v6a_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         for citation in ("shoshan", "schulman", "koh", "gorantla", "mervin",
                           "park"):
             assert citation in body, f"V6.A paper missing citation: {citation}"
 
     def test_v7_paper_draft_exists_with_required_sections(self):
-        path = ROOT / "reports" / "v7_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v7_paper_draft.md"
         assert path.exists(), "V7 paper draft missing"
         body = path.read_text(encoding="utf-8").lower()
         for section in self.REQUIRED_SECTIONS:
@@ -215,7 +215,7 @@ class TestPaperDrafts:
                 f"V7 paper missing section: {section}"
 
     def test_v7_paper_reports_real_nuts_metrics(self):
-        path = ROOT / "reports" / "v7_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v7_paper_draft.md"
         body = path.read_text(encoding="utf-8")
         # R̂ = 1.000 must appear
         assert "1.000" in body
@@ -226,14 +226,14 @@ class TestPaperDrafts:
         assert "0 violations" in body_lower or "zero" in body_lower
 
     def test_v7_paper_cites_pet_anchors_and_pbpk(self):
-        path = ROOT / "reports" / "v7_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v7_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         for citation in ("bohnen", "volkow", "kapur", "watson",
                           "schmidli", "roberts"):
             assert citation in body, f"V7 paper missing citation: {citation}"
 
     def test_v7_paper_specifies_cpt_venue(self):
-        path = ROOT / "reports" / "v7_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "v7_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         assert "clinical pharmacology" in body
         # CPT:PSP fallback
@@ -295,7 +295,7 @@ class TestV6b5PanelExpansion:
             [sys.executable, str(SCRIPTS / "61_v6b5_panel_expand.py"),
              "--out", str(ROOT / "data" / "results" / "v2"
                           / "panel_expanded_test.parquet"),
-             "--report", str(ROOT / "reports" / "panel_expansion_test.md")],
+             "--report", str(ROOT / "reports" / "pipeline" / "panel_expansion_test.md")],
             capture_output=True, text=True, timeout=60,
         )
         # Driver must exit 0 (all sanity checks pass)
@@ -304,7 +304,7 @@ class TestV6b5PanelExpansion:
         # Clean up
         for p in (ROOT / "data" / "results" / "v2"
                   / "panel_expanded_test.parquet",
-                  ROOT / "reports" / "panel_expansion_test.md"):
+                  ROOT / "reports" / "pipeline" / "panel_expansion_test.md"):
             if p.exists():
                 p.unlink()
 
@@ -314,7 +314,7 @@ class TestV6b5PanelExpansion:
 # ---------------------------------------------------------------------------
 class TestSprintArtifacts:
     def test_v7_nuts_v1_report_present(self):
-        path = ROOT / "reports" / "v7_nuts_v1.md"
+        path = ROOT / "reports" / "pipeline" / "v7_nuts_v1.md"
         assert path.exists()
         body = path.read_text(encoding="utf-8").lower()
         assert "gate 1" in body
@@ -322,7 +322,7 @@ class TestSprintArtifacts:
         assert "gate 3" in body
 
     def test_v8_gate1_dryrun_report_present(self):
-        path = ROOT / "reports" / "v8_gate1_dryrun_v1.md"
+        path = ROOT / "reports" / "pipeline" / "v8_gate1_dryrun_v1.md"
         assert path.exists()
         body = path.read_text(encoding="utf-8").lower()
         assert "ami" in body
@@ -330,7 +330,7 @@ class TestSprintArtifacts:
         assert "agglomerative" in body
 
     def test_panel_expansion_report_present(self):
-        path = ROOT / "reports" / "panel_expansion_v1.md"
+        path = ROOT / "reports" / "pipeline" / "panel_expansion_v1.md"
         assert path.exists()
         body = path.read_text(encoding="utf-8").lower()
         assert "22-target" in body or "22 panel" in body or "22/22" in body

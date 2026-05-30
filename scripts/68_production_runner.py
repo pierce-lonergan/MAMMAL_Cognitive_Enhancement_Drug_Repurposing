@@ -19,7 +19,7 @@ Single-command reproducible pipeline that chains:
   Stage 15 Hypothesis audit refresh                               [scripts/41]
 
 Outputs:
-  reports/production_run_v1.md — consolidated stage-by-stage status
+  reports/pipeline/production_run_v1.md — consolidated stage-by-stage status
 
 Skip-flags allow partial re-runs without re-firing expensive NUTS.
 
@@ -57,7 +57,7 @@ STAGES: list[tuple[str, str, list[str], str, str]] = [
     ("3",  "V6.B.4 4-gate live validation",
      ["scripts/64_v6b_validation_gates_live.py"],
      "skip_v6b_gates",
-     "reports/v6b_validation_gates_v1.md"),
+     "reports/pipeline/v6b_validation_gates_v1.md"),
     ("4",  "V6.B.5 expanded panel construction",
      ["scripts/61_v6b5_panel_expand.py"],
      "skip_panel_expansion",
@@ -108,7 +108,7 @@ STAGES: list[tuple[str, str, list[str], str, str]] = [
     ("15", "Hypothesis audit refresh",
      ["scripts/41_v5_hypothesis_audit.py"],
      "skip_audit",
-     "reports/hypothesis_audit_v1.md"),
+     "reports/pipeline/hypothesis_audit_v1.md"),
 ]
 
 
@@ -165,7 +165,7 @@ def run_stage(stage_id: str, stage_name: str, script_args: list[str],
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports" / "production_run_v1.md")
+                        default=ROOT / "reports" / "pipeline" / "production_run_v1.md")
     parser.add_argument("--stage-timeout-s", type=int, default=900,
                         help="Max wall-clock per stage in seconds")
     # Skip flags per stage
