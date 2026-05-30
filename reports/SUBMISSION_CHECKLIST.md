@@ -3,10 +3,14 @@
 **Author:** Pierce Lonergan · ORCID [0009-0008-4235-396X](https://orcid.org/0009-0008-4235-396X)
 **Both accounts already created and ORCID-linked.**
 
-The two artifacts are written and committed:
-- **Manuscript:** `reports/manuscript_class_prognostic_biorxiv.md`
+The artifacts are written and committed:
+- **Manuscript:** `reports/manuscript_class_prognostic_biorxiv.md` → `reports/manuscript_class_prognostic.pdf`
+- **Cover letter (visual, 3 pp, graphical abstract + Fig. 1 embedded):** `reports/cover_letter_biorxiv.md` → `reports/cover_letter_biorxiv.pdf` (regenerate with the same pandoc command). Opens with the two already-confirmed prospective predictions.
 - **Pre-registration:** `reports/osf_preregistration_class_prognostic.md`
-- **Flagship figure (Fig. 1):** `figures/flagship/thesis_synthesis.png` (300-ready at 200 dpi; regenerate at higher dpi with `scripts/83_flagship_figure.py` if needed)
+- **Flagship figure (Fig. 1):** `figures/flagship/thesis_synthesis.png`
+- **Figure 2 (temporal + taxonomy):** `figures/flagship/temporal_validation.png` (`scripts/85`)
+- **Graphical abstract:** `figures/flagship/graphical_abstract.png` (`scripts/90`; also usable for bioRxiv's optional graphical-abstract slot)
+- (regenerate any figure with its `scripts/8x`–`90` script at higher dpi if needed)
 
 ---
 
