@@ -98,7 +98,7 @@ def main() -> int:
     L.append(f"Demo run with **synthetic pose scenario = `{args.scenario}`**. "
              "Real-grid operation awaits §7.17 pose-saving Boltz wrapper.")
     L.append("")
-    L.append("Per the V4 §8.13 design + research/4-tier/archived/"
+    L.append("Per the V4 §8.13 design + research/4-tier/archived/analysis-notes/"
              "Pocket-Conditioned-Boltz2.md §3.3, the absolute-mode §8.0b CUT "
              "is too aggressive when the predicted pose binds OUTSIDE the "
              "orthosteric pocket. This gate applies literature-grounded "
