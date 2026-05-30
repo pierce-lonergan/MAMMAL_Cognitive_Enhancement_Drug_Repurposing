@@ -11,7 +11,7 @@ The current fetcher (`fetchers/chembl.uniprot_to_chembl_target`) picks the FIRST
 SINGLE PROTEIN match. For homopentameric channels like CHRNA7, this can miss the
 ChEMBL ID that aggregates the assay-level data we actually want.
 
-Output: reports/chembl_target_id_audit.md
+Output: reports/pipeline/chembl_target_id_audit.md
     - One section per UniProt
     - All candidate ChEMBL IDs with metadata
     - Top-N most-prolific by activity count (ChEMBL `target_chembl_id` ranking)
@@ -47,7 +47,7 @@ logging.basicConfig(
 logger = logging.getLogger("chembl_audit")
 
 CHEMBL_BASE = "https://www.ebi.ac.uk/chembl/api/data"
-REPORT_OUT = ROOT / "reports" / "chembl_target_id_audit.md"
+REPORT_OUT = ROOT / "reports" / "pipeline" / "chembl_target_id_audit.md"
 
 
 def fetch_all_targets_for_accession(client: httpx.Client, accession: str) -> list[dict]:

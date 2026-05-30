@@ -116,6 +116,7 @@ class EffectSizePosterior:
     cluster_d_gate_active: dict[str, bool] = field(default_factory=dict)
     n_chains: int = 0
     n_draws: int = 0
+    n_divergences: int = 0    # NUTS divergence count (Sprint 3.4 audit)
     rhat_max: float = float("nan")
     ess_min: float = float("nan")
     method: str = "prisma_stub"
@@ -439,7 +440,7 @@ def fit_effect_size_nuts_v2(
 ) -> EffectSizePosterior:
     """V7.3 Stage 2 — refit with per-class τ²_class + population × class interaction.
 
-    Sprint 3.2 deliverable per `reports/MH_IMPLEMENTATION_ROADMAP.md` § 3
+    Sprint 3.2 deliverable per `reports/paper-drafts/MH_IMPLEMENTATION_ROADMAP.md` § 3
     (V7 model-structure refit BEFORE anchor expansion).
 
     Model (canonical form per MH1+MH2 V7 CPT doc § 5):
@@ -638,6 +639,7 @@ def fit_effect_size_nuts_v2(
         class_mu=class_mu,
         cluster_d_gate_active=gate_active,
         n_chains=n_chains, n_draws=n_draws,
+        n_divergences=n_div,
         rhat_max=rhat_max, ess_min=ess_min,
         method="pymc_nuts_v2",
         note=(f"NUTS v2 converged: R̂={rhat_max:.3f}, ESS={ess_min:.0f}, "

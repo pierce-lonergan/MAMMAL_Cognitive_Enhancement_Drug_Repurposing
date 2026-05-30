@@ -17,7 +17,7 @@ activates MMAtt-DTA, this extends to 4 with no script changes.
 
 Output:
   data/results/v2/disagreement_axis_v1.parquet
-  reports/disagreement_axis_v1.md
+  reports/pipeline/disagreement_axis_v1.md
 """
 
 from __future__ import annotations
@@ -81,7 +81,7 @@ def main() -> int:
     parser.add_argument("--out", type=Path,
                         default=ROOT / "data/results/v2/disagreement_axis_v1.parquet")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports/disagreement_axis_v1.md")
+                        default=ROOT / "reports/pipeline/disagreement_axis_v1.md")
     args = parser.parse_args()
 
     # Load each head's predictions per (compound, target)

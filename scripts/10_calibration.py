@@ -1,7 +1,7 @@
 """Phase 3.1 - Platt-style calibration of MAMMAL DTI vs ChEMBL ground truth.
 
 Reads dti_scores.parquet + chembl_evidence.parquet, fits correlation + linear
-regression, writes reports/calibration_report.md, exits nonzero ONLY on a
+regression, writes reports/pipeline/calibration_report.md, exits nonzero ONLY on a
 gate-failure of UNRELIABLE_RESTRICT_PANEL.
 """
 
@@ -33,7 +33,7 @@ logging.basicConfig(
 logger = logging.getLogger("calibration")
 
 DEFAULT_CHEMBL = RESULTS_DIR / "chembl_evidence.parquet"
-DEFAULT_REPORT = ROOT.parent / "reports" / "calibration_report.md"
+DEFAULT_REPORT = ROOT.parent / "reports" / "pipeline" / "calibration_report.md"
 
 
 def main() -> int:
@@ -41,7 +41,7 @@ def main() -> int:
     parser.add_argument("--scores", type=Path, default=DTI_SCORES_PARQUET)
     parser.add_argument("--chembl", type=Path, default=DEFAULT_CHEMBL)
     parser.add_argument("--targets", type=Path, default=TARGETS_PARQUET)
-    parser.add_argument("--out", type=Path, default=ROOT / "reports" / "calibration_report.md")
+    parser.add_argument("--out", type=Path, default=ROOT / "reports" / "pipeline" / "calibration_report.md")
     parser.add_argument(
         "--no-gate", action="store_true",
         help="Always exit 0 (default exits 2 if UNRELIABLE_RESTRICT_PANEL).",

@@ -9,7 +9,7 @@ Reads:
 Writes:
   data/results/dti_scores_calibrated.parquet — same schema as dti_scores
     plus columns: calibrated_pkd, calibrator_type, calibrator_direction
-  reports/calibration_apply_v1.md — before/after summary
+  reports/pipeline/calibration_apply_v1.md — before/after summary
 
 Targets WITHOUT a fitted calibrator (router='none' or no .pkl on disk) are
 passed through unchanged but flagged as calibrator_type='passthrough' so
@@ -40,7 +40,7 @@ logger = logging.getLogger("v3_apply_cal")
 DEFAULT_CAL_DIR = ROOT / "data" / "calibration"
 DEFAULT_DECISIONS = DEFAULT_CAL_DIR / "router_decisions.csv"
 DEFAULT_OUT = ROOT / "data" / "results" / "dti_scores_calibrated.parquet"
-DEFAULT_REPORT = ROOT / "reports" / "calibration_apply_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "calibration_apply_v1.md"
 
 
 def load_isotonic_calibrators(cal_dir: Path) -> dict[str, dict]:

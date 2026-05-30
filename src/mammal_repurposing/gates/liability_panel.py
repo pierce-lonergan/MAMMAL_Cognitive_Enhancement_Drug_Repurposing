@@ -287,7 +287,7 @@ def apply_liability_gates(
 # ---------------------------------------------------------------------------
 # §8.13 — Pocket-class-conditioned liability gate
 # ---------------------------------------------------------------------------
-# Per research/4-tier/archived/Pocket-Conditioned-Boltz2.md §3.3 + V4 plan §8.13:
+# Per research/4-tier/archived/analysis-notes/Pocket-Conditioned-Boltz2.md §3.3 + V4 plan §8.13:
 # the absolute-mode 5-HT2B/hERG/HRH1/CB1 CUT is too aggressive when the
 # predicted pose binds OUTSIDE the orthosteric pocket. The literature precedent
 # for the demotion logic:

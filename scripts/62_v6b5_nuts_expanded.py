@@ -18,7 +18,7 @@ alignment + cellxgene-census + Kafkas 2024 Lit-OTAR (V6.B.5 Stage 3).
 
 Outputs:
   data/results/v2/cluster_d_posterior_expanded_v1.parquet (191 targets)
-  reports/cluster_d_nuts_expanded_v1.md
+  reports/pipeline/cluster_d_nuts_expanded_v1.md
 """
 
 from __future__ import annotations
@@ -104,7 +104,7 @@ def main() -> int:
                         default=ROOT / "data" / "results" / "v2"
                         / "cluster_d_posterior_expanded_v1.parquet")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports"
+                        default=ROOT / "reports" / "pipeline"
                         / "cluster_d_nuts_expanded_v1.md")
     parser.add_argument("--n-chains", type=int, default=2)
     parser.add_argument("--n-draws", type=int, default=1000)

@@ -18,7 +18,7 @@ Reference anchors (BDNF, COMT, ACHE, DRD2, GRIN2B, CHRNA7) at
 
 Outputs:
   data/results/v2/cluster_d_posterior_v1.parquet (per-target θ̄ + 90% HDI)
-  reports/cluster_d_nuts_v1.md (gates + convergence diagnostics)
+  reports/pipeline/cluster_d_nuts_v1.md (gates + convergence diagnostics)
 
 Honest caveat: this is V6.B.3 Stage 1. Full validation gates (V6.B.4) need
 Roberts 2020 SMD ceiling cross-check against published modulator
@@ -95,7 +95,7 @@ def main() -> int:
     parser.add_argument("--out", type=Path,
                         default=ROOT / "data" / "results" / "v2" / "cluster_d_posterior_v1.parquet")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports" / "cluster_d_nuts_v1.md")
+                        default=ROOT / "reports" / "pipeline" / "cluster_d_nuts_v1.md")
     parser.add_argument("--n-chains", type=int, default=4)
     parser.add_argument("--n-draws", type=int, default=2000)
     parser.add_argument("--n-tune", type=int, default=2000)

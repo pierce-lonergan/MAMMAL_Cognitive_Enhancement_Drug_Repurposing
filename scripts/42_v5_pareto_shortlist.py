@@ -9,7 +9,7 @@ Composes:
 
 Outputs:
   data/results/v2/pareto_ranking_v1.parquet
-  reports/pareto_ranking_v1.md
+  reports/pipeline/pareto_ranking_v1.md
 
 The Pareto front (rank 0) is the actionable wet-lab set: every compound on
 the front is non-dominated across all 5 axes. Rank 1+ are progressively less
@@ -45,7 +45,7 @@ DEFAULT_SELECTIVITY = ROOT / "data" / "results" / "v2" / "selectivity_scores_tan
 DEFAULT_TRIALS = ROOT / "data" / "results" / "v2" / "clinical_trials_v1.parquet"
 DEFAULT_NOOTROPIC = ROOT / "data" / "results" / "v2" / "nootropic_similarity_v1.parquet"
 DEFAULT_OUT = ROOT / "data" / "results" / "v2" / "pareto_ranking_v1.parquet"
-DEFAULT_REPORT = ROOT / "reports" / "pareto_ranking_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "pareto_ranking_v1.md"
 
 
 def _safe_merge(left: pd.DataFrame, right: pd.DataFrame, on_col: str,

@@ -5,7 +5,7 @@ Spearman ρ vs ChEMBL truth, then the panel itself contains signal MAMMAL
 is destroying. This sets the floor any v4 ensemble (MMAtt-DTA, etc.) must
 beat.
 
-Output: reports/tanimoto_baseline_v1.md + .parquet
+Output: reports/pipeline/tanimoto_baseline_v1.md + .parquet
 """
 
 from __future__ import annotations
@@ -55,9 +55,9 @@ def main() -> int:
     parser.add_argument("--scores", type=Path, default=DTI_SCORES_PARQUET)
     parser.add_argument("--targets", type=Path, default=TARGETS_PARQUET)
     parser.add_argument("--out", type=Path,
-                        default=ROOT / "reports" / "tanimoto_baseline_v1.md")
+                        default=ROOT / "reports" / "pipeline" / "tanimoto_baseline_v1.md")
     parser.add_argument("--parquet-out", type=Path,
-                        default=ROOT / "reports" / "tanimoto_baseline_v1.parquet")
+                        default=ROOT / "reports" / "data" / "tanimoto_baseline_v1.parquet")
     parser.add_argument("--active-pchembl", type=float, default=8.0)
     args = parser.parse_args()
 
@@ -127,7 +127,7 @@ def main() -> int:
              "a model that doesn't share MAMMAL's failure mode (e.g., MMAtt-DTA's "
              "transporter ρ > 0.72) should recover correlation. A LoRA fine-tune of "
              "MAMMAL is not the right intervention — the prediction surface is already "
-             "degenerate (see `reports/diagnostics_v1.md` §0 prior-collapse).")
+             "degenerate (see `reports/pipeline/diagnostics_v1.md` §0 prior-collapse).")
     L.append("")
     L.append("If Tanimoto also fails at the INVERTED targets, the panel itself is "
              "manifold-mismatched (Scenario 1) and we need scaffold-aware data "

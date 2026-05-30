@@ -1,0 +1,64 @@
+# Pseudo-prospective temporal validation + taxonomy sensitivity
+
+Answers the round-2 critique's single biggest gap (no temporal split) and the class-taxonomy-artifact objection. Reproduced by `scripts/85_temporal_validation.py`.
+
+## 1. Temporal hold-out (train ≤ cutoff, predict strictly-later)
+
+Every prediction uses only information available before the test drug's readout — a pseudo-prospective test.
+
+| Cutoff | train n | test n (S/F) | class-coverage | test AUROC |
+|---|---|---|---|---|
+| ≤ 2014 | 19 | 12 (1S/11F) | 75% | 1.000 |
+| ≤ 2016 | 25 | 6 (0S/6F) | 50% | n/a (one-class test) |
+
+Training the class prior on the 19 drugs that read out by 2014 and predicting the 12 that read out later gives **test AUROC 1.00**. The post-2014 cognition cohort is failure-dominated (1S/11F) — the field's real history — and the pre-2015 class track record ranks the lone success above every subsequent failure. (Later cutoffs leave a one-class test set, so the AUROC is undefined; the prequential analysis below avoids this.)
+
+## 2. Prequential ('as-of') evaluation
+
+The gold-standard temporal design: predict **each** drug from only the drugs that read out strictly before it (no fixed cutoff).
+
+- **Informed AUROC = 1.000** over the **19** drugs that had ≥1 same-class precedent (8S/11F).
+- Full-coverage AUROC (earlier-global-mean fallback for first-of-class drugs) = **0.956** over 30 drugs.
+- Informed coverage: 61% (the remaining drugs are the first of their class to read out, so they have no precedent and are honestly excluded from the informed figure).
+
+Per-drug as-of predictions (the prequential trace):
+
+| year | drug | class | prior sibs | as-of score | predict | actual | |
+|---|---|---|---|---|---|---|---|
+| 1976 | dextroamphetamine | catecholaminergic_ADHD | 1 | 0.50 | SUCCESS | SUCCESS | ✓ |
+| 2000 | rivastigmine | AChE_inhibitor | 1 | 0.40 | SUCCESS | SUCCESS | ✓ |
+| 2001 | galantamine | AChE_inhibitor | 2 | 0.40 | SUCCESS | SUCCESS | ✓ |
+| 2002 | atomoxetine | catecholaminergic_ADHD | 2 | 0.47 | SUCCESS | SUCCESS | ✓ |
+| 2007 | lisdexamfetamine | catecholaminergic_ADHD | 3 | 0.46 | SUCCESS | SUCCESS | ✓ |
+| 2007 | armodafinil | wake_promoting | 1 | 0.40 | SUCCESS | SUCCESS | ✓ |
+| 2008 | CX-516 | AMPA_PAM | 1 | 0.22 | SUCCESS | FAILURE | **MISS** |
+| 2009 | guanfacine-XR | catecholaminergic_ADHD | 4 | 0.47 | SUCCESS | SUCCESS | ✓ |
+| 2014 | ABT-288 | H3_cognition | 1 | 0.15 | FAILURE | FAILURE | ✓ |
+| 2016 | pitolisant | wake_promoting | 2 | 0.34 | SUCCESS | SUCCESS | ✓ |
+| 2016 | TC-5619 | alpha7_nAChR | 1 | 0.13 | FAILURE | FAILURE | ✓ |
+| 2016 | encenicline | alpha7_nAChR | 1 | 0.13 | FAILURE | FAILURE | ✓ |
+| 2016 | mavoglurant | mGluR | 1 | 0.13 | FAILURE | FAILURE | ✓ |
+| 2016 | basimglurant | mGluR | 1 | 0.13 | FAILURE | FAILURE | ✓ |
+| 2016 | ABT-126 | alpha7_nAChR | 1 | 0.13 | FAILURE | FAILURE | ✓ |
+| 2019 | S47445 | AMPA_PAM | 2 | 0.10 | FAILURE | FAILURE | ✓ |
+| 2019 | TAK-063 | PDE9_PDE10 | 1 | 0.08 | FAILURE | FAILURE | ✓ |
+| 2019 | BI-409306 | PDE9_PDE10 | 1 | 0.08 | FAILURE | FAILURE | ✓ |
+| 2022 | SUVN-502 | 5HT6_antagonist | 2 | 0.05 | FAILURE | FAILURE | ✓ |
+
+The single honest miss is **CX-516 (2008, AMPA_PAM)**: the class's first readout leaned positive, so the as-of prediction erred *before* the class accumulated its later failures (by 2019 the same class is correctly predicted FAILURE). This is the method learning over time — exactly the non-trivial behaviour a genuinely prospective test should show, and evidence the result is not a tautology.
+
+All five 2016 α7/mGluR failures (encenicline, ABT-126, TC-5619, basimglurant, mavoglurant) were correctly predicted FAILURE from pre-2016 same-class failures (DMXB-A 2008, pomaglumetad 2013) — i.e. the prior *would have* flagged the cognition graveyard before it read out.
+
+## 3. Class-taxonomy sensitivity
+
+Is AUROC = 1.00 an artifact of the chosen grouping? We re-score under a coarser taxonomy and under random class permutations.
+
+| Taxonomy | classes | class-LOCO AUROC |
+|---|---|---|
+| **Mechanism class (real)** | 11 | **1.000** |
+| Coarse (neurotransmitter system) | 4 | 0.615 |
+| Random permutation (2000×) | 11 (shuffled) | 0.460 ± 0.146 (95% [0.18, 0.73]) |
+
+The signal is **granularity-specific**. Collapsing the 11 mechanism classes into 4 neurotransmitter systems — which lumps cholinesterase-inhibitor successes with α7-agonist failures under 'cholinergic' — drops AUROC to **0.62**, near chance. Random class permutations sit at **0.46**, and **0 of 2000** reached the observed 1.00 (permutation p = 0.0005). The result is therefore neither trivially robust to any grouping (coarsening destroys it, because distinct mechanisms in a system have distinct clinical fates) nor an artifact of arbitrary labels (random grouping is at chance). It is specific to the biologically-correct mechanism-class level — which is the scientific claim: cognition outcomes are determined at the mechanism-class granularity.
+
+Generated by `scripts/85_temporal_validation.py`.

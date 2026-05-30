@@ -5,7 +5,7 @@ Adds three columns to the v7 ranking:
   brain_primary_region  — text description of the dominant expression region
   brain_note            — short literature pointer
 
-Output: data/results/v2/brain_region_v1.parquet + reports/brain_region_v1.md.
+Output: data/results/v2/brain_region_v1.parquet + reports/pipeline/brain_region_v1.md.
 """
 
 from __future__ import annotations
@@ -31,7 +31,7 @@ logger = logging.getLogger("v5_brain_region")
 
 DEFAULT_RANKING = ROOT / "data" / "results" / "v2" / "final_ranking_v7_moa.parquet"
 DEFAULT_OUT = ROOT / "data" / "results" / "v2" / "brain_region_v1.parquet"
-DEFAULT_REPORT = ROOT / "reports" / "brain_region_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "brain_region_v1.md"
 
 
 def main() -> int:

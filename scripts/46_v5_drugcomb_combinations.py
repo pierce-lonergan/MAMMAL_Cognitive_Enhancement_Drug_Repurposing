@@ -12,7 +12,7 @@ api.drugcomb.org and drugcomb.fimm.fi both returned connection failures):
 
 Output:
     data/results/v2/drugcomb_combinations_v1.parquet
-    reports/drugcomb_combinations_v1.md
+    reports/pipeline/drugcomb_combinations_v1.md
 """
 
 from __future__ import annotations
@@ -38,7 +38,7 @@ logger = logging.getLogger("v5_drugcomb")
 
 DEFAULT_PARETO = ROOT / "data" / "results" / "v2" / "pareto_ranking_v1.parquet"
 DEFAULT_OUT = ROOT / "data" / "results" / "v2" / "drugcomb_combinations_v1.parquet"
-DEFAULT_REPORT = ROOT / "reports" / "drugcomb_combinations_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "drugcomb_combinations_v1.md"
 
 
 def main() -> int:

@@ -53,7 +53,7 @@ DEFAULT_CALIB_DIR = ROOT / "data" / "calibration" / "isotonic"
 DEFAULT_QC_DIR = ROOT / "data" / "calibration" / "qc"
 DEFAULT_DTI = ROOT / "data" / "results" / "dti_scores.parquet"
 DEFAULT_TARGETS = ROOT / "data" / "interim" / "targets.parquet"
-DEFAULT_REPORT = ROOT / "reports" / "calibrator_qc_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "calibrator_qc_v1.md"
 
 WARN_THRESHOLD = 0.05
 REFIT_THRESHOLD = 0.10

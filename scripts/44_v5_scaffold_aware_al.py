@@ -6,7 +6,7 @@ top-25. PASS if delta ≥ 2 distinct scaffolds.
 
 Outputs:
     data/results/v2/scaffold_aware_v1.parquet
-    reports/scaffold_aware_v1.md
+    reports/pipeline/scaffold_aware_v1.md
 """
 
 from __future__ import annotations
@@ -32,7 +32,7 @@ logger = logging.getLogger("v5_scaffold_al")
 
 DEFAULT_RANKING = ROOT / "data" / "results" / "v2" / "final_ranking_v7_moa.parquet"
 DEFAULT_OUT = ROOT / "data" / "results" / "v2" / "scaffold_aware_v1.parquet"
-DEFAULT_REPORT = ROOT / "reports" / "scaffold_aware_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "scaffold_aware_v1.md"
 
 
 def main() -> int:

@@ -38,7 +38,7 @@ DEFAULT_LIABILITY = ROOT / "data" / "results" / "v2" / "liability_gates.parquet"
 DEFAULT_ROUTER = ROOT / "data" / "calibration" / "router_decisions.csv"
 DEFAULT_OUT_BOOSTER = ROOT / "data" / "calibration" / "lambdamart" / "booster.pkl"
 DEFAULT_OUT_PREDICTIONS = ROOT / "data" / "results" / "v2" / "lambdamart_predictions.parquet"
-DEFAULT_REPORT = ROOT / "reports" / "lambdamart_meta_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "lambdamart_meta_v1.md"
 
 
 def main() -> int:

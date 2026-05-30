@@ -5,7 +5,7 @@ compute Spearman ρ between (a) MAMMAL pKd vs ChEMBL pchembl and (b) Boltz-2
 affinity_pred_value vs ChEMBL pchembl, PER TARGET.
 
 Outputs:
-    reports/calibration_report.md           — human-readable per-target table
+    reports/pipeline/calibration_report.md           — human-readable per-target table
     configs/weights_calibrated.yaml          — per-target RRF weights for fusion
 
 Decision rules (from V3 sprint spec):
@@ -51,7 +51,7 @@ logger = logging.getLogger("v3_calibration")
 
 V2_DIR = RESULTS_DIR / "v2"
 BOLTZINA_PARQ = V2_DIR / "boltzina_affinity.parquet"
-REPORT_OUT = ROOT / "reports" / "calibration_report.md"
+REPORT_OUT = ROOT / "reports" / "pipeline" / "calibration_report.md"
 WEIGHTS_OUT = ROOT / "configs" / "weights_calibrated.yaml"
 
 

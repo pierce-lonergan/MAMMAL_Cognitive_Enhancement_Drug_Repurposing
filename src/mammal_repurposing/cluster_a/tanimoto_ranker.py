@@ -6,7 +6,7 @@ at T (pchembl ≥ threshold). Use that as the per-(target, compound) score.
 
 This is a 1996-vintage cheminformatics baseline (Bemis-Murcko era) that
 EMPIRICALLY beats MAMMAL at every audited cognition target (see
-`reports/tanimoto_baseline_v1.md`):
+`reports/pipeline/tanimoto_baseline_v1.md`):
     SLC6A3 ρ = +0.90 (Tanimoto) vs -0.70 (MAMMAL)
     SLC6A2 ρ = +0.91 (Tanimoto) vs -0.60 (MAMMAL)
     DRD1   ρ = +0.85 (Tanimoto) vs +0.29 (MAMMAL)

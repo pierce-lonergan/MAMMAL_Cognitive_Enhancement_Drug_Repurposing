@@ -14,7 +14,7 @@ Inputs:
 Outputs:
   data/results/v2/v7_effect_size_posterior_v1.parquet — per-compound g_mean,
     g_2p5, g_97p5, g_90_upper, class_mu, cluster_d_gate_active
-  reports/v7_validation_v1.md — Gate 1 (P1-P8), Gate 2 (Roberts ceiling),
+  reports/pipeline/v7_validation_v1.md — Gate 1 (P1-P8), Gate 2 (Roberts ceiling),
     convergence diagnostics, sensitivity sweep over λ_class
 
 Per V4 §13.Y, the 8 P1-P8 predictions are:
@@ -161,7 +161,7 @@ def main() -> int:
                         default=ROOT / "data" / "results" / "v2"
                         / "v7_effect_size_posterior_v1.parquet")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports" / "v7_validation_v1.md")
+                        default=ROOT / "reports" / "pipeline" / "v7_validation_v1.md")
     parser.add_argument("--stub-only", action="store_true",
                         help="Force PRISMA stub mode (skip NUTS even if available)")
     parser.add_argument("--lambda-sweep", type=str, default="0.3,1.0,3.0",

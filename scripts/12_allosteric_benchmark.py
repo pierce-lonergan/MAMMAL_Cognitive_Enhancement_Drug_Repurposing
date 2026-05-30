@@ -6,7 +6,7 @@ within-group calibration.
 
 Output:
     data/results/allosteric_benchmark_scored.parquet
-    reports/benchmarks/allosteric_benchmark.md
+    reports/pipeline/allosteric_benchmark.md
 """
 
 from __future__ import annotations
@@ -41,7 +41,7 @@ logger = logging.getLogger("benchmark")
 
 DEFAULT_BENCHMARK_CSV = RAW_DIR / "allosteric_benchmark.csv"
 DEFAULT_SCORED = RESULTS_DIR / "allosteric_benchmark_scored.parquet"
-DEFAULT_REPORT = ROOT / "reports" / "benchmarks" / "allosteric_benchmark.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "allosteric_benchmark.md"
 
 
 def _join_sequences(benchmark: pd.DataFrame, targets: pd.DataFrame) -> pd.DataFrame:

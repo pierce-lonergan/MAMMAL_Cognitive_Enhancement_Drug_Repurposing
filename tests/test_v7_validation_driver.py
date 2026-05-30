@@ -158,7 +158,7 @@ class TestOsfPreRegistrationStructure:
     )
 
     def test_v7_pre_reg_has_all_required_sections(self):
-        path = ROOT / "reports" / "v7_osf_preregistration.md"
+        path = ROOT / "reports" / "paper-drafts" / "v7_osf_preregistration.md"
         assert path.exists(), "V7 OSF pre-reg doc missing"
         body = path.read_text(encoding="utf-8")
         # Case-insensitive matches
@@ -168,7 +168,7 @@ class TestOsfPreRegistrationStructure:
                 f"V7 OSF pre-reg missing required section: '{section}'"
 
     def test_v7_pre_reg_locks_p1_through_p8(self):
-        path = ROOT / "reports" / "v7_osf_preregistration.md"
+        path = ROOT / "reports" / "paper-drafts" / "v7_osf_preregistration.md"
         body = path.read_text(encoding="utf-8").lower()
         # All 8 pre-registered predictions must appear
         for pid in ("p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8"):
@@ -184,7 +184,7 @@ class TestOsfPreRegistrationStructure:
         assert "clinical pharmacology" in body
 
     def test_v8_pre_reg_has_all_required_sections(self):
-        path = ROOT / "reports" / "v8_osf_preregistration.md"
+        path = ROOT / "reports" / "paper-drafts" / "v8_osf_preregistration.md"
         assert path.exists(), "V8 OSF pre-reg doc missing"
         body = path.read_text(encoding="utf-8")
         body_lower = body.lower()
@@ -193,7 +193,7 @@ class TestOsfPreRegistrationStructure:
                 f"V8 OSF pre-reg missing required section: '{section}'"
 
     def test_v8_pre_reg_locks_clustering_thresholds(self):
-        path = ROOT / "reports" / "v8_osf_preregistration.md"
+        path = ROOT / "reports" / "paper-drafts" / "v8_osf_preregistration.md"
         body = path.read_text(encoding="utf-8").lower()
         # MOFA+ K=30 must be locked
         assert "k = 30" in body or "k=30" in body
@@ -214,16 +214,16 @@ class TestOsfPreRegistrationStructure:
     def test_pre_reg_docs_reference_companion_design_docs(self):
         """Both pre-reg docs must point at design/ companions."""
         for fname in ("v7_osf_preregistration.md", "v8_osf_preregistration.md"):
-            body = (ROOT / "reports" / fname).read_text(encoding="utf-8").lower()
+            body = (ROOT / "reports" / "paper-drafts" / fname).read_text(encoding="utf-8").lower()
             assert "v4_status_and_forward_plan.md" in body or "v4_status" in body
             assert "v6_architecture_plan.md" in body or "v6_architecture" in body
 
     def test_pre_reg_docs_include_falsifiability_action(self):
         """Each pre-reg must explicitly state what happens if gates fail."""
-        v7_body = (ROOT / "reports" / "v7_osf_preregistration.md").read_text(encoding="utf-8").lower()
+        v7_body = (ROOT / "reports" / "paper-drafts" / "v7_osf_preregistration.md").read_text(encoding="utf-8").lower()
         # V7 must mention CPT:PSP negative-result fallback
         assert "negative-result" in v7_body or "negative result" in v7_body
-        v8_body = (ROOT / "reports" / "v8_osf_preregistration.md").read_text(encoding="utf-8").lower()
+        v8_body = (ROOT / "reports" / "paper-drafts" / "v8_osf_preregistration.md").read_text(encoding="utf-8").lower()
         # V8 must mention degrade band or negative result
         assert ("negative" in v8_body or "degrade" in v8_body
                 or "fallback" in v8_body)
@@ -234,14 +234,14 @@ class TestOsfPreRegistrationStructure:
 # ---------------------------------------------------------------------------
 class TestMethodologyV3:
     def test_methodology_v3_exists_and_covers_all_5_layers(self):
-        path = ROOT / "reports" / "methodology_v3.md"
+        path = ROOT / "reports" / "paper-drafts" / "methodology_v3.md"
         assert path.exists(), "methodology_v3.md missing"
         body = path.read_text(encoding="utf-8").lower()
         for layer in ("v4", "v5", "v6.a", "v6.b", "v7", "v8"):
             assert layer in body, f"methodology_v3 missing layer: {layer}"
 
     def test_methodology_v3_includes_falsifier_table(self):
-        path = ROOT / "reports" / "methodology_v3.md"
+        path = ROOT / "reports" / "paper-drafts" / "methodology_v3.md"
         body = path.read_text(encoding="utf-8").lower()
         assert "falsif" in body
         # Roberts ceiling reference

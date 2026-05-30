@@ -9,7 +9,7 @@ build_expanded_panel(). Validates that:
 
 Outputs:
   data/results/v2/panel_expanded_v1.parquet
-  reports/panel_expansion_v1.md
+  reports/pipeline/panel_expansion_v1.md
 
 Real-mode (V6.B.5 Stage 2-3) replaces the hand-curated expansion list with
 live OT Genetics L2G + cellxgene-census + Moodie 2024 g-cortical alignment
@@ -40,7 +40,7 @@ def main() -> int:
                         default=ROOT / "data" / "results" / "v2"
                         / "panel_expanded_v1.parquet")
     parser.add_argument("--report", type=Path,
-                        default=ROOT / "reports" / "panel_expansion_v1.md")
+                        default=ROOT / "reports" / "pipeline" / "panel_expansion_v1.md")
     args = parser.parse_args()
 
     from mammal_repurposing.cluster_d.panel_expansion import (

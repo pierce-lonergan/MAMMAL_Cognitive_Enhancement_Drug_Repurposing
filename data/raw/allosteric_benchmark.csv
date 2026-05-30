@@ -4,7 +4,7 @@ P36544,CHRNA7,encenicline,CN1CCC(CC1)NC(=O)c1ccc2c(c1)CC(=O)N2,allosteric_partia
 P36544,CHRNA7,nicotine,CN1CCCC1c1cccnc1,orthosteric_agonist,1000,EC50,literature,prototypical orthosteric agonist
 P36544,CHRNA7,acetylcholine,CC(=O)OCC[N+](C)(C)C,orthosteric_agonist,300,EC50,literature,endogenous orthosteric agonist
 P36544,CHRNA7,methyllycaconitine,CCN1CC(O)(C(C)C)C(OC)CC1(O)C(=O)OCc1ccccc1NC(=O)C,orthosteric_antagonist,1.4,Ki,literature,prototypical alpha-7 antagonist (control negative for cognition)
-Q08499,PDE4D,rolipram,O=C1N(C2CCCC2)Cc1cc(OC)c1OCC,orthosteric_inhibitor,100,IC50,PMID:7508728,prototypical PDE4 orthosteric
+Q08499,PDE4D,rolipram,COc1ccc(cc1OC1CCCC1)C1CC(=O)NC1,orthosteric_inhibitor,100,IC50,PMID:7508728,prototypical PDE4 orthosteric (SMILES corrected)
 Q08499,PDE4D,zatolmilast,Cc1ccc(C(=O)N2CCN(c3ccc(C(F)(F)F)cn3)CC2)cc1Nc1cccnc1,allosteric_nam,140,IC50,PMID:33982298,BPN14770; PDE4D NAM
 Q08499,PDE4D,piclamilast,CC(C)OC1=CC=C(C=C1OC)C2=NN3CCNCC3=N2,orthosteric_inhibitor,4,IC50,PMID:7508728,PDE4 orthosteric (potent)
 Q08499,PDE4D,apremilast,CC(=O)Nc1ccc2c(c1)C(N1CCOCC1)(C(=O)N(c1ccccc1)c1cccc2c1)c1ccccc1OC,orthosteric_inhibitor,74,IC50,literature,FDA-approved PDE4 (orthosteric)

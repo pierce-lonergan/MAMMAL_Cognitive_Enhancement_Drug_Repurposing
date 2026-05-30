@@ -9,7 +9,7 @@ difference) to validate the framework end-to-end.
 
 Output:
     data/calibration/pocket_routed/<uniprot>.pkl + per-target lift JSON
-    reports/pocket_routed_calibration_v1.md
+    reports/pipeline/pocket_routed_calibration_v1.md
 """
 
 from __future__ import annotations
@@ -41,7 +41,7 @@ logger = logging.getLogger("v5_pocket_routed")
 
 DEFAULT_DTI = ROOT / "data" / "results" / "dti_scores.parquet"
 DEFAULT_OUT_DIR = ROOT / "data" / "calibration" / "pocket_routed"
-DEFAULT_REPORT = ROOT / "reports" / "pocket_routed_calibration_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "pocket_routed_calibration_v1.md"
 
 
 def _synthetic_pocket_labels(n: int, seed: int = 42) -> np.ndarray:

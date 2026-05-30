@@ -7,7 +7,7 @@ the library, fit split-conformal at alpha=0.20 and report:
 
 Outputs:
     data/calibration/conformal/<uniprot>.json
-    reports/conformal_calibration_v1.md
+    reports/pipeline/conformal_calibration_v1.md
 """
 
 from __future__ import annotations
@@ -39,7 +39,7 @@ logger = logging.getLogger("v5_conformal")
 DEFAULT_TARGETS = ROOT / "data" / "interim" / "targets.parquet"
 DEFAULT_DTI = ROOT / "data" / "results" / "dti_scores.parquet"
 DEFAULT_OUT_DIR = ROOT / "data" / "calibration" / "conformal"
-DEFAULT_REPORT = ROOT / "reports" / "conformal_calibration_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "conformal_calibration_v1.md"
 
 
 def main() -> int:

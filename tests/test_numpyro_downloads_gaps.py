@@ -83,7 +83,7 @@ class TestV6b5NumpyroPosterior:
             assert col in df.columns
 
     def test_v6b5_report_reports_R_hat_convergence(self):
-        path = ROOT / "reports" / "cluster_d_nuts_expanded_v1.md"
+        path = ROOT / "reports" / "pipeline" / "cluster_d_nuts_expanded_v1.md"
         if not path.exists():
             pytest.skip("V6.B.5 expanded report not yet generated")
         body = path.read_text(encoding="utf-8")
@@ -183,12 +183,12 @@ class TestJumpCpS3Reachability:
 # ---------------------------------------------------------------------------
 class TestGapsDocument:
     REQUIRED_SECTIONS = (
-        "Recently resolved",
-        "Active engineering gaps",
-        "Hard external blockers",
-        "MUST-HAVE research directions",
+        "Open engineering gaps",
+        "External blockers",
+        "Research directions",
         "Cross-cutting limitations",
-        "Recommended sprint sequence",
+        "Recommended order",
+        "Completed ledger",
     )
 
     def test_gaps_document_exists(self):
@@ -240,7 +240,7 @@ class TestGapsDocument:
         body = path.read_text(encoding="utf-8")
         # Recommended sprint sequence with numbered priority
         body_lower = body.lower()
-        assert "recommended sprint sequence" in body_lower
+        assert "recommended order" in body_lower
         assert "priority order" in body_lower or "highest" in body_lower
 
     def test_gaps_document_specifies_effort_estimates(self):

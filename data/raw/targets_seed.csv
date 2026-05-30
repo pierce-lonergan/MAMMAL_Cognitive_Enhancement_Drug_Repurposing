@@ -27,3 +27,6 @@ SLC6A9,P48067,glycinergic,"learning,NMDA_modulation",False,"GlyT1 — bitopertin
 GRM2,Q14416,glutamatergic_mglur,"working_memory,prefrontal",False,"mGluR2 — pomaglumetad (LY2140023) Phase III FAIL"
 GRM3,Q14832,glutamatergic_mglur,"working_memory,prefrontal",False,"mGluR3; partner of GRM2 in heterodimer"
 GRM5,P41594,glutamatergic_mglur,"learning,LTP",False,"mGluR5 PAM; CDPPB, basimglurant antagonist for Fragile X"
+CHRM1,P11229,cholinergic_muscarinic,"memory,attention,prefrontal",False,"M1 muscarinic; xanomeline-KarXT (Cobenfy) FDA-approved 2024 for schizophrenia cognition"
+CHRM4,P08173,cholinergic_muscarinic,"memory,attention",False,"M4 muscarinic; xanomeline-KarXT co-target; emraclidine PAM"
+HTR6,P50406,serotonergic,"learning,memory",False,"5-HT6 antagonist; idalopirdine/intepirdine/SUVN-502 Phase III AD failures"

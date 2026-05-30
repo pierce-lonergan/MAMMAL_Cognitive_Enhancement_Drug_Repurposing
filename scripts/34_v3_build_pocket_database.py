@@ -7,7 +7,7 @@ One-time runner that:
   4. Caches centroids to data/pockets/centroids/<target>.json
   5. Validates Gates P1, P2, P3 by re-classifying the ligand-bound poses from
      the SAME PDBs that anchored the centroids (round-trip sanity check)
-  6. Writes reports/pocket_database_v1.md
+  6. Writes reports/pipeline/pocket_database_v1.md
 
 Cost: ~30s for 7 PDBs (HTTP-bound). CPU-only, no GPU.
 """
@@ -36,7 +36,7 @@ logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger("v3_pocket_db")
 
-DEFAULT_REPORT = ROOT / "reports" / "pocket_database_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "pocket_database_v1.md"
 
 # Gate P1 — orthosteric positive controls (the ligand the pocket was defined
 # around should classify as `orthosteric`).

@@ -4,7 +4,7 @@ For each cognition-relevant target with known allosteric ligands in our compound
 library, check whether MAMMAL ranks those allosteric ligands appropriately.
 Compare against orthosteric ligands at the same target where available.
 
-Output: reports/allosteric_audit.md.
+Output: reports/pipeline/allosteric_audit.md.
 """
 
 from __future__ import annotations
@@ -29,7 +29,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("allosteric_audit")
 
-DEFAULT_OUT = ROOT / "reports" / "allosteric_audit.md"
+DEFAULT_OUT = ROOT / "reports" / "pipeline" / "allosteric_audit.md"
 
 
 def main() -> int:

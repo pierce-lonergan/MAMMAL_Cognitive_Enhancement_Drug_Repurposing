@@ -1,0 +1,21 @@
+# EXTENSION to the frozen 31-drug ledger — a robustness expansion (review-3 item 4).
+# These are REAL, famous cognition-trial outcomes across NEW mechanism classes,
+# added to test whether the 11/11 class-outcome-purity survives expansion.
+# NOT part of the pre-registered frozen-31 analysis. Effect sizes are encodings of
+# the documented result (g~0 for a null primary, slightly negative for a trial that
+# WORSENED cognition, positive for a positive readout); the analysis is rank-based.
+# Citations are by trial-program name and must be reconciled before publication.
+# Mostly the AD small-molecule graveyard (BACE / gamma-secretase / GSK3), plus the
+# GlyT1 NMDA-coagonist failures and the PDE4 / M1-M4 wins.
+compound,mechanism_class,target_uniprot,indication,pivotal_trial,readout_year,clinical_outcome,clinical_g,endpoint,citation
+verubecestat,BACE_inhibitor,P56817,AD,EPOCH/APECS,2017,FAILURE,-0.05,ADAS-Cog/CDR-SB,"Egan et al NEJM 2018/2019 (BACE)"
+lanabecestat,BACE_inhibitor,P56817,AD,AMARANTH/DAYBREAK,2018,FAILURE,0.0,ADAS-Cog,"Wessels et al JAMA Neurol 2020"
+atabecestat,BACE_inhibitor,P56817,AD,EARLY,2018,FAILURE,-0.05,PACC,"Henley et al NEJM 2019 (BACE; cognitive worsening)"
+elenbecestat,BACE_inhibitor,P56817,AD,MISSION-AD,2019,FAILURE,0.0,CDR-SB,"Eisai/Biogen MISSION-AD discontinuation 2019"
+semagacestat,gamma_secretase,P49768,AD,IDENTITY,2010,FAILURE,-0.1,ADAS-Cog,"Doody et al NEJM 2013 (worsened cognition)"
+avagacestat,gamma_secretase,P49768,AD,Phase 2,2012,FAILURE,0.0,ADAS-Cog,"Coric et al Arch Neurol 2012"
+tideglusib,GSK3_inhibitor,P49841,AD,ARGO,2015,FAILURE,0.0,ADAS-Cog,"Lovestone et al J Alzheimers Dis 2015"
+bitopertin,GlyT1_NMDA_coagonist,P48067,schizophrenia,SearchLyte/negative-symptom,2014,FAILURE,0.0,negative-symptom/cognition,"Bugarski-Kirola et al Lancet Psychiatry 2016"
+iclepertin,GlyT1_NMDA_coagonist,P48067,CIAS,CONNEX,2025,FAILURE,0.0,MCCB composite,"Lancet Psychiatry 2025 (CONNEX phase 3)"
+zatolmilast,PDE4_inhibitor,Q08499,FXS,Phase 2 (Tetra),2020,SUCCESS,0.5,cognition/function,"Berry-Kravis et al 2020 (BPN14770 phase 2 positive)"
+xanomeline-trospium,M1_M4_muscarinic,P11229,schizophrenia,EMERGENT,2024,SUCCESS,0.3,PANSS (psychosis; cognition secondary),"Kaul et al; FDA approval (Cobenfy) 2024 — NOTE psychosis-primary"

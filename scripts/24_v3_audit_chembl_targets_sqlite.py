@@ -10,7 +10,7 @@ For each UniProt accession we still compare against the v1 `current_pick`
 which is the call v1 actually used to pick the ChEMBL target ID). That call
 goes through REST since it's the production behaviour we're auditing.
 
-Output: reports/chembl_target_id_audit_sqlite.md
+Output: reports/pipeline/chembl_target_id_audit_sqlite.md
 """
 
 from __future__ import annotations
@@ -44,7 +44,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("chembl_audit_sqlite")
 
-REPORT_OUT = ROOT / "reports" / "chembl_target_id_audit_sqlite.md"
+REPORT_OUT = ROOT / "reports" / "pipeline" / "chembl_target_id_audit_sqlite.md"
 
 
 def current_pick_from_rest(client: httpx.Client, accession: str) -> str | None:
@@ -149,7 +149,7 @@ def main() -> int:
     header.append(
         "Re-run of the T1 audit using the local SQLite mirror for candidate "
         "enumeration AND activity counts. The original REST-based audit "
-        "(`reports/chembl_target_id_audit.md`) produced 13 NO_RECORDS rows "
+        "(`reports/pipeline/chembl_target_id_audit.md`) produced 13 NO_RECORDS rows "
         "because the activity-count REST endpoint timed out under sequential "
         "load — those were never real \"no targets,\" just network failures."
     )

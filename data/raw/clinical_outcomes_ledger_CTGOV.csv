@@ -1,0 +1,15 @@
+# CT.gov-SOURCED additions (review-3 item 4, definitive): drugs surfaced by the
+# UNBIASED pre-specified ClinicalTrials.gov query (data/raw/ctgov/ctgov_pull_*.jsonl)
+# that (a) had a cognition-PRIMARY endpoint, (b) have an assignable mechanism class,
+# and (c) have a documented, citable readout we can adjudicate. SELECTION IS
+# OUTCOME-BLIND: every adjudicable drug from the pull not already in the ledger is
+# included here regardless of whether it preserves class purity. Drugs whose outcome
+# we could NOT adjudicate confidently (pregnenolone, tropisetron, ANAVEX2-73,
+# ALZ-801, buntanetap, varenicline) are left UNADJUDICATED in the pull, not coded.
+# Effect sizes encode the documented result (g~0 null). Citations reconcile before pub.
+compound,mechanism_class,target_uniprot,indication,pivotal_trial,readout_year,clinical_outcome,clinical_g,endpoint,citation
+AQW051,alpha7_nAChR,P36544,schizophrenia,NCT01163227,2012,FAILURE,0.0,cognitive function,"Novartis AQW051 alpha7 partial agonist, SCZ cognition null"
+MK-5757,GlyT1_NMDA_coagonist,P48067,schizophrenia,NCT00848484,2009,FAILURE,0.0,BACS battery,"Merck MK-5757 GlyT1 inhibitor, SCZ cognition null"
+simufilam,FLNA_modulator,P21333,AD,NCT04994483 (RETHINK-ALZ),2024,FAILURE,0.0,ADAS-Cog12,"Cassava simufilam, RETHINK-ALZ/REFOCUS-ALZ phase 3 failed 2024-2025"
+arbaclofen,GABA_B_agonist,Q9UBS5,FXS,STX209,2013,FAILURE,0.0,ABC/social,"Berry-Kravis et al; Seaside Therapeutics STX209 FXS phase 3 null"
+gaboxadol,GABA_A_agonist,P14867,FXS,NCT03697161 (OV101),2020,FAILURE,0.0,clinical global,"Ovid OV101 (gaboxadol) FXS phase 2 null on primary"

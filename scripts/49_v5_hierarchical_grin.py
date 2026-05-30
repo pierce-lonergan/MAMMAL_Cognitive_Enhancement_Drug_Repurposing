@@ -10,7 +10,7 @@ worked); pooling should not degrade SLC6A3/SLC6A2 by more than 0.10 ρ units.
 
 Output:
     data/calibration/hierarchical/<family>.json
-    reports/hierarchical_bayes_v1.md
+    reports/pipeline/hierarchical_bayes_v1.md
 """
 
 from __future__ import annotations
@@ -43,7 +43,7 @@ logger = logging.getLogger("v5_hierarchical")
 DEFAULT_DTI = ROOT / "data" / "results" / "dti_scores.parquet"
 DEFAULT_TARGETS = ROOT / "data" / "interim" / "targets.parquet"
 DEFAULT_OUT_DIR = ROOT / "data" / "calibration" / "hierarchical"
-DEFAULT_REPORT = ROOT / "reports" / "hierarchical_bayes_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "hierarchical_bayes_v1.md"
 
 
 def _gather_family_data(family: str, targets: list[str],

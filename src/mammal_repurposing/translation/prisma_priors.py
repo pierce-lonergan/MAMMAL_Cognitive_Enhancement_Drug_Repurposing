@@ -445,7 +445,7 @@ def availability() -> dict[str, object]:
 #   EF  = executive function       MOT = motor / RT
 #
 # This is the V7.2 Stage 3 deliverable — Sprint 3.1 per
-# `reports/MH_IMPLEMENTATION_ROADMAP.md`.
+# `reports/paper-drafts/MH_IMPLEMENTATION_ROADMAP.md`.
 
 COGNITIVE_DOMAINS_V2: list[str] = ["EM", "WM", "ATT", "EF", "PS", "VL", "VS", "MOT"]
 

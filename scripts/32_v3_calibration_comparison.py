@@ -7,12 +7,12 @@ For each of the 22 cognition targets:
   4. Apply the §7.11 router decision tree
   5. Classify post-cal Tier (A/B/C/D)
   6. Pickle the chosen calibrator to data/calibration/<method>/<uniprot>.pkl
-  7. Write reports/calibration_comparison_v1.md with the 22x4 results matrix
+  7. Write reports/pipeline/calibration_comparison_v1.md with the 22x4 results matrix
 
 Outputs:
   data/calibration/{isotonic,beta}/*.pkl      — fitted calibrators
   data/calibration/router_decisions.csv        — one row per target
-  reports/calibration_comparison_v1.md         — full diagnostic report
+  reports/pipeline/calibration_comparison_v1.md         — full diagnostic report
 """
 
 from __future__ import annotations
@@ -44,7 +44,7 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger("v3_cal_compare")
 
 DEFAULT_CAL_DIR = ROOT / "data" / "calibration"
-DEFAULT_REPORT = ROOT / "reports" / "calibration_comparison_v1.md"
+DEFAULT_REPORT = ROOT / "reports" / "pipeline" / "calibration_comparison_v1.md"
 DEFAULT_DECISIONS = DEFAULT_CAL_DIR / "router_decisions.csv"
 
 
