@@ -117,13 +117,17 @@ class VennAbersRegressor:
         return lower, upper
 
     def predict_sigma(self, x_query: np.ndarray) -> np.ndarray:
-        """Approximate per-query σ from VA interval width.
+        """Approximate per-query σ from the VA interval width.
 
-        σ ≈ (upper - lower) / (2 · 1.96) under Gaussian-approx coverage.
-        The router can consume this directly as head_sigmas.
+        The interval is a (1 - alpha) interval, so σ ≈ half-width / z with
+        z = Φ⁻¹(1 - alpha/2). (Previously hardcoded the 95% z = 1.96, which
+        mis-scaled σ whenever alpha != 0.05; the default alpha is 0.10.)
+        The router consumes this directly as head_sigmas.
         """
+        from scipy.stats import norm
+        z = float(norm.ppf(1 - self.cfg.alpha / 2))
         lo, hi = self.predict_interval(x_query)
-        return (hi - lo) / (2 * 1.96)
+        return (hi - lo) / (2 * z)
 
 
 def fit_va_per_head(

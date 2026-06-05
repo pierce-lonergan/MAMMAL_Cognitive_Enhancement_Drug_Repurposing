@@ -442,7 +442,13 @@ HETATM 3 N N1 OTH L .  0.0  0.0  0.0  1.0  0.0
 # ---------------------------------------------------------------------------
 class TestFusionCalibratedZnorm:
     def test_znorm_makes_per_target_std_uniform(self, mini_targets, mini_compounds, mini_scores_pass):
-        """End-to-end style: after Z-norm, per-target std should be ~1.0."""
+        """Pins the documented per-target Z-norm spec: x -> 6.5 + 1.25·z(x),
+        z standardised within each target. By construction every target's
+        post-transform std is *exactly* 1.25. (The production transform is
+        inline in scripts/15_v2_fusion.py and 27_v3_selectivity_scoring.py;
+        this locks the spec those scripts must satisfy — a wrong scale factor
+        would now fail rather than pass the old loose 0.9–1.6 band.)
+        """
         df = mini_scores_pass.copy()
         grp = df.groupby("target_uniprot")["predicted_pkd"]
         mu = grp.transform("mean")
@@ -450,9 +456,8 @@ class TestFusionCalibratedZnorm:
         z = (df["predicted_pkd"] - mu) / sigma
         z = z.where(sigma.notna() & (sigma != 0), 0.0)
         df["predicted_pkd_znorm"] = (6.5 + 1.25 * z).clip(lower=2.0, upper=11.0)
-        # After Z-norm + 1.25× scaling, every target's predicted_pkd_znorm std
-        # is exactly 1.25 (modulo single-target zero-variance edge).
         per_t_std = df.groupby("target_uniprot")["predicted_pkd_znorm"].std()
         per_t_std_nonzero = per_t_std[per_t_std > 0]
-        assert (per_t_std_nonzero > 0.9).all()
-        assert (per_t_std_nonzero < 1.6).all()
+        assert len(per_t_std_nonzero) >= 1, "need >=1 multi-value target to test"
+        for s in per_t_std_nonzero:
+            assert s == pytest.approx(1.25, abs=0.01)

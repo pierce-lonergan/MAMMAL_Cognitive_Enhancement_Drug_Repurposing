@@ -98,7 +98,7 @@ def test_donepezil_dossier_high_success():
     assert 0.30 <= card.g <= 0.42
     assert card.own_trial
     md = Dx.render_card_md(card)
-    assert "donepezil" in md and "GRADE" in md.upper() or "HIGH" in md
+    assert "donepezil" in md and ("GRADE" in md.upper() or "HIGH" in md.upper())
 
 
 @pytest.mark.skipif(not (LEDGER.exists() and ANCHORS.exists()),

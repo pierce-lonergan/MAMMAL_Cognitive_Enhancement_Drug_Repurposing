@@ -117,10 +117,16 @@ def route_one(
     norm_weights = {h: w / total for h, w in raw_weights.items()}
     y_hat = sum(norm_weights[h] * y for h, y in head_predictions.items()
                 if not np.isnan(y))
-    # Gaussian-approximated 95% CI under independence assumption
+    # Gaussian-approximated 95% CI under independence. Skip heads with a NaN
+    # point estimate (weight 0) and guard a stored NaN sigma, so a single bad
+    # head cannot collapse the whole interval to NaN.
+    def _safe_sigma(h: str) -> float:
+        s = sigmas.get(h, 0.5)
+        return 0.5 if (s is None or np.isnan(s)) else float(s)
     var = sum(
-        (norm_weights[h] ** 2) * (sigmas.get(h, 0.5) ** 2)
-        for h in head_predictions
+        (norm_weights[h] ** 2) * (_safe_sigma(h) ** 2)
+        for h, y in head_predictions.items()
+        if not np.isnan(y)
     )
     se = float(np.sqrt(var))
     return RouterPrediction(

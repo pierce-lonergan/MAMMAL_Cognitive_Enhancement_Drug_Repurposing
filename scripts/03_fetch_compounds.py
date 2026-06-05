@@ -75,7 +75,8 @@ def _resolve_seed(df: pd.DataFrame, source_tag: str) -> pd.DataFrame:
     return df[df["smiles"].notna()].copy()
 
 
-def _chembl_expand(uniprots: list[str], per_target: int) -> pd.DataFrame:
+def _chembl_expand(uniprots: list[str], per_target: int,
+                   max_nm: float = 1000.0) -> pd.DataFrame:
     """Pull top binders from ChEMBL and shape into a compound DataFrame."""
     if per_target <= 0:
         logger.info("Skipping ChEMBL expansion (per_target=%d)", per_target)
@@ -85,7 +86,8 @@ def _chembl_expand(uniprots: list[str], per_target: int) -> pd.DataFrame:
                 "expected_top_target", "notes", "smiles", "smiles_kind", "cid", "source",
             ]
         )
-    binders = top_binders_for_targets(uniprots, per_target=per_target)
+    binders = top_binders_for_targets(uniprots, per_target=per_target,
+                                      max_standard_nm=max_nm)
     if not binders:
         logger.warning("ChEMBL returned 0 binders for all targets.")
         return pd.DataFrame()
@@ -195,6 +197,7 @@ def main() -> int:
         chembl_df = _chembl_expand(
             targets["uniprot"].tolist(),
             per_target=args.chembl_per_target,
+            max_nm=args.chembl_max_nm,
         )
         logger.info("ChEMBL contributed %d candidate binders (pre-dedupe).", len(chembl_df))
 

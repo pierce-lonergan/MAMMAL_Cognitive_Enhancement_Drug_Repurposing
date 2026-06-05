@@ -9,15 +9,23 @@ module solves the 9-compartment PBPK system:
 with first-order absorption k_a, plasma elimination CL/V_plasma, and
 diffusion-permeability k_diff,r between plasma and each brain compartment.
 
-Receptor occupancy uses the Watson 1989 reserve formalism:
+Receptor occupancy uses a spare-receptor (reserve) formalism:
 
-    O_obs(t) = C_brain(t) / (Kd_eff + C_brain(t))         (Hill)
-    O_eff(t) = O_obs(t) · (1 - R_avail(t)/R_reserve)      (reserve adjustment)
+    O_obs(t) = C_brain(t)^n / (Kd^n + C_brain(t)^n)       (Hill)
+    O_eff(t) = clip(O_obs(t) · (R_avail(t)/R_total) · R_reserve, 0, 1)
     dR_avail/dt = k_recover · (R_total - R_avail) - k_internalize · O_eff
                                                           (tolerance dynamics)
 
-PET-validated anchors (single-compound, single-dose; calibrated at module
-import via `compute_pet_anchor_residuals()`):
+R_reserve >= 1 amplifies the functional response of a given occupancy (spare
+receptors); internalization (R_avail < R_total) attenuates it; with
+R_reserve = 1 and full available receptors, O_eff = O_obs.
+
+PET reference anchors (single-compound, single-dose) for the occupancy chain.
+`compute_pet_anchor_residuals()` reports the residual against each published
+reading. NOTE: the brain-distribution parameters are not yet fitted to these
+anchors, so peak Hill occupancy currently saturates above the published values
+and the residuals are a diagnostic, not a passing validation gate (a calibrated
+per-drug distribution/Kd fit is V7 future work):
 
   - Donepezil 5 mg → 19.1% cortical AChE inhibition (Bohnen 2005 *Neurology*)
   - MPH 5/10/20/40/60 mg → 12%/40%/54%/72%/74% DAT (Volkow 1998 *Am J Psych*)
@@ -45,7 +53,7 @@ occupancy trajectory.
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 import numpy as np
 
@@ -227,7 +235,7 @@ def simulate(
     """
     cfg = cfg or PbpkConfig()
     if t_end_h is not None:
-        cfg.t_end_h = t_end_h
+        cfg = replace(cfg, t_end_h=t_end_h)   # don't mutate the caller's cfg
 
     # Initial state: dose (mg) → nmol via 1e6/MW
     if initial_state is None:
@@ -350,6 +358,22 @@ class OccupancyParameters:
     hill_n: float = 1.0
 
 
+def _effective_occupancy(
+    o_obs: float, r_avail: float, r_total: float, r_reserve: float
+) -> float:
+    """Functional (effective) occupancy from observed occupancy.
+
+    Spare-receptor reserve (``r_reserve`` >= 1) amplifies the functional
+    response of a given observed occupancy; receptor internalization
+    (``r_avail`` < ``r_total``, i.e. tolerance) attenuates it. With
+    ``r_reserve`` == 1 and full available receptors this returns ``o_obs``.
+    Clamped to [0, 1].
+    """
+    if r_total <= 0:
+        return float(np.clip(o_obs, 0.0, 1.0))
+    return float(np.clip(o_obs * (r_avail / r_total) * r_reserve, 0.0, 1.0))
+
+
 def occupancy_curve(
     result: PbpkResult,
     target_compartment: str,
@@ -360,8 +384,12 @@ def occupancy_curve(
     Returns dict with keys: 't_h', 'C_nM', 'O_obs', 'O_eff', 'R_avail'.
 
     O_obs(t) = C(t)^n / (Kd^n + C(t)^n)
-    O_eff(t) = O_obs(t) · (1 − R_avail(t)/R_reserve)        clamped to [0, 1]
+    O_eff(t) = clip(O_obs(t) · (R_avail(t)/R_total) · R_reserve, 0, 1)
     dR_avail/dt = k_recover·(R_total − R_avail) − k_internalize·O_eff
+
+    Reserve (R_reserve >= 1) amplifies the functional response of a given
+    occupancy; internalization (R_avail < R_total) attenuates it. R_reserve = 1
+    with full available receptors gives O_eff = O_obs.
     """
     idx = COMPARTMENT_IDX[target_compartment]
     C = result.concentration_nM[:, idx]
@@ -375,18 +403,14 @@ def occupancy_curve(
     R = np.zeros_like(t)
     R[0] = occ.R_total
     O_eff = np.zeros_like(t)
-    O_eff[0] = O_obs[0] * max(0.0, 1.0 - R[0] / occ.R_reserve) \
-        if occ.R_reserve > 0 else O_obs[0]
+    O_eff[0] = _effective_occupancy(O_obs[0], R[0], occ.R_total, occ.R_reserve)
     for k in range(1, len(t)):
         dt = t[k] - t[k - 1]
         # Forward Euler for tolerance dynamics
         dR = occ.k_recover_h * (occ.R_total - R[k - 1]) \
              - occ.k_internalize * O_eff[k - 1]
         R[k] = max(0.0, R[k - 1] + dt * dR)
-        if occ.R_reserve > 0:
-            O_eff[k] = O_obs[k] * max(0.0, 1.0 - R[k] / occ.R_reserve)
-        else:
-            O_eff[k] = O_obs[k]
+        O_eff[k] = _effective_occupancy(O_obs[k], R[k], occ.R_total, occ.R_reserve)
     return {
         "t_h": t,
         "C_nM": C,
@@ -407,6 +431,7 @@ class PetAnchor:
     expected_peak_occupancy: float    # 0-1
     citation: str
     R_reserve: float = 1.0
+    mw_gmol: float = 400.0            # per-drug molecular weight (g/mol)
 
 
 PET_ANCHORS: list[PetAnchor] = [
@@ -419,6 +444,7 @@ PET_ANCHORS: list[PetAnchor] = [
         # Bohnen 2005 reported ~19.1% cortical AChE inhibition at 5mg
         expected_peak_occupancy=0.191,
         citation="Bohnen NI et al. 2005 Neurology 64:1037",
+        mw_gmol=379.49,
     ),
     PetAnchor(
         drug_name="methylphenidate_20mg",
@@ -427,6 +453,7 @@ PET_ANCHORS: list[PetAnchor] = [
         Kd_nM=160.0,                # MPH-DAT IC50 ~ 160 nM
         expected_peak_occupancy=0.54,
         citation="Volkow ND et al. 1998 Am J Psych 155:1325",
+        mw_gmol=233.27,
     ),
     PetAnchor(
         drug_name="haloperidol_2mg",
@@ -435,6 +462,7 @@ PET_ANCHORS: list[PetAnchor] = [
         Kd_nM=1.8,
         expected_peak_occupancy=0.65,   # typical 60-70% D2 at 2mg
         citation="Kapur S et al. 2000 Am J Psych 157:514",
+        mw_gmol=375.86,
     ),
 ]
 
@@ -454,7 +482,7 @@ def compute_pet_anchor_residuals(
     for a in anchors:
         drug = DrugParameters(
             name=a.drug_name, dose_mg=a.dose_mg,
-            mw_gmol=400.0,   # generic; real per-drug MW lives in PRISMA priors
+            mw_gmol=a.mw_gmol,
         )
         result = simulate(drug, cfg)
         occ = occupancy_curve(result, a.target_compartment,

@@ -487,7 +487,17 @@ def fit_effect_size_nuts_v2(
     if n_obs == 0:
         raise ValueError("Cannot fit on zero observations")
 
-    # Index classes and populations
+    # Index classes and populations. Unknown classes fall back to index 0, but
+    # warn loudly rather than silently scoring them as class 0 (AChE-I).
+    unknown = sorted({o.class_name for o in observations
+                      if o.class_name not in class_names})
+    if unknown:
+        logger.warning(
+            "fit: %d observation(s) reference unknown mechanism class(es) %s; "
+            "falling back to class index 0 (%s). Check the class taxonomy.",
+            sum(o.class_name in unknown for o in observations),
+            unknown, class_names[0] if class_names else "?",
+        )
     cls_idx = np.array([class_names.index(o.class_name)
                         if o.class_name in class_names else 0
                         for o in observations])
@@ -675,18 +685,26 @@ def assert_p1_through_p8(
     predictions = predictions or default_predictions
     out: dict[str, str] = {}
     for pred_id, (lo, hi) in predictions.items():
-        # Match by *base* compound name (drop "Pn_" prefix AND any "_dose" suffix)
-        # e.g. "P3_methylphenidate_20mg" → base="methylphenidate"
+        # Recover the compound. Drop the "Pn_" gate prefix; keep the dose token
+        # for a *dose-specific* match first (so methylphenidate_20mg routes to
+        # the 20mg posterior, not whichever dose variant sorts first), then fall
+        # back to the dose-stripped base name. For each key, prefer an exact
+        # (case-insensitive) match over a substring match.
         parts = pred_id.split("_")
-        # Drop Pn prefix
         if parts and parts[0].startswith("P") and parts[0][1:].isdigit():
             parts = parts[1:]
-        # Drop dose suffix (e.g. "20mg", "200mg", "3mg")
+        full_key = "_".join(parts) if parts else pred_id   # retains dose
         if parts and parts[-1].endswith("mg") and parts[-1][:-2].replace(".", "").isdigit():
-            parts = parts[:-1]
-        compound_key = "_".join(parts) if parts else pred_id
-        candidates = [c for c in posterior.compounds
-                      if compound_key.lower() in c.lower()]
+            base_parts = parts[:-1]
+        else:
+            base_parts = parts
+        base_key = "_".join(base_parts) if base_parts else full_key
+
+        def _match(key: str) -> list[str]:
+            kl = key.lower()
+            exact = [c for c in posterior.compounds if c.lower() == kl]
+            return exact or [c for c in posterior.compounds if kl in c.lower()]
+        candidates = _match(full_key) or _match(base_key)
         if not candidates:
             out[pred_id] = "NO_COMPOUND"
             continue

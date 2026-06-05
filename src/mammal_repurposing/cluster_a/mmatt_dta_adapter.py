@@ -165,6 +165,10 @@ def run_mmatt_dta(
     """
     repo = _find_mmatt_repo(mmatt_root)
     py = python_exe or sys.executable
+    # Reset to a clean 0..N-1 RangeIndex so the pair_id round-trip (built from
+    # the positional index in build_mmatt_input_csv, recovered via .map below)
+    # is reliable even if the caller passed a filtered/concatenated frame.
+    pairs_df = pairs_df.reset_index(drop=True)
     with tempfile.TemporaryDirectory(prefix="mmatt_") as tmp:
         in_csv = Path(tmp) / "input.csv"
         out_csv = Path(tmp) / "predictions.csv"
@@ -197,18 +201,13 @@ def run_mmatt_dta(
         preds = pd.read_csv(out_csv)
         # Standardise output column name to predicted_pkd
         pkd_col = "pchembl_pred" if "pchembl_pred" in preds.columns else "prediction"
-        # Map pair_id back to (uniprot, compound_name)
+        # Map pair_id back to (uniprot, compound_name). pair_id was built as
+        # f"{i}_{u}" with i = the positional index of pairs_df (reset at entry)
+        # and u = the UniProt accession (which never contains "_"), so the
+        # trailing token recovers the target and the leading token recovers the
+        # row. The index reset makes .astype(int) and the positional .map()
+        # safe even when the caller passed a filtered/concatenated frame.
         preds["target_uniprot"] = preds["pair_id"].str.split("_").str[-1]
-        # Need to re-attach compound_name from the input CSV
-        input_df = pd.read_csv(in_csv)
-        compound_map = dict(zip(input_df["pair_id"],
-                                pairs_df.set_index(
-                                    [pairs_df.index.astype(str) + "_" +
-                                     pairs_df[target_col].astype(str)]
-                                ).get(compound_col,
-                                      pd.Series([])).to_dict() if False else []))
-        # Simpler: re-derive compound_name from the original pairs_df by index.
-        # pair_id was constructed as f"{i}_{u}"; extract i.
         preds["pair_index"] = preds["pair_id"].str.split("_").str[0].astype(int)
         preds["compound_name"] = preds["pair_index"].map(
             pairs_df[compound_col].to_dict()

@@ -162,8 +162,6 @@ def main() -> int:
                         / "v7_effect_size_posterior_v1.parquet")
     parser.add_argument("--report", type=Path,
                         default=ROOT / "reports" / "pipeline" / "v7_validation_v1.md")
-    parser.add_argument("--stub-only", action="store_true",
-                        help="Force PRISMA stub mode (skip NUTS even if available)")
     parser.add_argument("--lambda-sweep", type=str, default="0.3,1.0,3.0",
                         help="Comma-separated λ_class values for sensitivity sweep")
     args = parser.parse_args()

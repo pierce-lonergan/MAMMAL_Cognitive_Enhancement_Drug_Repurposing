@@ -96,7 +96,6 @@ def main() -> int:
     parser.add_argument("--out", type=Path, default=ROOT / "reports" / "pipeline" / "diagnostics_v1.md")
     parser.add_argument("--parquet-out", type=Path,
                         default=ROOT / "reports" / "data" / "diagnostics_v1.parquet")
-    parser.add_argument("--n-perm", type=int, default=10000)
     parser.add_argument("--active-pchembl", type=float, default=8.0,
                         help="Active threshold for Diagnostic D (≥10nM = 8.0)")
     args = parser.parse_args()
