@@ -2,9 +2,14 @@
 
 from __future__ import annotations
 
-import httpx
 import pytest
-import respx
+
+# These HTTP-mock tests need the [dev] extras (`pip install -e .[dev]`). Skip the
+# whole module gracefully if they are not installed, rather than erroring at
+# collection. Placed before the fetcher imports (which pull in httpx) so a
+# missing dep yields a clean skip, not an ImportError.
+httpx = pytest.importorskip("httpx")
+respx = pytest.importorskip("respx")
 
 from mammal_repurposing.fetchers.chembl import top_binders, uniprot_to_chembl_target
 from mammal_repurposing.fetchers.pubchem import fetch_smiles
