@@ -1,0 +1,7 @@
+drug,nct,trial_program,mechanism_class,indication,p_success,predicted_outcome,confidence,n_evidence,evidence_level,frozen_prediction,engine_matches_frozen,status,actual_outcome,readout_year,prediction_date,basis
+iclepertin,NCT04846868,CONNEX (3x Ph3),GlyT1_NMDA_coagonist,CIAS,0.106,FAILURE,HIGH,2,class,FAILURE,True,RESOLVED,FAILURE,2025.0,2026-05-30,"2 same-class precedent(s) (0/2 succeeded): MK-5757, bitopertin"
+luvadaxistat,NCT03821207,INTERACT (Ph2),DAAO_NMDA_coagonist,CIAS,0.08,FAILURE,MED,3,superclass,FAILURE,True,RESOLVED,FAILURE,2024.0,2026-05-30,"shared-axis precedent 'NMDA_coagonist_enhancer' (0/3 succeeded): MK-5757, bitopertin, iclepertin"
+zatolmilast,NCT05358886,EXPERIENCE-301,PDE4_inhibitor,FXS,0.7,SUCCESS,LOW,1,base_rate,SUCCESS,True,PENDING,,,2026-05-30,same-drug continuation: only the drug's own prior readout informs this
+zatolmilast,NCT05163808,EXPERIENCE-204,PDE4_inhibitor,FXS,0.7,SUCCESS,LOW,1,base_rate,SUCCESS,True,PENDING,,,2026-05-30,same-drug continuation: only the drug's own prior readout informs this
+xanomeline-trospium (KarXT),NCT06976203,MINDSET 2,M1_M4_agonist,AD-cognition,0.7,SUCCESS,LOW,1,base_rate,SUCCESS,True,PENDING,,,2026-05-30,same-drug continuation: only the drug's own prior readout informs this
+emraclidine,NCT07145918,Ph2 (post-EMPOWER),M4_PAM_muscarinic,schizophrenia-cognition,0.66,SUCCESS,LOW,1,superclass,SUCCESS,True,PENDING,,,2026-05-30,shared-axis precedent 'muscarinic_M1M4' (1/1 succeeded): xanomeline-trospium
