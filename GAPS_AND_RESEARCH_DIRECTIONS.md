@@ -211,6 +211,24 @@ These are inherent to the framework and are stated honestly in every manuscript.
 Condensed record of what has shipped. Full detail lives in `PROJECT_STATUS.md`,
 the named reports below, and the manuscript suite.
 
+### Since the 2026-05-30 refresh
+
+- **Prospective trial-watch** (`reports/pipeline/trial_watch_v1.md`): a standing
+  forward-prediction system that derives a calibrated per-class SUCCESS prior
+  from the n=47 ledger and predicts each ongoing cognition trial leakage-safe
+  (the trial drug held out), with honest confidence tiers. 2/2 resolved correct
+  (Brier 0.009); the engine reproduces all 6 frozen hand predictions; a
+  round-trip over the ledger recovers 47/47 outcomes. This is the in-silico
+  prospective track record, accruing as trials read out; it does not replace
+  wet-lab validation (B4).
+- **V8 real-data Gate 1** (`reports/pipeline/v8_real_gate1_v1.md`): the
+  pre-registered phenotype-axis gate, run on real LINCS L1000 (16 cognition
+  compounds, 10 pharmacology-labelled classes), gives AMI = 0.13, a FAIL vs the
+  0.50 bar. A pre-registered negative result that supersedes the synthetic
+  AMI=1.00 dry-run. On-thesis: phenotype, like affinity and genetics,
+  underperforms the mechanism-class track record. The V8 paper needs reframing
+  as a negative result before any submission.
+
 ### The seven-gap arc
 
 - **Gap 1. Degenerate shortlist fixed**: the v10 shortlist collapsed all 298

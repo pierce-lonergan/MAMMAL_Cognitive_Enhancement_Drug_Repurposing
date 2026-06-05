@@ -2,7 +2,9 @@
 
 **Manuscript outline targeting *Nature Machine Intelligence* (A realistic; AMI ≥ 0.50 on real Gate 1) or *Nature Methods* (A+ stretch; AMI ≥ 0.60). Fallback: *Cell Reports Methods* / *Cell Systems* / *Bioinformatics* if Gate 1 DEGRADE; *Bioinformatics* / *PLOS ONE* if Gate 1 FAIL with negative-result framing.**
 
-**Status**: outline draft — V8.1/V8.1b/V8.2/V8.3/V8.4/V8.5 scaffolds all shipped; chemCPA synthetic smoke R²=0.485; Gate 1 dry-run on synthetic phenotype AMI=1.000 PASS; OSF pre-reg `reports/paper-drafts/v8_osf_preregistration.md` locked.
+> **Real-data update (2026-06-05): the pre-registered Gate 1 has now been run on real LINCS L1000** (`reports/pipeline/v8_real_gate1_v1.md`): mechanism-class recovery **AMI = 0.13, FAIL** vs the 0.50 bar (16 cognition compounds, 10 pharmacology-labelled classes). Per the venue line above and the OSF pre-registration, this activates the **negative-result framing** path. The earlier synthetic Gate 1 (AMI=1.000) was a separable-centroid pipeline sanity check and does not represent real performance. The outline below predates the real run and must be reframed as a pre-registered negative before any submission.
+
+**Status**: outline draft — **reframe pending** per the real-data Gate 1 FAIL above. V8.1/V8.1b/V8.2/V8.3/V8.4/V8.5 scaffolds all shipped; chemCPA synthetic smoke R²=0.485; OSF pre-reg `reports/paper-drafts/v8_osf_preregistration.md` locked.
 **Lead author**: Pierce Lonergan
 **Co-author**: Claude Opus 4.7 (1M context)
 **OSF pre-registration**: `reports/paper-drafts/v8_osf_preregistration.md` (locked before mechanism-class unblinding)

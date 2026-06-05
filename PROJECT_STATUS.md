@@ -1,6 +1,6 @@
 # PROJECT STATUS — MAMMAL Cognitive Enhancement Drug Repurposing
 
-**One-pager executive summary** suitable for grant applications, sprint reviews, or stakeholder briefings. Last refreshed 2026-05-29 (Gap 1 v11 grid composer + Gap 3 retrospective clinical validation + MH 1-8 sprint suite + chemCPA real-LINCS training + V8 cpg0000 calibration).
+**One-pager executive summary** suitable for grant applications, sprint reviews, or stakeholder briefings. Last refreshed **2026-06-05**: added the prospective trial-watch system and ran V8 Gate 1 on **real** LINCS (an honest pre-registered FAIL, AMI=0.13, correcting the prior synthetic-only AMI=1.00). Earlier refresh 2026-05-29 (Gap 1 v11 grid composer + Gap 3 retrospective clinical validation + MH 1-8 sprint suite + chemCPA real-LINCS training + V8 cpg0000 calibration).
 
 **Pre-registration:** OSF DOI 10.17605/OSF.IO/V7GP5 (registered 2026-05-30; project https://osf.io/rnj3k). Manuscript prepared for *Nature Communications*; preprint planned on bioRxiv.
 
@@ -20,6 +20,7 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 |---|---|---|
 | Pytest pass rate (non-slow) | **503** pass / 1 skip (+84 across Gaps 1–7 + grid expansion + panel→31 + review rounds 2–4 (comparators, temporal, taxonomy, calibration, prospective, expansion, unbiased CT.gov pull); `test_fetchers.py` needs the `respx` dev dep) | ✅ |
 | **Gap 7 — prospective repurposing shortlist** (capstone) | approved drugs ranked as mechanism-justified repurposing hypotheses per disease (class prognostic prior × engagement, SUCCESS classes only); **CIAS→buspirone/M1, FXS→roflumilast (PDE4), AD→σ1**; xanomeline correctly flagged *standard* (`reports/pipeline/repurposing_shortlist_v1.md`) | 🎯 |
+| **Prospective trial-watch** (new, 2026-06-05) | standing forward-prediction system: class prior → calibrated P(success) per ongoing cognition trial, leakage-safe (drug held out), honest confidence tiers; **2/2 resolved correct, Brier 0.009**; engine reproduces 6/6 frozen hand predictions; round-trip 47/47 (`reports/pipeline/trial_watch_v1.md`) | 🔮 |
 | **Panel finished to 31 targets** (real MAMMAL DTI) | CHRM1/CHRM4 (M1/M4) + HTR6 (5-HT6) + GRM2/3/5/GlyT1/HTR4 scored on RTX 5070; **CIAS now surfaces muscarinic M1/M4** (xanomeline class), AD scores 5-HT6 (demoted). MAMMAL runs in a Py-3.12 venv (`docs/MAMMAL_SETUP.md`) | ✅ |
 | Pytest pass rate (slow) | **12 / 14** (2 fail = real MAMMAL `biomed-multi-alignment` package not in this env, not a regression) | ✅ |
 | **Gap 3 — retrospective clinical-outcome validation** | **mechanism-class track record AUROC 1.00 (perm p=0.0002) vs target affinity 0.12 / relevance 0.59; 9/9 famous Phase III failures flagged** (`reports/pipeline/retrospective_clinical_validation_v1.md`) | 🏆 |
@@ -42,7 +43,7 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 | V7.3 Stage 2 NUTS V2 (per-class τ² + population × class) | `fit_effect_size_nuts_v2` shipped + tested — Sprint 3.2 | ✅ |
 | V8.6 Hierarchical (MH3 + MH7 bundled) | `build_v8_hierarchical_with_cell_random_effect` shipped; β/α/γ/δ random effects + ICC + transferability index T_{c,k}; synthetic round-trip validated — Sprint 4.1 + 4.2 | ✅ |
 | V8.2 chemCPA synthetic-LINCS smoke | Loss 0.1728→0.1068 (1.62× reduction); test R² = +0.485 (gate ≥ 0.30) | ✅ |
-| V8.4 Gate 1 dry-run on synthetic phenotype | **AMI = 1.000, ARI = 1.000** (Agglomerative + HDBSCAN min∈{15,25}) | ✅ |
+| **V8 Gate 1 on REAL LINCS** (mechanism-class recovery) | **AMI = 0.13 → FAIL** vs the 0.50 bar (16 cognition compounds, 10 pharmacology-labelled classes). A pre-registered NEGATIVE for the phenotype axis (`reports/pipeline/v8_real_gate1_v1.md`). The synthetic dry-run (AMI=1.00) was a separable-centroid sanity check only and is superseded. | 📄 |
 | Target panel (V6.B core) | **31 targets** (was 22→28→31) — +CHRM1/CHRM4 (M1/M4) + HTR6 (5-HT6); all scored with the real MAMMAL DTI head | ✅ |
 | V6.B.5 expanded panel | **191 targets** with 22-panel ✅ strict subset; MAO-A/MAO-B/COMT/ACHE substrate-mediated | ✅ |
 | Multi-modulator anchor table | **70 rows / 38 targets / 59 compounds / 24 Phase III nulls** (Sprint 2.1) | ✅ |
@@ -63,7 +64,7 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 | **V6.B.5** | Panel expansion 22 → ~210 targets per Cluster D §F (GWAS L2G + MAGMA + AHBA + SC + Lit-OTAR) | ✅ shipped (Stage 1; 191 targets) |
 | **V6 Cluster C** | PrimeKG + TxGNN per-disease ranking | ✅ shipped (V6 API rewrite) |
 | **V7** | Clinical Effect-Size Translation: 9-cmpt PBPK + Schmidli 2014 PRISMA priors (12 classes + 32 subdomain cells) + 5 failure-mode moderators + 3-level hierarchical Bayes + 8 P1-P8 pre-registered predictions | ✅ shipped (real NUTS R̂=1.000, MAE=0.073) |
-| **V8 / Cluster E** | πphen Perturbational Evidence Axis: LINCS L1000 + JUMP-CP + iPSC-MEA + chemCPA + MOFA+ + joint posterior + 8-cell disagreement + I_novel novel-mechanism score | ✅ shipped (scaffolds + synthetic Gate 1 dry-run AMI=1.000) |
+| **V8 / Cluster E** | πphen Perturbational Evidence Axis: LINCS L1000 + JUMP-CP + iPSC-MEA + chemCPA + MOFA+ + joint posterior + 8-cell disagreement + I_novel novel-mechanism score | ⚠️ scaffolds shipped; **real-data Gate 1 FAILs (AMI=0.13)** — the phenotype axis is a pre-registered negative on the available real LINCS, not a validated layer |
 
 ---
 
@@ -74,7 +75,7 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 | **V6.A** | *J Cheminform* / *Nat Mach Intell* | MMAtt-DTA ρ +0.65 vs Tanimoto +0.90 at SLC6A3 → **Tier-A FAIL**; INVERT-mask architecture drops 6 panel targets; per-target Bayesian router empirically necessary | `reports/paper-drafts/v6a_paper_draft.md` ✅ |
 | **V6.B** | *Cell Reports Methods* / *Bioinformatics* | PyMC NUTS R̂=1.000 on real AHBA; ACHE substrate-mediated flag correctly fires; reference-anchor pull recovers CHRNA7 from y_AHBA=-0.53 → θ̄=+0.44 | `reports/paper-drafts/v6b_paper_draft.md` ✅ |
 | **V7** | *Clinical Pharmacology & Therapeutics* (Wiley, IF 7.3); fallback *CPT:PSP* (IF 4.2) | Real Bayesian inference within Roberts ceiling: R̂=1.000, MAE=0.073, zero ceiling violations; honest Gate 1 partial-pool finding (4/8 PASS by tight margins) | `reports/paper-drafts/v7_paper_draft.md` ✅ |
-| **V8** | *Nature Machine Intelligence* (A realistic); stretch *Nature Methods* (A+) | First multi-modal phenotypic prior + I_novel mutual-information novel-mechanism score identifying (L, L, H) clemastine-class candidates; OSF pre-reg locked | `reports/paper-drafts/v8_paper_draft.md` ✅ |
+| **V8** | reframe pending | The phenotype-axis claim is undercut by the real-data Gate 1 FAIL (AMI=0.13). The draft predates that run and must be reframed as a pre-registered negative result before any submission | `reports/paper-drafts/v8_paper_draft.md` ⚠️ |
 
 ---
 
