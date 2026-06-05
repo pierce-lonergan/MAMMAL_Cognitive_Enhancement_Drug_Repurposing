@@ -315,7 +315,7 @@ The token "MH8" overlaps with 6+ unrelated database entries (RCSB ligand, GenBan
 | 4.4 | NUTS run on synthetic phenotype data + new model | R̂=1.000, ESS≥1000, 0 divergences | New `data/results/v2/v8_hierarchical_v2_posterior.parquet` |
 | 4.5 | `src/mammal_repurposing/cluster_e/transferability_index.py` | New module: compute `T_{c,k} = σ²_β / (σ²_β + σ²_α + σ²_δ)` per (compound, endpoint). Append column to `wet_lab_shortlist_v10.md`. | MH3 doc § 4 |
 | 4.6 | Pre-reg gate validation | G1-G6 from MH3 doc § 6: ICC bounds, leave-cell-line-out R², external concordance vs Gorgogietas 2025 + Anderson 2025 | Update `reports/paper-drafts/v8_osf_preregistration.md` with G1-G6 |
-| 4.7 | `reports/paper-drafts/v8_paper_draft.md` | Add Methods § "Per-cell-line random effect" with mathematical decomposition + cpg0000 calibration + transferability index. Add Limitations L1-L6 from MH3 doc. | New `figures/v8/transferability_histogram.png` |
+| 4.7 | `reports/paper-drafts/shelved/v8_paper_draft.md` | Add Methods § "Per-cell-line random effect" with mathematical decomposition + cpg0000 calibration + transferability index. Add Limitations L1-L6 from MH3 doc. | New `figures/v8/transferability_histogram.png` |
 
 **Critical:** Sprint 4.1 + 4.2 must land together. Fitting α + γ without empirical priors → divergences. cpg0000 must be local before NUTS run.
 
@@ -333,7 +333,7 @@ The token "MH8" overlaps with 6+ unrelated database entries (RCSB ligand, GenBan
 | 5.4 | Molecular encoder weight pinning | Add MD5 verification step on grover_base / jtvae / rdkit encoder downloads | LINCS chemCPA doc Table 1 |
 | 5.5 | OOD evaluation upgrade | Reserve the 9 doc-specified compounds (Dacinostat, Givinostat, Belinostat, Hesperadin, Quisinostat, Alvespimycin, Tanespimycin, TAK-901, Flavopiridol) as the OOD holdout set. Report R² on full + DEG subsets. **Add Wasserstein distance** on full predicted distribution. | LINCS chemCPA doc § 6 |
 | 5.6 | Transfer learning to sci-Plex3 | Replace encoder input + decoder output for 2000 HVG; freeze molecular encoder; retrain cell embedding for K562 | LINCS chemCPA doc § 4 |
-| 5.7 | `reports/paper-drafts/v8_paper_draft.md` § Methods | Real-LINCS pretraining + OOD eval methodology; cite Biolord + PerturbNet + scAgents + scDCA benchmark comparators | LINCS chemCPA doc Table 4 |
+| 5.7 | `reports/paper-drafts/shelved/v8_paper_draft.md` § Methods | Real-LINCS pretraining + OOD eval methodology; cite Biolord + PerturbNet + scAgents + scDCA benchmark comparators | LINCS chemCPA doc Table 4 |
 
 **Risk:** chemCPA training on real L1000 may take 12-48 GPU hours on RTX 5070. Plan: run overnight, monitor via Docker `b1ro-chemcpa:latest` for reproducibility check.
 
@@ -346,7 +346,7 @@ The token "MH8" overlaps with 6+ unrelated database entries (RCSB ligand, GenBan
 | 6.1 | `CITATIONS.bib` | Add: Chandrasekaran 2024 (JUMP), Gorgogietas 2025, Anderson 2025, Okbay 2022, de la Fuente 2021, FinnGen, Biolord, PerturbNet, scAgents, scDCA, Renishaw MH8 disambiguation references |
 | 6.2 | `reports/paper-drafts/v6b_paper_draft.md` | Add MH8 nomenclature disambiguation footnote citing 6+ unrelated database entries |
 | 6.3 | `reports/paper-drafts/v7_paper_draft.md` | Final attribution table: gap closure from model structure vs anchor expansion vs soft envelope |
-| 6.4 | `reports/paper-drafts/v8_paper_draft.md` | Add U2OS-to-brain 4-sentence defence paragraph using MH3 transferability index + cpg0000 calibration |
+| 6.4 | `reports/paper-drafts/shelved/v8_paper_draft.md` | Add U2OS-to-brain 4-sentence defence paragraph using MH3 transferability index + cpg0000 calibration |
 | 6.5 | `reports/paper-drafts/integration_paper_draft.md` | Update integration figure: V6.B (4 gates PASS) → V7 (full attribution) → V8 (hierarchical + transferability) end-to-end pipeline |
 | 6.6 | `GAPS_AND_RESEARCH_DIRECTIONS.md` | Move MH3, MH8, MH1+MH2, Gate 2, Gate 3 from "MUST-HAVE" to "RESOLVED" section. Add new gaps surfaced by attribution analysis. |
 | 6.7 | `PROJECT_STATUS.md` | Refresh status table — production posteriors, all gates, transferability indices |

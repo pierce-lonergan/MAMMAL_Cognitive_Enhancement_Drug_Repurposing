@@ -75,7 +75,7 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing built
 | **V6.A** | *J Cheminform* / *Nat Mach Intell* | MMAtt-DTA ρ +0.65 vs Tanimoto +0.90 at SLC6A3 → **Tier-A FAIL**; INVERT-mask architecture drops 6 panel targets; per-target Bayesian router empirically necessary | `reports/paper-drafts/v6a_paper_draft.md` ✅ |
 | **V6.B** | *Cell Reports Methods* / *Bioinformatics* | PyMC NUTS R̂=1.000 on real AHBA; ACHE substrate-mediated flag correctly fires; reference-anchor pull recovers CHRNA7 from y_AHBA=-0.53 → θ̄=+0.44 | `reports/paper-drafts/v6b_paper_draft.md` ✅ |
 | **V7** | *Clinical Pharmacology & Therapeutics* (Wiley, IF 7.3); fallback *CPT:PSP* (IF 4.2) | Real Bayesian inference within Roberts ceiling: R̂=1.000, MAE=0.073, zero ceiling violations; honest Gate 1 partial-pool finding (4/8 PASS by tight margins) | `reports/paper-drafts/v7_paper_draft.md` ✅ |
-| **V8** | reframe pending | The phenotype-axis claim is undercut by the real-data Gate 1 FAIL (AMI=0.13). The draft predates that run and must be reframed as a pre-registered negative result before any submission | `reports/paper-drafts/v8_paper_draft.md` ⚠️ |
+| ~~V8~~ | **SHELVED** | Real-data Gate 1 FAILed (AMI=0.13) on real LINCS; the phenotype axis is a pre-registered negative, documented as a project limitation, not pursued as a paper. Draft moved to `reports/paper-drafts/shelved/` | `reports/paper-drafts/shelved/v8_paper_draft.md` ⛔ |
 
 ---
 
@@ -189,7 +189,7 @@ If you use this pipeline:
 }
 ```
 
-Full BibTeX bibliography: `CITATIONS.bib`. Per-paper drafts: `reports/paper-drafts/v6a_paper_draft.md`, `reports/paper-drafts/v6b_paper_draft.md`, `reports/paper-drafts/v7_paper_draft.md`, `reports/paper-drafts/v8_paper_draft.md`.
+Full BibTeX bibliography: `CITATIONS.bib`. Active paper drafts: `reports/paper-drafts/v6a_paper_draft.md`, `reports/paper-drafts/v6b_paper_draft.md`, `reports/paper-drafts/v7_paper_draft.md` (V8 shelved at `reports/paper-drafts/shelved/v8_paper_draft.md`).
 
 ---
 

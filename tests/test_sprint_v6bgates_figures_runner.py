@@ -165,7 +165,7 @@ class TestPaperFigureEmbedding:
             assert fname in body, f"V7 paper missing figure ref: {fname}"
 
     def test_v8_paper_references_all_4_figures(self):
-        path = ROOT / "reports" / "paper-drafts" / "v8_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "shelved" / "v8_paper_draft.md"
         body = path.read_text(encoding="utf-8")
         for fname in ("fig1_chemcpa_loss.png", "fig2_gate1_ami_sweep.png",
                        "fig3_8cell_scatter.png", "fig4_i_novel_rank.png"):
@@ -178,7 +178,7 @@ class TestPaperFigureEmbedding:
             ("v6a_paper_draft.md", "v6a"),
             ("v6b_paper_draft.md", "v6b"),
             ("v7_paper_draft.md", "v7"),
-            ("v8_paper_draft.md", "v8"),
+            # v8 shelved; its figure-path consistency is no longer enforced
         ]:
             path = ROOT / "reports" / "paper-drafts" / paper
             body = path.read_text(encoding="utf-8")
@@ -257,7 +257,7 @@ class TestSprintArtifactInventory:
         "paper-drafts/v6a_paper_draft.md",
         "paper-drafts/v6b_paper_draft.md",
         "paper-drafts/v7_paper_draft.md",
-        "paper-drafts/v8_paper_draft.md",
+        "paper-drafts/shelved/v8_paper_draft.md",
         "paper-drafts/v7_osf_preregistration.md",
         "paper-drafts/v8_osf_preregistration.md",
         "paper-drafts/methodology_v3.md",

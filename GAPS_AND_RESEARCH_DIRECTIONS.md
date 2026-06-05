@@ -184,6 +184,12 @@ These are inherent to the framework and are stated honestly in every manuscript.
   effect (shipped, MH3) and the species random effect (R4) directly address this.
 - **CL5. Pre-registration enforcement needs the OSF DOI mint**: the V7 and V8 OSF
   pre-registrations are markdown-ready but not yet DOI-locked (B1).
+- **CL6. The phenotype axis does not recover cognition pharmacology on real
+  data**: V8's pre-registered Gate 1 FAILed on real LINCS (AMI = 0.13;
+  `reports/pipeline/v8_real_gate1_v1.md`). The perturbational-signature axis is
+  shelved as a paper (`reports/paper-drafts/shelved/`) and kept as a documented
+  negative. This is on-thesis (phenotype joins affinity and genetics in
+  underperforming the class-history prior), not a pipeline bug.
 
 ---
 

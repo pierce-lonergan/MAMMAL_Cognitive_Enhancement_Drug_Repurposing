@@ -2,7 +2,7 @@
 
 Covers:
 - V6.B.5 NUTS expanded-panel driver (scripts/62_v6b5_nuts_expanded.py)
-- V8 paper draft structural validator (reports/paper-drafts/v8_paper_draft.md)
+- V8 paper draft structural validator (reports/paper-drafts/shelved/v8_paper_draft.md, shelved)
 - V7 figures generation (scripts/63_v7_figures.py)
 - CITATIONS.bib syntactic + required-entry validator
 - PROJECT_STATUS.md required sections
@@ -87,7 +87,7 @@ class TestV8PaperDraft:
     )
 
     def test_v8_paper_exists_with_required_sections(self):
-        path = ROOT / "reports" / "paper-drafts" / "v8_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "shelved" / "v8_paper_draft.md"
         assert path.exists(), "V8 paper draft missing"
         body = path.read_text(encoding="utf-8").lower()
         for section in self.REQUIRED_SECTIONS:
@@ -95,7 +95,7 @@ class TestV8PaperDraft:
                 f"V8 paper missing section: {section}"
 
     def test_v8_paper_reports_synthetic_chemcpa_smoke(self):
-        path = ROOT / "reports" / "paper-drafts" / "v8_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "shelved" / "v8_paper_draft.md"
         body = path.read_text(encoding="utf-8")
         # chemCPA smoke results
         assert "0.485" in body or "0.479" in body
@@ -104,13 +104,13 @@ class TestV8PaperDraft:
         assert "1.62" in body or "monotone" in body_lower
 
     def test_v8_paper_reports_gate1_dryrun_ami(self):
-        path = ROOT / "reports" / "paper-drafts" / "v8_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "shelved" / "v8_paper_draft.md"
         body = path.read_text(encoding="utf-8")
         # AMI = 1.000 on Gate 1 dry-run
         assert "1.000" in body
 
     def test_v8_paper_cites_key_phenotype_methods(self):
-        path = ROOT / "reports" / "paper-drafts" / "v8_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "shelved" / "v8_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         for citation in ("lamb", "subramanian", "bray", "chandrasekaran",
                           "moshkov", "hetzel", "piran", "argelaguet",
@@ -118,13 +118,13 @@ class TestV8PaperDraft:
             assert citation in body, f"V8 paper missing citation: {citation}"
 
     def test_v8_paper_specifies_nat_mach_intell_venue(self):
-        path = ROOT / "reports" / "paper-drafts" / "v8_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "shelved" / "v8_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         assert ("nature machine intelligence" in body
                 or "nat mach intell" in body)
 
     def test_v8_paper_locks_8_cell_taxonomy(self):
-        path = ROOT / "reports" / "paper-drafts" / "v8_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "shelved" / "v8_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         # All 8 cell tags must appear
         for tag in ("agreement.all_high", "target_true.phenotype_failed",
@@ -134,7 +134,7 @@ class TestV8PaperDraft:
             assert tag in body, f"V8 paper missing 8-cell tag: {tag}"
 
     def test_v8_paper_includes_i_novel_formula(self):
-        path = ROOT / "reports" / "paper-drafts" / "v8_paper_draft.md"
+        path = ROOT / "reports" / "paper-drafts" / "shelved" / "v8_paper_draft.md"
         body = path.read_text(encoding="utf-8").lower()
         assert "i_novel" in body
         # Must reference mutual information

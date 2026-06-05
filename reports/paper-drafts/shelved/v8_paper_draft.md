@@ -1,3 +1,13 @@
+> # ⛔ SHELVED (2026-06-05) — not being pursued for publication
+> The pre-registered Gate 1 FAILED on real LINCS L1000 (AMI = 0.13 vs the 0.50
+> bar; `reports/pipeline/v8_real_gate1_v1.md`). The phenotype axis does not
+> recover cognition pharmacology from bulk transcriptional signature on the
+> available real data. This is an honest, on-thesis negative result; rather than
+> reframe a thin negative-result paper, the axis is documented as a project
+> limitation (`GAPS_AND_RESEARCH_DIRECTIONS.md`) and the portfolio focuses on the
+> strong results (class-prognostic + V6.A). See `shelved/README.md`. The draft
+> below predates the real-data run.
+
 # V8 Paper Draft — πphen: A Target-Agnostic Multi-Modal Phenotypic Prior for Bayesian Cognition-Enhancement Drug Repurposing with I_novel Novel-Mechanism Identification
 
 **Manuscript outline targeting *Nature Machine Intelligence* (A realistic; AMI ≥ 0.50 on real Gate 1) or *Nature Methods* (A+ stretch; AMI ≥ 0.60). Fallback: *Cell Reports Methods* / *Cell Systems* / *Bioinformatics* if Gate 1 DEGRADE; *Bioinformatics* / *PLOS ONE* if Gate 1 FAIL with negative-result framing.**

@@ -23,7 +23,7 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing, buil
 - **V6.B Cluster D**: AHBA 20/22 cognition genes × 83 brain regions cached; PyMC NUTS posterior θ̄ per target with reference anchors (BDNF, CHRNA7, GRIN2B at θ ~ N(0.5, 0.3²))
 - **V7 effect-size translation**: 9-compartment PBPK + 12-class PRISMA priors + 5 failure-mode moderators; PET-anchored to Bohnen 2005 / Volkow 1998 / Kapur 2000
 - **V7.4 validation**: Gate 1 (P1–P8): **5 PASS / 1 FAIL / 2 NO_COMPOUND** against real V6.A + V6.B
-- **V8 πphen perturbational axis**: 7-view MOFA+ scaffold + **chemCPA trained on real LINCS L1000** (107K signatures, Val R² = 0.46 / OOD R² = 0.33) + **hierarchical transfer on real cpg0000** (R̂ = 1.010, 0 div, 60/60 compounds T > 0.6) + 8-cell disagreement classification + I_novel novel-mechanism score
+- **V8 πphen perturbational axis** (**SHELVED**): the pre-registered mechanism-class-recovery Gate 1 FAILed on **real LINCS** (AMI = 0.13 vs the 0.50 bar; `reports/pipeline/v8_real_gate1_v1.md`), so the phenotype axis is a documented negative, not a validated layer (see `GAPS_AND_RESEARCH_DIRECTIONS.md` CL6). The scaffolds remain (7-view MOFA+, chemCPA trained on real LINCS Val R² = 0.46, hierarchical transfer on real cpg0000), but it is not pursued as a paper.
 
 ---
 
@@ -103,7 +103,7 @@ A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing, buil
 | **V6.B** (Bayesian Cluster D) | abagen AHBA cache + OT Genetics L2G fetcher + cellxgene preview + PyMC NUTS hierarchical model + 4-gate validation (Roberts ceiling, Spearman vs SMD, GWAS-AUROC, LOSO) | ✅ shipped; NUTS converged R̂=1.000 |
 | **V6 Cluster C** | PrimeKG + TxGNN per-disease ranking API | ✅ shipped (rewrite) |
 | **V7** (Effect-Size Translation) | 9-compartment PBPK + 12-class PRISMA priors + 5 moderators + 3-level hierarchical Bayes + Cluster D multiplicative gate + 8 P1–P8 pre-registered predictions | ✅ shipped |
-| **V8 / Cluster E** (πphen) | LINCS L1000 + JUMP-CP + chemCPA + MOFA+ K=30 + joint posterior + 8-cell disagreement + I_novel novel-mechanism score | ✅ shipped; chemCPA on **real LINCS** (Val R²=0.46), hierarchical on **real cpg0000** (R̂=1.010) |
+| **V8 / Cluster E** (πphen) | LINCS L1000 + JUMP-CP + chemCPA + MOFA+ K=30 + joint posterior + 8-cell disagreement + I_novel novel-mechanism score | ⛔ **SHELVED**: real-data Gate 1 FAILed (AMI=0.13); phenotype axis documented as a limitation. Scaffolds remain (chemCPA real-LINCS Val R²=0.46) |
 | **Wet-lab shortlist v11 (grid)** | Differentiated (compound×target) grid composer + within-target binding percentile + class-anchored clinical g placement + differentiation guard | ✅ shipped (replaces degenerate v10) |
 | **Retrospective clinical validation** (Gap 3) | Leakage-audited 31-drug ledger + 3 leave-out predictors (target / class-LOCO / class-extrapolation) + AUROC/bootstrap/permutation, numpy-only | ✅ shipped; class track-record AUROC 1.00, target affinity ≈ chance |
 

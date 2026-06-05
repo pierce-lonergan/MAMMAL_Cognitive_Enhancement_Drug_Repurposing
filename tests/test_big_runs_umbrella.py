@@ -265,11 +265,14 @@ class TestChemcpaLargerScale:
 # ---------------------------------------------------------------------------
 class TestSprintArtifactIntegration:
     def test_5_paper_suite_present(self):
+        # 4 active layer drafts + the integration umbrella; V8 is shelved (below)
         for fname in ("v6a_paper_draft.md", "v6b_paper_draft.md",
-                       "v7_paper_draft.md", "v8_paper_draft.md",
-                       "integration_paper_draft.md"):
+                       "v7_paper_draft.md", "integration_paper_draft.md"):
             p = ROOT / "reports" / "paper-drafts" / fname
             assert p.exists(), f"Paper draft missing: {fname}"
+        # V8 shelved after the real-data Gate 1 FAIL (reports/.../shelved/README.md)
+        assert (ROOT / "reports" / "paper-drafts" / "shelved"
+                / "v8_paper_draft.md").exists()
 
     def test_3_documentation_artifacts_at_repo_root(self):
         for fname in ("CITATIONS.bib", "PROJECT_STATUS.md", "README.md"):

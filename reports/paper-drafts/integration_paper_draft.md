@@ -58,7 +58,7 @@ This umbrella paper synthesizes the four layer-specific manuscripts:
 | V6.A | `reports/paper-drafts/v6a_paper_draft.md` — Tier-A FAIL + INVERT-mask | *J Cheminform* / *Nat Mach Intell* |
 | V6.B | `reports/paper-drafts/v6b_paper_draft.md` — PyMC NUTS R̂=1.000 | *Cell Reports Methods* / *Bioinformatics* |
 | V7 | `reports/paper-drafts/v7_paper_draft.md` — Real Bayesian translation MAE=0.073 | *Clinical Pharmacology & Therapeutics* |
-| V8 | `reports/paper-drafts/v8_paper_draft.md` — πphen I_novel novel-mechanism | *Nature Machine Intelligence* / *Nature Methods* |
+| V8 (shelved) | `reports/paper-drafts/shelved/v8_paper_draft.md` — πphen; real-data Gate 1 FAIL (AMI=0.13), pre-registered negative | not pursued (documented limitation) |
 
 This umbrella manuscript provides the **synthesizing narrative**: how the four contributions compose into a single pipeline whose deliverable is **calibrated wet-lab handoff candidates with provenance trail back to all 5 evidence axes**.
 
