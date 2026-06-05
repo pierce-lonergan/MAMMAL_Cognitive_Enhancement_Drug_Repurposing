@@ -36,7 +36,7 @@ from mammal_repurposing.config import (  # noqa: E402
     RESULTS_DIR,
     TARGETS_PARQUET,
 )
-from mammal_repurposing.selectivity import PANEL_22, score_panel  # noqa: E402
+from mammal_repurposing.selectivity import score_panel  # noqa: E402
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")

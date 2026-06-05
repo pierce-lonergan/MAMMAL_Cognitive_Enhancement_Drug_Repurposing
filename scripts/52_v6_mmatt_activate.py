@@ -36,7 +36,7 @@ if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
 from mammal_repurposing.cluster_a.mmatt_dta_adapter import (  # noqa: E402
-    COGNITION_PANEL_SUPERFAMILY, superfamily_for,
+    superfamily_for,
 )
 
 logging.basicConfig(level=logging.INFO,

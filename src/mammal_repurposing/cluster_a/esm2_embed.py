@@ -28,7 +28,7 @@ import pandas as pd
 from mammal_repurposing.config import DATA_DIR
 
 if TYPE_CHECKING:
-    import torch
+    pass
 
 logger = logging.getLogger(__name__)
 

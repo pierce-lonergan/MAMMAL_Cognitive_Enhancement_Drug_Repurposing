@@ -124,8 +124,8 @@ def main() -> int:
     md.append("")
     md.append("Source: `data/results/v2/final_ranking_calibrated.parquet` "
               "(produced by `scripts/15_v2_fusion.py --out-suffix _calibrated`).")
-    md.append(f"Per-target weights from `configs/weights_calibrated.yaml` "
-              f"(see `reports/pipeline/calibration_report.md` for verdicts).")
+    md.append("Per-target weights from `configs/weights_calibrated.yaml` "
+              "(see `reports/pipeline/calibration_report.md` for verdicts).")
     md.append("")
     md.append("Coverage at this snapshot:")
     md.append(f"  - MAMMAL DTI: {len(mammal):,} (target, compound) pairs")

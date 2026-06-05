@@ -42,7 +42,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import gzip
 import json
 import logging
 import sys
@@ -659,10 +658,10 @@ def main() -> int:
     L: list[str] = []
     L.append(f"# chemCPA Real-LINCS Training — scale={scale.name} (Sprint 5.2)")
     L.append("")
-    L.append(f"**Date**: 2026-05-28  ")
+    L.append("**Date**: 2026-05-28  ")
     L.append(f"**Device**: {device}  ")
-    L.append(f"**Model**: chemCPA per Hetzel 2022 + LINCS chemCPA doc Table 3 "
-             f"hyperparameters  ")
+    L.append("**Model**: chemCPA per Hetzel 2022 + LINCS chemCPA doc Table 3 "
+             "hyperparameters  ")
     L.append(f"**Params**: {n_params / 1e6:.2f} M  ")
     L.append(f"**Elapsed**: {elapsed / 60:.1f} min ({elapsed / args.n_epochs:.1f}s/epoch)")
     L.append("")

@@ -23,7 +23,6 @@ import logging
 import sys
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -134,8 +133,8 @@ def main() -> int:
     L: list[str] = []
     L.append("# V8 Hierarchical NUTS — cpg0000 calibration (Sprint 4.3b)")
     L.append("")
-    L.append(f"**Date**: 2026-05-28  ")
-    L.append(f"**Source**: real cpg0000-jump-pilot CPJUMP1 morphological data")
+    L.append("**Date**: 2026-05-28  ")
+    L.append("**Source**: real cpg0000-jump-pilot CPJUMP1 morphological data")
     L.append(f"**Settings**: {args.n_chains} chains × {args.n_draws} draws, "
              f"target_accept={args.target_accept}")
     L.append("")

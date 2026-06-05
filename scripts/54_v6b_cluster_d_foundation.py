@@ -32,7 +32,6 @@ import logging
 import sys
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -146,7 +145,6 @@ def main() -> int:
     # to validate the spatial-autocorrelation null pipeline
     bs_smoke_msg = ""
     try:
-        from brainsmash.workbench.geo import volume
         bs_smoke_msg = "brainsmash imported OK; full surrogate generation deferred to V6.B.3"
     except Exception as e:
         bs_smoke_msg = f"brainsmash import test: {type(e).__name__}: {str(e)[:80]}"
@@ -166,7 +164,7 @@ def main() -> int:
     L.append(f"- AHBA matched: {len(available)} ({len(available)/len(panel_genes):.0%})")
     if missing:
         L.append(f"- Missing: {', '.join(missing)}")
-    L.append(f"- Atlas: DK68 (Desikan-Killiany 68 cortical parcels)")
+    L.append("- Atlas: DK68 (Desikan-Killiany 68 cortical parcels)")
     L.append("")
     L.append("## abagen configuration (pinned)")
     L.append("")

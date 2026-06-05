@@ -191,7 +191,7 @@ def main() -> int:
              f"simply the calibrated class prior; the contribution is constructive (a usable, "
              f"calibrated tool) as well as critical (target-centric inputs are dispensable).")
     L.append("")
-    L.append(f"## Deployable artifact: full-ledger calibrated probabilities (n = 31)")
+    L.append("## Deployable artifact: full-ledger calibrated probabilities (n = 31)")
     L.append("")
     L.append(f"A leave-one-compound-out calibrated class predictor over all 31 drugs has "
              f"Brier score **{full_brier:.3f}**. It emits a per-drug probability of pivotal "

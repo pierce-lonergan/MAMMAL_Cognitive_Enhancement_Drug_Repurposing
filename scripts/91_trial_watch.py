@@ -156,7 +156,7 @@ def main() -> int:
     logger.info("wrote report: %s", out)
 
     # console summary
-    print(f"\n=== trial-watch ===")
+    print("\n=== trial-watch ===")
     print(f"ledger n={len(ledger)}  classes={ledger['mechanism_class'].nunique()}  "
           f"base={base:.3f}")
     print(f"registry trials={len(registry)}  resolved={sc['n_resolved']}  "

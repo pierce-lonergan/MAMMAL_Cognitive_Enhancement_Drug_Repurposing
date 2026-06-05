@@ -507,8 +507,16 @@ def compose_grid_shortlist_v11(
         theta = theta_by_t.get(t, 0.0)
         R_tilde = min(1.0, R / cfg.relevance_anchor)
 
-        cls = target_class_map.get(t, "AMPA_pos_mod")
-        prior = class_prior_table.get(cls, {"mean": 0.05, "sd": 0.20})
+        cls = target_class_map.get(t)
+        if cls is None:
+            logger.warning("compose_grid_shortlist_v11: target %s has no class "
+                           "mapping; using the weak FAILURE-class fallback", t)
+            cls = "AMPA_pos_mod"
+        prior = class_prior_table.get(cls)
+        if prior is None:
+            logger.warning("compose_grid_shortlist_v11: class %s has no prior; "
+                           "using the weak high-variance fallback", cls)
+            prior = {"mean": 0.05, "sd": 0.20}
         mu_m = float(prior["mean"])
         sd_m = float(prior.get("sd", 0.15))
 

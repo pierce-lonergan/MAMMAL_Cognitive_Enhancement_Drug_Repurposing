@@ -50,10 +50,10 @@ def categorize(
         return SelectivityCategory("flat", "high",
                                    "panel-flat — affinity vector near noise floor; likely artifact")
     if gini_value >= 0.7 and s10 <= 2:
-        return SelectivityCategory("mono", "high", f"Gini ≥ 0.7 + S(10x) ≤ 2")
+        return SelectivityCategory("mono", "high", "Gini ≥ 0.7 + S(10x) ≤ 2")
     if 0.5 <= gini_value < 0.7 and 3 <= s10 <= 5:
-        return SelectivityCategory("dual", "medium", f"Gini in [0.5, 0.7) + S(10x) in [3, 5]")
+        return SelectivityCategory("dual", "medium", "Gini in [0.5, 0.7) + S(10x) in [3, 5]")
     if gini_value < 0.5 and s10 >= 6:
-        return SelectivityCategory("poly", "medium", f"Gini < 0.5 + S(10x) ≥ 6")
+        return SelectivityCategory("poly", "medium", "Gini < 0.5 + S(10x) ≥ 6")
     return SelectivityCategory("intermediate", "medium",
                                f"Gini={gini_value:.2f}, S(10x)={s10}")

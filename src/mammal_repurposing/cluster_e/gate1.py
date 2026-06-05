@@ -55,7 +55,7 @@ def cluster_and_score(X: np.ndarray, labels, *, method: str = "agglomerative",
     n_truth = len(set(truth.tolist()))
 
     if method == "agglomerative":
-        k = n_clusters or n_truth
+        k = min(n_clusters or n_truth, len(X))   # cannot ask for more clusters than points
         pred = AgglomerativeClustering(n_clusters=k).fit_predict(X)
     elif method == "hdbscan":
         import hdbscan
@@ -64,7 +64,7 @@ def cluster_and_score(X: np.ndarray, labels, *, method: str = "agglomerative",
         import igraph as ig
         import leidenalg as la
         from sklearn.neighbors import NearestNeighbors
-        nn = NearestNeighbors(n_neighbors=min(knn, len(X) - 1),
+        nn = NearestNeighbors(n_neighbors=max(1, min(knn, len(X) - 1)),
                               metric="cosine").fit(X)
         _, ind = nn.kneighbors(X)
         edges = [(int(i), int(j)) for i, nb in enumerate(ind) for j in nb[1:]]

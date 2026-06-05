@@ -37,7 +37,6 @@ if str(ROOT / "src") not in sys.path:
 
 from mammal_repurposing.config import (  # noqa: E402
     DTI_SCORES_PARQUET,
-    PROJECT_ROOT,
     RESULTS_DIR,
     TARGETS_PARQUET,
 )

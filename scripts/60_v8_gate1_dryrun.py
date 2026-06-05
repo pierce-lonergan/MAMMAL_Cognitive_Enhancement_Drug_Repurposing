@@ -293,7 +293,7 @@ def main() -> int:
     L.append("")
     L.append("## Clustering availability")
     L.append("")
-    L.append(f"- Agglomerative (sklearn): ✅ always available")
+    L.append("- Agglomerative (sklearn): ✅ always available")
     L.append(f"- Leiden (leidenalg): {'✅' if LEIDEN_AVAILABLE else '⏳ not installed'}")
     L.append(f"- HDBSCAN (hdbscan): {'✅' if HDBSCAN_AVAILABLE else '⏳ not installed'}")
     L.append("")

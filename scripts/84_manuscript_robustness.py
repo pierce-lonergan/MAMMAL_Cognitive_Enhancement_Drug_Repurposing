@@ -89,7 +89,7 @@ def main() -> int:
     L.append("  ├─ excluded: outcome ambiguous / terminated for non-efficacy reasons")
     L.append("  └─ excluded: no single assignable mechanism class / human target")
     L.append("  │")
-    L.append(f"  ▼")
+    L.append("  ▼")
     L.append(f"Ledger: {n_total} drugs, {n_cls} mechanism classes "
              f"({n_succ} SUCCESS / {n_fail} FAILURE)")
     L.append("```")

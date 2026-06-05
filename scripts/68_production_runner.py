@@ -172,7 +172,7 @@ def main() -> int:
     for _, _, _, skip_flag, _ in STAGES:
         parser.add_argument(f"--{skip_flag.replace('_', '-')}",
                              action="store_true",
-                             help=f"Skip stage if artifact exists")
+                             help="Skip stage if artifact exists")
     parser.add_argument("--skip-if-exists", action="store_true",
                         help="Skip any stage whose expected artifact already exists")
     args = parser.parse_args()

@@ -29,7 +29,7 @@ if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
 from mammal_repurposing.calibration.pocket_routed import (  # noqa: E402
-    evaluate_routing_lift, fit_pocket_routed, predict_with_routing,
+    evaluate_routing_lift, fit_pocket_routed,
 )
 from mammal_repurposing.fetchers.chembl_sqlite import (  # noqa: E402
     chembl_actives_with_smiles_for_target,

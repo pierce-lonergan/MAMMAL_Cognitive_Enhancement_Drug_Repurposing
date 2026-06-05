@@ -22,10 +22,9 @@ import logging
 from dataclasses import dataclass
 
 import numpy as np
-import pandas as pd
 from sklearn.isotonic import IsotonicRegression
 
-from .isotonic import _make_iso, PKD_MIN, PKD_MAX
+from .isotonic import _make_iso
 
 logger = logging.getLogger(__name__)
 

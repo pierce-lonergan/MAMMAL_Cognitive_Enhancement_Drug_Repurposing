@@ -253,8 +253,8 @@ def render_card_md(card: DossierCard) -> str:
                    "LOW": "🟠 LOW", "VERY LOW": "🔴 VERY LOW"}.get(card.grade, card.grade)
     g_str = (f"**{card.g:+.2f}** (90% CrI {card.g_ci_lo:+.2f} to {card.g_ci_hi:+.2f})"
              if np.isfinite(card.g) else "not estimable")
-    L.append(f"| | |")
-    L.append(f"|---|---|")
+    L.append("| | |")
+    L.append("|---|---|")
     L.append(f"| **Mechanism** | {card.mechanism_class}"
              f"{' at ' + card.target_gene if card.target_gene else ''} |")
     L.append(f"| **Predicted cognition effect** | Hedges' g = {g_str} |")
@@ -266,7 +266,7 @@ def render_card_md(card: DossierCard) -> str:
     L.append(f"| **Effect basis** | "
              f"{'this compound’s own pivotal trial' if card.own_trial else 'mechanism-class prediction'} |")
     L.append("")
-    L.append(f"**Why this GRADE rating:** " + "; ".join(card.grade_reasons) + ".")
+    L.append("**Why this GRADE rating:** " + "; ".join(card.grade_reasons) + ".")
     L.append("")
     if card.liabilities:
         L.append("**Predicted off-target liability flags** (model-based, unvalidated):")

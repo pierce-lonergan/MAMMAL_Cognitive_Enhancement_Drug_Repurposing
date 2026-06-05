@@ -81,12 +81,14 @@ def class_loco_g(ledger: pd.DataFrame, shrinkage_k0: float = 1.0) -> dict[str, f
 
     Singleton classes (no siblings) fall back to the global mean.
     """
-    global_mean = float(ledger["clinical_g"].mean())
     out: dict[str, float] = {}
     for i, row in ledger.iterrows():
         cls = row["mechanism_class"]
-        siblings = ledger[(ledger["mechanism_class"] == cls)
-                          & (ledger.index != i)]
+        # strict leave-one-out: hold the drug out of EVERY term, including the
+        # global shrinkage-target mean (not just the sibling mean).
+        rest = ledger[ledger.index != i]
+        global_mean = float(rest["clinical_g"].mean())
+        siblings = rest[rest["mechanism_class"] == cls]
         n_sib = len(siblings)
         if n_sib == 0:
             out[row["compound"]] = global_mean
@@ -445,25 +447,28 @@ def leave_one_out_logistic_proba(X: np.ndarray, y: np.ndarray) -> np.ndarray:
     return out
 
 
+def _avg_ranks(a: np.ndarray) -> np.ndarray:
+    """1-based ranks of `a` with tied values assigned their average (mid) rank.
+    Shared by `auroc` (Mann-Whitney) and `spearman` so both handle ties correctly."""
+    a = np.asarray(a, dtype=float)
+    order = a.argsort(kind="mergesort")
+    ranks = np.empty(len(a), dtype=float)
+    ranks[order] = np.arange(1, len(a) + 1)
+    _, inv, counts = np.unique(a, return_inverse=True, return_counts=True)
+    sums = np.zeros(len(counts))
+    np.add.at(sums, inv, ranks)
+    return (sums / counts)[inv]
+
+
 def auroc(scores: np.ndarray, labels: np.ndarray) -> float:
     """AUROC via the Mann–Whitney U relationship. labels ∈ {0,1}."""
     pos = scores[labels == 1]
     neg = scores[labels == 0]
     if len(pos) == 0 or len(neg) == 0:
         return float("nan")
-    # rank-based U
+    # rank-based U with ties assigned their average (mid) rank
     allv = np.concatenate([pos, neg])
-    order = allv.argsort(kind="mergesort")
-    ranks = np.empty_like(order, dtype=float)
-    ranks[order] = np.arange(1, len(allv) + 1)
-    # average ties
-    _, inv, counts = np.unique(allv, return_inverse=True, return_counts=True)
-    tie_mean = np.zeros(len(counts))
-    cum = 0
-    sums = np.zeros(len(counts))
-    np.add.at(sums, inv, ranks)
-    avg = sums / counts
-    ranks = avg[inv]
+    ranks = _avg_ranks(allv)
     r_pos = ranks[:len(pos)].sum()
     u = r_pos - len(pos) * (len(pos) + 1) / 2.0
     return float(u / (len(pos) * len(neg)))
@@ -592,14 +597,11 @@ def paired_auroc_bootstrap(scores_a: np.ndarray, scores_b: np.ndarray,
 
 
 def spearman(pred: np.ndarray, obs: np.ndarray) -> float:
+    """Spearman rank correlation, with tied values given their average rank."""
     if len(pred) < 3:
         return float("nan")
-    def rank(a):
-        order = a.argsort(kind="mergesort")
-        r = np.empty_like(order, dtype=float)
-        r[order] = np.arange(len(a))
-        return r
-    rp, ro = rank(pred), rank(obs)
+    rp = _avg_ranks(np.asarray(pred, float))
+    ro = _avg_ranks(np.asarray(obs, float))
     rp = (rp - rp.mean()); ro = (ro - ro.mean())
     denom = np.sqrt((rp**2).sum() * (ro**2).sum())
     return float((rp * ro).sum() / denom) if denom > 0 else float("nan")

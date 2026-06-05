@@ -27,11 +27,10 @@ import re
 from dataclasses import dataclass, asdict
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 from mammal_repurposing.validation.retrospective import (
-    auroc, brier_score, bootstrap_auroc_ci, reliability_curve,
+    auroc, brier_score, bootstrap_auroc_ci,
 )
 
 # ---------------------------------------------------------------------------

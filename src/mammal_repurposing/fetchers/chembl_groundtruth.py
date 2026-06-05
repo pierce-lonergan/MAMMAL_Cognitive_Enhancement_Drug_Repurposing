@@ -18,7 +18,6 @@ from __future__ import annotations
 
 import logging
 from typing import Literal, TypedDict
-from urllib.parse import quote
 
 import httpx
 from tenacity import (

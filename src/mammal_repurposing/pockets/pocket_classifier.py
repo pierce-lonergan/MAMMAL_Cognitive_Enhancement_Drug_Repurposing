@@ -22,7 +22,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from .pocket_database import PocketDatabase, PocketSpec
+from .pocket_database import PocketDatabase
 
 logger = logging.getLogger(__name__)
 

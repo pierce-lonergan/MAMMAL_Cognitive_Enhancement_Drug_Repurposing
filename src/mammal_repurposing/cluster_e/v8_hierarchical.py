@@ -164,7 +164,6 @@ def build_v8_hierarchical_with_cell_random_effect(
             "PyMC not installed. Install pymc + numpyro to use V8 hierarchical."
         )
     import pymc as pm
-    import pytensor.tensor as pt
 
     n_obs = len(observations)
     if n_obs == 0:

@@ -31,7 +31,6 @@ import time
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass
-from typing import Optional
 
 import httpx
 

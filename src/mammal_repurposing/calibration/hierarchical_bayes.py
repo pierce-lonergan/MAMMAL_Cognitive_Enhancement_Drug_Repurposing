@@ -170,7 +170,6 @@ def hierarchical_bayesian_nuts(
         raise ImportError("PyMC not installed — use empirical_bayes_shrinkage() instead")
 
     import pymc as pm
-    import pytensor.tensor as pt
 
     targets = sorted(per_target_data.keys())
     n_targets = len(targets)

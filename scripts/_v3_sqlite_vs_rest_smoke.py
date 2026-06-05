@@ -58,7 +58,6 @@ def main() -> int:
     rows: list[dict] = []
     with httpx.Client(timeout=HTTP_TIMEOUT_SEC,
                       headers={"User-Agent": USER_AGENT, "Accept": "application/json"}) as client:
-        from mammal_repurposing.fetchers.chembl import uniprot_to_chembl_target  # noqa: PLC0415
         target_id_cache: dict[str, str | None] = {}
 
         for _, p in pairs.iterrows():

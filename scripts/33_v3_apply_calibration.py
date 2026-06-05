@@ -24,14 +24,13 @@ import pickle
 import sys
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
-from mammal_repurposing.config import DTI_SCORES_PARQUET, TARGETS_PARQUET  # noqa: E402
+from mammal_repurposing.config import DTI_SCORES_PARQUET  # noqa: E402
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")

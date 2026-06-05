@@ -782,7 +782,7 @@ def h21_validation_gates_framework() -> HypothesisVerdict:
     correctly identifies a Roberts-ceiling violation."""
     try:
         from mammal_repurposing.cluster_d.validation_gates import (
-            REFERENCE_COMPOUND_SMD, gate_1_roberts_ceiling, availability,
+            gate_1_roberts_ceiling, availability,
         )
         avail = availability()
         n_compounds = avail["n_reference_compounds"]

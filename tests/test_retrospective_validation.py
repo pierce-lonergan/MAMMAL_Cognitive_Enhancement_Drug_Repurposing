@@ -79,11 +79,12 @@ def test_class_loco_excludes_self(mini_ledger):
 
 def test_class_loco_shrinks_toward_global(mini_ledger):
     pred = R.class_loco_g(mini_ledger, shrinkage_k0=1.0)
-    gmean = mini_ledger["clinical_g"].mean()  # 0.24
-    # a1: (2*0.4 + 1*0.24)/3 = 0.3467
-    assert abs(pred["a1"] - (2 * 0.4 + gmean) / 3) < 1e-6
-    # all predictions strictly between sibling mean and global mean
-    assert 0.24 < pred["a1"] < 0.4
+    # strict leave-one-out: a1's shrinkage target excludes a1 itself
+    gmean_excl = mini_ledger[mini_ledger["compound"] != "a1"]["clinical_g"].mean()
+    # a1: (2 siblings * 0.4 + 1 * gmean_excl) / 3
+    assert abs(pred["a1"] - (2 * 0.4 + gmean_excl) / 3) < 1e-6
+    # prediction strictly between the sibling mean (0.4) and the leave-a1-out mean
+    assert gmean_excl < pred["a1"] < 0.4
 
 
 def test_leave_one_class_out_removes_whole_class(mini_ledger):

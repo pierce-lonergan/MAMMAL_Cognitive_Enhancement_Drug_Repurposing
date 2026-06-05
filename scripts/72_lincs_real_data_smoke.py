@@ -22,13 +22,11 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import gzip
 import logging
 import sys
 from pathlib import Path
 
 import h5py
-import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -173,8 +171,8 @@ def main() -> int:
     L: list[str] = []
     L.append("# LINCS Real-Data Smoke (Sprint 5.1)")
     L.append("")
-    L.append(f"**Date**: 2026-05-28  ")
-    L.append(f"**Source**: GSE70138 Level-5 COMPZ (118,050 signatures × 12,328 genes)  ")
+    L.append("**Date**: 2026-05-28  ")
+    L.append("**Source**: GSE70138 Level-5 COMPZ (118,050 signatures × 12,328 genes)  ")
     L.append("")
     L.append("## Cognition-panel filter")
     L.append("")

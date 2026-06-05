@@ -92,17 +92,20 @@ def main(argv: list[str]) -> int:
     LINCS.mkdir(parents=True, exist_ok=True)
 
     print(f"LINCS cache: {LINCS}")
+    gctx = LINCS / GCTX
+    have_gctx = gctx.exists()
     missing = []
     for geo_name, local_name in FILES:
         dest = LINCS / local_name
         if dest.exists():
             print(f"  present: {local_name} ({_human(dest.stat().st_size)})")
+        elif local_name == GCTX_GZ and have_gctx:
+            # the .gz archive is only needed to produce the .gctx; once the
+            # decompressed .gctx exists the .gz is redundant (don't re-download 5 GB)
+            print(f"  present (decompressed): {GCTX}; .gz not needed")
         else:
             print(f"  MISSING: {local_name}")
             missing.append((geo_name, dest))
-
-    gctx = LINCS / GCTX
-    have_gctx = gctx.exists()
     print(f"  decompressed GCTX: {'present' if have_gctx else 'MISSING'}")
 
     if args.check:

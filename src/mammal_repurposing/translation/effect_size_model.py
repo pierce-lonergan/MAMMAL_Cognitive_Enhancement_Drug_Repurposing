@@ -260,7 +260,6 @@ def fit_effect_size_nuts(
             "`pip install pymc numpyro` for the full Bayesian path."
         )
     import pymc as pm
-    import pytensor.tensor as pt
     import arviz as az
 
     from .prisma_priors import class_prior_table, list_class_names
@@ -344,7 +343,7 @@ def fit_effect_size_nuts(
         # V7.2 Stage 2: per-(class, endpoint) anchor likelihood (soft) via Potential.
         # For observations where (class, endpoint) has a curated subdomain prior,
         # add an additional Gaussian pull centered on the subdomain mean.
-        from .prisma_priors import get_subdomain_prior, PER_SUBDOMAIN_PRIORS
+        from .prisma_priors import PER_SUBDOMAIN_PRIORS
         subdomain_mu = np.zeros(n_obs)
         subdomain_sd = np.full(n_obs, 1e6)    # huge sd = no effect (default)
         n_subdomain_hits = 0
@@ -476,12 +475,10 @@ def fit_effect_size_nuts_v2(
             "`pip install pymc numpyro` for the full Bayesian path."
         )
     import pymc as pm
-    import pytensor.tensor as pt
     import arviz as az
 
     from .prisma_priors import (
         class_prior_table, list_class_names,
-        PER_SUBDOMAIN_PRIORS_V2,
     )
 
     table = class_prior_table()
@@ -567,8 +564,7 @@ def fit_effect_size_nuts_v2(
 
         # V2 subdomain anchor likelihood (per-cell pull via Potential)
         if use_v2_subdomain_priors and subdomain_anchor_weight > 0:
-            from .prisma_priors import (CLASS_NAME_MIGRATION_V1_TO_V2,
-                                          get_subdomain_prior_v2)
+            from .prisma_priors import (get_subdomain_prior_v2)
             subdomain_mu = np.zeros(n_obs)
             subdomain_sd = np.full(n_obs, 1e6)
             n_subdomain_hits = 0

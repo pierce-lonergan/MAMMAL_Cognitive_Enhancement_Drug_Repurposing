@@ -11,7 +11,6 @@ Bootstrap CI on Spearman ρ: 1,000 resamples with replacement; report
 from __future__ import annotations
 
 import numpy as np
-import pandas as pd
 from scipy.stats import spearmanr
 
 

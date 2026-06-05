@@ -16,7 +16,6 @@ import logging
 from collections import Counter
 from dataclasses import dataclass
 
-import pandas as pd
 
 logger = logging.getLogger(__name__)
 

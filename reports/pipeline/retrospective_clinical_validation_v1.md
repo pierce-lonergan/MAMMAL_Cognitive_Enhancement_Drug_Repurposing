@@ -12,10 +12,10 @@ Three predictors of SUCCESS-vs-FAILURE, ranked by information used; primary metr
 
 | Predictor | n | AUROC | 90% CI | perm p | Spearman(ĝ, g) |
 |---|---|---|---|---|---|
-| P1a target relevance σ(θ̄) | 26 | **0.589** | [0.38, 0.79] | 0.2250 | +0.07 |
-| P1b within-target binding percentile | 10 | **0.125** | [0.00, 0.38] | 0.9566 | -0.21 |
-| P2 class-structure leave-one-compound-out | 31 | **1.000** | [1.00, 1.00] | 0.0002 | +0.82 |
-| P3 leave-one-class-out (extrapolation bound) | 31 | **0.000** | [0.00, 0.00] | 1.0000 | -0.87 |
+| P1a target relevance σ(θ̄) | 26 | **0.589** | [0.38, 0.79] | 0.2250 | +0.14 |
+| P1b within-target binding percentile | 10 | **0.125** | [0.00, 0.38] | 0.9566 | -0.22 |
+| P2 class-structure leave-one-compound-out | 31 | **1.000** | [1.00, 1.00] | 0.0002 | +0.76 |
+| P3 leave-one-class-out (extrapolation bound) | 31 | **0.000** | [0.00, 0.00] | 1.0000 | -0.83 |
 
 ![ROC](figures/v11/retrospective_roc.png)
 
@@ -47,37 +47,37 @@ No predictor uses the held-out drug's own trial outcome. P1a/P1b use only GWAS/e
 
 | Drug | Class | Indication | Actual | ĝ (P2) | Predicted | ✓ |
 |---|---|---|---|---|---|---|
-| TC-5619 | alpha7_nAChR | schizophrenia/ADHD | FAILURE | +0.057 | FAILURE | ✅ |
-| TAK-063 | PDE9_PDE10 | schizophrenia | FAILURE | +0.043 | FAILURE | ✅ |
-| BI-409306 | PDE9_PDE10 | schizophrenia/AD | FAILURE | +0.043 | FAILURE | ✅ |
-| PF-04447943 | PDE9_PDE10 | AD | FAILURE | +0.060 | FAILURE | ✅ |
-| farampator | AMPA_PAM | healthy/AD | FAILURE | +0.070 | FAILURE | ✅ |
-| S47445 | AMPA_PAM | AD | FAILURE | +0.093 | FAILURE | ✅ |
-| CX-516 | AMPA_PAM | schizophrenia/MCI | FAILURE | +0.070 | FAILURE | ✅ |
-| mavoglurant | mGluR | FXS | FAILURE | +0.060 | FAILURE | ✅ |
-| basimglurant | mGluR | FXS | FAILURE | +0.043 | FAILURE | ✅ |
-| pomaglumetad | mGluR | schizophrenia | FAILURE | +0.043 | FAILURE | ✅ |
-| SUVN-502 | 5HT6_antagonist | AD | FAILURE | +0.043 | FAILURE | ✅ |
-| intepirdine | 5HT6_antagonist | AD | FAILURE | +0.026 | FAILURE | ✅ |
-| idalopirdine | 5HT6_antagonist | AD | FAILURE | +0.043 | FAILURE | ✅ |
-| DMXB-A | alpha7_nAChR | schizophrenia | FAILURE | +0.052 | FAILURE | ✅ |
-| MK-0249 | H3_cognition | AD/schizophrenia | FAILURE | +0.089 | FAILURE | ✅ |
-| ABT-288 | H3_cognition | schizophrenia | FAILURE | +0.089 | FAILURE | ✅ |
-| encenicline | alpha7_nAChR | CIAS-schizophrenia | FAILURE | +0.052 | FAILURE | ✅ |
-| ABT-126 | alpha7_nAChR | AD/schizophrenia | FAILURE | +0.040 | FAILURE | ✅ |
-| vortioxetine | multimodal_5HT | MDD-cognition | SUCCESS | +0.179 | SUCCESS | ✅ |
-| pitolisant | wake_promoting | narcolepsy-EDS | SUCCESS | +0.310 | SUCCESS | ✅ |
-| armodafinil | wake_promoting | narcolepsy/SWD | SUCCESS | +0.396 | SUCCESS | ✅ |
-| modafinil | wake_promoting | narcolepsy-EDS | SUCCESS | +0.380 | SUCCESS | ✅ |
-| guanfacine-XR | catecholaminergic_ADHD | ADHD | SUCCESS | +0.436 | SUCCESS | ✅ |
-| atomoxetine | catecholaminergic_ADHD | ADHD | SUCCESS | +0.446 | SUCCESS | ✅ |
-| dextroamphetamine | catecholaminergic_ADHD | ADHD | SUCCESS | +0.436 | SUCCESS | ✅ |
-| lisdexamfetamine | catecholaminergic_ADHD | ADHD | SUCCESS | +0.426 | SUCCESS | ✅ |
-| methylphenidate | catecholaminergic_ADHD | ADHD | SUCCESS | +0.436 | SUCCESS | ✅ |
-| memantine | NMDA_modulator | AD-mod-sev | SUCCESS | +0.179 | SUCCESS | ✅ |
-| rivastigmine | AChE_inhibitor | AD | SUCCESS | +0.303 | SUCCESS | ✅ |
-| galantamine | AChE_inhibitor | AD | SUCCESS | +0.313 | SUCCESS | ✅ |
-| donepezil | AChE_inhibitor | AD | SUCCESS | +0.316 | SUCCESS | ✅ |
+| TC-5619 | alpha7_nAChR | schizophrenia/ADHD | FAILURE | +0.059 | FAILURE | ✅ |
+| TAK-063 | PDE9_PDE10 | schizophrenia | FAILURE | +0.045 | FAILURE | ✅ |
+| BI-409306 | PDE9_PDE10 | schizophrenia/AD | FAILURE | +0.045 | FAILURE | ✅ |
+| PF-04447943 | PDE9_PDE10 | AD | FAILURE | +0.062 | FAILURE | ✅ |
+| farampator | AMPA_PAM | healthy/AD | FAILURE | +0.071 | FAILURE | ✅ |
+| S47445 | AMPA_PAM | AD | FAILURE | +0.095 | FAILURE | ✅ |
+| CX-516 | AMPA_PAM | schizophrenia/MCI | FAILURE | +0.071 | FAILURE | ✅ |
+| mavoglurant | mGluR | FXS | FAILURE | +0.062 | FAILURE | ✅ |
+| basimglurant | mGluR | FXS | FAILURE | +0.045 | FAILURE | ✅ |
+| pomaglumetad | mGluR | schizophrenia | FAILURE | +0.045 | FAILURE | ✅ |
+| SUVN-502 | 5HT6_antagonist | AD | FAILURE | +0.045 | FAILURE | ✅ |
+| intepirdine | 5HT6_antagonist | AD | FAILURE | +0.028 | FAILURE | ✅ |
+| idalopirdine | 5HT6_antagonist | AD | FAILURE | +0.045 | FAILURE | ✅ |
+| DMXB-A | alpha7_nAChR | schizophrenia | FAILURE | +0.054 | FAILURE | ✅ |
+| MK-0249 | H3_cognition | AD/schizophrenia | FAILURE | +0.092 | FAILURE | ✅ |
+| ABT-288 | H3_cognition | schizophrenia | FAILURE | +0.092 | FAILURE | ✅ |
+| encenicline | alpha7_nAChR | CIAS-schizophrenia | FAILURE | +0.054 | FAILURE | ✅ |
+| ABT-126 | alpha7_nAChR | AD/schizophrenia | FAILURE | +0.041 | FAILURE | ✅ |
+| vortioxetine | multimodal_5HT | MDD-cognition | SUCCESS | +0.173 | FAILURE | ❌ |
+| pitolisant | wake_promoting | narcolepsy-EDS | SUCCESS | +0.305 | SUCCESS | ✅ |
+| armodafinil | wake_promoting | narcolepsy/SWD | SUCCESS | +0.394 | SUCCESS | ✅ |
+| modafinil | wake_promoting | narcolepsy-EDS | SUCCESS | +0.377 | SUCCESS | ✅ |
+| guanfacine-XR | catecholaminergic_ADHD | ADHD | SUCCESS | +0.434 | SUCCESS | ✅ |
+| atomoxetine | catecholaminergic_ADHD | ADHD | SUCCESS | +0.444 | SUCCESS | ✅ |
+| dextroamphetamine | catecholaminergic_ADHD | ADHD | SUCCESS | +0.434 | SUCCESS | ✅ |
+| lisdexamfetamine | catecholaminergic_ADHD | ADHD | SUCCESS | +0.423 | SUCCESS | ✅ |
+| methylphenidate | catecholaminergic_ADHD | ADHD | SUCCESS | +0.434 | SUCCESS | ✅ |
+| memantine | NMDA_modulator | AD-mod-sev | SUCCESS | +0.175 | FAILURE | ❌ |
+| rivastigmine | AChE_inhibitor | AD | SUCCESS | +0.300 | SUCCESS | ✅ |
+| galantamine | AChE_inhibitor | AD | SUCCESS | +0.311 | SUCCESS | ✅ |
+| donepezil | AChE_inhibitor | AD | SUCCESS | +0.314 | SUCCESS | ✅ |
 
 ## Honest limitations
 

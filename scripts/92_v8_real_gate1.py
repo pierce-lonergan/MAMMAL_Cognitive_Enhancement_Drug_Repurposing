@@ -169,7 +169,7 @@ def main() -> int:
     L.append(f"- Compounds with real LINCS signatures: **{len(compounds)}** "
              f"of {len(MOA_LABELS)} labelled")
     L.append(f"- Mechanism classes represented: **{len(set(labels_all))}**")
-    L.append(f"- Signatures loaded (pre-consensus): see log; consensus = 1 per "
+    L.append("- Signatures loaded (pre-consensus): see log; consensus = 1 per "
              "compound\n")
 
     L.append("## Result\n")
@@ -238,7 +238,7 @@ def main() -> int:
     out.write_text("\n".join(L), encoding="utf-8")
     logger.info("wrote %s and %s", out, out_pq)
 
-    print(f"\n=== V8 real Gate 1 ===")
+    print("\n=== V8 real Gate 1 ===")
     print(f"compounds with LINCS sigs: {len(compounds)}  classes: {len(set(labels_all))}")
     for r in results:
         print(f"  {r['set']:>22} {r['method']:>13}: AMI={r['ami']:.3f} "

@@ -37,8 +37,7 @@ Citations (per V4 Appendix A.10):
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Iterable
+from dataclasses import dataclass
 
 import numpy as np
 
