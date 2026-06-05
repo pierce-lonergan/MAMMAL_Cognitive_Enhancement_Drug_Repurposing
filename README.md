@@ -1,5 +1,7 @@
 # MAMMAL Cognitive Enhancement Drug Repurposing
 
+[![CI](https://github.com/pierce-lonergan/MAMMAL_Cognitive_Enhancement_Drug_Repurposing/actions/workflows/ci.yml/badge.svg)](https://github.com/pierce-lonergan/MAMMAL_Cognitive_Enhancement_Drug_Repurposing/actions/workflows/ci.yml)
+
 A multi-layer Bayesian pipeline for cognition-enhancement drug repurposing, built around IBM Research's [MAMMAL](https://github.com/BiomedSciAI/biomed-multi-alignment) foundation model and extended with four downstream architectural layers — V4 (calibrated multi-cluster fusion), V5 (Z-norm + Tier 2/3 sprint), V6 (multi-head DTI ensemble + Bayesian Cluster D neurobiological prior), V7 (PBPK-anchored hierarchical effect-size translation), and V8 (πphen perturbational evidence axis). Runs on a single 12 GB consumer GPU (Blackwell sm_120 RTX 5070).
 
 > **Honest scope**: this pipeline does **not** discover "smart drugs." It enriches a candidate set so wet-lab cycles spend money on plausibility, not chemistry-lottery tickets. Roberts CA et al. (*Eur Neuropsychopharm* 2020) puts the effect-size ceiling for healthy-adult cognitive enhancement at SMD ≈ 0.21 (methylphenidate overall). The deliverable here is a calibrated, provenance-rich ranking + a publishable methodology contribution — not a miracle compound.
@@ -145,6 +147,8 @@ pip install lightgbm                                  # LambdaMART promotion
 pip install pycytominer boto3 cmapPy                 # V8 (optional; ingestion only)
 pip install mofapy2                                   # V8 (optional; for full MOFA+ vs SVD fallback)
 ```
+
+**Reproducibility**: the full test suite needs the dev extras (`pip install -e .[dev]` brings in `respx` for the HTTP-mock fetcher tests). The shelved V8 layer additionally needs the real LINCS data: fetch it with `python scripts/download_lincs.py`. For the multi-environment setup (the MAMMAL DTI venv, Boltz/WSL2, TxGNN), see [`docs/ENVIRONMENTS.md`](docs/ENVIRONMENTS.md). Tests whose heavy dependency is absent skip gracefully rather than failing, and CI runs the numpy-only core on every push.
 
 ### End-to-end pipeline
 
