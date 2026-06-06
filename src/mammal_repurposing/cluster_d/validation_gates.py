@@ -199,11 +199,16 @@ def gate_2_spearman_vs_smd(
 
     theta_arr = np.array([p[0] for p in pairs])
     smd_arr = np.array([p[1] for p in pairs])
+    # Drop non-finite pairs so a single NaN theta-bar (a target that did not
+    # fit / has no coverage) cannot propagate NaN through spearmanr and silently
+    # collapse the whole gate to rho=0 / DEGRADE.
+    finite = np.isfinite(theta_arr) & np.isfinite(smd_arr)
+    theta_arr, smd_arr = theta_arr[finite], smd_arr[finite]
     rho, _ = spearmanr(theta_arr, smd_arr)
 
     # Bootstrap CI
     boot_rhos = np.zeros(bootstrap_n)
-    n = len(pairs)
+    n = len(theta_arr)
     for i in range(bootstrap_n):
         idx = rng.choice(n, size=n, replace=True)
         r, _ = spearmanr(theta_arr[idx], smd_arr[idx])

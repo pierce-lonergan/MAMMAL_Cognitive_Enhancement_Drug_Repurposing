@@ -77,7 +77,7 @@ The pipeline composes five layers, each adding a distinct evidence axis:
 ### V7 — Clinical Effect-Size Translation Function (NEW)
 - **9-compartment PBPK** (JAX/diffrax adaptive Dormand-Prince + numpy explicit-RK4 fallback): gut → plasma → peripheral → cortex → striatum → hippocampus → basal-forebrain → brainstem → CSF
 - **Watson 1989 receptor-occupancy-with-reserve** with U-shape generator (D1-postsynaptic vs D2-autoreceptor) and tolerance kinetics (R_avail dynamics)
-- **PET-validated anchors**: Bohnen 2005 donepezil 19.1% cortical AChE / Volkow 1998 MPH DAT 12/40/54/72/74% at 5/10/20/40/60 mg / Kapur 2000 haloperidol D2 ~1.8 nM
+- **PET reference anchors** (occupancy chain benchmarked, not yet quantitatively fitted; upstream of the effect-size gates): Bohnen 2005 donepezil 19.1% cortical AChE / Volkow 1998 MPH DAT 12/40/54/72/74% at 5/10/20/40/60 mg / Kapur 2000 haloperidol D2 ~1.8 nM
 - **Schmidli 2014 robust MAP** priors for 12 mechanism classes (AChE-I, wake_promoting, NDRI, NRI, NMDA_antagonist, multimodal_5HT, alpha2A_agonist, A2A_antagonist, AMPA_pos_mod, creatine, omega3, minocycline) extracted from Roberts 2020 + Cochrane + MetaPsy
 - **3-level hierarchical Bayes**: μ_global ~ N(0, 0.20); μ_class[m] ~ N(prisma_mean, λ_class·prisma_sd); η = sigmoid(α + β1·E[pchembl] + β2·E[relevance] + β3·copula) − Σ_k γ_k · m_k
 - **Cluster D multiplicative gate**: β_target[t_c] = θ̄_{t_c} · β_raw_target[t_c]
@@ -145,7 +145,7 @@ Each layer is a distinct publishable contribution:
 6. **Phenotypic signatures are MOA proxies, not mechanism proofs**. A compound that "looks AChE-I-class" in L1000 may not engage AChE; it may engage a downstream pathway producing similar transcription. Standard CMap caveat (Lamb 2006); acceptable for prioritization, not mechanism claims.
 7. **Healthy-adult cognition effects are small**. Roberts 2020 overall mean SMDs are 0.12–0.21; ceiling g ≈ 0.43. V8 Gate 2 MAE < 0.20 may be hard to achieve given the SNR.
 8. **NMDA targets (GRIN2A / GRIN2B) confirmed unfixable by single-chain inference**. Ifenprodil-class NAMs bind the GluN1/GluN2B ATD heterodimer interface that MAMMAL cannot see from a single-chain input. Documented limitation in V4.
-9. **Per-compound dose specificity is approximate**. P3 MPH "20mg" / P4 modafinil "200mg" / P5 memantine "20mg" predictions assume a canonical dose; the V7 PBPK PET-anchor calibration handles dose-dependence but the P-prediction parser uses base-compound names.
+9. **Per-compound dose specificity is approximate**. P3 MPH "20mg" / P4 modafinil "200mg" / P5 memantine "20mg" predictions assume a canonical dose; the V7 PBPK is dose-aware, but its occupancy chain is not yet quantitatively fitted to the PET anchors and the P-prediction parser uses base-compound names.
 10. **Pre-registration is not a substitute for replication**. OSF lock means we cannot post-hoc relax thresholds; it does not mean the underlying methodology is correct. Wet-lab validation remains the gold standard.
 
 ---

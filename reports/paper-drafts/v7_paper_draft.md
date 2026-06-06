@@ -53,7 +53,7 @@ None of these integrate PBPK + hierarchical Bayes + Cluster D multiplicative gat
 
 We present V7, the first Bayesian translation layer that:
 
-- Couples a 9-compartment PBPK with Watson 1989 receptor-occupancy-with-reserve, calibrated against 3 published PET anchors (Bohnen 2005, Volkow 1998, Kapur 2000)
+- Couples a 9-compartment PBPK (verified mass-balance ODE) with a spare-receptor occupancy module benchmarked against 3 published PET anchors (Bohnen 2005, Volkow 1998, Kapur 2000); the occupancy chain reproduces the qualitative dose-ordering but is **not yet quantitatively fitted** to the anchors, and is upstream of (not an input to) the effect-size gates (see §2.3, Limitations)
 - Encodes Schmidli 2014 robust MAP priors for 12 PRISMA mechanism classes extracted from Roberts 2020 + Cochrane + MetaPsy
 - Implements the Cluster D multiplicative gate β_target[t_c] = θ̄_{t_c} · β_raw_target[t_c] consuming the V6.B Bayesian posterior
 - Includes 5 failure-mode moderators (m1-m5) for honest debiting of predicted *g*
@@ -105,14 +105,14 @@ All 12 classes have peak_subdomain_g ≤ 0.50 (Roberts ceiling sanity at the pri
 
 ### 2.3 PBPK 9-compartment
 
-Gut → plasma → peripheral → {cortex, striatum, hippocampus, basal_forebrain, brainstem, CSF}. JAX/diffrax Dormand-Prince adaptive ODE solver (numpy explicit-RK4 fallback). Per-compound dose × bioavailability → nmol gut depot; per-brain-region BBB permeability k_diff. Receptor occupancy with Watson 1989 reserve: O_eff(t) = O_obs(t) · (1 − R_avail/R_reserve). U-shape generator for D1-postsynaptic vs D2-autoreceptor asymmetry.
+Gut → plasma → peripheral → {cortex, striatum, hippocampus, basal_forebrain, brainstem, CSF}. JAX/diffrax Dormand-Prince adaptive ODE solver (numpy explicit-RK4 fallback). Per-compound dose × bioavailability → nmol gut depot; per-brain-region BBB permeability k_diff. Spare-receptor occupancy O_eff(t) = clip(O_obs(t) · (R_avail/R_total) · R_reserve, 0, 1) (R_reserve = 1 with full available receptors recovers O_eff = O_obs; receptor internalisation attenuates). U-shape generator for D1-postsynaptic vs D2-autoreceptor asymmetry.
 
-PET-anchored:
+PET reference anchors (Figure 1):
 - Bohnen 2005: donepezil 5mg → 19.1% cortical AChE
 - Volkow 1998: MPH 5/10/20/40/60mg → 12/40/54/72/74% DAT
 - Kapur 2000: haloperidol → D2 striatal EC50 ~1.8 nM
 
-V7.4 anchor-reproduction: all 3 anchors reproduce within 1σ.
+Anchor-reproduction status (honest): the mass-balance ODE is verified, but with literature Kd and generic per-drug distribution parameters the peak Hill occupancy saturates *above* these sub-saturation PET readings — the occupancy chain reproduces the qualitative dose-ordering, not the absolute values. A joint per-drug distribution/Kd fit to the anchors is future work. This does **not** affect the effect-size results below: the translation model consumes the PBPK brain-concentration AUC (`pbpk_auc_brain`), not the receptor-occupancy estimate.
 
 ### 2.4 5 failure-mode moderators
 
@@ -159,7 +159,7 @@ Per OSF pre-reg §4:
 ### Figures
 
 ![Figure 1: PBPK occupancy traces for 3 PET anchors](../figures/v7/fig1_pbpk_traces.png)
-**Figure 1.** PBPK 9-compartment ODE produces receptor-occupancy trajectories that reproduce 3 published PET anchors within 1σ: donepezil 5 mg cortical AChE (Bohnen 2005); MPH 20 mg DAT (Volkow 1998); haloperidol 2 mg D2 striatal (Kapur 2000).
+**Figure 1.** PBPK 9-compartment ODE receptor-occupancy trajectories for the 3 PET-anchor drugs (donepezil 5 mg cortical AChE, Bohnen 2005; MPH 20 mg DAT, Volkow 1998; haloperidol 2 mg D2 striatal, Kapur 2000); the dotted line marks the published PET occupancy. With literature Kd and generic distribution parameters the modelled peak occupancy saturates above the sub-saturation PET readings — the chain reproduces the qualitative dose-ordering, not the absolute values (a per-drug distribution/Kd fit is future work). The occupancy module is upstream of, and not an input to, the effect-size gates.
 
 ![Figure 2: P1-P8 prediction-band overlay](../figures/v7/fig2_p1_p8_bands.png)
 **Figure 2.** Pre-registered P1-P8 prediction bands vs V7 NUTS posterior predicted Hedges' *g*. 5/8 PASS (green markers) including P2 encenicline 3mg Phase 3 failure recapitulation. 1/8 FAIL (P3 MPH 20mg, missing by 0.063 — honest partial-pool result). All predictions well below the Roberts 2020 ceiling (dashed line at g = 0.50).
@@ -262,6 +262,7 @@ Encenicline 3mg predicted g = +0.088, satisfying P2 (|g| < 0.20). This recapitul
 
 ### 4.5 Limitations + CPT:PSP fallback
 
+- **PBPK occupancy not yet anchor-fitted.** The receptor-occupancy module reproduces the qualitative PET dose-ordering but over-predicts peak occupancy (Hill saturation under literature Kd + generic distribution). A joint per-drug distribution/Kd calibration to Bohnen/Volkow/Kapur is future work. This is isolated to an upstream/illustrative module — the effect-size gates consume the PBPK brain-concentration AUC, not the occupancy estimate, so the headline results are unaffected.
 - **Anchor set is small** (15 compounds). MAE 0.073 with this n is non-trivial but the CIs are wide.
 - **V7.4 Stage 3 (per-endpoint Gate 4 calibration)** is deferred — requires per-(compound, endpoint) ground truth from curated subdomain breakdowns.
 - **V7.5 (OSF lock + paper draft)** is the production end-state; this paper draft is V7.5 Stage 1.

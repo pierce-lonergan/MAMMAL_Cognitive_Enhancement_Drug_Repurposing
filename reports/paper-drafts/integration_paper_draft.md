@@ -168,7 +168,7 @@ See `figures/v6b/fig{1-4}_*.png`. Per-target θ̄ posterior with 90% HDI sorted;
 
 ### 3.4 V7 full NUTS: R̂ = 1.000, MAE = 0.073, zero Roberts violations
 
-See `figures/v7/fig{1-4}_*.png`. PBPK 3 PET anchors reproduce within 1σ. P1-P8 prediction-band overlay shows 5/8 PASS markers including P2 encenicline 3mg Phase 3 failure recapitulation. LOO MAE residual plot reports mean 0.073 ≪ Gate 3 threshold 0.15. Sensitivity sweep over λ_class shows zero Roberts ceiling violations across all 5 sweep values.
+See `figures/v7/fig{1-4}_*.png`. PBPK occupancy reproduces the qualitative PET-anchor dose-ordering (not yet quantitatively fitted; upstream of and not an input to the effect-size gates). P1-P8 prediction-band overlay shows 5/8 PASS markers including P2 encenicline 3mg Phase 3 failure recapitulation. LOO MAE residual plot reports mean 0.073 ≪ Gate 3 threshold 0.15. Sensitivity sweep over λ_class shows zero Roberts ceiling violations across all 5 sweep values.
 
 ### 3.5 V8 chemCPA + Gate 1 dry-run + I_novel
 

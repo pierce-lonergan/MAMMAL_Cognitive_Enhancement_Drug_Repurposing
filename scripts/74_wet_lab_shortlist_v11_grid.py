@@ -45,20 +45,44 @@ logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger("v11_grid")
 
-# Reuse the validated panel target→class map from the v10 script.
+# Authoritative panel target -> cognition mechanism class. Only the six
+# clinically-validated classes carry a real PRISMA meta-analytic prior (AChE-I,
+# the stimulant transporters NDRI/NRI, alpha-2A, NMDA, AMPA). Every other panel
+# target maps to its TRUE mechanism label, which is not in the PRISMA prior
+# table and so correctly falls to the conservative high-variance fallback
+# (mean 0.05) in compose_grid_shortlist_v11. This fixes an earlier map that
+# lumped CHRNA7 (the encenicline alpha-7 FAILURE class) under "AChE-I" -- which
+# had handed it the AChE *success* prior -- and made several other junk
+# assignments (orexin/D1/H3 -> wake_promoting, PDE -> AMPA, NTRK2 -> creatine,
+# Kv7/HCN -> alpha2A). See validation/disease_reframe.TARGET_TO_MECHCLASS for
+# the finer per-disease taxonomy.
 sys.path.insert(0, str(ROOT / "scripts"))
 PANEL_TARGET_CLASS_MAP = {
-    "P22303": "AChE-I", "Q01959": "NDRI", "P23975": "NRI",
-    "Q9Y5N1": "wake_promoting", "O43614": "wake_promoting",
-    "O43613": "wake_promoting", "P21728": "wake_promoting",
-    "P08913": "alpha2A_agonist", "Q13224": "NMDA_antagonist",
-    "Q12879": "NMDA_antagonist", "P36544": "AChE-I",
-    "Q08499": "AMPA_pos_mod", "O76083": "AMPA_pos_mod",
-    "Q99720": "multimodal_5HT", "Q16620": "creatine",
-    "P42261": "AMPA_pos_mod", "P42262": "AMPA_pos_mod",
-    "P42263": "AMPA_pos_mod", "P48058": "AMPA_pos_mod",
-    "O43526": "alpha2A_agonist", "O43525": "alpha2A_agonist",
-    "O60741": "alpha2A_agonist",
+    # --- validated PRISMA success classes (real priors) ---
+    "P22303": "AChE-I",            # ACHE   (donepezil / rivastigmine)
+    "Q01959": "NDRI",              # SLC6A3 (methylphenidate / modafinil)
+    "P23975": "NRI",               # SLC6A2 (atomoxetine)
+    "P08913": "alpha2A_agonist",   # ADRA2A (guanfacine)
+    "Q13224": "NMDA_antagonist",   # GRIN2B (memantine)
+    "Q12879": "NMDA_antagonist",   # GRIN2A
+    "P42261": "AMPA_pos_mod",      # GRIA1
+    "P42262": "AMPA_pos_mod",      # GRIA2
+    "P42263": "AMPA_pos_mod",      # GRIA3
+    "P48058": "AMPA_pos_mod",      # GRIA4
+    # --- true mechanism labels with NO validated cognition prior ->
+    #     conservative fallback (the cognition-graveyard / unproven classes) ---
+    "P36544": "alpha7_nAChR",      # CHRNA7  (encenicline / ABT-126 — FAILED)
+    "Q9Y5N1": "H3_antagonist",     # HRH3    (MK-0249 / ABT-288 — FAILED)
+    "O43613": "orexin_antagonist", # HCRTR1
+    "O43614": "orexin_antagonist", # HCRTR2
+    "P21728": "D1_agonist",        # DRD1
+    "Q08499": "PDE4_inhibitor",    # PDE4D   (roflumilast / zatolmilast)
+    "O76083": "PDE9_inhibitor",    # PDE9A   (PF-04447943 — FAILED)
+    "Q99720": "sigma1_agonist",    # SIGMAR1 (blarcamesine)
+    "Q16620": "TrkB_agonist",      # NTRK2   (7,8-DHF / LM22A-4)
+    "O43526": "Kv7_opener",        # KCNQ2
+    "O43525": "Kv7_opener",        # KCNQ3
+    "O60741": "HCN_blocker",       # HCN1    (ivabradine)
 }
 
 

@@ -41,7 +41,7 @@ Outcome adjudication cannot be fully automated — it needs results-level readin
 
 ## Does purity survive unbiased sourcing?
 
-Combined unbiased-sourced ledger: **n = 47**, 20 mechanism classes. **20/20 classes outcome-pure; 0 mixed.** Class-LOCO AUROC **0.983**; prequential as-of **1.000** (informed n=26); taxonomy observed 0.98 vs random 0.47 ± 0.13.
+Combined unbiased-sourced ledger: **n = 47**, 20 mechanism classes. **20/20 classes outcome-pure; 0 mixed.** Class-LOCO AUROC **0.967**; prequential as-of **1.000** (informed n=26); taxonomy observed 0.97 vs random 0.45 ± 0.13.
 
 Every class remains outcome-pure under unbiased sourcing — including the new GABA-B / GABA-A / FLNA failure classes and the reinforced α7 / GlyT1 failure classes. The class-homogeneity pattern is not a curation artifact: it persists when trials are drawn from a pre-specified query and adjudicated outcome-blind.
 

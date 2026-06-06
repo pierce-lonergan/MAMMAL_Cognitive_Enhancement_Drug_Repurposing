@@ -1,6 +1,6 @@
 """V6.B publication-quality figures.
 
-Fig 1 — per-target θ̄ posterior with 90% HDI (22 targets)
+Fig 1 — per-target θ̄ posterior with 95% CI (22 targets)
 Fig 2 — AHBA vs L2G vs SC source contribution per target
 Fig 3 — Reference-anchor pull visualization (CHRNA7 y_AHBA=-0.53 → θ̄=+0.44)
 Fig 4 — Cluster D × Roberts ceiling joint distribution
@@ -38,7 +38,7 @@ plt.rcParams.update({
 
 
 def figure_1_theta_posterior(v6b: pd.DataFrame, output_path: Path) -> dict:
-    """Fig 1: per-target θ̄ posterior with 90% HDI."""
+    """Fig 1: per-target θ̄ posterior with 95% CI."""
     v6b_sorted = v6b.sort_values("theta_mean", ascending=False).copy()
     fig, ax = plt.subplots(figsize=(9, 7))
     y = np.arange(len(v6b_sorted))
@@ -68,7 +68,7 @@ def figure_1_theta_posterior(v6b: pd.DataFrame, output_path: Path) -> dict:
     ax.set_xlabel("Posterior θ̄ (cognition relevance)")
     ax.set_title("V6.B Bayesian Cluster D Posterior — 22 cognition targets\n"
                  "PyMC NUTS (4 chains × 2000 draws, R̂=1.000, ESS=12,780)\n"
-                 "Bar = θ̄ mean; error bars = 90% HDI; dark blue = reference anchor")
+                 "Bar = θ̄ mean; error bars = 95% CI; dark blue = reference anchor")
     ax.grid(True, alpha=0.3, axis="x")
     ax.invert_yaxis()
     plt.tight_layout()

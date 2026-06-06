@@ -17,7 +17,7 @@ Reference anchors (BDNF, COMT, ACHE, DRD2, GRIN2B, CHRNA7) at
 θ_ref ~ N(0.5, 0.3²) break scale + sign degeneracy.
 
 Outputs:
-  data/results/v2/cluster_d_posterior_v1.parquet (per-target θ̄ + 90% HDI)
+  data/results/v2/cluster_d_posterior_v1.parquet (per-target θ̄ + 95% CI)
   reports/pipeline/cluster_d_nuts_v1.md (gates + convergence diagnostics)
 
 Honest caveat: this is V6.B.3 Stage 1. Full validation gates (V6.B.4) need
@@ -244,7 +244,7 @@ def main() -> int:
     L.append("")
     L.append("## Per-target posterior (sorted by θ̄)")
     L.append("")
-    L.append("| Gene | UniProt | θ̄ | 90% HDI | w_pipeline | y_AHBA | y_L2G |")
+    L.append("| Gene | UniProt | θ̄ | 95% CI | w_pipeline | y_AHBA | y_L2G |")
     L.append("|---|---|---|---|---|---|---|")
     for _, r in df.iterrows():
         ahba_v = r.y_ahba if np.isfinite(r.y_ahba) else 0.0

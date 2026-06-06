@@ -7,11 +7,18 @@ manuscript suite. For output artifacts that were named in early plans but never
 built, see `FUTURE_WORK.md`. For the full record of what has already shipped,
 see the completed ledger at the end of this document.
 
-**Last refreshed**: 2026-05-30. Gaps 1 through 7 are all shipped and the target
+**Last refreshed**: 2026-06-06. Gaps 1 through 7 are all shipped and the target
 panel is finished to **31 targets** (CHRM1/CHRM4/HTR6 added, so CIAS now surfaces
 M1/M4 and AD scores 5-HT6), all scored with the real MAMMAL DTI head. The
-pipeline runs end-to-end on real LINCS L1000 and real cpg0000. Everything below
-is what is still open.
+pipeline runs end-to-end on real LINCS L1000 and real cpg0000. Two June 2026
+correctness sweeps hardened the numerical core (router credible intervals,
+Venn-ABERS sigma, the V7 PBPK occupancy term, the effect-size compound matcher),
+and the V7 PET-anchor claims were reconciled to their honest state (the occupancy
+chain reproduces the qualitative dose-ordering, not the absolute values, and is
+upstream of, not an input to, the effect-size gates). The new **Frontier
+directions** section below sets the next-capability agenda: resolve below mechanism
+class, onboard arbitrary novel compounds, scale the ledger, and add causal target
+validation. Everything below is what is still open.
 
 ---
 
@@ -31,6 +38,13 @@ is what is still open.
 | Species random effect (R4) | research | mouse to human translation | ~1 week |
 | Target deconvolution (R5) | research | target ID for (L,L,H) hits | ~3 weeks |
 | Phase 1 trial (R6) | external | external validation, biggest step | 18 to 24 months, $300K to $500K |
+| V7 PBPK occupancy anchor-fit (G4) | engineering | honest Figure 1 done; fit occupancy to PET | ~3 days |
+| Compound-level resolution test (F1) | frontier | within-class ranking, or a clean negative | ~2 weeks |
+| Novel-compound onboarding engine (F2) | frontier | score ANY molecule for cognition | ~3 weeks |
+| Ledger scale + per-domain (F3) | frontier | de-risk the headline at n=200 | ~3 to 4 weeks |
+| Causal MR target validation (F4) | frontier | associative genetics to causal | ~2 to 3 weeks |
+| Architectural deepening (F5) | frontier | more performance from the stack | days to weeks |
+| Perturbational signature-reversal (F6) | frontier | revive the V8 axis (supervised) | ~2 weeks |
 
 ---
 
@@ -78,6 +92,24 @@ which is a proof of concept on small n with only 6 of 21 compounds having Boltz
 coverage. To promote it from proof-of-concept to a production within-target
 ranker it needs a larger held-out benchmark and fuller Boltz affinity coverage.
 Report: `reports/pipeline/allosteric_ltr_v1.md`.
+
+### G4. V7 PBPK receptor-occupancy is not fitted to the PET anchors
+
+The 9-compartment PBPK mass-balance ODE is verified (mass-conserving), but the
+receptor-occupancy chain on top of it reproduces only the qualitative dose-ordering
+of the 3 PET anchors (Bohnen donepezil, Volkow MPH, Kapur haloperidol), not their
+absolute values: with literature Kd and generic per-drug distribution parameters the
+peak Hill occupancy saturates above the published sub-saturation readings. A June
+2026 fix corrected an inverted spare-receptor term that had been zeroing all
+predicted occupancy (which had masked the mismatch); the honest state is now stated
+in the V7 paper, Figure 1, and methodology_v3.
+
+**Resolution**: jointly fit per-drug {distribution volume, BBB permeability, Kd} to
+the 3 anchors (3 parameters per drug), or adopt a published spare-receptor
+amplification factor per receptor family. **Scope note**: this is an upstream,
+illustrative module; the V7 effect-size gates consume the PBPK brain-concentration
+AUC, not the occupancy estimate, so the headline V7 results do not depend on it.
+Effort: ~3 days.
 
 ---
 
@@ -163,6 +195,106 @@ impactful next step** for the pipeline's external validation.
 
 ---
 
+## Frontier directions (deepen the model, scale it, generalise to novel compounds)
+
+The R-items above refine the five existing papers. The items here are larger bets
+that extend the *capability* of the system: resolving below mechanism class,
+onboarding arbitrary novel molecules, scaling the evidence base, and adding causal
+target validation. They follow from the project's central finding (mechanism-class
+clinical track record beats affinity, genetics, and phenotype) and respect its
+hardest constraint: leave-one-class-out AUROC is 0.00, so the system cannot
+extrapolate to a mechanism with no clinical history. Every frontier item below must
+preserve that guardrail (abstain on novel mechanisms) and the project's house rule
+(honest negatives over forced positives).
+
+### F1. The compound-level resolution question (the deepest open question)
+
+The headline predictor is *class-level*: it assigns the class mean to every member
+of a class. The honest ceiling result is leave-one-class-out = 0.00 (no
+extrapolation to unseen mechanisms), and within-class ordering is not currently
+modelled. The frontier question: **is there ANY compound-level signal that beats
+"assign the class mean", and if so, which feature carries it?**
+
+Pre-registered test: for each multi-member class, compare a compound-level ranker
+(features: brain exposure / dose-adequacy, Gini selectivity, off-target liability,
+V6.A multi-head affinity) against the class-mean baseline on leave-one-compound-out
+clinical g. The most promising single axis is **dose-adequacy**: several famous
+failures (encenicline 3 mg) are plausibly under-dosing, not wrong-mechanism, which
+V7's PBPK brain-AUC can quantify. Two honest outcomes, both publishable: (a) a
+within-class feature lifts ranking (a genuine compound-level advance), or (b) nothing
+beats the class mean, establishing "mechanism class is the resolution limit of
+in-silico cognition-drug prognosis" as a clean negative. Effort: ~2 weeks.
+
+### F2. Novel-compound onboarding engine (turn the predictor into a discovery engine)
+
+Today the class prior only helps a compound already placed in a class. To score an
+*arbitrary* novel molecule, wire the existing pieces into one path: novel SMILES ->
+multi-head DTI profile (MAMMAL + MMAtt-DTA + PSICHIC + BALM) over the 31-target
+cognition panel -> mechanism-class assignment via (a) nearest class in DTI-profile
+space, (b) Tanimoto to class exemplars, (c) scaffold match -> class prior returns a
+calibrated g + 90% CrI -> confidence tier (HIGH only for a clean single-class map
+with a populated prior; ABSTAIN for a novel mechanism, an ambiguous profile, or an
+out-of-manifold compound flagged by the multi-head OOD axis).
+
+This converts the retrospective validator into a prospective screen: run a vendor
+catalogue or the ChEMBL CNS subset through it and rank by predicted clinical g. Two
+non-negotiable guardrails: (1) leave-one-class-out = 0.00 means the engine MUST
+abstain on genuinely novel mechanisms (it re-ranks known mechanisms for cognition,
+it does not invent new ones); (2) the V6.A allosteric blindness makes DTI-profile
+class assignment unreliable for allosteric compounds, so the allosteric-awareness
+head (G3) is a required sub-component. The highest-value output: compounds in
+strong-precedent classes that have NOT been tried for cognition. Effort: ~3 weeks.
+This is the most direct answer to "expand to novel compounds".
+
+### F3. Scale and decompose the clinical ledger (the highest-value rigor investment)
+
+AUROC 1.00 at n=31 is a small-n result; perfect separation can be partly an n
+artifact. The single highest-value rigor step is to scale the leakage-audited ledger
+to 100 to 200+ cognition drugs with cited meta-analytic g, and ask whether class
+separation survives. Two extensions make it both more accurate and more clinically
+actionable: (a) **per-domain decomposition** of the single clinical g into
+working-memory / processing-speed / episodic-memory / executive sub-scores
+(stimulants likely win processing speed, cholinergics memory), giving a per-domain
+class prior; (b) a **dose-response term** so under-dosed failures are separated from
+mechanism failures (feeds F1). Effort: ~3 to 4 weeks, mostly curation, and it
+de-risks every downstream claim.
+
+### F4. Causal target validation via Mendelian randomisation
+
+The class prior is associative; the V6.B genetics axis (OpenTargets L2G) is also
+associative. Deepen it with **Mendelian randomisation** on cognition GWAS to test
+whether modulating each panel target *causally* affects cognition, not merely
+correlates. This converts the genetics axis from "the locus maps to the gene" to
+"the gene is causal for the phenotype", and answers the hardest skeptic question
+about every target on the panel. Effort: ~2 to 3 weeks once cognition GWAS summary
+statistics are in hand (overlaps external blocker B3).
+
+### F5. Architectural deepening (more performance from the existing stack)
+
+- **Structure as a fused head**: feed Boltz-2 affinity into the (now NaN-robust)
+  Bayesian router alongside the four sequence heads, so structure votes in the
+  ensemble rather than sitting in a separate cache.
+- **Allosteric rescue**: the V6.A Tier-A FAIL is the stack's known weakness. Expand
+  the allosteric learn-to-rank head's training data (curated allosteric-modulator
+  affinity sets) and add an explicit allosteric-site structural feature using the
+  already-scaffolded cryptic-pocket detectors.
+- **Close the active-learning loop**: the scaffold-aware AL scorer (shipped) should
+  choose which compounds to score or validate next, so each round maximally reduces
+  predictive uncertainty.
+
+### F6. Revive the perturbational axis as signature reversal, not clustering
+
+V8's unsupervised phenotype clustering failed its pre-registered Gate 1 (AMI = 0.13;
+CL6). That kills *clustering*, not the LINCS L1000 data. A principled second attempt
+reframes the axis as a directional, supervised question: does a compound **reverse** a
+cognitive-decline / brain-ageing transcriptomic signature (Connectivity-Map signature
+reversal, Sirota 2011), rather than cluster into mechanism groups? Different
+hypothesis, same data; it may carry signal where clustering did not. It must be
+pre-registered as a fresh gate (do not re-run the failed clustering) and stay honest
+about CL6. Effort: ~2 weeks.
+
+---
+
 ## Cross-cutting limitations (standing)
 
 These are inherent to the framework and are stated honestly in every manuscript.
@@ -209,6 +341,20 @@ These are inherent to the framework and are stated honestly in every manuscript.
 7. **R5** (target-deconvolution integration): extends V8 paper scope.
 8. **B4 then R6** (wet-lab validation, then a Phase 1 trial): the external
    validation arc, longest and most expensive but the most decisive.
+
+**Frontier tier** (capability expansion, can run in parallel with the release arc):
+
+9. **F3** (scale + decompose the ledger): the highest-value rigor step; do it first
+   because it de-risks the headline at scale and feeds F1.
+10. **F1** (compound-level resolution test): the deepest open scientific question;
+    either a within-class advance or a clean publishable negative.
+11. **F2** (novel-compound onboarding engine): turns the predictor into a prospective
+    discovery screen; the direct answer to "expand to novel compounds".
+12. **F4** (causal MR target validation): associative genetics to causal; pairs with
+    the B3 GWAS fetch.
+13. **F5 + F6** (architectural deepening + perturbational signature-reversal): more
+    performance from the existing stack, plus a principled second attempt at the
+    shelved V8 axis.
 
 ---
 
@@ -306,7 +452,9 @@ the named reports below, and the manuscript suite.
 ---
 
 *Companion to `README.md`, `PROJECT_STATUS.md`, the manuscript suite, and the
-wet-lab handoff. Planned-but-unbuilt outputs are parked in `FUTURE_WORK.md`. Last
-refreshed 2026-05-30: Gaps 1 to 7 shipped, panel finished to 31 targets; the open
-items are the OSF/bioRxiv release, held-out GWAS for Gate 3, the V7 partial-pool
-tightening, and the must-have research directions above.*
+wet-lab handoff. Planned-but-unbuilt outputs and the buildable model-expansion
+roadmap are in `FUTURE_WORK.md`. Last refreshed 2026-06-06: Gaps 1 to 7 shipped,
+panel finished to 31 targets, two June correctness sweeps + the V7 PET
+reconciliation landed; the open items are the OSF/bioRxiv release, held-out GWAS for
+Gate 3, the V7 partial-pool tightening, and the Frontier directions (F1 to F6) that
+set the next-capability agenda.*

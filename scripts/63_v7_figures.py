@@ -66,7 +66,7 @@ def figure_1_pbpk_traces(output_path: Path) -> dict:
 
     for ax, anchor in zip(axes, PET_ANCHORS):
         drug = DrugParameters(
-            name=anchor.drug_name, dose_mg=anchor.dose_mg, mw_gmol=400.0,
+            name=anchor.drug_name, dose_mg=anchor.dose_mg, mw_gmol=anchor.mw_gmol,
         )
         result = simulate(drug, cfg)
         occ = occupancy_curve(

@@ -8,6 +8,51 @@ links to files that do not exist. None of these are blockers; they are optional
 follow-ups. For the live engineering gaps and research directions, see
 `GAPS_AND_RESEARCH_DIRECTIONS.md`.
 
+## Model-expansion roadmap (buildable)
+
+The research framing of these lives in `GAPS_AND_RESEARCH_DIRECTIONS.md` under
+"Frontier directions" (F1 to F6). This section lists the concrete artifacts that
+would implement them, in rough dependency order. They extend the system's
+*capability* beyond the current retrospective validator and five-paper suite. Each
+must preserve the two hard guardrails: no extrapolation to mechanisms with no
+clinical history (abstain), and honest negatives over forced positives.
+
+### A. Novel-compound onboarding engine (`scripts/_novel_compound_score.py`)
+The direct answer to "score an arbitrary new molecule for cognition". Pipeline:
+SMILES -> multi-head DTI profile over the 31-target panel -> mechanism-class
+assignment (nearest class in profile space + Tanimoto to class exemplars + scaffold
+match) -> class prior g + 90% CrI -> confidence tier. Abstains on novel mechanisms
+and routes allosteric compounds through the V6.A awareness head. Output: a ranked
+CSV with per-compound class, g, CrI, tier. Reuses cluster_a DTI, tanimoto_ranker,
+the trial-watch class table, and the multi-head OOD axis. (GAPS F2.)
+
+### B. Within-class compound ranker harness (`scripts/_within_class_resolution.py`)
+The pre-registered test of whether any compound-level feature beats the class mean.
+A per-class leave-one-compound-out comparison of [dose-adequacy from V7 brain-AUC,
+Gini selectivity, off-target liability, V6.A affinity] against the class-mean
+baseline. Emits a report; publishable either way. (GAPS F1.)
+
+### C. Ledger scaling + per-domain decomposition (`scripts/_ledger_expand_domains.py`)
+Grows the leakage-audited clinical ledger to 100 to 200+ drugs and splits the single
+Hedges' g into per-domain g (working memory / processing speed / episodic memory /
+executive). Re-runs the retrospective harness per domain. The highest-value rigor
+artifact: it tests whether AUROC 1.00 survives at scale and yields per-domain class
+priors. (GAPS F3.)
+
+### D. PBPK occupancy anchor-fit (`scripts/_pbpk_fit_anchors.py`)
+Fits per-drug {distribution volume, BBB permeability, Kd} to the 3 PET anchors so the
+V7 occupancy chain reproduces absolute occupancy, not just the dose-ordering. Upstream
+module only (does not change the headline V7 gates). (GAPS G4.)
+
+### E. Perturbational signature-reversal probe (`scripts/_signature_reversal.py`)
+Reframes the shelved V8 axis: instead of clustering phenotypes (which failed Gate 1,
+CL6), score whether a compound reverses a brain-ageing / cognitive-decline LINCS
+signature. Pre-registered as a fresh gate; does not re-run the failed clustering.
+(GAPS F6.)
+
+These are sketches, not commitments. Each should be pre-registered where it makes a
+falsifiable claim.
+
 ## Planned outputs not yet built
 
 ### 1. Calibration drift log (operational automation)

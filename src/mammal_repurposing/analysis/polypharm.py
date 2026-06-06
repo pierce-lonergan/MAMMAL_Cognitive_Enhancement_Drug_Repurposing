@@ -34,7 +34,7 @@ def compute_polypharm(
     agg = (
         hits.groupby("compound_name")
         .agg(
-            n_hits=("target_uniprot", "count"),
+            n_hits=("target_uniprot", "nunique"),
             mean_pkd_hits=("predicted_pkd", "mean"),
             max_pkd=("predicted_pkd", "max"),
             targets_hit=("target_uniprot", lambda s: ";".join(sorted(set(s)))),

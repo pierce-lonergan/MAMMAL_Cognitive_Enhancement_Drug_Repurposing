@@ -286,7 +286,7 @@ def main() -> int:
     L.append("")
     L.append("## Top-30 targets by θ̄")
     L.append("")
-    L.append("| Rank | Gene | UniProt | θ̄ | 90% HDI | w_pipeline | Anchor? |")
+    L.append("| Rank | Gene | UniProt | θ̄ | 95% CI | w_pipeline | Anchor? |")
     L.append("|---|---|---|---|---|---|---|")
     for i, (_, r) in enumerate(df.head(30).iterrows(), 1):
         anchor = "★" if r["is_reference_anchor"] else "—"

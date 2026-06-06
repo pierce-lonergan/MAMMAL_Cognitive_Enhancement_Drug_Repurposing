@@ -130,10 +130,12 @@ def build_feature_table(pairs: pd.DataFrame, *,
 def _spearman(a: np.ndarray, b: np.ndarray) -> float:
     if len(a) < 3:
         return float("nan")
-    def rank(x):
-        o = x.argsort(kind="mergesort"); r = np.empty_like(o, dtype=float)
-        r[o] = np.arange(len(x)); return r
-    ra, rb = rank(a), rank(b)
+    # Average (mid) ranks for ties — proper Spearman. The previous ordinal
+    # rank (argsort-of-argsort) miscounts ties, which matters most here because
+    # the MAMMAL "flatness" finding makes the baseline column tie-heavy.
+    from scipy.stats import rankdata
+    ra = rankdata(a).astype(float)
+    rb = rankdata(b).astype(float)
     ra -= ra.mean(); rb -= rb.mean()
     d = np.sqrt((ra**2).sum() * (rb**2).sum())
     return float((ra * rb).sum() / d) if d > 0 else float("nan")

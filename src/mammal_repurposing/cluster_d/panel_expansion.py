@@ -191,7 +191,7 @@ COGNITION_EXPANSION_TARGETS: list[tuple[str, str, str]] = [
     ("P30532", "CHRNA4", "lit_otar"),
     ("P43681", "CHRNA5", "lit_otar"),
     ("P36544", "CHRNA7", "ahba_cortical"),    # duplicate; in 22-panel
-    ("P25024", "CHRNB1", "lit_otar"),
+    ("P11230", "CHRNB1", "lit_otar"),
     ("P17787", "CHRNB2", "lit_otar"),
     ("Q05901", "CHRNB4", "lit_otar"),
     # Glutamate transporters
@@ -206,7 +206,7 @@ COGNITION_EXPANSION_TARGETS: list[tuple[str, str, str]] = [
     ("O43526", "KCNQ2", "ahba_cortical"),     # duplicate; in 22-panel
     ("O43525", "KCNQ3", "ahba_cortical"),     # duplicate; in 22-panel
     ("O60741", "HCN1", "ahba_cortical"),      # duplicate; in 22-panel
-    ("Q9Y3Q4", "HCN2", "ahba_cortical"),
+    ("Q9UL51", "HCN2", "ahba_cortical"),
     ("Q9P1Z3", "HCN3", "ahba_cortical"),
     ("Q9Y3Q4", "HCN4", "ahba_cortical"),
     ("Q15858", "SCN9A", "magma_p"),
@@ -230,7 +230,7 @@ COGNITION_EXPANSION_TARGETS: list[tuple[str, str, str]] = [
     # Histamine + orexin
     ("Q9Y5N1", "HRH3", "ahba_cortical"),     # duplicate
     ("P35367", "HRH1", "ahba_cortical"),
-    ("P25024", "HRH2", "ahba_cortical"),
+    ("P25021", "HRH2", "ahba_cortical"),
     ("O43614", "HCRTR2", "ahba_cortical"),   # duplicate
     ("O43613", "HCRTR1", "ahba_cortical"),   # duplicate
     # Adenosine + Sleep

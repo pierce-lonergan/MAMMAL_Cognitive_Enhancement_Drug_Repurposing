@@ -6,14 +6,14 @@ New classes: BACE_inhibitor, GSK3_inhibitor, GlyT1_NMDA_coagonist, M1_M4_muscari
 
 ## Does purity hold?
 
-**17/17 classes remain outcome-pure; 0 mixed.** Expanded class-LOCO **AUROC = 0.995** (permutation p = 0.0002).
+**17/17 classes remain outcome-pure; 0 mixed.** Expanded class-LOCO **AUROC = 0.990** (permutation p = 0.0002).
 
 Every new class is also outcome-pure: the AD small-molecule classes (BACE, γ-secretase, GSK3) and the GlyT1 NMDA-coagonist class are uniformly FAILURE; the PDE4 and M1/M4 classes are uniformly SUCCESS. Class homogeneity persists in this expansion — the field really is class-stratified at the mechanism level.
 
 ## Temporal + taxonomy on the expanded set
 
 - Prequential 'as-of' AUROC: **1.000** (informed n=24); full 0.909 (n=41). The 2017–2025 readouts (BACE wave, iclepertin) are now predicted from earlier same-class failures.
-- Taxonomy perturbation: observed 1.00 vs random null 0.47 ± 0.13 (frac reaching observed 0.000).
+- Taxonomy perturbation: observed 0.99 vs random null 0.45 ± 0.13 (frac reaching observed 0.000).
 
 ## Honest caveat
 

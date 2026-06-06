@@ -216,16 +216,23 @@ def i_novel_score(
     else:
         r_theta_phen = 0.0
 
-    # Combined target-genetic correlation = mean of |r_pchembl_phen|, |r_theta_phen|
-    target_phen_corr = (abs(r_pchembl_phen) + abs(r_theta_phen)) / 2.0
+    # Combined target-genetic correlation. Use the MAX of the marginal |r|, not
+    # the mean: a compound is "explained" by the target/genetic axes if EITHER
+    # correlates with phenotype. Averaging let an uninformative (constant) axis,
+    # forced to r=0 above, halve the combined correlation and score genuinely
+    # non-novel compounds as half-novel.
+    target_phen_corr = max(abs(r_pchembl_phen), abs(r_theta_phen))
 
     out: dict[str, float] = {}
     for e in posterior.entries:
         # Per-compound prob_phen_high via sigmoid
         prob_phen_high = float(1.0 / (1.0 + math.exp(-2.5 * e.phen_cosine)))
-        # I_novel: high when phen high AND target-genetic axes uninformative
-        i_novel = prob_phen_high * (1.0 - target_phen_corr) / e.phen_tau
-        # Inflated by chemCPA uncertainty: τ_chemCPA > 1 → less confident I_novel
+        # I_novel = π_p · [1 − I(π_p; (π_t, π_g))]: high when phenotype is high
+        # AND the target/genetic axes do not explain it. Matches the documented
+        # formula (no τ term — the previous `/ e.phen_tau` silently down-weighted
+        # high-uncertainty chemCPA imputations, which is undocumented and risks
+        # double-counting τ wherever it is applied in ranking).
+        i_novel = prob_phen_high * (1.0 - target_phen_corr)
         out[e.compound] = float(max(0.0, min(1.0, i_novel)))
     return out
 
