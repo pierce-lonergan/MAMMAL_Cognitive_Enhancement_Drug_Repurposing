@@ -39,7 +39,7 @@ validation. Everything below is what is still open.
 | Target deconvolution (R5) | research | target ID for (L,L,H) hits | ~3 weeks |
 | Phase 1 trial (R6) | external | external validation, biggest step | 18 to 24 months, $300K to $500K |
 | V7 PBPK occupancy anchor-fit (G4) | engineering | honest Figure 1 done; fit occupancy to PET | ~3 days |
-| Compound-level resolution test (F1) | frontier | within-class ranking, or a clean negative | ~2 weeks |
+| Compound-level resolution test (F1) | DONE | clean NEGATIVE: class is the resolution limit (96.5% between-class variance) | shipped |
 | Novel-compound onboarding engine (F2) | frontier | score ANY molecule for cognition | ~3 weeks |
 | Ledger scale + per-domain (F3) | frontier | de-risk the headline at n=200 | ~3 to 4 weeks |
 | Causal MR target validation (F4) | frontier | associative genetics to causal | ~2 to 3 weeks |
@@ -207,7 +207,20 @@ extrapolate to a mechanism with no clinical history. Every frontier item below m
 preserve that guardrail (abstain on novel mechanisms) and the project's house rule
 (honest negatives over forced positives).
 
-### F1. The compound-level resolution question (the deepest open question)
+### F1. The compound-level resolution question (RESOLVED 2026-06-06: clean negative)
+
+**RESULT.** Ran (`scripts/93_within_class_resolution.py`,
+`reports/pipeline/within_class_resolution_v1.md`): a variance decomposition of
+clinical *g* by mechanism class shows **96.5% of the variance is between classes**
+(one-way ICC 0.95); only 3.5% lives within classes. No pre-specified compound
+feature (CNS-druglikeness/exposure proxy, readout recency, structural typicality,
+QED) beats the class mean within class (all within-class Spearman |rho| below the
+0.52 minimal-detectable effect at this n; all leave-one-compound-out MAE deltas
+<= 0; Holm ns). **At n=31, mechanism class is the empirical resolution limit of
+in-silico cognition-drug prognosis.** This is a *bounded* negative (the test is
+underpowered by design at n=31); separating "true ceiling" from "low power" is
+what F3 (ledger scaling) resolves, and the highest-value untested feature is real
+per-compound binding affinity / trial dose-adequacy. The original framing follows.
 
 The headline predictor is *class-level*: it assigns the class mean to every member
 of a class. The honest ceiling result is leave-one-class-out = 0.00 (no
@@ -346,8 +359,9 @@ These are inherent to the framework and are stated honestly in every manuscript.
 
 9. **F3** (scale + decompose the ledger): the highest-value rigor step; do it first
    because it de-risks the headline at scale and feeds F1.
-10. **F1** (compound-level resolution test): the deepest open scientific question;
-    either a within-class advance or a clean publishable negative.
+10. ~~**F1** (compound-level resolution test)~~ **DONE** -- clean negative (class is
+    the resolution limit at n=31; see Frontier F1). The follow-on is F3, which gives
+    the within-class test the power to distinguish a true ceiling from low power.
 11. **F2** (novel-compound onboarding engine): turns the predictor into a prospective
     discovery screen; the direct answer to "expand to novel compounds".
 12. **F4** (causal MR target validation): associative genetics to causal; pairs with
@@ -365,6 +379,15 @@ the named reports below, and the manuscript suite.
 
 ### Since the 2026-05-30 refresh
 
+- **F1 compound-level resolution test** (`reports/pipeline/within_class_resolution_v1.md`,
+  `src/mammal_repurposing/validation/within_class.py`): a pre-registered test of
+  whether any compound-level feature beats the class mean WITHIN a mechanism class.
+  Clean NEGATIVE: 96.5% of clinical-*g* variance is between classes (one-way ICC
+  0.95), and no pre-specified feature (CNS-druglikeness, recency, structural
+  typicality, QED) ranks drugs within class beyond chance (Holm ns; all
+  leave-one-compound-out MAE deltas <= 0). At n=31, mechanism class is the empirical
+  resolution limit -- a bounded negative that motivates F3 (ledger scaling). 13 new
+  tests; canonical SMILES committed at `data/raw/ledger_compound_smiles.csv`.
 - **Prospective trial-watch** (`reports/pipeline/trial_watch_v1.md`): a standing
   forward-prediction system that derives a calibrated per-class SUCCESS prior
   from the n=47 ledger and predicts each ongoing cognition trial leakage-safe

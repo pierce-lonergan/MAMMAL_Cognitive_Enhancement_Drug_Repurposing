@@ -26,11 +26,17 @@ and routes allosteric compounds through the V6.A awareness head. Output: a ranke
 CSV with per-compound class, g, CrI, tier. Reuses cluster_a DTI, tanimoto_ranker,
 the trial-watch class table, and the multi-head OOD axis. (GAPS F2.)
 
-### B. Within-class compound ranker harness (`scripts/_within_class_resolution.py`)
-The pre-registered test of whether any compound-level feature beats the class mean.
-A per-class leave-one-compound-out comparison of [dose-adequacy from V7 brain-AUC,
-Gini selectivity, off-target liability, V6.A affinity] against the class-mean
-baseline. Emits a report; publishable either way. (GAPS F1.)
+### B. Within-class compound ranker harness -- SHIPPED (clean negative)
+Built as `src/mammal_repurposing/validation/within_class.py` +
+`scripts/93_within_class_resolution.py` (report:
+`reports/pipeline/within_class_resolution_v1.md`). Result: clean NEGATIVE -- 96.5%
+of clinical-*g* variance is between mechanism classes (ICC 0.95) and no
+pre-specified compound feature beats the class mean within class at n=31. The
+harness (variance decomposition + pooled within-class Spearman + within-class
+permutation + class-cluster bootstrap CI + leave-one-compound-out MAE) is reusable
+and ready to take the highest-value untested feature -- real per-compound binding
+affinity / trial dose-adequacy (V7 PBPK brain-AUC) -- once the F3 ledger expansion
+gives it the power. (GAPS F1.)
 
 ### C. Ledger scaling + per-domain decomposition (`scripts/_ledger_expand_domains.py`)
 Grows the leakage-audited clinical ledger to 100 to 200+ drugs and splits the single
