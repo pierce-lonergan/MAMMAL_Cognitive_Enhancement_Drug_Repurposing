@@ -43,11 +43,14 @@ Built as `src/mammal_repurposing/validation/ledger_scaling.py` +
 `scripts/94_ledger_scaling.py` (report: `reports/pipeline/ledger_scaling_v1.md`).
 The scaling trajectory, per-domain stratification, and power roadmap run on the real
 cited ledgers (n=31 -> 47): class separation survives (AUROC 0.967, 20/20 pure, ICC
-0.95) and the F1 power target is ~65-118 drugs in SUCCESS classes. What remains is
-the genuine literature curation to that n (deliberately not auto-generated;
-`docs/LEDGER_CURATION.md` is the protocol, and `load_all_ledgers()` ingests any
-schema-conforming batch) and per-(drug, domain) sub-score g for true decomposition.
-(GAPS F3.)
+0.95) and the F1 power target is ~65-118 drugs in SUCCESS classes. An Opus
+multi-agent research + adversarial-verification run then added 78 web-verified drugs
+(`clinical_outcomes_ledger_RESEARCH.csv`) -> n=125, hitting the target and revealing
+that purity is **scale-sensitive** (raw class-LOCO AUROC 0.77, ~0.91 under
+conservative coding; anti-amyloid mAbs the one robust mixed class). That batch is
+RESEARCH-GRADE -- what remains is **human adjudication** of the 14 borderline SUCCESS
+codings + the AChE safety-vs-efficacy failures, and per-(drug, domain) sub-score g for
+true decomposition. Protocol: `docs/LEDGER_CURATION.md`. (GAPS F3.)
 
 ### D. PBPK occupancy anchor-fit (`scripts/_pbpk_fit_anchors.py`)
 Fits per-drug {distribution volume, BBB permeability, Kd} to the 3 PET anchors so the

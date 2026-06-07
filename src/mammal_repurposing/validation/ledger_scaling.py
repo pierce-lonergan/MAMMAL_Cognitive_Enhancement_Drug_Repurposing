@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -50,6 +51,9 @@ def load_all_ledgers(paths: list) -> pd.DataFrame:
     across all three files."""
     frames = []
     for step, p in enumerate(paths):
+        if not Path(p).exists():
+            logger.info("ledger path absent, skipping: %s", p)
+            continue
         df = pd.read_csv(p, comment="#")
         df = df[df["clinical_outcome"].isin(["SUCCESS", "FAILURE"])].copy()
         df["_step"] = step
@@ -204,6 +208,50 @@ class PowerRoadmap:
     cur_within_classes: int
     avg_within_per_class: float
     targets: dict[float, dict]   # rho0 -> {n_eff, mult, implied_total_n}
+
+
+def research_sensitivity(paths: list, provenance_path) -> dict:
+    """Sensitivity of the class-LOCO AUROC on the full (research-augmented)
+    ledger to (a) singleton classes the predictor cannot leverage, and (b) the
+    controversial SUCCESS codings flagged in the research-batch provenance.
+
+    Returns the full AUROC, the multi-member-only AUROC, the AUROC with flagged
+    borderline successes recoded to FAILURE (conservative) or dropped, plus the
+    list of mixed-outcome classes. Distinguishes a real signal drop from coding
+    noise + the structural need for class siblings.
+    """
+    led = load_all_ledgers(paths)
+
+    def _au(df):
+        pr = class_loco_g(df)
+        s = df["compound"].map(pr).to_numpy(dtype=float)
+        return auroc(s, df["label"].to_numpy(dtype=int))
+
+    sz = led.groupby("mechanism_class")["compound"].transform("count")
+    border: set[str] = set()
+    if Path(provenance_path).exists():
+        prov = pd.read_csv(provenance_path)
+        if "borderline_success" in prov.columns:
+            border = set(prov[prov["borderline_success"].astype(str).str.lower()
+                              == "true"]["compound"].str.lower())
+    ledc = led.copy()
+    m = ledc["compound"].str.lower().isin(border)
+    ledc.loc[m, "clinical_outcome"] = "FAILURE"
+    ledc.loc[m, "clinical_g"] = 0.0
+    ledc["label"] = (ledc["clinical_outcome"] == "SUCCESS").astype(int)
+    g = led.groupby("mechanism_class")["label"].agg(["sum", "count"])
+    mixed = g[(g["sum"] > 0) & (g["sum"] < g["count"])]
+    return {
+        "n": len(led),
+        "n_singletons": int((sz == 1).sum()),
+        "n_borderline": int(m.sum()),
+        "auroc_full": _au(led),
+        "auroc_multi": _au(led[sz >= 2]),
+        "auroc_borderline_fail": _au(ledc),
+        "auroc_borderline_drop": _au(led[~led["compound"].str.lower().isin(border)]),
+        "mixed": {str(c): (int(r["sum"]), int(r["count"] - r["sum"]))
+                  for c, r in mixed.iterrows()},
+    }
 
 
 def within_class_power_roadmap(ledger: pd.DataFrame,
