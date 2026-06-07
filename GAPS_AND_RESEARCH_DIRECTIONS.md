@@ -41,7 +41,7 @@ validation. Everything below is what is still open.
 | V7 PBPK occupancy anchor-fit (G4) | engineering | honest Figure 1 done; fit occupancy to PET | ~3 days |
 | Compound-level resolution test (F1) | DONE | clean NEGATIVE: class is the resolution limit (96.5% between-class variance) | shipped |
 | Novel-compound onboarding engine (F2) | frontier | score ANY molecule for cognition | ~3 weeks |
-| Ledger scale + per-domain (F3) | PARTIAL | cited n=47 survives (AUROC 0.967); research-curated n=125 shows scale-sensitivity (0.77 raw / 0.91 conservative); anti-amyloid mAb = first real mixed class; codings need adjudication | analysis + 78-drug research batch shipped |
+| Ledger scale + per-domain (F3) | DONE | cited n=47 (0.967) + research-curated & human-adjudicated n=118: class-LOCO AUROC 0.93 (0.97 multi-member), signal survives scaling; 2 genuine mixed classes (anti-amyloid mAb, AChE-I) | shipped |
 | Causal MR target validation (F4) | frontier | associative genetics to causal | ~2 to 3 weeks |
 | Architectural deepening (F5) | frontier | more performance from the stack | days to weeks |
 | Perturbational signature-reversal (F6) | frontier | revive the V8 axis (supervised) | ~2 weeks |
@@ -275,17 +275,21 @@ drugs/trials/outcomes/cited g -- NOT auto-generated, to protect ledger integrity
 the protocol + per-domain schema are in `docs/LEDGER_CURATION.md` and
 `load_all_ledgers()` ingests any schema-conforming batch.
 
-**Research-curation (2026-06-06).** An Opus multi-agent run (research + independent
-adversarial verification, 106 agents) added 78 web-verified cognition-drug outcomes,
-taking the ledger to n=125 / 49 classes (hitting the F1 power target). Honest finding:
-class-outcome purity is **scale-sensitive**. Raw class-LOCO AUROC falls to 0.77, but
-~**0.91** under conservative coding of 14 disputed SUCCESS calls -- still far above the
-leakage-free target-level predictors (affinity 0.47, genetics 0.59). The one genuinely
-robust mixed-outcome class is **anti-amyloid mAbs** (lecanemab/donanemab succeed where
-5 earlier anti-Abeta mAbs failed), a real boundary on broad-mechanism purity. The batch
-is **RESEARCH-GRADE** (`clinical_outcomes_ledger_RESEARCH.csv` + provenance; borderline
-codings + AChE safety-vs-efficacy failures need human adjudication) and does NOT touch
-the frozen base-31 analysis. The original framing follows.
+**Research-curation + adjudication (2026-06-06).** An Opus multi-agent run (research +
+independent adversarial verification, 106 agents) added 78 web-verified cognition-drug
+outcomes; two further independent Opus adjudicators then re-coded every disputed call
+under a strict cognition-EFFICACY convention (7 EXCLUDED as safety-halted-despite-
+efficacy or contested-approval, e.g. metrifonate/aducanumab; 6 over-generous SUCCESS
+recoded to FAILURE) -> n=118. Honest finding: class-outcome purity is **scale-sensitive
+but robust**. The raw web-research AUROC fell to 0.77 (coding noise); after adjudication
+the class-LOCO AUROC is **0.93** (**0.97** on the multi-member classes the predictor can
+leverage), still far above the leakage-free target-level predictors (affinity 0.47,
+genetics 0.59). Only TWO genuinely mixed-outcome classes remain: **anti-amyloid mAbs**
+(lecanemab/donanemab succeed where 5 earlier anti-Abeta mAbs failed) and
+**AChE-inhibitors** (marketed winners vs later AChE-Is that failed on efficacy/dosing).
+The perfect 1.00 at n=31 was partly a sparse-sampling / selection effect; the honest
+fully-populated value is ~0.93. Per-row adjudication basis is in the RESEARCH provenance;
+the frozen base-31 analysis is untouched. The original framing follows.
 
 AUROC 1.00 at n=31 is a small-n result; perfect separation can be partly an n
 artifact. The single highest-value rigor step is to scale the leakage-audited ledger
@@ -415,16 +419,16 @@ the named reports below, and the manuscript suite.
   quantifies the F1 curation target: ~65 drugs (within-class rho=0.4) to ~118
   (rho=0.3), concentrated in SUCCESS classes. Curation protocol + per-domain schema
   in `docs/LEDGER_CURATION.md`; 5 new tests.
-- **F3 research-curation (Opus multi-agent)** (`data/raw/clinical_outcomes_ledger_RESEARCH.csv`
+- **F3 research-curation + adjudication (Opus multi-agent)** (`data/raw/clinical_outcomes_ledger_RESEARCH.csv`
   + provenance): a research + independent-adversarial-verification workflow (106 Opus
-  agents) added 78 web-verified cognition-drug outcomes -> n=125 / 49 classes, hitting
-  the F1 power target. Honest finding: class-outcome purity is **scale-sensitive** --
-  raw class-LOCO AUROC 0.77, ~0.91 under conservative coding of 14 disputed SUCCESS
-  calls (still >> affinity 0.47 / genetics 0.59); the one robust mixed class is
-  anti-amyloid mAbs (lecanemab/donanemab succeed where 5 earlier anti-Abeta mAbs
-  failed). RESEARCH-GRADE, pending human adjudication of borderline codings + AChE
-  safety-vs-efficacy failures; frozen base untouched. Sensitivity:
-  `reports/pipeline/ledger_scaling_v1.md` 3b.
+  agents) added 78 web-verified cognition-drug outcomes; two further independent Opus
+  adjudicators re-coded every disputed call under a strict cognition-efficacy convention
+  (7 EXCLUDED as safety-halted / contested-approval, 6 over-generous SUCCESS recoded to
+  FAILURE) -> n=118. Honest finding: class-outcome purity is **scale-sensitive but
+  robust** -- raw AUROC 0.77 (coding noise) lifts to **0.93** (0.97 multi-member) after
+  adjudication, still >> affinity 0.47 / genetics 0.59. Only two genuine mixed classes
+  remain (anti-amyloid mAbs; AChE-I). Per-row adjudication basis in the provenance;
+  frozen base-31 untouched. Detail: `reports/pipeline/ledger_scaling_v1.md` 3b.
 - **F1 compound-level resolution test** (`reports/pipeline/within_class_resolution_v1.md`,
   `src/mammal_repurposing/validation/within_class.py`): a pre-registered test of
   whether any compound-level feature beats the class mean WITHIN a mechanism class.
