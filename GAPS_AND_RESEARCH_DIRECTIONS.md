@@ -41,7 +41,7 @@ validation. Everything below is what is still open.
 | V7 PBPK occupancy anchor-fit (G4) | engineering | honest Figure 1 done; fit occupancy to PET | ~3 days |
 | Compound-level resolution test (F1) | DONE | clean NEGATIVE: class is the resolution limit (96.5% between-class variance) | shipped |
 | Novel-compound onboarding engine (F2) | frontier | score ANY molecule for cognition | ~3 weeks |
-| Ledger scale + per-domain (F3) | frontier | de-risk the headline at n=200 | ~3 to 4 weeks |
+| Ledger scale + per-domain (F3) | PARTIAL | scaling survives to n=47 (AUROC 0.967, 100% pure, ICC 0.95); power target ~65-118 drugs; curation remains | analysis + infra shipped |
 | Causal MR target validation (F4) | frontier | associative genetics to causal | ~2 to 3 weeks |
 | Architectural deepening (F5) | frontier | more performance from the stack | days to weeks |
 | Perturbational signature-reversal (F6) | frontier | revive the V8 axis (supervised) | ~2 weeks |
@@ -259,7 +259,22 @@ head (G3) is a required sub-component. The highest-value output: compounds in
 strong-precedent classes that have NOT been tried for cognition. Effort: ~3 weeks.
 This is the most direct answer to "expand to novel compounds".
 
-### F3. Scale and decompose the clinical ledger (the highest-value rigor investment)
+### F3. Scale and decompose the clinical ledger (PARTIAL 2026-06-06: analysis + infra shipped)
+
+**RESULT.** Ran (`scripts/94_ledger_scaling.py`,
+`reports/pipeline/ledger_scaling_v1.md`): the class-separation result **survives
+scaling on the real cited ledgers** (base 31 -> +EXTENSION 42 -> +CT.gov 47):
+class-LOCO AUROC 1.000 -> 0.990 -> 0.967, all 20 classes stay 100% outcome-pure,
+and 97% of clinical-*g* variance stays between-class (ICC 0.95) -- the headline is
+not a small-n artifact of the original 31. Within-domain class separation holds in
+the largest domain (AD global-amnestic, AUROC 0.92). The **power roadmap** (the
+actionable output) says the F1 within-class test needs ~65 drugs (within-class
+rho=0.4) up to ~118 (rho=0.3), concentrated in multi-member SUCCESS classes with
+genuine within-class g spread. What remains is genuine literature curation (real
+drugs/trials/outcomes/cited g -- NOT auto-generated, to protect ledger integrity);
+the protocol + per-domain schema are in `docs/LEDGER_CURATION.md` and
+`load_all_ledgers()` ingests any schema-conforming batch. The original framing
+follows.
 
 AUROC 1.00 at n=31 is a small-n result; perfect separation can be partly an n
 artifact. The single highest-value rigor step is to scale the leakage-audited ledger
@@ -357,8 +372,10 @@ These are inherent to the framework and are stated honestly in every manuscript.
 
 **Frontier tier** (capability expansion, can run in parallel with the release arc):
 
-9. **F3** (scale + decompose the ledger): the highest-value rigor step; do it first
-   because it de-risks the headline at scale and feeds F1.
+9. **F3** (scale + decompose the ledger): analysis + infra **shipped** -- scaling
+   survives to n=47 (AUROC 0.967, ICC 0.95) and the power roadmap sets the target
+   (~65-118 drugs). The remaining work is the cited literature curation itself
+   (`docs/LEDGER_CURATION.md`).
 10. ~~**F1** (compound-level resolution test)~~ **DONE** -- clean negative (class is
     the resolution limit at n=31; see Frontier F1). The follow-on is F3, which gives
     the within-class test the power to distinguish a true ceiling from low power.
@@ -379,6 +396,15 @@ the named reports below, and the manuscript suite.
 
 ### Since the 2026-05-30 refresh
 
+- **F3 ledger scaling + per-domain + power roadmap** (`reports/pipeline/ledger_scaling_v1.md`,
+  `src/mammal_repurposing/validation/ledger_scaling.py`): the class-separation
+  result survives the cited n=31 -> 47 expansion (class-LOCO AUROC 1.000 -> 0.967,
+  20/20 classes outcome-pure, ICC 0.95), so it is not a small-n artifact. Per-domain
+  stratification holds in AD global-amnestic (AUROC 0.92). The power roadmap
+  quantifies the F1 curation target: ~65 drugs (within-class rho=0.4) to ~118
+  (rho=0.3), concentrated in SUCCESS classes. Curation protocol + per-domain schema
+  in `docs/LEDGER_CURATION.md`; 5 new tests. Remaining: the cited literature
+  curation itself (not auto-generated, to protect ledger integrity).
 - **F1 compound-level resolution test** (`reports/pipeline/within_class_resolution_v1.md`,
   `src/mammal_repurposing/validation/within_class.py`): a pre-registered test of
   whether any compound-level feature beats the class mean WITHIN a mechanism class.

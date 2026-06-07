@@ -38,12 +38,16 @@ and ready to take the highest-value untested feature -- real per-compound bindin
 affinity / trial dose-adequacy (V7 PBPK brain-AUC) -- once the F3 ledger expansion
 gives it the power. (GAPS F1.)
 
-### C. Ledger scaling + per-domain decomposition (`scripts/_ledger_expand_domains.py`)
-Grows the leakage-audited clinical ledger to 100 to 200+ drugs and splits the single
-Hedges' g into per-domain g (working memory / processing speed / episodic memory /
-executive). Re-runs the retrospective harness per domain. The highest-value rigor
-artifact: it tests whether AUROC 1.00 survives at scale and yields per-domain class
-priors. (GAPS F3.)
+### C. Ledger scaling + per-domain decomposition -- analysis + infra SHIPPED
+Built as `src/mammal_repurposing/validation/ledger_scaling.py` +
+`scripts/94_ledger_scaling.py` (report: `reports/pipeline/ledger_scaling_v1.md`).
+The scaling trajectory, per-domain stratification, and power roadmap run on the real
+cited ledgers (n=31 -> 47): class separation survives (AUROC 0.967, 20/20 pure, ICC
+0.95) and the F1 power target is ~65-118 drugs in SUCCESS classes. What remains is
+the genuine literature curation to that n (deliberately not auto-generated;
+`docs/LEDGER_CURATION.md` is the protocol, and `load_all_ledgers()` ingests any
+schema-conforming batch) and per-(drug, domain) sub-score g for true decomposition.
+(GAPS F3.)
 
 ### D. PBPK occupancy anchor-fit (`scripts/_pbpk_fit_anchors.py`)
 Fits per-drug {distribution volume, BBB permeability, Kd} to the 3 PET anchors so the
