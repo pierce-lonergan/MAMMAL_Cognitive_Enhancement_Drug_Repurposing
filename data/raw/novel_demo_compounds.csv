@@ -1,0 +1,9 @@
+name,smiles,smiles_kind,cid,rationale
+ipidacrine,C1CCC2=C(C1)C(=C3CCCC3=N2)N,connectivity,604519,AChE inhibitor (tacrine analog); expect route to AChE_inhibitor
+phentermine,CC(C)(CC1=CC=CC=C1)N,connectivity,4771,catecholamine releaser/stimulant; expect catecholaminergic
+fencamfamine,CCNC1C2CCC(C2)C1C3=CC=CC=C3,connectivity,14584,dopamine reuptake inhibitor; expect catecholaminergic
+caffeine,CN1C=NC2=C1C(=O)N(C(=O)N2C)C,connectivity,2519,adenosine antagonist (no ledger class); ambiguity/abstain test
+aspirin,CC(=O)OC1=CC=CC=C1C(=O)O,connectivity,2244,peripheral COX; expect ABSTAIN (out-of-manifold)
+ibuprofen,CC(C)CC1=CC=C(C=C1)C(C)C(=O)O,connectivity,3672,peripheral COX; expect ABSTAIN
+loratadine,CCOC(=O)N1CCC(=C2C3=C(CCC4=C2N=CC=C4)C=C(C=C3)Cl)CC1,connectivity,3957,peripheral H1; expect ABSTAIN
+atorvastatin,CC(C)C1=C(C(=C(N1CCC(CC(CC(=O)O)O)O)C2=CC=C(C=C2)F)C3=CC=CC=C3)C(=O)NC4=CC=CC=C4,connectivity,60823,peripheral HMG-CoA; expect ABSTAIN

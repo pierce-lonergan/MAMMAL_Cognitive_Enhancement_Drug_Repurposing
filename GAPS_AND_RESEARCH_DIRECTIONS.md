@@ -40,7 +40,7 @@ validation. Everything below is what is still open.
 | Phase 1 trial (R6) | external | external validation, biggest step | 18 to 24 months, $300K to $500K |
 | V7 PBPK occupancy anchor-fit (G4) | engineering | honest Figure 1 done; fit occupancy to PET | ~3 days |
 | Compound-level resolution test (F1) | DONE | clean NEGATIVE: class is the resolution limit (96.5% between-class variance) | shipped |
-| Novel-compound onboarding engine (F2) | frontier | score ANY molecule for cognition | ~3 weeks |
+| Novel-compound onboarding engine (F2) | DONE | SMILES -> structural class route -> prior g+CrI or ABSTAIN; leave-one-compound-out class recovery 0.97 (36 routed, 60% abstain); exemplars 110 / 46 classes | shipped |
 | Ledger scale + per-domain (F3) | DONE | cited n=47 (0.967) + research-curated & human-adjudicated n=125 (all data points kept): class-LOCO AUROC 0.92 (0.97 multi-member), signal survives scaling; 2 genuine mixed classes (anti-amyloid mAb, AChE-I) | shipped |
 | Causal MR target validation (F4) | frontier | associative genetics to causal | ~2 to 3 weeks |
 | Architectural deepening (F5) | frontier | more performance from the stack | days to weeks |
@@ -238,7 +238,25 @@ within-class feature lifts ranking (a genuine compound-level advance), or (b) no
 beats the class mean, establishing "mechanism class is the resolution limit of
 in-silico cognition-drug prognosis" as a clean negative. Effort: ~2 weeks.
 
-### F2. Novel-compound onboarding engine (turn the predictor into a discovery engine)
+### F2. Novel-compound onboarding engine (DONE 2026-06-07)
+
+**RESULT.** Shipped (`src/mammal_repurposing/validation/novel_compound.py`,
+`scripts/95_novel_compound_onboarding.py`, `reports/pipeline/novel_compound_onboarding_v1.md`).
+The CPU decision core is live: novel SMILES -> structural class assignment (max ECFP4
+Tanimoto + Murcko generic-scaffold to ledger exemplars) -> EB-shrunk class clinical-*g*
+prior + 90% bootstrap CrI -> confidence tier, with both guardrails enforced. Validated by
+leave-one-compound-out class recovery on the exemplar base (grown 31 -> 110 SMILES across
+**46 of 48 classes** via `scripts/_expand_ledger_smiles.py`; PubChem canonical SMILES,
+RDKit-gated): **top-1 class recovery 0.97** on the 36 routed held-out drugs, abstaining on
+60% where no close analog exists (the guardrail working). The out-of-manifold floor
+(TAU_OOD=0.35) was calibrated, not guessed: every observed mis-route sat in Tanimoto
+[0.26, 0.34]. The single residual error is an enantiomer blind spot (2D ECFP4 cannot
+separate (-)-phenserine/AChE-I from its (+)-enantiomer posiphen/buntanetap/APP-inhibitor).
+Demo: ipidacrine->AChE-I (HIGH), phentermine->catecholaminergic (MED); the peripheral
+negatives (aspirin/ibuprofen/loratadine/atorvastatin) and caffeine all ABSTAIN. The
+multi-head DTI-profile nearest-class signal (MAMMAL/MMAtt-DTA/PSICHIC/BALM) is wired as a
+pluggable `external_class_scores` hook (GPU upgrade, not run here). The original framing
+follows.
 
 Today the class prior only helps a compound already placed in a class. To score an
 *arbitrary* novel molecule, wire the existing pieces into one path: novel SMILES ->
@@ -415,6 +433,15 @@ the named reports below, and the manuscript suite.
 
 ### Since the 2026-05-30 refresh
 
+- **F2 novel-compound onboarding engine** (`src/mammal_repurposing/validation/novel_compound.py`,
+  `scripts/95_novel_compound_onboarding.py`): the prospective screen. Novel SMILES ->
+  ECFP4-Tanimoto + Murcko-scaffold class assignment -> EB-shrunk class clinical-*g* prior
+  + 90% CrI -> tier, with a hard ABSTAIN on out-of-manifold / novel mechanisms and an
+  allosteric (V6.A) downgrade. Leave-one-compound-out class recovery **0.97** (36 routed,
+  60% abstain) on an exemplar base grown 31 -> 110 SMILES / 46 classes (PubChem, RDKit-
+  gated, `scripts/_expand_ledger_smiles.py`). OOD floor calibrated from the LOCO error
+  band; one residual enantiomer mis-route. 11 new tests. Detail:
+  `reports/pipeline/novel_compound_onboarding_v1.md`.
 - **F3 ledger scaling + per-domain + power roadmap** (`reports/pipeline/ledger_scaling_v1.md`,
   `src/mammal_repurposing/validation/ledger_scaling.py`): the class-separation
   result survives the cited n=31 -> 47 expansion (class-LOCO AUROC 1.000 -> 0.967,

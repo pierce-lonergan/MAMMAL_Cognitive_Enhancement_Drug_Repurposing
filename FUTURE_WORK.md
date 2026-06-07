@@ -17,14 +17,21 @@ would implement them, in rough dependency order. They extend the system's
 must preserve the two hard guardrails: no extrapolation to mechanisms with no
 clinical history (abstain), and honest negatives over forced positives.
 
-### A. Novel-compound onboarding engine (`scripts/_novel_compound_score.py`)
-The direct answer to "score an arbitrary new molecule for cognition". Pipeline:
-SMILES -> multi-head DTI profile over the 31-target panel -> mechanism-class
-assignment (nearest class in profile space + Tanimoto to class exemplars + scaffold
-match) -> class prior g + 90% CrI -> confidence tier. Abstains on novel mechanisms
-and routes allosteric compounds through the V6.A awareness head. Output: a ranked
-CSV with per-compound class, g, CrI, tier. Reuses cluster_a DTI, tanimoto_ranker,
-the trial-watch class table, and the multi-head OOD axis. (GAPS F2.)
+### A. Novel-compound onboarding engine -- SHIPPED
+Built as `src/mammal_repurposing/validation/novel_compound.py` +
+`scripts/95_novel_compound_onboarding.py` (report:
+`reports/pipeline/novel_compound_onboarding_v1.md`). The direct answer to "score an
+arbitrary new molecule for cognition": novel SMILES -> structural class assignment (max
+ECFP4 Tanimoto + Murcko generic-scaffold to ledger exemplars) -> EB-shrunk class
+clinical-g prior + 90% bootstrap CrI -> confidence tier, abstaining on out-of-manifold /
+novel mechanisms and downgrading allosteric (V6.A) classes. Validated by leave-one-
+compound-out class recovery: **0.97** top-1 on 36 routed held-out drugs (60% abstain --
+the guardrail), on an exemplar base grown 31 -> 110 SMILES across 46/48 classes
+(`scripts/_expand_ledger_smiles.py`; PubChem canonical SMILES, RDKit-gated). The
+multi-head DTI-profile nearest-class signal (MAMMAL/MMAtt-DTA/PSICHIC/BALM) is wired as a
+pluggable `external_class_scores` hook (GPU upgrade, not run). Output: a ranked CSV with
+per-compound class, predicted g, CrI, tier, and abstain reason. What remains is the GPU
+profile signal and a larger vendor-catalogue run. (GAPS F2.)
 
 ### B. Within-class compound ranker harness -- SHIPPED (clean negative)
 Built as `src/mammal_repurposing/validation/within_class.py` +
