@@ -41,7 +41,7 @@ validation. Everything below is what is still open.
 | V7 PBPK occupancy anchor-fit (G4) | engineering | honest Figure 1 done; fit occupancy to PET | ~3 days |
 | Compound-level resolution test (F1) | DONE | clean NEGATIVE: class is the resolution limit (96.5% between-class variance) | shipped |
 | Novel-compound onboarding engine (F2) | frontier | score ANY molecule for cognition | ~3 weeks |
-| Ledger scale + per-domain (F3) | DONE | cited n=47 (0.967) + research-curated & human-adjudicated n=118: class-LOCO AUROC 0.93 (0.97 multi-member), signal survives scaling; 2 genuine mixed classes (anti-amyloid mAb, AChE-I) | shipped |
+| Ledger scale + per-domain (F3) | DONE | cited n=47 (0.967) + research-curated & human-adjudicated n=125 (all data points kept): class-LOCO AUROC 0.91 (0.97 multi-member), signal survives scaling; 2 genuine mixed classes (anti-amyloid mAb, AChE-I) | shipped |
 | Causal MR target validation (F4) | frontier | associative genetics to causal | ~2 to 3 weeks |
 | Architectural deepening (F5) | frontier | more performance from the stack | days to weeks |
 | Perturbational signature-reversal (F6) | frontier | revive the V8 axis (supervised) | ~2 weeks |
@@ -278,17 +278,20 @@ the protocol + per-domain schema are in `docs/LEDGER_CURATION.md` and
 **Research-curation + adjudication (2026-06-06).** An Opus multi-agent run (research +
 independent adversarial verification, 106 agents) added 78 web-verified cognition-drug
 outcomes; two further independent Opus adjudicators then re-coded every disputed call
-under a strict cognition-EFFICACY convention (7 EXCLUDED as safety-halted-despite-
-efficacy or contested-approval, e.g. metrifonate/aducanumab; 6 over-generous SUCCESS
-recoded to FAILURE) -> n=118. Honest finding: class-outcome purity is **scale-sensitive
-but robust**. The raw web-research AUROC fell to 0.77 (coding noise); after adjudication
-the class-LOCO AUROC is **0.93** (**0.97** on the multi-member classes the predictor can
-leverage), still far above the leakage-free target-level predictors (affinity 0.47,
+under a strict cognition-EFFICACY convention. All 78 are kept as binary data points
+(no exclusions): the safety-halted metrifonate/eptastigmine are retained as SUCCESS on
+their clean positive cognition pivotals, while unverifiable or contested-benefit drugs
+(velnacrine, aducanumab, sodium oligomannate, masitinib, nicergoline) are FAILURE; 11
+over-generous SUCCESS calls were recoded to FAILURE in total -> n=125. Honest finding:
+class-outcome purity is **scale-sensitive but robust**. The raw web-research AUROC fell
+to 0.77 (coding noise); after adjudication the class-LOCO AUROC is **0.91** (**0.97** on
+the multi-member classes the predictor can leverage), still far above the leakage-free
+target-level predictors (affinity 0.47,
 genetics 0.59). Only TWO genuinely mixed-outcome classes remain: **anti-amyloid mAbs**
 (lecanemab/donanemab succeed where 5 earlier anti-Abeta mAbs failed) and
 **AChE-inhibitors** (marketed winners vs later AChE-Is that failed on efficacy/dosing).
 The perfect 1.00 at n=31 was partly a sparse-sampling / selection effect; the honest
-fully-populated value is ~0.93. Per-row adjudication basis is in the RESEARCH provenance;
+fully-populated value is ~0.91. Per-row adjudication basis is in the RESEARCH provenance;
 the frozen base-31 analysis is untouched. The original framing follows.
 
 AUROC 1.00 at n=31 is a small-n result; perfect separation can be partly an n
@@ -423,9 +426,11 @@ the named reports below, and the manuscript suite.
   + provenance): a research + independent-adversarial-verification workflow (106 Opus
   agents) added 78 web-verified cognition-drug outcomes; two further independent Opus
   adjudicators re-coded every disputed call under a strict cognition-efficacy convention
-  (7 EXCLUDED as safety-halted / contested-approval, 6 over-generous SUCCESS recoded to
-  FAILURE) -> n=118. Honest finding: class-outcome purity is **scale-sensitive but
-  robust** -- raw AUROC 0.77 (coding noise) lifts to **0.93** (0.97 multi-member) after
+  (all 78 kept as binary data points -- no exclusions; 11 over-generous SUCCESS recoded
+  to FAILURE; safety-halted metrifonate/eptastigmine retained as SUCCESS on their
+  positive cognition pivotals) -> n=125. Honest finding: class-outcome purity is
+  **scale-sensitive but robust** -- raw AUROC 0.77 (coding noise) lifts to **0.91**
+  (0.97 multi-member) after
   adjudication, still >> affinity 0.47 / genetics 0.59. Only two genuine mixed classes
   remain (anti-amyloid mAbs; AChE-I). Per-row adjudication basis in the provenance;
   frozen base-31 untouched. Detail: `reports/pipeline/ledger_scaling_v1.md` 3b.

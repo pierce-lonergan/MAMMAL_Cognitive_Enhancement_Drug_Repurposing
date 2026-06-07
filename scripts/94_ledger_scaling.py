@@ -142,12 +142,14 @@ def main() -> int:
         L.append(f"An Opus multi-agent run (106 agents: research + independent adversarial "
                  f"verification) added 78 web-verified cognition-drug outcomes; every disputed "
                  f"SUCCESS/FAILURE call was then re-adjudicated by two independent Opus "
-                 f"adjudicators under a strict cognition-EFFICACY convention (7 EXCLUDED as "
-                 f"safety-halted-despite-efficacy or contested-approval, e.g. metrifonate, "
-                 f"aducanumab; 6 over-generous SUCCESS recoded to FAILURE). The adjudicated "
-                 f"batch (per-row verdict + cited basis in the provenance) extends the ledger "
-                 f"to n={s['n']} / {last.n_classes} classes -- meeting the F1 power target. The "
-                 f"frozen base-31 analysis is untouched.")
+                 f"adjudicators under a strict cognition-EFFICACY convention. All 78 are kept as "
+                 f"binary data points (no exclusions): safety-halted drugs with a clean positive "
+                 f"cognition pivotal (metrifonate, eptastigmine) stay SUCCESS, while unverifiable "
+                 f"or contested-benefit drugs (velnacrine, aducanumab, sodium oligomannate, "
+                 f"masitinib, nicergoline) are FAILURE; 11 over-generous SUCCESS calls were recoded "
+                 f"to FAILURE in total. The ledger reaches n={s['n']} / {last.n_classes} classes "
+                 f"-- meeting the F1 power target; per-row verdict + cited basis are in the "
+                 f"provenance. The frozen base-31 analysis is untouched.")
         L.append("")
         L.append("| Scenario | n | class-LOCO AUROC |")
         L.append("|---|---|---|")
@@ -164,7 +166,7 @@ def main() -> int:
                  f"above the leakage-free target-level predictors (affinity 0.47, genetics 0.59) "
                  f"-- the raw 0.77 was coding noise, not signal collapse. The perfect 1.00 at "
                  f"n=31 was partly a sparse-sampling / selection effect; the honest value with "
-                 f"full class population is ~0.93.")
+                 f"full class population is ~{s['auroc_full']:.2f}.")
         L.append("")
         L.append("After adjudication only TWO genuinely mixed-outcome classes remain (S/F): "
                  + "; ".join(f"{c} {sf[0]}/{sf[1]}" for c, sf in sorted(s["mixed"].items()))

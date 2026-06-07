@@ -1,20 +1,21 @@
-# WEB-RESEARCHED batch (F3 curation), now HUMAN-ADJUDICATED. Rows were found by
-# Opus research agents, independently existence-verified, then each disputed
-# SUCCESS/FAILURE call was re-adjudicated by two independent Opus adjudicators
-# under a strict cognition-EFFICACY convention (conservative; safety-halted or
-# contested-approval drugs -> EXCLUDE). clinical_outcome=EXCLUDE rows are kept
-# here for transparency but are auto-dropped by load_all_ledgers (it keeps only
-# SUCCESS/FAILURE). Per-row adjudication verdict + cited basis + the original
-# verifier source: clinical_outcomes_ledger_RESEARCH_provenance.csv. Coarse
-# rank-based g. The frozen base-31 analysis does NOT use this file.
+# WEB-RESEARCHED batch (F3 curation), HUMAN-ADJUDICATED, ALL ROWS INCLUDED.
+# Rows found by Opus research agents, independently existence-verified, then each
+# disputed SUCCESS/FAILURE call re-adjudicated by two independent Opus adjudicators
+# under a strict cognition-EFFICACY convention. Per user directive no rows are
+# EXCLUDEd: every adjudicable drug is a binary data point. SUCCESS = a clean
+# field-accepted positive pivotal on cognition existed (regardless of reaching
+# market, e.g. safety-halted metrifonate/eptastigmine); FAILURE = null/unverifiable/
+# disputed/unconfirmed cognition efficacy. Per-row verdict + cited basis:
+# clinical_outcomes_ledger_RESEARCH_provenance.csv. Coarse rank-based g. The frozen
+# base-31 analysis does NOT use this file.
 compound,mechanism_class,target_uniprot,indication,pivotal_trial,readout_year,clinical_outcome,clinical_g,endpoint,citation
-eptastigmine,AChE_inhibitor,P22303,mild-to-moderate Alzheimer's disease,Eptastigmine 24-week multicenter RCT (Imbimbo et al. Neurology 1999),1999,EXCLUDE,0.0,ADAS-Cog,PMID:10078713
+eptastigmine,AChE_inhibitor,P22303,mild-to-moderate Alzheimer's disease,Eptastigmine 24-week multicenter RCT (Imbimbo et al. Neurology 1999),1999,SUCCESS,0.3,ADAS-Cog,PMID:10078713
 huperzine A,AChE_inhibitor,P22303,mild-to-moderate Alzheimer's disease,"NIA/ADCS-funded U.S. Phase 2 RCT (Rafii et al., Neurology 2011)",2011,FAILURE,0.0,ADAS-Cog,PMID:21502597
 ladostigil,AChE_inhibitor,P22303,mild cognitive impairment (prevention of progression to AD),Low-dose ladostigil MCI Phase 2 (Schneider et al. Neurology 2019),2019,FAILURE,0.0,Progression to AD dementia (primary); NTB cognitive composite (secondary),PMID:31492718
-metrifonate,AChE_inhibitor,P22303,mild-to-moderate Alzheimer's disease,Metrifonate Study Group (Morris et al.) Phase 3,1998,EXCLUDE,0.0,ADAS-Cog,PMID:9595967
+metrifonate,AChE_inhibitor,P22303,mild-to-moderate Alzheimer's disease,Metrifonate Study Group (Morris et al.) Phase 3,1998,SUCCESS,0.35,ADAS-Cog,PMID:9595967
 phenserine,AChE_inhibitor,P22303,mild-to-moderate Alzheimer's disease,"Axonyx phenserine Phase 3 program (two multicenter trials, mild-to-moderate AD)",2005,FAILURE,0.0,ADAS-Cog (with CIBIC+ co-primary),https://www.alzforum.org/therapeutics/phenserine
 tacrine,AChE_inhibitor,P22303,mild-to-moderate Alzheimer's disease,Tacrine Study Group 30-week trial (Knapp et al. JAMA 1994),1994,SUCCESS,0.4,ADAS-Cog,PMID:8139083
-velnacrine,AChE_inhibitor,P22303,mild-to-moderate Alzheimer's disease,"Mentane Study Group double-blind placebo-controlled trial (Zemlan 1996, dose-ranging + dose-replication; companion: Antuono 1995)",1996,EXCLUDE,0.0,ADAS-Cog,PMID:9013398
+velnacrine,AChE_inhibitor,P22303,mild-to-moderate Alzheimer's disease,"Mentane Study Group double-blind placebo-controlled trial (Zemlan 1996, dose-ranging + dose-replication; companion: Antuono 1995)",1996,FAILURE,0.0,ADAS-Cog,PMID:9013398
 CX-717,AMPA_PAM,P42261,cognitive performance during sleep deprivation / simulated night-shift work,Wesensten 2007 simulated night-shift work RCT,2007,FAILURE,0.0,psychomotor vigilance / cognitive performance and alertness battery,PMID:17955941
 Org 26576,AMPA_PAM,P42261,adult attention-deficit/hyperactivity disorder,Adler 2012 Phase 2 crossover (Biol Psychiatry 72:971-977),2012,FAILURE,0.0,Adult ADHD Investigator Symptom Rating Scale (AISRS) total score,PMID:22771238
 aniracetam,AMPA_PAM,P42262,senile dementia of the Alzheimer type,Senin et al. multicentre RCT (Ro 13-5057),1991,FAILURE,0.0,psychobehavioural/cognitive rating battery (vs placebo and baseline),PMID:1822317
@@ -44,12 +45,12 @@ dalzanemdor,NMDA_glycine_coagonist,Q05586,cognitive impairment associated with H
 bryostatin-1,PKC_activator,Q02156,moderately severe to severe Alzheimer's disease,Neurotrope Phase 2 (NCT02431468),2018,FAILURE,0.0,SIB (Severe Impairment Battery),PMID:30530975
 pioglitazone,PPARG_agonist,P37231,prevention of MCI in cognitively normal at-risk older adults,TOMMORROW (Phase 3),2021,FAILURE,0.0,time to diagnosis of MCI due to Alzheimer's disease,PMID:34146512
 rosiglitazone,PPARG_agonist,P37231,mild-to-moderate Alzheimer's disease (adjunctive to AChE inhibitors),REFLECT-2 / REFLECT-3 (two Phase 3 studies),2011,FAILURE,0.0,ADAS-Cog and CDR-SB (co-primary),PMID:21592048
-nicergoline,alpha1_adrenoceptor_antagonist,P35348,mild-to-moderate dementia / age-associated cognitive impairment,Cochrane CD003159 (Fioravanti & Flicker),2001,EXCLUDE,0.0,MMSE,PMID:11687175
+nicergoline,alpha1_adrenoceptor_antagonist,P35348,mild-to-moderate dementia / age-associated cognitive impairment,Cochrane CD003159 (Fioravanti & Flicker),2001,FAILURE,0.0,MMSE,PMID:11687175
 RG3487 (MEM-3454),alpha7_nAChR,P36544,cognitive impairment associated with schizophrenia (CIAS),Umbricht 2014 Phase 2 RCT (Roche/Memory Pharmaceuticals),2014,FAILURE,0.0,MCCB composite T-score,PMID:24549101
-sodium oligomannate,amyloid_aggregation_inhibitor,nan,mild-to-moderate Alzheimer's disease (dementia),"GV-971 Phase 3 (Xiao et al., Alzheimer's Research & Therapy 2021)",2021,EXCLUDE,0.0,ADAS-Cog12,PMID 33731209
+sodium oligomannate,amyloid_aggregation_inhibitor,nan,mild-to-moderate Alzheimer's disease (dementia),"GV-971 Phase 3 (Xiao et al., Alzheimer's Research & Therapy 2021)",2021,FAILURE,0.0,ADAS-Cog12,PMID 33731209
 tramiprosate,amyloid_aggregation_inhibitor,P05067,mild-to-moderate Alzheimer's disease,"Alphase Study (Phase 3, North America)",2011,FAILURE,0.0,ADAS-Cog (co-primary with CDR-SB),PMID 22291741
 valiltramiprosate,amyloid_aggregation_inhibitor,P05067,early Alzheimer's disease (APOE4/4 homozygotes),"APOLLOE4 (NCT04770220, Phase 3)",2025,FAILURE,0.0,ADAS-Cog13,https://pmc.ncbi.nlm.nih.gov/articles/PMC12726020/
-aducanumab,anti_amyloid_beta_mab,P05067,early Alzheimer's disease,EMERGE (NCT02484547) / ENGAGE (NCT02477800),2022,EXCLUDE,0.0,CDR-SB,PMID:35542991
+aducanumab,anti_amyloid_beta_mab,P05067,early Alzheimer's disease,EMERGE (NCT02484547) / ENGAGE (NCT02477800),2022,FAILURE,0.0,CDR-SB,PMID:35542991
 bapineuzumab,anti_amyloid_beta_mab,P05067,mild-to-moderate Alzheimer's disease,"Bapineuzumab 301/302 (Salloway et al., NEJM 2014; NCT00575055 carriers / NCT00574132 noncarriers)",2014,FAILURE,0.0,ADAS-Cog11,PMID:24450891
 crenezumab,anti_amyloid_beta_mab,P05067,prodromal-to-mild (early) Alzheimer's disease,CREAD / CREAD2 (NCT02670083 / NCT03114657),2022,FAILURE,0.0,CDR-SB,PMID:36121669
 donanemab,anti_amyloid_beta_mab,P05067,early symptomatic Alzheimer's disease,TRAILBLAZER-ALZ 2 (NCT04437511),2023,SUCCESS,0.5,iADRS,PMID:37459141
@@ -83,6 +84,6 @@ gosuranemab,tau_targeting,P10636,early Alzheimer's disease (MCI-to-mild),NCT0335
 hydromethylthionine,tau_targeting,P10636,Alzheimer's disease (mild-to-moderate),"NCT01689246 (TRx-237-015, Gauthier 2016)",2016,FAILURE,0.0,ADAS-Cog11,PMID:27863809
 tilavonemab,tau_targeting,P10636,early Alzheimer's disease,NCT02880956,2023,FAILURE,0.0,CDR-SB,PMID:36730056
 zagotenemab,tau_targeting,P10636,early symptomatic Alzheimer's disease,PERISCOPE-ALZ (NCT03518073),2024,FAILURE,0.0,iADRS,PMID:38386949
-masitinib,tyrosine_kinase_inhibitor,P10721,mild-to-moderate Alzheimer's disease (adjunct to ChEI/memantine),"AB09004 (NCT01872598, Phase 3)",2023,EXCLUDE,0.0,ADAS-Cog,PMID 36849969
+masitinib,tyrosine_kinase_inhibitor,P10721,mild-to-moderate Alzheimer's disease (adjunct to ChEI/memantine),"AB09004 (NCT01872598, Phase 3)",2023,FAILURE,0.0,ADAS-Cog,PMID 36849969
 nilotinib,tyrosine_kinase_inhibitor,P00519,mild-to-moderate Alzheimer's disease,"NCT02947893 (Turner et al., Phase 2)",2020,FAILURE,0.0,"Primary: safety, tolerability, pharmacokinetics. Secondary/exploratory: amyloid PET, CSF Abeta42/p-tau biomarkers and cognitive/clinical/functional/behavioral measures",PMID 32468646
 saracatinib,tyrosine_kinase_inhibitor,P06241,mild-to-moderate Alzheimer's disease,"NCT02167256 (CONNECT, Phase 2a)",2019,FAILURE,0.0,"FDG-PET cerebral glucose metabolism (CMRgl) primary; ADAS-Cog11, CDR-SB, MMSE, ADCS-ADL secondary",PMID:31329216
