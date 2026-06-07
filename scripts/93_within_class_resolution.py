@@ -99,13 +99,23 @@ def build_features(ledger: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
     return df, feats
 
 
-def min_detectable_rho(n_pairs: int, alpha: float = 0.05) -> float:
+def min_detectable_rho(n_pairs: int, n_classes: int = 0,
+                       alpha: float = 0.05) -> float:
     """Approximate two-sided minimal detectable Spearman rho at 80% power for a
-    pooled within-class sample of n effective points (Fisher-z)."""
-    if n_pairs <= 4:
+    pooled WITHIN-class sample (Fisher-z).
+
+    The test partials out class membership, a categorical with ``n_classes``
+    levels, which costs ``n_classes - 1`` degrees of freedom: the partial-
+    correlation standard error is ``1/sqrt(n - k - 3)`` for ``k`` partialled
+    covariates, so the effective df is ``n_pairs - (n_classes - 1) - 3``, not
+    ``n_pairs - 3``. Using the uncorrected ``n_pairs - 3`` overstates power
+    (understates the detectable effect). ``n_classes = 0`` recovers the
+    uncontrolled bivariate case."""
+    eff = n_pairs - max(n_classes - 1, 0) - 3
+    if eff <= 0:
         return float("nan")
     from scipy.stats import norm
-    z = (norm.ppf(1 - alpha / 2) + norm.ppf(0.80)) / np.sqrt(n_pairs - 3)
+    z = (norm.ppf(1 - alpha / 2) + norm.ppf(0.80)) / np.sqrt(eff)
     return float(np.tanh(z))
 
 
@@ -204,9 +214,12 @@ def main() -> int:
 
     L.append("## 4. Power")
     L.append("")
-    npts = max((r.n_points for r in results.values()), default=0)
-    mdr = min_detectable_rho(npts)
-    L.append(f"- Pooled within-class effective points: ~{npts}.")
+    best = max(results.values(), key=lambda r: r.n_points, default=None)
+    npts = best.n_points if best is not None else 0
+    ncls = best.n_classes if best is not None else 0
+    mdr = min_detectable_rho(npts, ncls)
+    L.append(f"- Pooled within-class effective points: ~{npts} across {ncls} "
+             f"non-flat classes (the class df is subtracted).")
     L.append(f"- Minimal detectable within-rho at 80% power: "
              f"**{mdr:.2f}** (|rho| below this is indistinguishable from noise "
              f"at this n).")

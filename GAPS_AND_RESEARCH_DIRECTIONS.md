@@ -41,7 +41,7 @@ validation. Everything below is what is still open.
 | V7 PBPK occupancy anchor-fit (G4) | engineering | honest Figure 1 done; fit occupancy to PET | ~3 days |
 | Compound-level resolution test (F1) | DONE | clean NEGATIVE: class is the resolution limit (96.5% between-class variance) | shipped |
 | Novel-compound onboarding engine (F2) | frontier | score ANY molecule for cognition | ~3 weeks |
-| Ledger scale + per-domain (F3) | DONE | cited n=47 (0.967) + research-curated & human-adjudicated n=125 (all data points kept): class-LOCO AUROC 0.91 (0.97 multi-member), signal survives scaling; 2 genuine mixed classes (anti-amyloid mAb, AChE-I) | shipped |
+| Ledger scale + per-domain (F3) | DONE | cited n=47 (0.967) + research-curated & human-adjudicated n=125 (all data points kept): class-LOCO AUROC 0.92 (0.97 multi-member), signal survives scaling; 2 genuine mixed classes (anti-amyloid mAb, AChE-I) | shipped |
 | Causal MR target validation (F4) | frontier | associative genetics to causal | ~2 to 3 weeks |
 | Architectural deepening (F5) | frontier | more performance from the stack | days to weeks |
 | Perturbational signature-reversal (F6) | frontier | revive the V8 axis (supervised) | ~2 weeks |
@@ -267,7 +267,8 @@ scaling on the real cited ledgers** (base 31 -> +EXTENSION 42 -> +CT.gov 47):
 class-LOCO AUROC 1.000 -> 0.990 -> 0.967, all 20 classes stay 100% outcome-pure,
 and 97% of clinical-*g* variance stays between-class (ICC 0.95) -- the headline is
 not a small-n artifact of the original 31. Within-domain class separation holds in
-the largest domain (AD global-amnestic, AUROC 0.92). The **power roadmap** (the
+the largest mixed domain (AD global-amnestic, AUROC 0.79 on the full n=125 ledger,
+across its 59 drugs). The **power roadmap** (the
 actionable output) says the F1 within-class test needs ~65 drugs (within-class
 rho=0.4) up to ~118 (rho=0.3), concentrated in multi-member SUCCESS classes with
 genuine within-class g spread. What remains is genuine literature curation (real
@@ -284,14 +285,14 @@ their clean positive cognition pivotals, while unverifiable or contested-benefit
 (velnacrine, aducanumab, sodium oligomannate, masitinib, nicergoline) are FAILURE; 11
 over-generous SUCCESS calls were recoded to FAILURE in total -> n=125. Honest finding:
 class-outcome purity is **scale-sensitive but robust**. The raw web-research AUROC fell
-to 0.77 (coding noise); after adjudication the class-LOCO AUROC is **0.91** (**0.97** on
+to 0.77 (coding noise); after adjudication the class-LOCO AUROC is **0.92** (**0.97** on
 the multi-member classes the predictor can leverage), still far above the leakage-free
 target-level predictors (affinity 0.47,
 genetics 0.59). Only TWO genuinely mixed-outcome classes remain: **anti-amyloid mAbs**
 (lecanemab/donanemab succeed where 5 earlier anti-Abeta mAbs failed) and
 **AChE-inhibitors** (marketed winners vs later AChE-Is that failed on efficacy/dosing).
 The perfect 1.00 at n=31 was partly a sparse-sampling / selection effect; the honest
-fully-populated value is ~0.91. Per-row adjudication basis is in the RESEARCH provenance;
+fully-populated value is ~0.92. Per-row adjudication basis is in the RESEARCH provenance;
 the frozen base-31 analysis is untouched. The original framing follows.
 
 AUROC 1.00 at n=31 is a small-n result; perfect separation can be partly an n
@@ -418,7 +419,8 @@ the named reports below, and the manuscript suite.
   `src/mammal_repurposing/validation/ledger_scaling.py`): the class-separation
   result survives the cited n=31 -> 47 expansion (class-LOCO AUROC 1.000 -> 0.967,
   20/20 classes outcome-pure, ICC 0.95), so it is not a small-n artifact. Per-domain
-  stratification holds in AD global-amnestic (AUROC 0.92). The power roadmap
+  stratification holds in AD global-amnestic (AUROC 0.79 on the full n=125 ledger).
+  The power roadmap
   quantifies the F1 curation target: ~65 drugs (within-class rho=0.4) to ~118
   (rho=0.3), concentrated in SUCCESS classes. Curation protocol + per-domain schema
   in `docs/LEDGER_CURATION.md`; 5 new tests.
@@ -429,7 +431,7 @@ the named reports below, and the manuscript suite.
   (all 78 kept as binary data points -- no exclusions; 11 over-generous SUCCESS recoded
   to FAILURE; safety-halted metrifonate/eptastigmine retained as SUCCESS on their
   positive cognition pivotals) -> n=125. Honest finding: class-outcome purity is
-  **scale-sensitive but robust** -- raw AUROC 0.77 (coding noise) lifts to **0.91**
+  **scale-sensitive but robust** -- raw AUROC 0.77 (coding noise) lifts to **0.92**
   (0.97 multi-member) after
   adjudication, still >> affinity 0.47 / genetics 0.59. Only two genuine mixed classes
   remain (anti-amyloid mAbs; AChE-I). Per-row adjudication basis in the provenance;

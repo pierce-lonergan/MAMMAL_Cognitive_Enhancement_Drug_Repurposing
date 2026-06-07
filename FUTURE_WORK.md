@@ -47,7 +47,7 @@ cited ledgers (n=31 -> 47): class separation survives (AUROC 0.967, 20/20 pure, 
 multi-agent research + adversarial-verification run added 78 web-verified drugs, then
 two further independent Opus adjudicators re-coded every disputed call under a strict
 cognition-efficacy convention. All 78 are kept as binary data points (no exclusions;
-11 over-generous SUCCESS recoded to FAILURE) -> n=125. Result: class-LOCO AUROC **0.91**
+11 over-generous SUCCESS recoded to FAILURE) -> n=125. Result: class-LOCO AUROC **0.92**
 (0.97 multi-member) -- the class-history signal survives scaling (the raw 0.77 was
 coding noise); two genuine mixed classes remain (anti-amyloid mAbs, AChE-I). What
 remains is per-(drug, domain) sub-score g for true decomposition. Protocol + per-row

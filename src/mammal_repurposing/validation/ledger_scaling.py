@@ -27,6 +27,7 @@ numpy/scipy only, so it runs in CI and is fully testable.
 from __future__ import annotations
 
 import logging
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -103,10 +104,16 @@ _DOMAIN_RULES: list[tuple[str, str]] = [
 
 
 def assign_domain(endpoint: str) -> str:
-    """Map a pivotal-endpoint string to a primary cognitive domain."""
+    """Map a pivotal-endpoint string to a primary cognitive domain.
+
+    Token matching is word-boundary anchored so short acronyms do not match
+    inside unrelated words (e.g. the Epworth 'ess' must not fire inside
+    'progr-ess-ion' / 'impr-ess-ion' / 'alertn-ess'). Hyphenated tokens like
+    'adhd-rs', 'cdr-sb', 'n-back' still match (the boundary is non-[a-z]).
+    """
     e = str(endpoint).lower()
     for token, dom in _DOMAIN_RULES:
-        if token in e:
+        if re.search(r"(?<![a-z])" + re.escape(token) + r"(?![a-z])", e):
             return dom
     return "other"
 

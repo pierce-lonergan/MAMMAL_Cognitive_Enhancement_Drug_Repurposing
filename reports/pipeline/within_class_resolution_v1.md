@@ -49,8 +49,8 @@ Pooled within-class partial Spearman (class removed), with a within-class permut
 
 ## 4. Power
 
-- Pooled within-class effective points: ~27.
-- Minimal detectable within-rho at 80% power: **0.52** (|rho| below this is indistinguishable from noise at this n).
+- Pooled within-class effective points: ~27 across 8 non-flat classes (the class df is subtracted).
+- Minimal detectable within-rho at 80% power: **0.59** (|rho| below this is indistinguishable from noise at this n).
 - Within-class *g* SD across non-flat classes: 0.044 (mean), max 0.138.
 
 ## 5. Verdict

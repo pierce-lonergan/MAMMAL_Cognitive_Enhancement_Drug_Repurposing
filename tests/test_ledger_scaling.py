@@ -41,6 +41,54 @@ def test_assign_domain_known_endpoints():
     assert assign_domain("something weird") == "other"
 
 
+def test_assign_domain_word_boundary_regression():
+    """Short acronym tokens must not match inside longer words.
+
+    Regression for the bare-substring bug where the Epworth 'ess' token fired
+    inside progr-ESS-ion / impr-ESS-ion / alertn-ESS, manufacturing a spurious
+    'wakefulness' domain that scored a fake AUROC=1.0. These are the exact real
+    endpoint strings from the ledger that triggered it."""
+    # the real artifact rows — none of these are sleep-wake endpoints
+    assert assign_domain(
+        "Progression to AD dementia (primary); NTB cognitive composite (secondary)"
+    ) == "functional_composite"
+    assert assign_domain(
+        "global cognitive/clinical change (global impression of change + "
+        "cognition-specific measures)"
+    ) != "wakefulness"
+    assert assign_domain(
+        "psychomotor vigilance / cognitive performance and alertness battery"
+    ) != "wakefulness"
+    # 'function' must not match inside 'functional' on a non-cognitive primary
+    assert assign_domain(
+        "Primary: safety, tolerability, pharmacokinetics"
+    ) == "other"
+    # but the genuine Epworth / MWT tokens still map to wakefulness
+    assert assign_domain("ESS") == "wakefulness"
+    assert assign_domain("Epworth Sleepiness Scale (ESS) and MWT") == "wakefulness"
+    # hyphenated multi-token acronyms still match (boundary is non-[a-z])
+    assert assign_domain("CDR-SB") == "global_amnestic"
+    assert assign_domain("n-back working memory") == "working_memory"
+
+
+def test_min_detectable_rho_df_correction():
+    """min_detectable_rho must subtract the class degrees of freedom: partialling
+    a k-level categorical costs k-1 df, so detectable rho is LARGER (less power)
+    than the uncorrected n-3 formula. n_classes=0 recovers the bivariate case."""
+    from importlib import util as _u
+    spec = _u.spec_from_file_location(
+        "_s93", ROOT / "scripts" / "93_within_class_resolution.py")
+    s93 = _u.module_from_spec(spec)
+    spec.loader.exec_module(s93)
+    mdr = s93.min_detectable_rho
+    # subtracting class df reduces effective n -> raises the detectable floor
+    assert mdr(40, n_classes=8) > mdr(40, n_classes=0)
+    # n_classes=0 == legacy n-3 bivariate value
+    assert mdr(40, n_classes=0) == pytest.approx(mdr(40), abs=1e-9)
+    # degenerate guard: effective df <= 0 -> nan
+    assert np.isnan(mdr(5, n_classes=8))
+
+
 def test_n_eff_for_rho_monotone_and_known():
     # smaller target effect -> needs more points
     assert n_eff_for_rho(0.3) > n_eff_for_rho(0.4) > n_eff_for_rho(0.5)
