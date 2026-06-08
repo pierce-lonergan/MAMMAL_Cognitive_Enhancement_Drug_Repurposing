@@ -34,8 +34,18 @@ multi-head DTI-profile nearest-class signal (the spec's signal a) was TESTED on 
 leave-one-compound-out recovery 0.97 vs profile-only 0.11 vs blended 0.49 (blending hurts).
 The MAMMAL profile is near-non-selective on this panel (property-correlation bias), so it
 stays an OFF-by-default `external_class_scores` hook and structure remains primary. Output:
-a ranked CSV with per-compound class, predicted g, CrI, tier, and abstain reason. What
-remains is a larger vendor-catalogue run on the structure router. (GAPS F2.)
+a ranked CSV with per-compound class, predicted g, CrI, tier, and abstain reason.
+
+**Catalogue capstone (shipped).** `scripts/_fetch_chembl_approved.py` +
+`scripts/98_f2_catalogue_screen.py` (report `reports/pipeline/f2_catalogue_shortlist_v1.md`
++ `f2_catalogue_shortlist.csv`) run the engine over the full ChEMBL approved-drug set
+(3,417 rows -> 2,267 unique drug-like parents). 93 route; **31 land in a strong-precedent
+class** (catecholaminergic_ADHD / wake_promoting / AChE_inhibitor) and are not in the
+cognition ledger -- the actionable repurposing surface. Real signal (genuine
+cholinesterase inhibitors neostigmine/demecarium/distigmine/benzgalantamine; NRI-scaffold
+antidepressants fluoxetine/duloxetine; selegiline) alongside honestly-flagged
+coincidental hits. Next: prior-trial verification of the shortlist via the trial-watch
+system. (GAPS F2.)
 
 ### B. Within-class compound ranker harness -- SHIPPED (clean negative)
 Built as `src/mammal_repurposing/validation/within_class.py` +
@@ -74,6 +84,19 @@ Reframes the shelved V8 axis: instead of clustering phenotypes (which failed Gat
 CL6), score whether a compound reverses a brain-ageing / cognitive-decline LINCS
 signature. Pre-registered as a fresh gate; does not re-run the failed clustering.
 (GAPS F6.)
+
+### F. PERSEUS persistence-aware engine -- v1 SHIPPED, layers remaining
+Built as `src/mammal_repurposing/engine/` (`cns_exposure.py` L1, `reversibility.py` L3,
+`perseus.py` orchestrator) + `scripts/100_perseus.py` (report `perseus_v1.md`; full design +
+roadmap `perseus_design.md`). Two orthogonal heads (symptomatic class prior vs abstain-by-
+default persistence). Remaining layers, in dependency order: (1) L1 Stage-3 efflux-aware
+free-exposure Kp,uu regressor + conformal applicability band (returns ABSTAIN until fit);
+(2) a persistence-target DTI module (HDAC/DNMT/EHMT/KEAP1/MTOR/eIF2B/BCL2/SRC/NTRK2 added to
+the MAMMAL panel) so L3 reads substrate from predicted engagement, not only class + alert;
+(3) L4 full permissive-window head (TrkB transmembrane-domain binding + intracellular-5-HT2A
+access); (4) a persistence ground-truth ledger (delayed-start / discontinuation / washout
+cognition outcomes) + the PU / leave-one-mechanism-out evaluator and persistence-illusion
+negative-control suite; (5) population x regime + bias-provenance covariates. (GAPS F8.)
 
 These are sketches, not commitments. Each should be pre-registered where it makes a
 falsifiable claim.

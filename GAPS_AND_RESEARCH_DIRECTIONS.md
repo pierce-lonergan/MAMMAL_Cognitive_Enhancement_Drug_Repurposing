@@ -41,6 +41,8 @@ validation. Everything below is what is still open.
 | V7 PBPK occupancy anchor-fit (G4) | engineering | honest Figure 1 done; fit occupancy to PET | ~3 days |
 | Compound-level resolution test (F1) | DONE | clean NEGATIVE: class is the resolution limit (96.5% between-class variance) | shipped |
 | Novel-compound onboarding engine (F2) | DONE | SMILES -> structural class route -> prior g+CrI or ABSTAIN; leave-one-compound-out class recovery 0.97 (36 routed, 60% abstain); exemplars 110 / 46 classes | shipped |
+| Persistence-after-cessation axis (F7) | DONE v1 | symptomatic vs disease-modifying; null-by-default + cited evidence-design hierarchy (delayed-start RCT = gold standard); F2 shortlist 3 live / 13 null / 15 exclude, 0 demonstrated-healthy | shipped |
+| PERSEUS persistence-aware engine (F8) | DONE v1 | two orthogonal heads (symptomatic class prior vs abstain-by-default persistence); L1 free-brain CNS gate + L3 state-vs-tone substrate + L5 evidence governor; control panel 12/12; from a 26-agent adversarially-verified Opus design | shipped |
 | Ledger scale + per-domain (F3) | DONE | cited n=47 (0.967) + research-curated & human-adjudicated n=125 (all data points kept): class-LOCO AUROC 0.92 (0.97 multi-member), signal survives scaling; 2 genuine mixed classes (anti-amyloid mAb, AChE-I) | shipped |
 | Causal MR target validation (F4) | frontier | associative genetics to causal | ~2 to 3 weeks |
 | Architectural deepening (F5) | frontier | more performance from the stack | days to weeks |
@@ -264,7 +266,15 @@ on this panel (median within-compound pKd SD 0.37; donepezil/galantamine/pitolis
 modafinil share the same top targets) - the documented property-correlation bias - so it
 cannot route mechanism classes. Structure stays primary; the profile remains a documented
 pluggable `external_class_scores` hook, OFF by default. Honest negative, coherent with the
-weak affinity signal (AUROC 0.47). The original framing follows.
+weak affinity signal (AUROC 0.47).
+
+**Catalogue capstone (DONE).** The structure router was run over the full ChEMBL approved-
+drug set (`scripts/_fetch_chembl_approved.py` + `scripts/98_f2_catalogue_screen.py`,
+`reports/pipeline/f2_catalogue_shortlist_v1.md`): 3,417 -> 2,267 unique drug-like parents
+-> 93 routed -> **31 repurposing hypotheses** in strong-precedent classes not in the
+ledger (genuine cholinesterase inhibitors + atomoxetine-scaffold antidepressants +
+selegiline, with honestly-flagged coincidental hits). This is the actionable output of F2:
+a ranked, prior-quantified, structure-grounded triage surface. The original framing follows.
 
 Today the class prior only helps a compound already placed in a class. To score an
 *arbitrary* novel molecule, wire the existing pieces into one path: novel SMILES ->
@@ -366,6 +376,48 @@ hypothesis, same data; it may carry signal where clustering did not. It must be
 pre-registered as a fresh gate (do not re-run the failed clustering) and stay honest
 about CL6. Effort: ~2 weeks.
 
+### F7. Persistence-after-cessation axis (DONE v1 2026-06-07)
+
+**RESULT.** Shipped (`src/mammal_repurposing/validation/persistence.py`,
+`scripts/99_persistence_axis.py`, `reports/pipeline/persistence_axis_v1.md`). The ledger
+and the F2 screen score a SYMPTOMATIC class prior (the on-drug, reversible clinical *g*).
+This axis adds the orthogonal disease-modifying question - does a cognitive gain PERSIST
+after cessation? - which is nearly empty in healthy people. It is null by default
+(`unknown`, never assumed persistent) and encodes an evidence-design hierarchy (randomized
+delayed-start RCT [ADAGIO] > randomized discontinuation > longitudinal follow-up > washout >
+preclinical > mechanistic inference). Cited curation (`data/raw/persistence_axis_classes.csv`
++ `_overrides.csv`) annotates mechanism classes and the structure-router misroutes. Applied
+to the 31-hit F2 shortlist: **3 live, 13 null, 15 exclude; 0 demonstrated durable
+enhancement in healthy people** - the +0.40 symptomatic prior does not transfer. Two live
+threads to encode as the frontier: (1) plasticity-gated drug+training (fluoxetine-type
+iPlasticity, psychedelics) - durable change contingent on the paired experience, unproven
+for human cognition; (2) delayed-start neuroprotection (MAO-B/ADAGIO equivocal, motor-only)
+- the gold-standard DESIGN for any persistence claim. Next: model "drug + behavioural
+intervention -> durable change", and require delayed-start-tier evidence before any
+persistence claim. 8 tests.
+
+### F8. PERSEUS - persistence-aware pro-cognition engine (DONE v1 2026-06-07)
+
+**RESULT.** Shipped (`src/mammal_repurposing/engine/`, `scripts/100_perseus.py`,
+`reports/pipeline/perseus_design.md` + `perseus_v1.md`). The system the project was built
+toward: for any chemical predict (a) does it help cognition and (b) does the change PERSIST,
+as two orthogonal outputs, never one score. Designed by a 26-agent adversarially-verified
+Opus research run (12 web lanes; 6 fabricated/mis-cited figures refuted before they entered
+the design). Architecture: L0 structure router -> **L1 free-brain CNS gate** (3-way
+PASS/FAIL/ABSTAIN; permanent-charge + peptide vetoes the F2 screen lacked) -> L2 symptomatic
+class-prior head; and L1 AND **L3 mechanism-reversibility** (5-level state-vs-tone
+persistence-substrate ordinal + HDACi/NRF2 structural alerts) AND **L5 evidence-design
+governor** -> an abstain-by-default PERSISTENCE head. Thesis that beats SOTA: the positive
+persistence class is near-empty, so persistence is a calibrated multi-gate AND with
+abstention as the headline, and a state-changing MECHANISM can be flagged as a HYPOTHESIS
+without being called proven. Control panel 12/12; the F2 shortlist's uniform +0.40
+symptomatic prior splits into 5 CNS-excluded / 11 not-cognition / 12 null / 2 contested /
+1 window-conditional / 0 demonstrated-healthy. Evaluation for the empty-positive class
+(delayed-start labels, PU / leave-one-mechanism-out, prior-corrected calibration,
+coverage-accuracy vs a persistence-illusion negative control) + the remaining roadmap
+(Kp,uu Stage 3, persistence-target DTI module, L4 TrkB head, ground-truth PU/LOMO
+evaluator) are in `perseus_design.md`.
+
 ---
 
 ## Cross-cutting limitations (standing)
@@ -450,6 +502,38 @@ the named reports below, and the manuscript suite.
   gated, `scripts/_expand_ledger_smiles.py`). OOD floor calibrated from the LOCO error
   band; one residual enantiomer mis-route. 14 new tests. Detail:
   `reports/pipeline/novel_compound_onboarding_v1.md`.
+- **PERSEUS persistence-aware pro-cognition engine (F8)** (`src/mammal_repurposing/engine/`,
+  `scripts/100_perseus.py`, `reports/pipeline/perseus_v1.md` + `perseus_design.md`): the
+  deepest build, from a 26-agent adversarially-verified Opus research synthesis (12 web
+  lanes; the verifier refuted 6 fabricated/mis-cited figures before they entered the
+  design). Emits TWO orthogonal heads per chemical - a SYMPTOMATIC class-prior head and an
+  abstain-by-default PERSISTENCE head (multi-gate AND: free-brain CNS exposure + state-vs-
+  tone mechanism substrate + evidence-design tier). New layers: **L1** free-brain CNS gate
+  (`engine/cns_exposure.py` - permanent-charge/peptide vetoes that the F2 screen lacked,
+  catches neostigmine/difelikefalin), **L3** mechanism-reversibility classifier
+  (`engine/reversibility.py` + cited substrate/alert CSVs - the state-vs-tone bridge to
+  durability), composed in `engine/perseus.py`. Control panel 12/12; the F2 shortlist's
+  uniform +0.40 symptomatic prior splits into 5 CNS-excluded / 11 not-cognition / 12 null /
+  2 contested / 1 window-conditional / 0 demonstrated-healthy. 8 new tests. Roadmap (Kp,uu
+  Stage 3, persistence-target DTI module, L4 TrkB head, PU/LOMO ground-truth evaluator) in
+  `perseus_design.md`.
+- **Persistence-after-cessation axis (F7)** (`src/mammal_repurposing/validation/persistence.py`,
+  `scripts/99_persistence_axis.py`, `reports/pipeline/persistence_axis_v1.md`): separates the
+  SYMPTOMATIC class prior (on-drug, reversible) from disease-modifying PERSISTENCE - null by
+  default + a cited evidence-design hierarchy (delayed-start RCT = gold standard). Applied to
+  the F2 shortlist: 3 live (fluoxetine plasticity-gated; selegiline/rasagiline contested),
+  13 null, 15 exclude (BBB-impermeant / opioid / anticholinergic misroutes), 0 demonstrated-
+  healthy. Curation in `data/raw/persistence_axis_*.csv` (every row cited; ADAGIO/MTA/ADAPT/
+  iPlasticity verified); 8 tests.
+- **F2 catalogue capstone** (`scripts/_fetch_chembl_approved.py` + `scripts/98_f2_catalogue_screen.py`,
+  `reports/pipeline/f2_catalogue_shortlist_v1.md` + `.csv`): the engine run over the full
+  ChEMBL approved-drug set (3,417 rows -> 2,267 unique drug-like parents; salts collapsed,
+  >=12 heavy atoms). 93 route, **31 are repurposing hypotheses** (HIGH/MED, predicted
+  SUCCESS, in a strong-precedent class, not in the ledger). Genuine signal -- peripheral
+  cholinesterase inhibitors (neostigmine/demecarium/distigmine/benzgalantamine),
+  atomoxetine-scaffold antidepressants (fluoxetine/duloxetine), selegiline -- with honestly-
+  flagged coincidental hits. Hypothesis-generation surface; prior-trial verification is the
+  follow-up.
 - **F2 DTI-profile signal tested on GPU (negative)** (`scripts/96` + `scripts/97`,
   `reports/pipeline/f2_profile_vs_structure_v1.md`): scored 118 compounds x 31 targets
   with MAMMAL on the RTX 5070, then compared the spec's primary "nearest class in profile

@@ -1,0 +1,21 @@
+mechanism_class,substrate_class,substrate_rank,basis,source
+catecholaminergic_ADHD,transient_signaling,0,"monoamine reuptake inhibition / release modulates neurotransmitter TONE; effect tracks receptor occupancy and reverses on washout",pharmacology
+wake_promoting,transient_signaling,0,"DAT / orexin / H3 tone modulation; reverses on washout",pharmacology
+AChE_inhibitor,transient_signaling,0,"raises synaptic acetylcholine TONE; symptomatic, no substrate change",pharmacology
+NMDA_modulator,transient_signaling,0,"channel-level glutamatergic tone modulation",pharmacology
+H3_cognition,transient_signaling,0,"histaminergic tone",pharmacology
+5HT6_antagonist,transient_signaling,0,"serotonergic tone",pharmacology
+multimodal_5HT,transient_signaling,0,"serotonergic multimodal tone",pharmacology
+AMPA_PAM,transient_signaling,0,"glutamatergic tone (allosteric potentiation)",pharmacology
+mGluR,transient_signaling,0,"metabotropic glutamate tone",pharmacology
+alpha7_nAChR,transient_signaling,0,"nicotinic tone; can engage downstream CREB but cognition trials were symptomatic/negative - kept conservative",pharmacology
+PDE9_PDE10,transient_signaling,0,"cyclic-nucleotide tone",pharmacology
+norepinephrine_reuptake_inhibitor,transient_signaling,0,"NET reuptake tone",pharmacology
+TrkB_BDNF,durable_transcriptional,1,"neurotrophic signaling can drive durable transcriptional/structural programs, but it is a PERMISSIVE window contingent on paired experience (see L4)",iPlasticity literature
+ISR_modulator,durable_transcriptional,1,"integrated-stress-response (eIF2B) modulation restores translational programs - state-leaning; durability unproven for cognition",ISR literature
+NRF2_activator,durable_transcriptional,1,"sustained antioxidant/cytoprotective transcriptional program (Keap1/NRF2)",NRF2 literature
+PNN_ECM_remodeling,structural_ecm,2,"perineuronal-net / extracellular-matrix remodeling opens and can re-set structural plasticity; trades stability for plasticity (see L4)",PNN literature
+HDAC_inhibitor,self_propagating_epigenetic,3,"histone-deacetylase inhibition writes self-propagating chromatin marks implicated in memory consolidation - a cell-STATE change that can outlast dosing",epigenetics literature
+DNMT_inhibitor,self_propagating_epigenetic,3,"DNA-methylation remodeling is a self-propagating epigenetic state (writer/eraser sign matters: an inhibitor disrupts the mark)",epigenetics literature
+senolytic,ablative_cell_population,4,"removes senescent cells - irreversible by construction (the pathological substrate is gone), the highest persistence ceiling",senolytics literature
+anti_amyloid_mAb,ablative_cell_population,4,"clears the pathological amyloid aggregate - alters the disease substrate; durable slowing in patients (not enhancement in healthy)",CLARITY-AD / TRAILBLAZER-ALZ 2

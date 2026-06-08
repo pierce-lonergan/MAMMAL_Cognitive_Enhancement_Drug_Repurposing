@@ -1,0 +1,5 @@
+alert,smarts,substrate_class,substrate_rank,basis
+hydroxamate_ZBG,[CX3](=O)[NX3][OX2H1],self_propagating_epigenetic,3,"hydroxamic-acid zinc-binding group = HDAC-inhibitor chemotype (vorinostat / panobinostat / belinostat) -> self-propagating epigenetic state change"
+ortho_aminoanilide_HDAC,O=C([#6])Nc1ccccc1N,self_propagating_epigenetic,3,"2-aminoanilide benzamide = class-I HDAC-inhibitor chemotype (entinostat / chidamide / mocetinostat) -> epigenetic state change"
+fumarate_michael_nrf2,[CX3](=O)[CX3]=[CX3][CX3](=O),durable_transcriptional,1,"alpha,beta-unsaturated 1,4-dicarbonyl (fumarate / maleate ester, e.g. dimethyl fumarate) -> Keap1/NRF2 cytoprotective transcriptional program"
+isothiocyanate_nrf2,[NX2]=[CX2]=[SX1],durable_transcriptional,1,"isothiocyanate (sulforaphane-like) -> Keap1/NRF2 transcriptional program"
