@@ -29,6 +29,7 @@ from dataclasses import asdict, dataclass, field
 import numpy as np
 
 from mammal_repurposing.engine.cns_exposure import FAIL, PASS, cns_exposure_gate
+from mammal_repurposing.engine.psychoplastogen import psychoplastogen_window
 from mammal_repurposing.engine.reversibility import reversibility_call
 from mammal_repurposing.reporting.trial_watch import _norm_drug, load_combined_ledger
 from mammal_repurposing.validation.novel_compound import (
@@ -57,6 +58,10 @@ _LIVE = {P_DEMONSTRATED, P_DISEASE_MOD, P_CONTESTED, P_CANDIDATE, P_WINDOW}
 PRODRUG_TO_ACTIVE = {
     "serdexmethylphenidate": ("dexmethylphenidate", "COC(=O)C(c1ccccc1)C1CCCCN1"),
     "lisdexamfetamine": ("dextroamphetamine", "CC(N)Cc1ccccc1"),
+    # psilocybin is the phosphate prodrug; psilocin (4-HO-DMT) is the active, membrane-permeant
+    # species that reaches the intracellular 5-HT2A pool (the phosphate's polar surface would
+    # otherwise spuriously fail the L4 intracellular-access gate)
+    "psilocybin": ("psilocin", "CN(C)CCc1c[nH]c2cccc(O)c12"),
 }
 
 
@@ -122,6 +127,14 @@ class PerseusEngine:
         if rev.covalent_flags:
             flags += [f"covalent:{c}" for c in rev.covalent_flags]
 
+        # L4 psychoplastogen plasticity-window (structure-derived, OFF the DTI axis):
+        # a membrane-permeant serotonergic agonist reaches the intracellular 5-HT2A pool that
+        # drives durable structural plasticity (Vargas 2023); serotonin is window-negative on
+        # permeability alone despite isoaffine 5-HT2A binding.
+        psy = psychoplastogen_window(active_smiles)
+        if psy.window:
+            flags.append(f"psychoplastogen_window:{psy.scaffold}")
+
         # structure-vs-mechanism mismatch (L0 misroute guard)
         mismatch = (axis.known_mechanism_class is not None and cls is not None
                     and axis.known_mechanism_class != cls)
@@ -147,7 +160,7 @@ class PerseusEngine:
             if cns.verdict != PASS:
                 reasons.append("symptomatic effect plausible but CNS exposure unconfirmed")
 
-        pv = self._persistence_verdict(cns, route, rev, axis, reasons)
+        pv = self._persistence_verdict(cns, route, rev, axis, reasons, psy)
 
         return PerseusResult(
             compound=compound, smiles=smiles, symptomatic_verdict=sym, assigned_class=cls,
@@ -158,7 +171,7 @@ class PerseusEngine:
             evidence_design=axis.evidence_design,
             persistence_basis=self._basis(pv, rev, axis), flags=flags, abstain_reasons=reasons)
 
-    def _persistence_verdict(self, cns, route, rev, axis, reasons) -> str:
+    def _persistence_verdict(self, cns, route, rev, axis, reasons, psy=None) -> str:
         if cns.verdict == FAIL:
             return P_EXCLUDE_CNS
         st = axis.status
@@ -195,6 +208,13 @@ class PerseusEngine:
                            "engagement is reversible and self-maintenance after washout is "
                            "unproven -> abstain on durable cognition")
             return P_ABSTAIN
+        # L4 psychoplastogen window (structure-derived, off the DTI axis): a CNS-penetrant,
+        # membrane-permeant serotonergic agonist opens a plasticity window. Permissive, not
+        # instructive - durable ONLY if paired with experience; never auto-durable.
+        if psy is not None and psy.window and cns.verdict == PASS:
+            reasons.append("psychoplastogen plasticity window (off-DTI-axis, permeability-gated): "
+                           + (psy.reasons[0] if psy.reasons else ""))
+            return P_WINDOW
         if route.tier == "ABSTAIN":
             return P_ABSTAIN
         return P_NULL  # tone-changing, routed, no curated persistence -> symptomatic by default

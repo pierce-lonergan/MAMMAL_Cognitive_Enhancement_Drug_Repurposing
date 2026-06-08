@@ -102,6 +102,21 @@ def test_two_heads_and_gates(engine):
 
 
 @pytest.mark.skipif(not _HAVE, reason="engine data not present")
+def test_psychoplastogen_window_fires_for_permeant_psychedelic(engine):
+    from mammal_repurposing.engine.perseus import P_WINDOW
+    # psilocybin (phosphate prodrug) -> psilocin (active) -> serotonergic + permeant ->
+    # plasticity WINDOW (off-DTI-axis, permeability-gated). The uncurated psychedelic that the
+    # pre-L4 engine ABSTAINed on is now correctly a (permissive, not durable) window.
+    r = engine.score("psilocybin", "CN(C)CCc1c[nH]c2ccc(OP(=O)(O)O)cc12")
+    assert r.persistence_verdict == P_WINDOW and r.persistence_live
+    assert any("psychoplastogen_window" in f for f in r.flags)
+    # impermeant serotonergic agonist (serotonin) must NOT get the window (permeability gate)
+    r2 = engine.score("serotonin", "NCCc1c[nH]c2ccc(O)cc12")
+    assert r2.persistence_verdict != P_WINDOW
+    assert not any("psychoplastogen_window" in f for f in r2.flags)
+
+
+@pytest.mark.skipif(not _HAVE, reason="engine data not present")
 def test_l0_mismatch_guard_abstains_symptomatic(engine):
     from mammal_repurposing.engine.perseus import P_WINDOW
     # fluoxetine (an SSRI) is misrouted to catecholaminergic by scaffold; the symptomatic

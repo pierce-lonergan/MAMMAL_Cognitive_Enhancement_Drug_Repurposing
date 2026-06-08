@@ -129,12 +129,19 @@ def main() -> int:
         Ls.append(f"| {r['compound']} | {r.get('drug_class', '?')} | {r.get('domain', '?')} | "
                   f"{r['persistence_verdict']} | {'yes' if fl else 'no'} |")
     Ls += ["", "## Reading", "",
-           "A LOW recall here is the expected, honest finding: PERSEUS's persistence head is "
-           "built around senolytic-ablative + curated-mechanism substrate and the size-matched "
-           "DTI channel (BCL2 confirmed, NTRK2 plasticity), none of which captures "
-           "psychoplastogen-mediated (5-HT2A / TrkB-cascade) persistence. The missed compounds "
-           "scope exactly where the L4 TrkB/5-HT2A access head and a psychoplastogen-target "
-           "module must extend the engine. This is the recall baseline those additions must beat.", ""]
+           "Pre-L4 baseline was 0/13 (every psychoplastogen ABSTAINed). The L4 "
+           "psychoplastogen window (engine/psychoplastogen.py: serotonergic-agonist scaffold x "
+           "intracellular-access permeability, Vargas 2023) lifts recall to the value above. "
+           "Note the neuroplasticity (structural-plasticity) domain in particular: the classic "
+           "serotonergic psychedelics (psilocin, LSD, DMT, 5-MeO-DMT, DOI) are now flagged "
+           "WINDOW_CONDITIONAL (permissive, never auto-durable). The remaining misses are "
+           "mechanistically OUTSIDE this serotonergic channel - NMDA/TrkB-TMD (ketamine, "
+           "R-ketamine, nitrous oxide), GABA-A neurosteroid (zuranolone), muscarinic "
+           "(scopolamine), neurogenic (NSI-189) - and the TrkB-TMD durability mode is "
+           "information-theoretically invisible to a sequence DTI model (Casarotto 2021), an "
+           "honest off-axis limitation. Recall here is sensitivity on the serotonergic "
+           "psychoplastogen class; the rigorous Jeffreys CI + PPV-vs-prior is in "
+           "scripts/109_persistence_pu_eval.py.", ""]
     REPORT.write_text("\n".join(Ls), encoding="utf-8")
     L.info("Wrote %s", REPORT)
     L.info("SENSITIVITY: %d/%d = %.2f flagged; by domain %s",
