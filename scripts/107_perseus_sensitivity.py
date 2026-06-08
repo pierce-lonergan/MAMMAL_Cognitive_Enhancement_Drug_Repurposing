@@ -36,18 +36,53 @@ POS = RAW / "persistence_positive_ledger.csv"
 REPORT = ROOT / "reports" / "pipeline" / "perseus_sensitivity_v1.md"
 
 
+# Curated PubChem query names: the salvaged ledger compound strings carry parentheticals /
+# codes ("Psilocybin (psilocin)", "DOI (2,5-dimethoxy-4-iodoamphetamine)") that do not resolve
+# by raw name. Map to a clean chemical name (ordered: more specific keys first).
+_QUERY_TABLE = [
+    ("psilocyb", "psilocybin"), ("5-meo-dmt", "5-methoxy-N,N-dimethyltryptamine"),
+    ("n,n-dmt", "N,N-dimethyltryptamine"), ("lsd", "lysergic acid diethylamide"),
+    ("lysergic", "lysergic acid diethylamide"), ("doi", "2,5-dimethoxy-4-iodoamphetamine"),
+    ("mescaline", "mescaline"), ("hydroxynorketamine", "(2R,6R)-hydroxynorketamine"),
+    ("ketamine", "ketamine"), ("ibogaine", "ibogaine"), ("scopolamine", "scopolamine"),
+    ("nitrous", "nitrous oxide"), ("zuranolone", "zuranolone"), ("nsi-189", "NSI-189"),
+    ("aaz-a-154", "AAZ-A-154"), ("zalsupindole", "AAZ-A-154"), ("gm-2505", "GM-2505"),
+    ("bretisilocin", "GM-2505"), ("tabernanthalog", "tabernanthalog"),
+    ("dmt", "N,N-dimethyltryptamine"),
+]
+
+
+def _query_name(compound: str) -> str:
+    c = compound.lower()
+    for key, q in _QUERY_TABLE:
+        if key in c:
+            return q
+    return compound.split("(")[0].split("/")[0].strip()
+
+
 def _resolve_smiles(df: pd.DataFrame) -> pd.DataFrame:
     if "smiles" in df and df["smiles"].notna().all():
         return df
     from mammal_repurposing.fetchers.pubchem import fetch_many_smiles
-    need = df[df.get("smiles", pd.Series([None] * len(df))).isna()] if "smiles" in df else df
-    names = sorted(need["compound"].str.strip().unique())
-    L.info("Resolving %d positive-ledger SMILES via PubChem...", len(names))
-    hits = {n: h.get("smiles") for n, h in zip(names, fetch_many_smiles([(n, []) for n in names]))}
+    df = df.copy()
     if "smiles" not in df:
         df["smiles"] = None
+    pairs = [(c, _query_name(c)) for c in df.loc[df["smiles"].isna(), "compound"].unique()]
+    L.info("Resolving %d positive-ledger SMILES via PubChem...", len(pairs))
+    qhits = dict(zip([q for _, q in pairs],
+                     fetch_many_smiles([(q, []) for _, q in pairs])))
+    smap = {c: (qhits.get(q) or {}).get("smiles") for c, q in pairs}
     df["smiles"] = df.apply(
-        lambda r: r["smiles"] if pd.notna(r.get("smiles")) else hits.get(r["compound"].strip()), axis=1)
+        lambda r: r["smiles"] if pd.notna(r.get("smiles")) else smap.get(r["compound"]), axis=1)
+    # persist resolved SMILES back into the ledger (durable + auditable)
+    if smap and POS.exists():
+        full = pd.read_csv(POS)
+        if "smiles" not in full:
+            full["smiles"] = None
+        full["smiles"] = full.apply(
+            lambda r: r["smiles"] if pd.notna(r.get("smiles")) else smap.get(r["compound"]), axis=1)
+        full.to_csv(POS, index=False)
+        L.info("Persisted SMILES into %s", POS)
     return df
 
 
@@ -66,7 +101,10 @@ def main() -> int:
     eng = PerseusEngine(LEDGERS, SMILES, RAW / "persistence_axis_classes.csv",
                         RAW / "persistence_axis_overrides.csv")
     scored = score_frame(eng, keep.rename(columns={"compound": "query_id"}), dedup_salts=False)
-    scored = scored.merge(keep[["compound", "domain", "drug_class"]], on="compound", how="left")
+    meta_cols = [c for c in ("compound", "domain", "drug_class") if c in keep.columns]
+    scored = scored.merge(keep[meta_cols], on="compound", how="left")
+    if "drug_class" not in scored:
+        scored["drug_class"] = "?"
 
     records = [{"compound": r["compound"], "persistence_verdict": r["persistence_verdict"],
                 "domain": r.get("domain", "?")} for _, r in scored.iterrows()]
