@@ -71,3 +71,34 @@ def test_sensitivity_recall_over_verified_positives():
 def test_sensitivity_empty_is_nan():
     s = sensitivity([])
     assert s["n"] == 0 and s["sensitivity"] != s["sensitivity"]   # nan
+
+
+# --- rigorous empty-positive PU evaluation (Gap 4) ---
+
+def test_recall_ci_jeffreys_brackets_point_and_is_wide_at_small_n():
+    from mammal_repurposing.validation.persistence_pu_eval import recall_ci
+    r = recall_ci(7, 13)
+    assert abs(r["recall"] - 7 / 13) < 1e-9
+    assert r["lo"] < r["recall"] < r["hi"]
+    assert (r["hi"] - r["lo"]) > 0.4          # n=13 -> honestly wide interval
+
+
+def test_fpr_zero_has_nonzero_upper_bound():
+    from mammal_repurposing.validation.persistence_pu_eval import fpr_ci
+    f = fpr_ci(0, 15)
+    assert f["fpr"] == 0.0 and f["lo"] == 0.0 and 0.1 < f["hi"] < 0.3   # 0/15 -> upper ~0.18
+
+
+def test_ppv_curve_rises_with_prior_and_handles_zero_fpr():
+    from mammal_repurposing.validation.persistence_pu_eval import ppv_curve
+    c = ppv_curve(0.54, 0.05, priors=(0.01, 0.03))
+    assert c[1]["ppv"] > c[0]["ppv"]          # higher prior -> higher PPV
+    z = ppv_curve(0.54, 0.0, priors=(0.01,))
+    assert z[0]["ppv"] == 1.0                 # zero FPR -> PPV 1 (degenerate, by construction)
+
+
+def test_wilson_and_jeffreys_agree_roughly():
+    from mammal_repurposing.validation.persistence_pu_eval import jeffreys_ci, wilson_ci
+    wlo, whi = wilson_ci(7, 13)
+    jlo, jhi = jeffreys_ci(7, 13)
+    assert abs(wlo - jlo) < 0.12 and abs(whi - jhi) < 0.12
