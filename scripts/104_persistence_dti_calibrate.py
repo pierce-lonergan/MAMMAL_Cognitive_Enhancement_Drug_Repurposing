@@ -99,6 +99,8 @@ def main() -> int:
         return round(float(np.corrcoef(d["mw"], d["predicted_pkd"])[0, 1]), 3)
     neg_all = scored[scored["role"] == "non_engager"]
     size_confound_overall = _confound(neg_all)
+    neg_mw = neg_all["mw"].dropna()
+    mw_lo, mw_hi = (int(neg_mw.min()), int(neg_mw.max())) if len(neg_mw) else (0, 0)
 
     per_target, n_nan = {}, int(scored["predicted_pkd"].isna().sum())
     for gene, tgt in panel.items():
@@ -119,7 +121,8 @@ def main() -> int:
         "summary": {"n_targets": len(panel), "n_passed": len(passed), "passed_genes": passed,
                     "n_pairs": len(grid), "n_nan_pairs": n_nan,
                     "size_confound_r": size_confound_overall,
-                    "n_non_engagers": int(neg_all["compound"].nunique())},
+                    "n_non_engagers": int(neg_all["compound"].nunique()),
+                    "non_engager_mw_lo": mw_lo, "non_engager_mw_hi": mw_hi},
     }
     CALIB_OUT.write_text(json.dumps(calib, indent=2), encoding="utf-8")
     L.info("Wrote %s", CALIB_OUT)
@@ -145,7 +148,8 @@ def write_report(panel, per_target, summary) -> None:
              "sequences)." if summary["n_nan_pairs"] else "; no NaN pairs."), "",
           f"**Molecular-size confound:** corr(MW, predicted pKd) over the "
           f"{summary.get('n_non_engagers', '?')} size-matched non-engagers "
-          f"(129-671 Da) = **{summary.get('size_confound_r', 'n/a')}**. MAMMAL's pKd is "
+          f"({summary.get('non_engager_mw_lo', '?')}-{summary.get('non_engager_mw_hi', '?')} Da) "
+          f"= **{summary.get('size_confound_r', 'n/a')}**. MAMMAL's pKd is "
           "substantially molecular-weight-driven; the negative pool is SIZE-MATCHED on "
           "purpose so a channel cannot pass just by scoring big molecules high.", "",
           "| target | tier | durable? | n engagers (scored/total) | AUROC | perm-p | "

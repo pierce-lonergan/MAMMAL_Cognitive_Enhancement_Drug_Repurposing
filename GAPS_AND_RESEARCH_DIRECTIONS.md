@@ -453,9 +453,14 @@ BH3-mimicry, NOT a general per-compound persistence-substrate detector - so the 
 abstain-by-default and the DTI channel is wired-but-gated. The size-matched control is the
 deliverable (it stops an MW artifact masquerading as a persistence predictor). MW-residualized
 re-calibration (`scripts/106`) then asks "no signal or signal masked by size?": it RESCUES
-NTRK2/TrkB (0.72->0.82, engagers in-range = valid) as a genuine size-independent plasticity
-signal, confirms the capability channels as real size-artifacts (residualized <=0.62), and
-leaves BCL2/BCL-xL size-ENTANGLED (engagers larger than all negatives -> extrapolation).
+NTRK2/TrkB (residualized 0.81, engagers in-range = valid) as a genuine size-independent
+plasticity signal and confirms the capability channels as real size-artifacts (residualized
+<=0.62). v2.4 then DE-ENTANGLES the durable channel: adding 10 BH3-mimetic-SIZED non-BCL2
+negatives (HIV/HCV antivirals, rifamycins, paclitaxel, digoxin; pool now 129-889 Da) brings
+BCL2's engagers in-MW-range and **BCL2 survives residualization (raw 0.98 + residualized
+0.83) = size-INDEPENDENT confirmation** that MAMMAL recognises BH3-mimetic BCL2 engagement
+beyond weight. BCL-xL stays size-entangled (0.77/0.67). The durable axis now has one
+confirmed size-independent member (BCL2).
 **Honest scope:** a CNS-gated, abstain-by-default, evidence-governed guardrail reporting
 symptomatic vs persistence separately, now with a measured 0-over-claim specificity in BOTH
 directions (negative-control + design-ledger) - still NOT a validated bidirectional

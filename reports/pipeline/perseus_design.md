@@ -175,15 +175,21 @@ realistic ~1% prior" - which no current repurposing predictor reports for persis
    residualized 0.82 PASS, engagers fully in-MW-range so valid) - a genuine size-INDEPENDENT
    plasticity-substrate signal (MAMMAL recognises TRK inhibitors beyond their size); confirms
    the capability channels (HDAC/DNMT/EHMT/KEAP1, residualized AUROC <=0.62) as real
-   size-artifacts; and leaves BCL2/BCL-xL UNRESOLVABLE by residualization because their
-   BH3-mimetic engagers are larger than every non-engager (extrapolation, flagged
-   engager-in-range 0.00/0.50) - their raw size-matched pass is thus size-ENTANGLED, not
-   confirmed size-independent. Net honest picture: the one cleanly size-independent channel
-   (NTRK2) is the non-durable plasticity tier; the durable (ablative) channels are
-   size-entangled; the reversible capability channels carry no size-free signal. Next:
-   adopt residualized scoring for in-MW-range channels (would wire NTRK2 as a plasticity
-   hypothesis); add senolytic BH3-mimetic negatives IN the engager size range to de-entangle
-   BCL2; a persistence-target head fine-tune.
+   size-artifacts. **BCL2 DE-ENTANGLED (v2.4, BH3-mimetic-sized negatives).** The first
+   residualization run could not de-confound BCL2/BCL-xL because their BH3-mimetic engagers
+   were larger than every non-engager (extrapolation). Adding 10 large non-BCL2 negatives
+   into the engager size range (HIV/HCV antivirals, rifamycins, paclitaxel, digoxin; MW
+   705-889, pool now 129-889 Da, confound r=0.73) raises BCL2's engager-in-MW-range to 0.67,
+   and **BCL2 now SURVIVES residualization (raw 0.98 + residualized 0.83, both PASS)** - a
+   genuine size-INDEPENDENT confirmation that MAMMAL recognises BH3-mimetic BCL2 engagement
+   beyond molecular weight. BCL-xL stays size-entangled (raw 0.77 / residualized 0.67 fail,
+   in-range 0.75); NTRK2 stays residualized-confirmed (0.81, in-range 1.00). **Net:** the
+   durable axis now has ONE confirmed size-independent member (BCL2, ablative) plus a
+   confirmed size-independent plasticity channel (NTRK2); BCL-xL and the reversible capability
+   channels carry no size-free signal. Next: gate operative inference on residualized-pass
+   (keeps BCL2 + NTRK2, drops the size-entangled BCL-xL); the verified positive-compound
+   ledger (psychoplastogens) to finally measure SENSITIVITY; a persistence-target head
+   fine-tune.
 3. **L4 full**: TrkB transmembrane-domain binding head (psychoplastogen anchors) +
    intracellular-5-HT2A access (passive permeability x 5-HT2A affinity).
 4. **Persistence ground-truth ledger + PU/LOMO evaluator**: curated delayed-start /
