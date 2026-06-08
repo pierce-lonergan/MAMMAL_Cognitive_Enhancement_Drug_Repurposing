@@ -1,0 +1,14 @@
+compound,expected_class,note,smiles
+obatoclax,ablative_heldout,pan-BCL2 BH3-mimetic NOT in the calibration anchors - tests held-out generalization of the senolytic (ablative) channel,CC1=CC(=C(N1)C=C2C(=CC(=C3C=C4C=CC=CC4=N3)N2)OC)C
+gossypol,ablative_heldout,natural BH3-mimetic (AT-101); held-out,CC1=CC2=C(C(=C(C(=C2C(C)C)O)O)C=O)C(=C1C3=C(C4=C(C=C3C)C(=C(C(=C4C=O)O)O)C(C)C)O)O
+sabutoclax,ablative_heldout,pan-BCL2 BH3-mimetic (BI-97C1); held-out,CC1=CC2=C(C(=C(C=C2C(=C1C3=C(C4=CC(=C(C(=C4C=C3C)C(=O)NCC(C)C5=CC=CC=C5)O)O)O)O)O)O)C(=O)NCC(C)C6=CC=CC=C6
+fisetin,senolytic_flavonoid,flavonoid SENOLYTIC but NOT a BH3-mimetic - precision check: the DTI-BCL2 channel should NOT fire (flavonoid senolytics are caught by the L3 Tanimoto detector instead),C1=CC(=C(C=C1C2=C(C(=O)C3=C(O2)C=C(C=C3)O)O)O)O
+quercetin,senolytic_flavonoid,flavonoid senolytic (D+Q); not a direct BCL2 binder - precision check,C1=CC(=C(C=C1C2=C(C(=O)C3=C(C=C(C=C3O2)O)O)O)O)O
+chidamide,capability_heldout,HDAC inhibitor (tucidinostat) NOT in anchors - held-out capability channel,C1=CC(=CN=C1)C=CC(=O)NCC2=CC=C(C=C2)C(=O)NC3=C(C=CC(=C3)F)N
+givinostat,capability_heldout,HDAC inhibitor; held-out,CCN(CC)CC1=CC2=C(C=C1)C=C(C=C2)COC(=O)NC3=CC=C(C=C3)C(=O)NO
+tazemetostat,capability_heldout,EZH2 methyltransferase inhibitor; held-out chromatin-writer probe,CCN(C1CCOCC1)C2=CC(=CC(=C2C)C(=O)NCC3=C(C=C(NC3=O)C)C)C4=CC=C(C=C4)CN5CCOCC5
+galantamine,non_persistence,"AChE inhibitor / nAChR PAM - symptomatic, no persistence substrate; expect abstain",CN1CCC23C=CC(CC2OC4=C(C=CC(=C34)C1)OC)O
+rivastigmine,non_persistence,AChE inhibitor - symptomatic; expect abstain,CCN(C)C(=O)OC1=CC=CC(=C1)C(C)N(C)C
+atomoxetine,non_persistence,NET inhibitor - symptomatic; expect abstain,CC1=CC=CC=C1OC(CCNC)C2=CC=CC=C2
+citalopram,non_persistence,SSRI - expect abstain on the substrate channel,CN(C)CCCC1(C2=C(CO1)C=C(C=C2)C#N)C3=CC=C(C=C3)F
+lamotrigine,non_persistence,Na-channel anticonvulsant - off-substrate; expect abstain,C1=CC(=C(C(=C1)Cl)Cl)C2=C(N=C(N=N2)N)N

@@ -42,7 +42,7 @@ validation. Everything below is what is still open.
 | Compound-level resolution test (F1) | DONE | clean NEGATIVE: class is the resolution limit (96.5% between-class variance) | shipped |
 | Novel-compound onboarding engine (F2) | DONE | SMILES -> structural class route -> prior g+CrI or ABSTAIN; leave-one-compound-out class recovery 0.97 (36 routed, 60% abstain); exemplars 110 / 46 classes | shipped |
 | Persistence-after-cessation axis (F7) | DONE v1 | symptomatic vs disease-modifying; null-by-default + cited evidence-design hierarchy (delayed-start RCT = gold standard); F2 shortlist 3 live / 13 null / 15 exclude, 0 demonstrated-healthy | shipped |
-| PERSEUS persistence-aware engine (F8) | DONE v2.1 | two orthogonal heads (symptomatic class prior vs abstain-by-default persistence); L1 CNS gate + L3 mechanism-fired 3-tier substrate + L5 de-broadcast evidence governor + L0-mismatch guard + prodrug/salt handling; negative-control specificity 0/15 false positives AND bidirectional ground-truth over-claim rate 0/14 (vs a cited delayed-start/discontinuation design ledger; the eval caught + fixed a selegiline over-claim). Honest scope: a CNS-gated abstain-by-default guardrail, NOT yet a validated bidirectional predictor (sensitivity/PPV need a non-empty positive ledger; label budget ~381) | shipped |
+| PERSEUS persistence-aware engine (F8) | DONE v2.2 | two orthogonal heads (symptomatic class prior vs abstain-by-default persistence); L1 CNS gate + L3 mechanism-fired 3-tier substrate + L5 de-broadcast evidence governor + L0-mismatch guard + prodrug/salt handling; negative-control specificity 0/15 AND bidirectional ground-truth over-claim 0/14. v2.2 adds a GPU persistence-target DTI module (substrate from predicted engagement) - calibration-gated + SIZE-MATCHED negatives reveal MAMMAL's pKd is MW-confounded (r=0.61), so only 2/9 (BCL2/BCL-xL ablative) survive; wired-but-gated. Honest scope: a CNS-gated abstain-by-default guardrail, NOT yet a validated bidirectional predictor (label budget ~381) | shipped |
 | Ledger scale + per-domain (F3) | DONE | cited n=47 (0.967) + research-curated & human-adjudicated n=125 (all data points kept): class-LOCO AUROC 0.92 (0.97 multi-member), signal survives scaling; 2 genuine mixed classes (anti-amyloid mAb, AChE-I) | shipped |
 | Causal MR target validation (F4) | frontier | associative genetics to causal | ~2 to 3 weeks |
 | Architectural deepening (F5) | frontier | more performance from the stack | days to weeks |
@@ -436,6 +436,22 @@ fluoxetine plasticity window as the only live threads, exactly the reviewer's po
 Coverage-accuracy over the evidence-design rank holds 1.00 non-over-claim accuracy at every
 threshold; the **label budget is ~381 confirmed delayed-start positives** (1% prior, +/-0.1)
 before recall is even estimable - reported as a first-class deliverable, not a hidden gap.
+**v2.2 (persistence-target DTI module - making the substrate read structure-computable for
+ANY chemical, GPU):** `engine/persistence_dti.py` + `scripts/103-105`. A 9-target substrate
+panel (BCL2/BCL-xL=ablative, HDAC1/2/6+DNMT1+EHMT2+KEAP1=capability, NTRK2=plasticity_window)
+is MAMMAL-scored so L3 can read substrate from PREDICTED engagement, not only curated class.
+Two calibration gates (per-target AUROC+permutation-p for ranking; specificity-first
+threshold for per-compound separation) plus the decisive move - **SIZE-MATCHED negative
+controls**. MAMMAL's pKd is heavily molecular-weight-driven (corr(MW,pKd)=0.61 over 23
+non-engagers; 0.89-0.91 within BCL2/BCL-xL/HDAC2), so a naive small-molecule negative pool
+spuriously passes 5/9 targets; with a size-matched pool (129-671 Da) **only 2/9 pass: BCL2
+(AUROC 1.00) and BCL-xL (0.90), both ablative**, while every capability/plasticity channel
+collapses to chance. Held-out demo: 0 non-persistence leaks, 0 flavonoid-senolytic
+false-durables, but 0/3 held-out BH3-mimetics clear the size-matched bar. Honest finding:
+MAMMAL gives a narrow, size-confounded population-RANKING signal for direct BCL2-family
+BH3-mimicry, NOT a general per-compound persistence-substrate detector - so the head stays
+abstain-by-default and the DTI channel is wired-but-gated. The size-matched control is the
+deliverable (it stops an MW artifact masquerading as a persistence predictor).
 **Honest scope:** a CNS-gated, abstain-by-default, evidence-governed guardrail reporting
 symptomatic vs persistence separately, now with a measured 0-over-claim specificity in BOTH
 directions (negative-control + design-ledger) - still NOT a validated bidirectional

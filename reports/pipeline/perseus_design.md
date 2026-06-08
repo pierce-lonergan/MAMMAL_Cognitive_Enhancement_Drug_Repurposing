@@ -146,9 +146,31 @@ realistic ~1% prior" - which no current repurposing predictor reports for persis
 1. **L1 Stage-3 free exposure (Kp,uu)**: fit an efflux-aware unbound brain/plasma regressor
    (small public rat Kp,uu / B3DB set) + conformal applicability band; until then Stage 3
    returns ABSTAIN.
-2. **Persistence-target DTI module**: add HDAC1/2/3/6, DNMT1/3A/3B, EHMT1/2, KEAP1, MTOR,
-   eIF2B, BCL2/BCL-xL, SRC, NTRK2 to the panel + MAMMAL-score them, so L3 can read substrate
-   from predicted target engagement (not only class + structural alert) for any chemical.
+2. **Persistence-target DTI module (SHIPPED v1, calibration-gated; honest-negative).**
+   `engine/persistence_dti.py`, `scripts/103-105`, `reports/pipeline/persistence_dti_*.md`.
+   A 9-target substrate panel (BCL2/BCL-xL = ablative; HDAC1/2/6, DNMT1, EHMT2, KEAP1 =
+   capability; NTRK2 = plasticity_window) is MAMMAL-scored so L3 can read substrate from
+   PREDICTED target engagement for any chemical. Crucially it is CALIBRATION-GATED with two
+   gates: a target may contribute only if (a) MAMMAL ranks its known engagers above matched
+   non-engagers (AUROC + permutation-p) AND (b) the engagers clear a SPECIFICITY-first
+   threshold (so the channel separates per-compound, not just in rank). **The decisive
+   methodological move is SIZE-MATCHED negative controls.** MAMMAL's pKd is heavily
+   molecular-weight-driven (corr(MW, pKd) = 0.61 over the 23 non-engagers; 0.89-0.91 within
+   BCL2/BCL-xL/HDAC2), so a naive small-molecule-only negative pool spuriously passed 5/9
+   targets (held-out 2/3 BH3-mimetics "recovered"). With a SIZE-MATCHED negative pool
+   (129-671 Da) only **2/9 pass: BCL2 (AUROC 1.00) and BCL-xL (0.90)** - both the ablative
+   (senolytic) tier; every capability/plasticity channel collapses toward chance
+   (HDAC2 0.60, EHMT2 0.73, NTRK2 0.72, perm-p>0.05). Held-out demo: 0 non-persistence leaks
+   and 0 flavonoid-senolytic false-durables (the channel correctly stays silent on
+   fisetin/quercetin, which are caught instead by the L3 Tanimoto detector), but 0/3 held-out
+   moderately-sized BH3-mimetics clear the size-matched threshold. **Honest conclusion:**
+   MAMMAL gives a narrow, size-confounded population-RANKING signal for direct BCL2-family
+   BH3-mimicry, NOT yet a general per-compound structure-computable persistence-substrate
+   detector - so the persistence head stays abstain-by-default and the DTI substrate channel
+   is wired but gated (only BCL2/BCL-xL usable, conservative threshold). The size-matched
+   control is the deliverable: it prevents a molecular-weight artifact from masquerading as a
+   persistence predictor. Next: de-bias pKd by MW (residualize) before thresholding; expand
+   senolytic anchors; a persistence-target head fine-tune.
 3. **L4 full**: TrkB transmembrane-domain binding head (psychoplastogen anchors) +
    intracellular-5-HT2A access (passive permeability x 5-HT2A affinity).
 4. **Persistence ground-truth ledger + PU/LOMO evaluator**: curated delayed-start /
