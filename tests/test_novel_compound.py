@@ -16,8 +16,9 @@ pytest.importorskip("rdkit")
 
 from mammal_repurposing.validation.novel_compound import (  # noqa: E402
     MIN_CLASS_N, TAU_OOD,
-    build_class_priors, build_exemplars, is_allosteric_class,
-    loco_class_recovery, score_catalogue, score_compound,
+    _profile_stats, build_class_priors, build_exemplars, build_profile_centroids,
+    is_allosteric_class, load_profiles, loco_class_recovery, profile_class_scores,
+    score_catalogue, score_compound,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -165,6 +166,46 @@ def test_loco_returns_sane_structure(synth):
     assert set(rec) >= {"n_evaluable", "n_routed", "top1_acc", "abstain_rate", "detail"}
     assert rec["n_evaluable"] >= 1
     assert 0.0 <= rec["abstain_rate"] <= 1.0
+
+
+# --------------------------------------------------------------------------
+# DTI-profile class signal (F2 spec signal a)
+# --------------------------------------------------------------------------
+
+def test_load_profiles_pivots_and_imputes():
+    long = pd.DataFrame({
+        "compound": ["a", "a", "a", "b", "b", "b"],
+        "target_uniprot": ["T1", "T2", "T3", "T1", "T2", "T3"],
+        "predicted_pkd": [9.0, 5.0, np.nan, 8.0, 5.0, 7.0],  # one NaN -> imputed
+    })
+    profiles, order = load_profiles(long)
+    assert set(order) == {"T1", "T2", "T3"}
+    assert set(profiles) == {"a", "b"}
+    assert all(np.isfinite(v).all() for v in profiles.values())  # NaN imputed
+
+
+def test_profile_centroids_discriminate_classes():
+    # class A prefers T1, class B prefers T3; a query like A must score A > B
+    profiles = {"a": np.array([9., 5., 5.]), "b": np.array([8., 5., 5.]),
+                "c": np.array([5., 5., 9.]), "d": np.array([5., 5., 8.])}
+    class_of = {"a": "A", "b": "A", "c": "B", "d": "B"}
+    mu, sd = _profile_stats(profiles)
+    cent = build_profile_centroids(profiles, class_of, mu, sd)
+    assert set(cent) == {"A", "B"}
+    scores = profile_class_scores(np.array([9., 5., 5.]), cent, mu, sd)
+    assert scores["A"] > scores["B"]
+    # a T3-preferring query routes to B
+    scores_b = profile_class_scores(np.array([5., 5., 9.]), cent, mu, sd)
+    assert scores_b["B"] > scores_b["A"]
+
+
+def test_build_profile_centroids_excludes_holdout():
+    profiles = {"a": np.array([9., 5.]), "b": np.array([8., 5.]), "c": np.array([5., 9.])}
+    class_of = {"a": "A", "b": "A", "c": "B"}
+    mu, sd = _profile_stats(profiles)
+    cent = build_profile_centroids(profiles, class_of, mu, sd, exclude="a")
+    # A's centroid now rests on 'b' only; 'a' did not leak in
+    assert np.allclose(cent["A"], (profiles["b"] - mu) / sd)
 
 
 # --------------------------------------------------------------------------

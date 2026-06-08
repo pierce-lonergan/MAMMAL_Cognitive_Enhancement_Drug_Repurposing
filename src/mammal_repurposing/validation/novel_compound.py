@@ -409,3 +409,67 @@ def loco_class_recovery(ledger: pd.DataFrame, smiles_df: pd.DataFrame, *,
         ) if (res["similarity"] >= TAU_HIGH).any() else float("nan"),
         "detail": res.sort_values("similarity", ascending=False).reset_index(drop=True),
     }
+
+
+# ---------------------------------------------------------------------------
+# DTI-profile class signal (F2 spec signal "a": nearest class in profile space)
+# ---------------------------------------------------------------------------
+# A compound's MAMMAL pKd profile over the cognition target panel is an orthogonal
+# routing signal to 2D structure: a structurally novel DAT inhibitor still binds
+# SLC6A3, so its profile points at catecholaminergic even when its scaffold does
+# not. These helpers build per-class profile centroids and score a query's
+# profile-space similarity; the result feeds score_compound via external_class_scores.
+# Profiles are per-target z-scored first, so the signal is the RELATIVE binding
+# preference (which targets a compound favours vs the panel average), not the
+# overall affinity magnitude (which is near-constant across compounds).
+
+def load_profiles(profile_df: pd.DataFrame,
+                  target_order: list | None = None) -> tuple[dict[str, np.ndarray], list]:
+    """From a long [compound, target_uniprot, predicted_pkd] table, build
+    {compound_lower: pKd vector} over a fixed target order. Rows with NaN pKd are
+    mean-imputed per target so a single failed pair does not drop a compound."""
+    piv = profile_df.pivot_table(index="compound", columns="target_uniprot",
+                                 values="predicted_pkd")
+    order = list(piv.columns) if target_order is None else list(target_order)
+    piv = piv.reindex(columns=order)
+    piv = piv.fillna(piv.mean(axis=0))
+    return ({str(k).lower().strip(): piv.loc[k].to_numpy(dtype=float)
+             for k in piv.index}, order)
+
+
+def _profile_stats(profiles: dict[str, np.ndarray], exclude: str | None = None):
+    X = np.array([v for k, v in profiles.items() if k != exclude], dtype=float)
+    mu = X.mean(axis=0)
+    sd = X.std(axis=0)
+    sd[sd < 1e-9] = 1.0
+    return mu, sd
+
+
+def build_profile_centroids(profiles: dict[str, np.ndarray],
+                            class_of: dict[str, str], mu: np.ndarray,
+                            sd: np.ndarray, exclude: str | None = None
+                            ) -> dict[str, np.ndarray]:
+    """Per-class mean of z-scored profiles (the held-out compound excluded)."""
+    by_class: dict[str, list] = {}
+    for k, v in profiles.items():
+        if k == exclude:
+            continue
+        c = class_of.get(k)
+        if c is None:
+            continue
+        by_class.setdefault(c, []).append((v - mu) / sd)
+    return {c: np.mean(z, axis=0) for c, z in by_class.items()}
+
+
+def profile_class_scores(query_vec: np.ndarray, centroids: dict[str, np.ndarray],
+                         mu: np.ndarray, sd: np.ndarray) -> dict[str, float]:
+    """Cosine similarity of the z-scored query profile to each class centroid,
+    mapped from [-1, 1] to [0, 1] so it composes with the Tanimoto signal."""
+    q = (query_vec - mu) / sd
+    qn = float(np.linalg.norm(q))
+    out: dict[str, float] = {}
+    for c, cen in centroids.items():
+        cn = float(np.linalg.norm(cen))
+        cos = float(q @ cen / (qn * cn)) if qn > 0 and cn > 0 else 0.0
+        out[c] = (cos + 1.0) / 2.0
+    return out

@@ -28,10 +28,14 @@ novel mechanisms and downgrading allosteric (V6.A) classes. Validated by leave-o
 compound-out class recovery: **0.97** top-1 on 36 routed held-out drugs (60% abstain --
 the guardrail), on an exemplar base grown 31 -> 110 SMILES across 46/48 classes
 (`scripts/_expand_ledger_smiles.py`; PubChem canonical SMILES, RDKit-gated). The
-multi-head DTI-profile nearest-class signal (MAMMAL/MMAtt-DTA/PSICHIC/BALM) is wired as a
-pluggable `external_class_scores` hook (GPU upgrade, not run). Output: a ranked CSV with
-per-compound class, predicted g, CrI, tier, and abstain reason. What remains is the GPU
-profile signal and a larger vendor-catalogue run. (GAPS F2.)
+multi-head DTI-profile nearest-class signal (the spec's signal a) was TESTED on the GPU
+(`scripts/96` + `scripts/97`, MAMMAL, 118 x 31; report
+`reports/pipeline/f2_profile_vs_structure_v1.md`) and is a documented NEGATIVE: structure
+leave-one-compound-out recovery 0.97 vs profile-only 0.11 vs blended 0.49 (blending hurts).
+The MAMMAL profile is near-non-selective on this panel (property-correlation bias), so it
+stays an OFF-by-default `external_class_scores` hook and structure remains primary. Output:
+a ranked CSV with per-compound class, predicted g, CrI, tier, and abstain reason. What
+remains is a larger vendor-catalogue run on the structure router. (GAPS F2.)
 
 ### B. Within-class compound ranker harness -- SHIPPED (clean negative)
 Built as `src/mammal_repurposing/validation/within_class.py` +

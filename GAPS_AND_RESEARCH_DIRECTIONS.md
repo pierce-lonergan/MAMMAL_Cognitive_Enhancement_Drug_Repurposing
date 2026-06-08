@@ -253,10 +253,18 @@ RDKit-gated): **top-1 class recovery 0.97** on the 36 routed held-out drugs, abs
 [0.26, 0.34]. The single residual error is an enantiomer blind spot (2D ECFP4 cannot
 separate (-)-phenserine/AChE-I from its (+)-enantiomer posiphen/buntanetap/APP-inhibitor).
 Demo: ipidacrine->AChE-I (HIGH), phentermine->catecholaminergic (MED); the peripheral
-negatives (aspirin/ibuprofen/loratadine/atorvastatin) and caffeine all ABSTAIN. The
-multi-head DTI-profile nearest-class signal (MAMMAL/MMAtt-DTA/PSICHIC/BALM) is wired as a
-pluggable `external_class_scores` hook (GPU upgrade, not run here). The original framing
-follows.
+negatives (aspirin/ibuprofen/loratadine/atorvastatin) and caffeine all ABSTAIN.
+
+**DTI-profile signal TESTED (GPU, negative).** The spec's primary signal (a) "nearest
+class in DTI-profile space" was scored on the RTX 5070 (118 compounds x 31 targets,
+MAMMAL; `scripts/96` -> `scripts/97`, `reports/pipeline/f2_profile_vs_structure_v1.md`)
+and compared to structure leave-one-compound-out: structure-only **0.972**, profile-only
+**0.112**, blended **0.493** (blending HURTS). The MAMMAL profile is nearly non-selective
+on this panel (median within-compound pKd SD 0.37; donepezil/galantamine/pitolisant/
+modafinil share the same top targets) - the documented property-correlation bias - so it
+cannot route mechanism classes. Structure stays primary; the profile remains a documented
+pluggable `external_class_scores` hook, OFF by default. Honest negative, coherent with the
+weak affinity signal (AUROC 0.47). The original framing follows.
 
 Today the class prior only helps a compound already placed in a class. To score an
 *arbitrary* novel molecule, wire the existing pieces into one path: novel SMILES ->
@@ -440,8 +448,16 @@ the named reports below, and the manuscript suite.
   allosteric (V6.A) downgrade. Leave-one-compound-out class recovery **0.97** (36 routed,
   60% abstain) on an exemplar base grown 31 -> 110 SMILES / 46 classes (PubChem, RDKit-
   gated, `scripts/_expand_ledger_smiles.py`). OOD floor calibrated from the LOCO error
-  band; one residual enantiomer mis-route. 11 new tests. Detail:
+  band; one residual enantiomer mis-route. 14 new tests. Detail:
   `reports/pipeline/novel_compound_onboarding_v1.md`.
+- **F2 DTI-profile signal tested on GPU (negative)** (`scripts/96` + `scripts/97`,
+  `reports/pipeline/f2_profile_vs_structure_v1.md`): scored 118 compounds x 31 targets
+  with MAMMAL on the RTX 5070, then compared the spec's primary "nearest class in profile
+  space" signal to structure (leave-one-compound-out). Structure **0.972** vs profile-only
+  **0.112** vs blended **0.493** (blending hurts; profile rescues only 6% of structure-
+  abstained). The MAMMAL profile is near-flat on this panel (within-compound pKd SD 0.37;
+  distinct drugs share top targets) - property-correlation bias - so structure stays the
+  default and the profile is an OFF-by-default hook. Honest negative.
 - **F3 ledger scaling + per-domain + power roadmap** (`reports/pipeline/ledger_scaling_v1.md`,
   `src/mammal_repurposing/validation/ledger_scaling.py`): the class-separation
   result survives the cited n=31 -> 47 expansion (class-LOCO AUROC 1.000 -> 0.967,
