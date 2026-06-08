@@ -105,6 +105,33 @@ def youden_threshold(pos_scores, neg_scores) -> float:
     return best_t
 
 
+def mw_baseline(baseline_pkd, baseline_mw) -> tuple[float, float] | None:
+    """Fit the size->score line pKd ~ intercept + slope*MW on a BASELINE set (the non-
+    engagers, which have no genuine binding) so it captures MAMMAL's molecular-weight bias.
+    Returns (slope, intercept) or None if degenerate."""
+    p = np.asarray(baseline_pkd, dtype=float)
+    m = np.asarray(baseline_mw, dtype=float)
+    ok = ~(np.isnan(p) | np.isnan(m))
+    p, m = p[ok], m[ok]
+    if p.size < 3 or float(np.ptp(m)) == 0.0:
+        return None
+    slope, intercept = np.polyfit(m, p, 1)
+    return float(slope), float(intercept)
+
+
+def mw_residualize(pkd, mw, baseline: tuple[float, float]):
+    """Remove the size confound: residual = observed pKd - size-EXPECTED pKd. A genuine
+    binder scores ABOVE what its weight predicts (positive residual); a purely size-driven
+    score sits near 0.
+
+    CAVEAT: residualizing an engager whose MW is OUTSIDE the baseline (non-engager) range is
+    an EXTRAPOLATION - reliable mainly where engager and non-engager weights overlap (the
+    capability channels), less so where engagers are far larger (the BH3-mimetics).
+    """
+    slope, intercept = baseline
+    return np.asarray(pkd, dtype=float) - (intercept + slope * np.asarray(mw, dtype=float))
+
+
 def specificity_threshold(pos_scores, neg_scores, *, target_fpr: float = 0.05) -> float:
     """Specificity-first threshold for SINGLE-COMPOUND inference: the score above which at
     most ``target_fpr`` of known non-engagers fall (the (1-target_fpr) quantile of negatives).

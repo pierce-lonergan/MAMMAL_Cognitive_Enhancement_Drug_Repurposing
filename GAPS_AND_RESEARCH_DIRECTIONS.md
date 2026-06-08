@@ -451,7 +451,11 @@ false-durables, but 0/3 held-out BH3-mimetics clear the size-matched bar. Honest
 MAMMAL gives a narrow, size-confounded population-RANKING signal for direct BCL2-family
 BH3-mimicry, NOT a general per-compound persistence-substrate detector - so the head stays
 abstain-by-default and the DTI channel is wired-but-gated. The size-matched control is the
-deliverable (it stops an MW artifact masquerading as a persistence predictor).
+deliverable (it stops an MW artifact masquerading as a persistence predictor). MW-residualized
+re-calibration (`scripts/106`) then asks "no signal or signal masked by size?": it RESCUES
+NTRK2/TrkB (0.72->0.82, engagers in-range = valid) as a genuine size-independent plasticity
+signal, confirms the capability channels as real size-artifacts (residualized <=0.62), and
+leaves BCL2/BCL-xL size-ENTANGLED (engagers larger than all negatives -> extrapolation).
 **Honest scope:** a CNS-gated, abstain-by-default, evidence-governed guardrail reporting
 symptomatic vs persistence separately, now with a measured 0-over-claim specificity in BOTH
 directions (negative-control + design-ledger) - still NOT a validated bidirectional

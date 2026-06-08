@@ -169,8 +169,21 @@ realistic ~1% prior" - which no current repurposing predictor reports for persis
    detector - so the persistence head stays abstain-by-default and the DTI substrate channel
    is wired but gated (only BCL2/BCL-xL usable, conservative threshold). The size-matched
    control is the deliverable: it prevents a molecular-weight artifact from masquerading as a
-   persistence predictor. Next: de-bias pKd by MW (residualize) before thresholding; expand
-   senolytic anchors; a persistence-target head fine-tune.
+   persistence predictor. **MW-residualized re-calibration (`scripts/106`, CPU) answers "no
+   signal, or signal masked by size?":** residualizing each score against a size-line fit on
+   the non-engagers and re-calibrating RESCUES **NTRK2/TrkB** (raw AUROC 0.72 fail ->
+   residualized 0.82 PASS, engagers fully in-MW-range so valid) - a genuine size-INDEPENDENT
+   plasticity-substrate signal (MAMMAL recognises TRK inhibitors beyond their size); confirms
+   the capability channels (HDAC/DNMT/EHMT/KEAP1, residualized AUROC <=0.62) as real
+   size-artifacts; and leaves BCL2/BCL-xL UNRESOLVABLE by residualization because their
+   BH3-mimetic engagers are larger than every non-engager (extrapolation, flagged
+   engager-in-range 0.00/0.50) - their raw size-matched pass is thus size-ENTANGLED, not
+   confirmed size-independent. Net honest picture: the one cleanly size-independent channel
+   (NTRK2) is the non-durable plasticity tier; the durable (ablative) channels are
+   size-entangled; the reversible capability channels carry no size-free signal. Next:
+   adopt residualized scoring for in-MW-range channels (would wire NTRK2 as a plasticity
+   hypothesis); add senolytic BH3-mimetic negatives IN the engager size range to de-entangle
+   BCL2; a persistence-target head fine-tune.
 3. **L4 full**: TrkB transmembrane-domain binding head (psychoplastogen anchors) +
    intracellular-5-HT2A access (passive permeability x 5-HT2A affinity).
 4. **Persistence ground-truth ledger + PU/LOMO evaluator**: curated delayed-start /

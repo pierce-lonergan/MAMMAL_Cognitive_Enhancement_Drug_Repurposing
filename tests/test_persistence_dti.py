@@ -12,8 +12,8 @@ from pathlib import Path
 import pytest
 
 from mammal_repurposing.engine.persistence_dti import (
-    PanelTarget, auroc, calibrate_target, load_panel, permutation_p,
-    substrate_hypothesis, youden_threshold,
+    PanelTarget, auroc, calibrate_target, load_panel, mw_baseline, mw_residualize,
+    permutation_p, substrate_hypothesis, youden_threshold,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -67,6 +67,38 @@ def test_ranks_well_but_not_inference_usable():
 def test_permutation_p_is_high_for_no_separation():
     p = permutation_p([5, 5, 5], [5, 5, 5], n_perm=500)
     assert p > 0.5   # no real separation -> not significant
+
+
+def test_mw_residualization_removes_size_confound():
+    # construct a pure size artifact: pKd = 5 + 0.01*MW for EVERYONE (no real binding).
+    # raw scores rank big molecules high; after residualizing on the (size-only) negatives,
+    # both classes collapse to ~0 residual -> the spurious separation disappears.
+    neg_mw = [100, 200, 300, 400, 500]
+    neg_pkd = [5 + 0.01 * m for m in neg_mw]
+    pos_mw = [350, 420, 480]                      # engagers happen to be largish
+    pos_pkd = [5 + 0.01 * m for m in pos_mw]      # but bind no more than their size predicts
+    assert auroc(pos_pkd, neg_pkd) > 0.7          # raw: spurious size-driven separation
+    base = mw_baseline(neg_pkd, neg_mw)
+    rp = mw_residualize(pos_pkd, pos_mw, base)
+    rn = mw_residualize(neg_pkd, neg_mw, base)
+    assert abs(auroc(rp, rn) - 0.5) < 0.15        # residualized: confound removed -> ~chance
+
+
+def test_mw_residualization_keeps_genuine_signal():
+    # genuine size-INDEPENDENT binding: engagers carry a +2 bump on top of the size line.
+    neg_mw = [100, 200, 300, 400, 500]
+    neg_pkd = [5 + 0.01 * m for m in neg_mw]
+    pos_mw = [150, 250, 350]
+    pos_pkd = [5 + 0.01 * m + 2.0 for m in pos_mw]   # real bump beyond size
+    base = mw_baseline(neg_pkd, neg_mw)
+    rp = mw_residualize(pos_pkd, pos_mw, base)
+    rn = mw_residualize(neg_pkd, neg_mw, base)
+    assert auroc(rp, rn) == 1.0                       # signal survives de-confounding
+
+
+def test_mw_baseline_degenerate_returns_none():
+    assert mw_baseline([5, 6], [100, 200]) is None         # < 3 points
+    assert mw_baseline([5, 6, 7], [100, 100, 100]) is None  # zero MW spread
 
 
 # --------------------------------------------------------------------------
