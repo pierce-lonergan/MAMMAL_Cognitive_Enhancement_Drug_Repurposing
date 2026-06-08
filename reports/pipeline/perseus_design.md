@@ -192,11 +192,27 @@ realistic ~1% prior" - which no current repurposing predictor reports for persis
    (keeps BCL2 + NTRK2, drops the size-entangled BCL-xL); the verified positive-compound
    ledger (psychoplastogens) to finally measure SENSITIVITY; a persistence-target head
    fine-tune.
-3. **L4 full**: TrkB transmembrane-domain binding head (psychoplastogen anchors) +
-   intracellular-5-HT2A access (passive permeability x 5-HT2A affinity).
-4. **Persistence ground-truth ledger + PU/LOMO evaluator**: curated delayed-start /
-   discontinuation / washout cognition outcomes + the empty-positive evaluator and the
-   "persistence-illusion" negative-control suite.
+3. **L4 psychoplastogen window (SHIPPED v2.5, intracellular-access leg).**
+   `engine/psychoplastogen.py`, wired into `score()`; `scripts/107`. Encodes the Vargas 2023
+   mechanism structurally: a serotonergic/monoaminergic-agonist SCAFFOLD (tryptamine with a
+   small amine; psychedelic phenethylamine with >=2 aromatic OMe/halo; ergoline) AND
+   intracellular ACCESS (TPSA<=60, HBD<=2 - the permeability determinants), gated on CNS PASS,
+   emits a permissive WINDOW_CONDITIONAL (never auto-durable). Decisive validation: serotonin
+   is window-NEGATIVE while DMT is window-POSITIVE despite near-identical 5-HT2A affinity - the
+   discriminator is membrane permeability, OFF the DTI axis. On the verified positive ledger
+   this lifts PERSEUS recall 0/13 -> 7/13 (neuroplasticity domain 5/5: psilocin/LSD/DMT/
+   5-MeO-DMT/DOI) at FPR 0/15. STILL FUTURE: the TrkB-transmembrane-domain leg (ketamine/
+   fluoxetine site) is information-theoretically invisible to a 1D-sequence DTI model
+   (Casarotto 2021 crossed-dimer-in-lipid) - a documented off-axis limit, candidate for a
+   Boltz-2/structure second opinion, not MAMMAL.
+4. **Persistence ground-truth ledger + empty-positive evaluator (SHIPPED v2.5).** Verified
+   positive ledger recovered from the deep-research workflow (`data/raw/persistence_positive_
+   ledger.csv`, 16 cited compounds). `validation/persistence_pu_eval.py` + `scripts/109`:
+   sensitivity 0.54 (Jeffreys 95% CI 0.28-0.78) with FPR 0/15 (Jeffreys upper 0.15) and a
+   PPV-vs-prior curve (0.03 at a 1% prior under the conservative upper FPR) - the bidirectional
+   metric the empty-positive class previously made unidentifiable. SAR caveat surfaced (the
+   positives are trial-availability-biased). FUTURE: grouped leave-one-mechanism-out + a
+   label-shift conformal operating point.
 5. **Population x regime + bias-provenance covariates**: force ABSTAIN on healthy-young-
    durable-gain; report all-evidence vs bias-hardened scores.
 
