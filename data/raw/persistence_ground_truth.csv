@@ -1,0 +1,17 @@
+compound,mechanism_class,persistence_design,persistence_label,basis,source,structure_scoreable
+methylphenidate,catecholaminergic_ADHD,randomized_discontinuation,not_persistent,"MTA: 14-mo medication advantage gone by 36 mo; randomized discontinuation -> relapse",Molina 2009 JAACAP,yes
+guanfacine,catecholaminergic_ADHD,randomized_discontinuation,not_persistent,"guanfacine-ER randomized-withdrawal -> rapid relapse off drug",guanfacine-ER discontinuation studies,yes
+modafinil,wake_promoting,washout_observation,not_persistent,"wakefulness/vigilance effect reverses on washout",modafinil pharmacology,yes
+donepezil,AChE_inhibitor,washout_observation,not_persistent,"symptomatic; benefit lost on discontinuation; no disease-course change",AD treatment guidelines,yes
+galantamine,AChE_inhibitor,washout_observation,not_persistent,"symptomatic; lost on discontinuation",AD treatment guidelines,yes
+rasagiline,catecholaminergic_ADHD,delayed_start_rct,contested,"ADAGIO delayed-start: 1 mg met endpoints, 2 mg did not (dose-inconsistent); motor not cognitive; course-modification not clearly shown",Olanow 2009 NEJM (ADAGIO),yes
+selegiline,catecholaminergic_ADHD,longitudinal_followup,not_persistent,"DATATOP/Sano not delayed-start (confounded by symptomatic effect); no durable cognitive benefit established",Sano 1997 NEJM; DATATOP,yes
+fluoxetine,catecholaminergic_ADHD,preclinical_only,contested,"iPlasticity (rodent, supra-clinical); a permissive window contingent on paired training; human cognitive-enhancement persistence unproven",Maya-Vetencourt 2008; Steinzeig 2019,yes
+semagacestat,AChE_inhibitor,parallel_rct,not_persistent,"gamma-secretase inhibitor WORSENED cognition in Phase 3 (IDENTITY)",Doody 2013 NEJM (semagacestat),yes
+intepirdine,AChE_inhibitor,parallel_rct,not_persistent,"5-HT6 antagonist; failed Phase 3 (MINDSET)",MINDSET trial,yes
+idalopirdine,AChE_inhibitor,parallel_rct,not_persistent,"5-HT6 antagonist; failed Phase 3 (STARSHINE/STARBEAM)",STAR program,yes
+tideglusib,AChE_inhibitor,parallel_rct,not_persistent,"GSK-3 inhibitor; no durable benefit",tideglusib AD trial,yes
+latrepirdine,AChE_inhibitor,parallel_rct,not_persistent,"dimebon; promising Phase 2 (CONNECTION) then failed Phase 3",CONNECTION/CONCERT,yes
+naproxen,AChE_inhibitor,longitudinal_followup,not_persistent,"NSAID; ADAPT negative / trended harmful for cognition",ADAPT (Martin 2008),yes
+lecanemab,anti_amyloid_mAb,longitudinal_followup,disease_modifying_patients,"clears amyloid; parallel-group slowing in patients; delayed-start not done; OLE open-label",CLARITY-AD,no
+donanemab,anti_amyloid_mAb,longitudinal_followup,disease_modifying_patients,"clears amyloid; parallel-group slowing in patients",TRAILBLAZER-ALZ 2,no

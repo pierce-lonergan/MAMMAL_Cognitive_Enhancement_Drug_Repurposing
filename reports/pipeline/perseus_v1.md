@@ -31,12 +31,11 @@ Reversible enhancers score a real symptomatic tier but **NULL** persistence; the
 
 ## F2 shortlist re-scored (31 compounds)
 
-Persistence-head verdicts: EXCLUDE_NOT_COGNITION (13), NULL_SYMPTOMATIC (11), EXCLUDE_NO_CNS (4), CONTESTED (2), WINDOW_CONDITIONAL (1).
+Persistence-head verdicts: EXCLUDE_NOT_COGNITION (13), NULL_SYMPTOMATIC (11), EXCLUDE_NO_CNS (4), WINDOW_CONDITIONAL (1), CONTESTED (1), TESTED_NEGATIVE (1).
 
 | compound | sympt. tier | predicted g | CNS | persistence | substrate | basis |
 |---|---|---|---|---|---|---|
 | FLUOXETINE | ABSTAIN | - | PASS | WINDOW_CONDITIONAL | plasticity_window | reopens adult critical-period plasticity + BDNF/TrkB (iPlasticity); a  |
-| SELEGILINE | ABSTAIN | - | PASS | CONTESTED | transient | MAO-B inhibitor; DATATOP and Sano 1997 were NOT delayed-start designs  |
 | RASAGILINE | ABSTAIN | - | PASS | CONTESTED | transient | MAO-B inhibitor; ADAGIO delayed-start: 1 mg/day met all three endpoint |
 | DEXMETHYLPHENIDATE | HIGH | +0.40 | PASS | NULL_SYMPTOMATIC | transient | symptomatic / reversible (transient); real on-drug pro-cognitive / ADH |
 | GUANFACINE | HIGH | +0.40 | PASS | NULL_SYMPTOMATIC | transient | symptomatic / reversible (transient); selective alpha-2A agonist (Arns |
@@ -63,6 +62,7 @@ Persistence-head verdicts: EXCLUDE_NOT_COGNITION (13), NULL_SYMPTOMATIC (11), EX
 | HYDROCODONE | MED | +0.20 | PASS | EXCLUDE_NOT_COGNITION | transient | mu-opioid agonist; chronic use impairs cognition |
 | DIFELIKEFALIN | EXCLUDED_NO_CNS | - | FAIL | EXCLUDE_NO_CNS | transient | no free-brain exposure (CNS gate FAIL) |
 | DULOXETINE | ABSTAIN | - | PASS | NULL_SYMPTOMATIC | transient | symptomatic / reversible (transient); SNRI antidepressant routed to ca |
+| SELEGILINE | ABSTAIN | - | PASS | TESTED_NEGATIVE | transient | MAO-B inhibitor; DATATOP and Sano 1997 were NOT delayed-start designs  |
 | DEMECARIUM | EXCLUDED_NO_CNS | - | FAIL | EXCLUDE_NO_CNS | transient | no free-brain exposure (CNS gate FAIL) |
 | NEOSTIGMINE | EXCLUDED_NO_CNS | - | FAIL | EXCLUDE_NO_CNS | transient | no free-brain exposure (CNS gate FAIL) |
 | DISTIGMINE | EXCLUDED_NO_CNS | - | FAIL | EXCLUDE_NO_CNS | transient | no free-brain exposure (CNS gate FAIL) |

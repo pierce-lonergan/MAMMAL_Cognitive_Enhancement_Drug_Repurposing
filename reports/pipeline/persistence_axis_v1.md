@@ -37,17 +37,16 @@ The gold standard is the randomized **delayed-start RCT** (the ADAGIO template):
 
 ## Applied to the F2 shortlist (31 hypotheses)
 
-Persistence tier distribution: **live** 3, **null** 11, **exclude** 17.
+Persistence tier distribution: **live** 2, **null** 12, **exclude** 17.
 
-By status: symptomatic (11), not_applicable (11), cognition_negative (6), contested (2), plasticity_gated (1).
+By status: symptomatic (11), not_applicable (11), cognition_negative (6), plasticity_gated (1), tested_negative (1), contested (1).
 
-**The headline: 3 of 31 hypotheses have any persistence signal at all, 0 are demonstrated durable cognitive enhancement in healthy people.** The symptomatic +0.40 prior does NOT transfer to persistence.
+**The headline: 2 of 31 hypotheses have any persistence signal at all, 0 are demonstrated durable cognitive enhancement in healthy people.** The symptomatic +0.40 prior does NOT transfer to persistence.
 
 ### The live threads (persistence plausible or formally tested)
 
 | drug | class | status | evidence | basis | caveat |
 |---|---|---|---|---|---|
-| SELEGILINE | catecholaminergic_ADHD | contested | longitudinal_followup | MAO-B inhibitor; DATATOP and Sano 1997 were NOT delayed-start designs (DATATOP time-to-levodopa is confounded by selegiline's own symptomatic effect - the exact confound delayed-start was invented to remove), so the neuroprotection claim rests on weaker evidence than rasagiline; no durable cognitive enhancement established | neuroprotection unproven; NOT a delayed-start design |
 | RASAGILINE | AChE_inhibitor | contested | delayed_start_rct | MAO-B inhibitor; ADAGIO delayed-start: 1 mg/day met all three endpoints but 2 mg/day did not (dose-inconsistent); endpoints were motor (UPDRS), cognition was a tiny mentation sub-score; field consensus is course-modification not clearly shown | equivocal; motor not cognitive |
 | FLUOXETINE | catecholaminergic_ADHD | plasticity_gated | preclinical_only | reopens adult critical-period plasticity + BDNF/TrkB (iPlasticity); a PERMISSIVE window - durable change is contingent on paired experience, not a standalone boost; rodent / supra-clinical; no human cognitive-enhancement persistence shown | unproven in humans; conditional on training |
 
@@ -77,7 +76,7 @@ These are structure-router misroutes the symptomatic screen could not catch: no 
 
 ### Symptomatic / tested-negative (the bulk)
 
-11 hits are symptomatic or were explicitly tested and did NOT persist (stimulants: discontinuation relapse + MTA advantage gone by 36 months; cholinesterase inhibitors: benefit lost on washout). Real on-drug cognition effect, no durable gain: BENZGALANTAMINE, BENZPHETAMINE, CLOBENZOREX, DEXMETHYLPHENIDATE, DULOXETINE, FENOPROFEN CALCIUM, FENPROPOREX, GUANFACINE, MEFENOREX, SERDEXMETHYLPHENIDATE, SOLRIAMFETOL.
+12 hits are symptomatic or were explicitly tested and did NOT persist (stimulants: discontinuation relapse + MTA advantage gone by 36 months; cholinesterase inhibitors: benefit lost on washout). Real on-drug cognition effect, no durable gain: BENZGALANTAMINE, BENZPHETAMINE, CLOBENZOREX, DEXMETHYLPHENIDATE, DULOXETINE, FENOPROFEN CALCIUM, FENPROPOREX, GUANFACINE, MEFENOREX, SELEGILINE, SERDEXMETHYLPHENIDATE, SOLRIAMFETOL.
 
 ## Verdict
 

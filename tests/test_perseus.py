@@ -157,3 +157,26 @@ def test_negative_controls_zero_persistence_false_positives(engine):
     scored = score_frame(engine, pd.read_csv(neg), dedup_salts=False)
     durability = {P_CANDIDATE, P_DISEASE_MOD, P_DEMONSTRATED}
     assert scored["persistence_verdict"].isin(durability).sum() == 0
+
+
+@pytest.mark.skipif(not _HAVE, reason="engine data not present")
+def test_ground_truth_zero_over_claims(engine):
+    """Bidirectional: PERSEUS never asserts more durability than the trial-design label."""
+    import pandas as pd
+    from mammal_repurposing.engine.perseus import score_frame
+    from mammal_repurposing.validation.persistence_eval import over_claims
+    gt_path = RAW / "persistence_ground_truth.csv"
+    if not gt_path.exists():
+        pytest.skip("ground-truth ledger not present")
+    gt = pd.read_csv(gt_path)
+    gt = gt[gt["structure_scoreable"] == "yes"].copy()
+    smi = pd.read_csv(RAW / "ledger_compound_smiles.csv")
+    look = dict(zip(smi["compound"].str.lower().str.strip(), smi["smiles"]))
+    look.setdefault("methylphenidate", "COC(=O)C(C1CCCCN1)c1ccccc1")
+    gt["smiles"] = gt["compound"].str.lower().str.strip().map(look)
+    gt = gt[gt["smiles"].notna()]
+    scored = score_frame(engine, gt.rename(columns={"compound": "query_id"}), dedup_salts=False)
+    scored = scored.merge(gt[["compound", "persistence_label"]], on="compound", how="left")
+    oc = [r["compound"] for _, r in scored.iterrows()
+          if over_claims(r["persistence_verdict"], r["persistence_label"])]
+    assert oc == [], f"PERSEUS over-claimed durability on: {oc}"

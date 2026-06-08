@@ -41,12 +41,29 @@ computable persistence predictor." It is a **CNS-gated, abstain-by-default, evid
 governed wrapper that reports symptomatic and persistence as separate outputs and refuses to
 call anything demonstrated** - a guardrail on MAMMAL/F2 that correctly stops a symptomatic
 +0.40 from masquerading as durability. The control panel (13/13) is a set of CONSISTENCY
-unit tests, not out-of-sample validation. The genuine evaluation result so far is
-SPECIFICITY: `scripts/101_perseus_eval.py` -> **0 / 15 persistence false positives**
-(reversible-enhancer + persistence-illusion panels). Sensitivity / PPV remain
-unidentifiable without a curated POSITIVE persistence ledger + PU / leave-one-mechanism-out
-estimator (the next deliverable). The "first structure-computable persistence prior" claim
-is withdrawn until the persistence-target DTI module + that evaluator land.
+unit tests, not out-of-sample validation. The genuine evaluation results so far are both
+SPECIFICITY measures, in two directions:
+- `scripts/101_perseus_eval.py` -> **0 / 15 persistence false positives** (reversible-
+  enhancer + persistence-illusion negative panels);
+- `scripts/102_persistence_groundtruth_eval.py` -> **0 / 14 over-claims** against a cited
+  persistence-DESIGN ledger (`data/raw/persistence_ground_truth.csv`: delayed-start /
+  randomized-discontinuation / washout / parallel-group readouts, labelled by what the trial
+  actually showed). An over-claim = the verdict asserting MORE durability than the trial-
+  design label supports - the directional error that matters for an abstain-by-default
+  system. Report: `reports/pipeline/perseus_eval_groundtruth_v1.md`.
+
+The bidirectional eval earned its keep on the first run: it caught **selegiline** over-
+claiming CONTESTED. Root cause - DATATOP / Sano 1997 are NOT delayed-start designs; the
+time-to-levodopa endpoint is confounded by selegiline's own symptomatic effect (the exact
+confound delayed-start was invented to remove). Fix: selegiline demoted CONTESTED ->
+tested_negative, leaving rasagiline/ADAGIO and the fluoxetine plasticity window as the only
+live threads. Coverage-accuracy over the evidence-design rank holds 1.00 non-over-claim
+accuracy at every threshold. The **label budget is ~381 confirmed delayed-start positives**
+(1% prior, +/-0.1) before recall is estimable - reported as a first-class deliverable.
+Sensitivity / PPV remain unidentifiable without a NON-EMPTY positive persistence ledger + PU
+/ leave-one-mechanism-out estimator (the next deliverable). The "first structure-computable
+persistence prior" claim is withdrawn until the persistence-target DTI module + that
+estimator land.
 
 ## Thesis
 
@@ -88,10 +105,11 @@ necessary-not-sufficient.
   distigmine/difelikefalin) -> EXCLUDE_NO_CNS at the L1 gate; HDACi/NRF2 exemplars
   (vorinostat/dimethyl-fumarate/sulforaphane) -> CANDIDATE_MECHANISTIC; out-of-manifold /
   CNS-borderline (caffeine, entinostat) -> ABSTAIN. Nothing is DEMONSTRATED_HEALTHY.
-- **F2 shortlist re-scored**: the uniform +0.40 symptomatic prior splits into 5 CNS-
-  excluded, 11 not-cognition-excluded, 12 null/symptomatic, 2 CONTESTED (selegiline,
-  rasagiline; delayed-start), 1 WINDOW_CONDITIONAL (fluoxetine). The persistence head is a
-  model output, not a buried caveat.
+- **F2 shortlist re-scored** (31 compounds): the uniform +0.40 symptomatic prior splits into
+  4 CNS-excluded, 13 not-cognition-excluded, 11 null/symptomatic, 1 TESTED_NEGATIVE
+  (selegiline, demoted off delayed-start - see eval below), 1 CONTESTED (rasagiline;
+  delayed-start), 1 WINDOW_CONDITIONAL (fluoxetine). The persistence head is a model output,
+  not a buried caveat.
 
 ## Evaluation framework (for a near-empty positive class)
 

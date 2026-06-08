@@ -119,9 +119,14 @@ def test_persistence_headline_on_shortlist():
     # the live threads exist but are the minority (the symptomatic prior does not transfer)
     n_live = int((ann["persistence_tier"] == "live").sum())
     assert 1 <= n_live < len(ann) / 2
-    # the known live calls are present
+    # the known live calls are present. selegiline was DEMOTED contested -> tested_negative
+    # (DATATOP/Sano are not genuine delayed-start designs; the time-to-levodopa endpoint is
+    # confounded by selegiline's own symptomatic effect). Only rasagiline/ADAGIO and the
+    # fluoxetine plasticity-window thread remain live - exactly the reviewer's point that
+    # "contested" must be earned by a real delayed-start readout, not borrowed by class.
     live_names = set(ann[ann["persistence_tier"] == "live"]["query_id"].str.lower())
-    assert {"fluoxetine", "selegiline", "rasagiline"} <= live_names
+    assert {"fluoxetine", "rasagiline"} <= live_names
+    assert "selegiline" not in live_names   # now tested_negative -> null tier
     # structure-router misroutes are caught as exclude
     assert (ann["persistence_tier"] == "exclude").sum() >= 5
 
