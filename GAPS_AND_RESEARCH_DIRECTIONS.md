@@ -42,7 +42,7 @@ validation. Everything below is what is still open.
 | Compound-level resolution test (F1) | DONE | clean NEGATIVE: class is the resolution limit (96.5% between-class variance) | shipped |
 | Novel-compound onboarding engine (F2) | DONE | SMILES -> structural class route -> prior g+CrI or ABSTAIN; leave-one-compound-out class recovery 0.97 (36 routed, 60% abstain); exemplars 110 / 46 classes | shipped |
 | Persistence-after-cessation axis (F7) | DONE v1 | symptomatic vs disease-modifying; null-by-default + cited evidence-design hierarchy (delayed-start RCT = gold standard); F2 shortlist 3 live / 13 null / 15 exclude, 0 demonstrated-healthy | shipped |
-| PERSEUS persistence-aware engine (F8) | DONE v1 | two orthogonal heads (symptomatic class prior vs abstain-by-default persistence); L1 free-brain CNS gate + L3 state-vs-tone substrate + L5 evidence governor; control panel 12/12; from a 26-agent adversarially-verified Opus design | shipped |
+| PERSEUS persistence-aware engine (F8) | DONE v2 | two orthogonal heads (symptomatic class prior vs abstain-by-default persistence); L1 CNS gate + L3 mechanism-fired 3-tier substrate + L5 de-broadcast evidence governor + L0-mismatch guard + prodrug/salt handling; negative-control specificity 0/15 false positives. Honest scope: a CNS-gated abstain-by-default guardrail, NOT yet a validated bidirectional predictor (sensitivity/PPV need a positive ledger) | shipped |
 | Ledger scale + per-domain (F3) | DONE | cited n=47 (0.967) + research-curated & human-adjudicated n=125 (all data points kept): class-LOCO AUROC 0.92 (0.97 multi-member), signal survives scaling; 2 genuine mixed classes (anti-amyloid mAb, AChE-I) | shipped |
 | Causal MR target validation (F4) | frontier | associative genetics to causal | ~2 to 3 weeks |
 | Architectural deepening (F5) | frontier | more performance from the stack | days to weeks |
@@ -407,12 +407,23 @@ the design). Architecture: L0 structure router -> **L1 free-brain CNS gate** (3-
 PASS/FAIL/ABSTAIN; permanent-charge + peptide vetoes the F2 screen lacked) -> L2 symptomatic
 class-prior head; and L1 AND **L3 mechanism-reversibility** (5-level state-vs-tone
 persistence-substrate ordinal + HDACi/NRF2 structural alerts) AND **L5 evidence-design
-governor** -> an abstain-by-default PERSISTENCE head. Thesis that beats SOTA: the positive
+governor** -> an abstain-by-default PERSISTENCE head. Thesis: the positive
 persistence class is near-empty, so persistence is a calibrated multi-gate AND with
 abstention as the headline, and a state-changing MECHANISM can be flagged as a HYPOTHESIS
-without being called proven. Control panel 12/12; the F2 shortlist's uniform +0.40
-symptomatic prior splits into 5 CNS-excluded / 11 not-cognition / 12 null / 2 contested /
-1 window-conditional / 0 demonstrated-healthy. Evaluation for the empty-positive class
+without being called proven. **v2 (post expert review):** L3 now fires from MECHANISM (the
+curated axis) on 3 honest tiers (transient < plasticity_window < ablative + a
+self_maintaining flag; reversible HDACi/NRF2 are capability flags, not promoted);
+`evidence_design` de-broadcast via `class_extrapolation`; NULL split into symptomatic /
+tested_negative / not-cognition; an L0 structure-vs-mechanism mismatch guard abstains the
+symptomatic prior on misroutes (fluoxetine/duloxetine/rasagiline/selegiline); prodrugs
+scored as the active species; salts collapsed; governor violations fixed (anti-amyloid mAb
+-> longitudinal, selegiline off delayed-start). Control panel 13/13; the F2 shortlist
+splits into 4 CNS-excluded / 13 not-cognition / 11 null / 2 contested / 1 window-conditional
+/ 0 demonstrated. **Eval v1 (`scripts/101_perseus_eval.py`): 0/15 persistence false
+positives** (reversible-enhancer + persistence-illusion negative panels, specificity 1.0).
+**Honest scope:** a CNS-gated, abstain-by-default, evidence-governed guardrail reporting
+symptomatic vs persistence separately - NOT yet a validated bidirectional predictor
+(sensitivity/PPV need a curated positive persistence ledger + PU/leave-one-mechanism-out). Evaluation for the empty-positive class
 (delayed-start labels, PU / leave-one-mechanism-out, prior-corrected calibration,
 coverage-accuracy vs a persistence-illusion negative control) + the remaining roadmap
 (Kp,uu Stage 3, persistence-target DTI module, L4 TrkB head, ground-truth PU/LOMO

@@ -34,18 +34,26 @@ SHORTLIST = ROOT / "reports" / "pipeline" / "f2_catalogue_shortlist.csv"
 REPORT = ROOT / "reports" / "pipeline" / "perseus_v1.md"
 OUT_CSV = ROOT / "reports" / "pipeline" / "perseus_scored.csv"
 
-# state-changing exemplars (verified canonical SMILES) - NOT in the cognition ledger;
-# they demonstrate PERSEUS detecting a persistence-substrate where one truly exists.
-STATE_EXEMPLARS = [
-    ("vorinostat", "ONC(=O)CCCCCCC(=O)Nc1ccccc1", "HDAC inhibitor (hydroxamate ZBG)"),
-    ("dimethyl_fumarate", "COC(=O)/C=C/C(=O)OC", "NRF2 activator (fumarate)"),
-    ("sulforaphane", "CS(=O)CCCCN=C=S", "NRF2 activator (isothiocyanate)"),
+# ablative exemplar: a senolytic whose mechanism is durable BY CONSTRUCTION AND is
+# CNS-penetrant -> the genuine CANDIDATE_MECHANISTIC path (positive control).
+ABLATIVE_EXEMPLARS = [
+    ("piperlongumine", "COc1cc(/C=C/C(=O)N2CCC=CC2=O)cc(OC)c1OC", "CNS-penetrant senolytic -> ablative + CNS pass"),
 ]
-# compounds the engine SHOULD abstain on - out-of-manifold or CNS-unconfirmed - so
-# abstention is the correct, honest behaviour, not a failure.
+# ablative mechanism but poor BBB -> the AND-gate: CNS exposure unconfirmed -> ABSTAIN
+# (most senolytics do NOT penetrate the CNS - a real limitation, surfaced honestly).
+ABLATIVE_CNS_UNCONFIRMED = [
+    ("fisetin", "O=c1c(O)c(-c2ccc(O)c(O)c2)oc2cc(O)ccc12", "senolytic flavonol but poor BBB -> CNS unconfirmed"),
+]
+# state-CAPABLE but REVERSIBLE chemotypes: the honest call is ABSTAIN (engagement is
+# reversible, self-maintenance after washout unproven) - NOT a persistence candidate.
+CAPABLE_EXEMPLARS = [
+    ("vorinostat", "ONC(=O)CCCCCCC(=O)Nc1ccccc1", "HDAC inhibitor - state-capable but reversible"),
+    ("sulforaphane", "CS(=O)CCCCN=C=S", "NRF2 activator - state-capable but reversible"),
+]
+# out-of-manifold / CNS-unconfirmed -> abstention is the correct, honest behaviour.
 ABSTAIN_EXEMPLARS = [
     ("caffeine", "CN1C=NC2=C1C(=O)N(C)C(=O)N2C", "adenosine antagonist; no ledger cognition class (out-of-manifold)"),
-    ("entinostat", "Nc1ccccc1NC(=O)c1ccc(CNC(=O)OCc2cccnc2)cc1", "HDACi chemotype but borderline CNS exposure -> CNS gate ABSTAIN"),
+    ("entinostat", "Nc1ccccc1NC(=O)c1ccc(CNC(=O)OCc2cccnc2)cc1", "HDACi but borderline CNS exposure -> CNS gate ABSTAIN"),
 ]
 REVERSIBLE = ["methylphenidate", "modafinil", "donepezil"]
 MISROUTES = ["neostigmine", "difelikefalin", "demecarium", "distigmine"]
@@ -63,9 +71,7 @@ def _lookup_table() -> dict:
 
 def main() -> int:
     eng = PerseusEngine(LEDGERS, SMILES, RAW / "persistence_axis_classes.csv",
-                        RAW / "persistence_axis_overrides.csv",
-                        RAW / "persistence_substrate_classes.csv",
-                        RAW / "persistence_structural_alerts.csv")
+                        RAW / "persistence_axis_overrides.csv")
     look = _lookup_table()
 
     # ---- control panel ----
@@ -78,9 +84,15 @@ def main() -> int:
         if look.get(nm):
             ctrl.append({"query_id": nm, "smiles": look[nm], "panel": "cns_misroute",
                          "expect": "EXCLUDE_NO_CNS"})
-    for nm, smi, _why in STATE_EXEMPLARS:
-        ctrl.append({"query_id": nm, "smiles": smi, "panel": "state_changing_exemplar",
+    for nm, smi, _why in ABLATIVE_EXEMPLARS:
+        ctrl.append({"query_id": nm, "smiles": smi, "panel": "ablative_exemplar",
                      "expect": "CANDIDATE_MECHANISTIC"})
+    for nm, smi, _why in ABLATIVE_CNS_UNCONFIRMED:
+        ctrl.append({"query_id": nm, "smiles": smi, "panel": "ablative_cns_unconfirmed",
+                     "expect": "ABSTAIN"})
+    for nm, smi, _why in CAPABLE_EXEMPLARS:
+        ctrl.append({"query_id": nm, "smiles": smi, "panel": "capable_unproven",
+                     "expect": "ABSTAIN"})
     for nm, smi, _why in ABSTAIN_EXEMPLARS:
         ctrl.append({"query_id": nm, "smiles": smi, "panel": "honest_abstention",
                      "expect": "ABSTAIN"})
@@ -105,7 +117,8 @@ def main() -> int:
             return row["persistence_verdict"] == "NULL_SYMPTOMATIC"
         if row["panel"] == "cns_misroute":
             return row["persistence_verdict"] == "EXCLUDE_NO_CNS"
-        if row["panel"] == "honest_abstention":
+        if row["panel"] in ("honest_abstention", "capable_unproven",
+                            "ablative_cns_unconfirmed"):
             return row["persistence_verdict"] == "ABSTAIN"
         return row["persistence_verdict"] == "CANDIDATE_MECHANISTIC"
     ctrl_scored["ok"] = ctrl_scored.apply(_ctrl_ok, axis=1)
@@ -142,12 +155,15 @@ def main() -> int:
                   f"{r['symptomatic_verdict']} | {r['persistence_verdict']} | "
                   f"{'yes' if r['ok'] else 'NO'} |")
     Ls.append("")
-    Ls.append("The reversible enhancers score a real symptomatic tier but **NULL** "
-              "persistence; the misroutes are **EXCLUDED at the CNS gate** (not merely "
-              "down-ranked); the HDACi/NRF2 exemplars surface as **CANDIDATE_MECHANISTIC** "
-              "- a state-changing mechanism flagged as a persistence *hypothesis*, with the "
-              "honest caveat that no delayed-start trial confirms durable cognition. No "
-              "compound is called DEMONSTRATED_HEALTHY (that class is empty).")
+    Ls.append("Reversible enhancers score a real symptomatic tier but **NULL** persistence; "
+              "the misroutes are **EXCLUDED at the CNS gate**. Only a genuinely ABLATIVE, "
+              "CNS-penetrant mechanism (piperlongumine, a senolytic) reaches "
+              "**CANDIDATE_MECHANISTIC** - and even then it is a *hypothesis*, not proof. The "
+              "AND-gate is visible: an ablative-but-poorly-penetrant senolytic (fisetin) "
+              "**ABSTAINs** (CNS unconfirmed), and reversible state-CAPABLE chemotypes "
+              "(HDACi vorinostat, NRF2 sulforaphane) **ABSTAIN** rather than over-claim - "
+              "their target engagement is reversible and self-maintenance after washout is "
+              "unproven. No compound is called DEMONSTRATED_HEALTHY (that class is empty).")
     Ls.append("")
 
     Ls.append(f"## F2 shortlist re-scored ({len(short_scored)} compounds)")
@@ -161,7 +177,7 @@ def main() -> int:
         g = f"{r['prior_g']:+.2f}" if np.isfinite(r["prior_g"]) else "-"
         Ls.append(f"| {r['compound']} | {r['symptomatic_verdict']} | {g} | "
                   f"{r['cns_verdict']} | {r['persistence_verdict']} | "
-                  f"{r['substrate_class']} | {r['persistence_basis'][:70]} |")
+                  f"{r['substrate']} | {r['persistence_basis'][:70]} |")
     Ls.append("")
     Ls.append("## Verdict")
     Ls.append("")

@@ -1,0 +1,16 @@
+query_id,smiles,panel,rationale
+caffeine,Cn1c(=O)c2c(ncn2C)n(C)c1=O,reversible_enhancer,adenosine antagonist; reversible alertness
+methylphenidate,COC(=O)C(C1CCCCN1)C2=CC=CC=C2,reversible_enhancer,stimulant; benefit reverses on washout
+modafinil,C1=CC=C(C=C1)C(C2=CC=CC=C2)S(=O)CC(=O)N,reversible_enhancer,wake-promoter; reversible
+donepezil,COC1=C(C=C2C(=C1)CC(C2=O)CC3CCN(CC3)CC4=CC=CC=C4)OC,reversible_enhancer,"AChE inhibitor; symptomatic, lost on discontinuation"
+dexmethylphenidate,COC(=O)[C@H](c1ccccc1)[C@H]1CCCCN1,reversible_enhancer,stimulant; reversible
+galantamine,CN1CCC23C=CC(CC2OC4=C(C=CC(=C34)C1)OC)O,reversible_enhancer,AChE inhibitor / nicotinic PAM; symptomatic
+memantine,CC12CC3CC(C1)(CC(C3)(C2)N)C,reversible_enhancer,NMDA modulator; symptomatic
+rivastigmine,CCN(C)C(=O)OC1=CC=CC(=C1)C(C)N(C)C,reversible_enhancer,AChE/BuChE inhibitor; symptomatic
+semagacestat,CC(C)C(C(=O)NC(C)C(=O)NC1C2=CC=CC=C2CCN(C1=O)C)O,persistence_illusion,gamma-secretase inhibitor; WORSENED cognition in Phase 3 (IDENTITY)
+latrepirdine,CC1=CC2=C(C=C1)N(C3=C2CN(CC3)C)CCC4=CN=C(C=C4)C,persistence_illusion,dimebon; promising Phase 2 (CONNECTION) then failed Phase 3
+intepirdine,C1CN(CCN1)C2=CC=CC3=CC(=CN=C32)S(=O)(=O)C4=CC=CC=C4,persistence_illusion,5-HT6 antagonist; early signal then failed Phase 3 (MINDSET)
+idalopirdine,C1=CC(=CC(=C1)OCC(C(F)F)(F)F)CNCCC2=CNC3=C2C=CC(=C3)F,persistence_illusion,5-HT6 antagonist; failed Phase 3 (STARSHINE/STARBEAM)
+tideglusib,C1=CC=C(C=C1)CN2C(=O)N(SC2=O)C3=CC=CC4=CC=CC=C43,persistence_illusion,GSK-3 inhibitor; failed to show durable benefit
+masitinib,CC1=C(C=C(C=C1)NC(=O)C2=CC=C(C=C2)CN3CCN(CC3)C)NC4=NC(=CS4)C5=CN=CC=C5,persistence_illusion,kinase inhibitor; contested AD benefit
+nicergoline,CN1CC(CC2(C1CC3=CN(C4=CC=CC2=C34)C)OC)COC(=O)C5=CC(=CN=C5)Br,persistence_illusion,ergoline; contested cognition benefit

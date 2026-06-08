@@ -14,12 +14,13 @@ The F2 shortlist scores only the SYMPTOMATIC class prior: predicted g = +0.40 / 
 
 **evidence_design** (a persistence claim is only as good as its design), strongest first:
 
-- 6. `delayed_start_rct`
-- 5. `randomized_discontinuation`
-- 4. `longitudinal_followup`
-- 3. `washout_observation`
-- 2. `preclinical_only`
-- 1. `mechanistic_inference`
+- 7. `delayed_start_rct`
+- 6. `randomized_discontinuation`
+- 5. `longitudinal_followup`
+- 4. `washout_observation`
+- 3. `preclinical_only`
+- 2. `mechanistic_inference`
+- 1. `class_extrapolation`
 - 0. `none`
 
 The gold standard is the randomized **delayed-start RCT** (the ADAGIO template): both arms reach the same on-drug state, so a residual difference favouring the early-start arm is the disease-modifying signal.
@@ -28,17 +29,17 @@ The gold standard is the randomized **delayed-start RCT** (the ADAGIO template):
 
 | class | status | evidence design | basis |
 |---|---|---|---|
-| catecholaminergic_ADHD | tested_negative | randomized_discontinuation | ADHD symptom and cognitive benefit hold only while medicated; randomized discontinuation produces faster/greater relapse than staying on drug; in the MTA the 14-month medication advantage was no longer apparent by 36 months |
-| wake_promoting | symptomatic | none | vigilance and wakefulness effects are state-dependent and reverse on washout |
-| AChE_inhibitor | tested_negative | washout_observation | cholinesterase inhibitors are approved for symptomatic management of Alzheimer's; they do not alter disease course and the symptomatic benefit is lost on discontinuation |
-| anti_amyloid_mAb | disease_modifying_patients | delayed_start_rct | lecanemab and donanemab slow clinical decline vs placebo in early Alzheimer's - a disease-modifying (trajectory-altering) effect, not reversal or enhancement, demonstrated only in patients |
-| NMDA_modulator | symptomatic | washout_observation | memantine provides symptomatic benefit in moderate-severe AD; no disease-course modification |
+| catecholaminergic_ADHD | symptomatic | class_extrapolation | real on-drug pro-cognitive / ADHD effect that reverses on washout; class-level discontinuation relapse (MTA 36-mo) was shown for SPECIFIC members, not every compound - so an individual member's persistence evidence is class extrapolation, not a per-compound trial |
+| wake_promoting | symptomatic | class_extrapolation | state-dependent wakefulness / vigilance; reverses on washout |
+| AChE_inhibitor | symptomatic | class_extrapolation | symptomatic elevation of acetylcholine tone; the benefit is real on-drug but lost on discontinuation and does not alter disease course |
+| NMDA_modulator | symptomatic | class_extrapolation | symptomatic glutamatergic tone modulation (memantine) |
+| anti_amyloid_mAb | disease_modifying_patients | longitudinal_followup | clears the pathological amyloid aggregate (substrate removal); parallel-group RCTs (CLARITY-AD, TRAILBLAZER-ALZ 2) show modest slowing in patients. By PERSEUS's own governor a PARALLEL-GROUP design cannot reach the delayed-start tier, and no randomized delayed-start has confirmed disease-modification; the lecanemab/donanemab OLE/LTE delayed-start-flavoured analyses are OPEN-LABEL -> longitudinal_followup at best |
 
 ## Applied to the F2 shortlist (31 hypotheses)
 
-Persistence tier distribution: **live** 3, **null** 13, **exclude** 15.
+Persistence tier distribution: **live** 3, **null** 11, **exclude** 17.
 
-By status: tested_negative (12), not_applicable (9), cognition_negative (6), contested (2), plasticity_gated (1), symptomatic (1).
+By status: symptomatic (11), not_applicable (11), cognition_negative (6), contested (2), plasticity_gated (1).
 
 **The headline: 3 of 31 hypotheses have any persistence signal at all, 0 are demonstrated durable cognitive enhancement in healthy people.** The symptomatic +0.40 prior does NOT transfer to persistence.
 
@@ -46,35 +47,37 @@ By status: tested_negative (12), not_applicable (9), cognition_negative (6), con
 
 | drug | class | status | evidence | basis | caveat |
 |---|---|---|---|---|---|
-| SELEGILINE | catecholaminergic_ADHD | contested | delayed_start_rct | MAO-B inhibitor; the DATATOP / Sano lineage delayed functional endpoints in AD/PD but did not durably enhance cognition | disease-course modification not established; functional not cognitive endpoints |
-| RASAGILINE | AChE_inhibitor | contested | delayed_start_rct | ADAGIO delayed-start: rasagiline 1 mg/day met all three hierarchical endpoints (consistent with a disease-modifying effect) but 2 mg/day did not - a dose-inconsistency that undercuts interpretation; endpoints were motor (UPDRS), cognition was a tiny mentation sub-score | equivocal; motor not cognitive; field consensus is that MAO-B inhibitors have not clearly altered Parkinson's course |
-| FLUOXETINE | catecholaminergic_ADHD | plasticity_gated | preclinical_only | reopens adult juvenile-like (critical-period) plasticity and promotes hippocampal neurogenesis + BDNF/TrkB signalling (iPlasticity); induced visual-cortex plasticity can outlast the natural critical period and some cellular dematuration is reported after withdrawal in rodents | a PERMISSIVE window - durable change is contingent on paired experience/training (e.g. fluoxetine + extinction), not a standalone boost; rodent work at supra-clinical doses; no human cognitive-enhancement persistence shown |
+| SELEGILINE | catecholaminergic_ADHD | contested | longitudinal_followup | MAO-B inhibitor; DATATOP and Sano 1997 were NOT delayed-start designs (DATATOP time-to-levodopa is confounded by selegiline's own symptomatic effect - the exact confound delayed-start was invented to remove), so the neuroprotection claim rests on weaker evidence than rasagiline; no durable cognitive enhancement established | neuroprotection unproven; NOT a delayed-start design |
+| RASAGILINE | AChE_inhibitor | contested | delayed_start_rct | MAO-B inhibitor; ADAGIO delayed-start: 1 mg/day met all three endpoints but 2 mg/day did not (dose-inconsistent); endpoints were motor (UPDRS), cognition was a tiny mentation sub-score; field consensus is course-modification not clearly shown | equivocal; motor not cognitive |
+| FLUOXETINE | catecholaminergic_ADHD | plasticity_gated | preclinical_only | reopens adult critical-period plasticity + BDNF/TrkB (iPlasticity); a PERMISSIVE window - durable change is contingent on paired experience, not a standalone boost; rodent / supra-clinical; no human cognitive-enhancement persistence shown | unproven in humans; conditional on training |
 
-### Excluded (15) - not valid central cognition agents
+### Excluded (17) - not valid central cognition agents
 
 These are structure-router misroutes the symptomatic screen could not catch: no CNS exposure, wrong mechanism, or cognition-negative.
 
 | drug | status | why |
 |---|---|---|
-| PIPERIDOLATE | cognition_negative | antimuscarinic antispasmodic; chronic anticholinergic burden is itself linked to higher dementia risk |
-| HYDROXYZINE | cognition_negative | sedating first-generation antihistamine with anticholinergic activity |
-| CODEINE | cognition_negative | mu-opioid agonist; chronic opioid exposure is associated with cognitive impairment plus tolerance and dependence |
-| DIHYDROCODEINE | cognition_negative | mu-opioid agonist; chronic use impairs cognition |
-| OXYCODONE | cognition_negative | mu-opioid agonist; chronic use impairs cognition |
 | HYDROCODONE | cognition_negative | mu-opioid agonist; chronic use impairs cognition |
-| DIFELIKEFALIN | not_applicable | peripherally-restricted kappa-opioid agonist (uremic pruritus), engineered not to cross the BBB |
-| PRENYLAMINE | not_applicable | antianginal, withdrawn for torsades risk |
-| MEXILETINE | not_applicable | class-IB antiarrhythmic (sodium-channel blocker); no cognition mechanism |
+| OXYCODONE | cognition_negative | mu-opioid agonist; chronic use impairs cognition |
+| DIHYDROCODEINE | cognition_negative | mu-opioid agonist; chronic use impairs cognition |
+| PIPERIDOLATE | cognition_negative | antimuscarinic antispasmodic; chronic anticholinergic burden is linked to higher dementia risk |
+| CODEINE | cognition_negative | mu-opioid agonist; chronic exposure is associated with cognitive impairment plus tolerance / dependence |
+| HYDROXYZINE | cognition_negative | sedating first-generation antihistamine with anticholinergic activity |
+| FENOPROFEN | not_applicable | NSAID with no established cognition effect; ADAPT (naproxen / celecoxib) was negative - NSAID-class extrapolation, not a fenoprofen trial |
+| NEOSTIGMINE | not_applicable | quaternary-ammonium AChE inhibitor; permanent positive charge - does not cross the blood-brain barrier |
+| DEMECARIUM | not_applicable | bis-quaternary ophthalmic AChE inhibitor; BBB-impermeant |
+| DIFELIKEFALIN | not_applicable | peripherally-restricted kappa-opioid agonist, engineered not to cross the BBB |
+| FELBAMATE | not_applicable | antiepileptic (black-box aplastic anaemia / hepatic failure); not a wake-promoting agent |
+| IBUFENAC | not_applicable | NSAID with NO established symptomatic pro-cognitive effect; the ADAPT RCT tested naproxen / celecoxib (NOT ibufenac) and was negative / trended harmful - this is NSAID-class extrapolation, not a per-compound result; ibufenac itself was withdrawn for hepatotoxicity |
 | MEPHENESIN | not_applicable | obsolete short-acting muscle relaxant |
-| FELBAMATE | not_applicable | antiepileptic carrying a black-box warning (aplastic anaemia / hepatic failure); not a wake-promoting agent |
-| ACRISORCIN | not_applicable | topical antifungal (tinea versicolor); not a systemic CNS agent |
-| DEMECARIUM | not_applicable | bis-quaternary AChE inhibitor used as an ophthalmic glaucoma agent; BBB-impermeant |
-| NEOSTIGMINE | not_applicable | quaternary-ammonium AChE inhibitor; permanent positive charge means it does not cross the blood-brain barrier (used for myasthenia and reversal of neuromuscular blockade) |
+| MEXILETINE | not_applicable | class-IB antiarrhythmic (sodium-channel blocker); no cognition mechanism |
+| PRENYLAMINE | not_applicable | antianginal, withdrawn for torsades risk |
 | DISTIGMINE | not_applicable | bis-quaternary AChE inhibitor; BBB-impermeant |
+| ACRISORCIN | not_applicable | topical antifungal; not a systemic CNS agent |
 
 ### Symptomatic / tested-negative (the bulk)
 
-13 hits are symptomatic or were explicitly tested and did NOT persist (stimulants: discontinuation relapse + MTA advantage gone by 36 months; cholinesterase inhibitors: benefit lost on washout). Real on-drug cognition effect, no durable gain: BENZGALANTAMINE, BENZPHETAMINE, CLOBENZOREX, DEXMETHYLPHENIDATE, DULOXETINE, FENOPROFEN, FENOPROFEN CALCIUM, FENPROPOREX, GUANFACINE, IBUFENAC, MEFENOREX, SERDEXMETHYLPHENIDATE, SOLRIAMFETOL.
+11 hits are symptomatic or were explicitly tested and did NOT persist (stimulants: discontinuation relapse + MTA advantage gone by 36 months; cholinesterase inhibitors: benefit lost on washout). Real on-drug cognition effect, no durable gain: BENZGALANTAMINE, BENZPHETAMINE, CLOBENZOREX, DEXMETHYLPHENIDATE, DULOXETINE, FENOPROFEN CALCIUM, FENPROPOREX, GUANFACINE, MEFENOREX, SERDEXMETHYLPHENIDATE, SOLRIAMFETOL.
 
 ## Verdict
 

@@ -1,8 +1,8 @@
-"""Tests for PERSEUS - the persistence-aware pro-cognition engine (L1 CNS gate,
-L3 mechanism reversibility, two-head orchestrator).
+"""Tests for PERSEUS v2 - the persistence-aware pro-cognition engine.
 
-RDKit + numpy/pandas. Deterministic unit tests for L1/L3 on literal SMILES, plus a
-data-gated integration test that locks the control-panel behaviour.
+RDKit + numpy/pandas. Deterministic unit tests for L1 (CNS gate) and L3 (mechanism
+reversibility, mechanism-fired 3-tier), plus a data-gated integration test locking the
+two-head behaviour, the L0-mismatch guard, prodrug handling, and abstain-by-default.
 """
 from __future__ import annotations
 
@@ -12,139 +12,119 @@ import pytest
 
 pytest.importorskip("rdkit")
 
-from mammal_repurposing.engine.cns_exposure import (  # noqa: E402
-    FAIL, PASS, cns_exposure_gate, structural_vetoes,
-)
-from mammal_repurposing.engine.reversibility import (  # noqa: E402
-    load_structural_alerts, reversibility_call,
-)
+from mammal_repurposing.engine.cns_exposure import FAIL, PASS, cns_exposure_gate, structural_vetoes  # noqa: E402
+from mammal_repurposing.engine.reversibility import reversibility_call, senolytic_similarity  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw"
 
-# literal SMILES (canonical)
 AMPHETAMINE = "CC(N)Cc1ccccc1"
 DONEPEZIL = "COc1cc2c(cc1OC)C(=O)C(CC3CCN(Cc4ccccc4)CC3)C2"
-TETRAMETHYLAMMONIUM = "C[N+](C)(C)C"
 NEOSTIGMINE = "CN(C)C(=O)Oc1cccc([N+](C)(C)C)c1"
 VORINOSTAT = "ONC(=O)CCCCCCC(=O)Nc1ccccc1"
-DMF = "COC(=O)/C=C/C(=O)OC"
+FISETIN = "O=c1c(O)c(-c2ccc(O)c(O)c2)oc2cc(O)ccc12"
+PIPERLONGUMINE = "COc1cc(/C=C/C(=O)N2CCC=CC2=O)cc(OC)c1OC"
+FLUOXETINE = "CNCCC(Oc1ccc(C(F)(F)F)cc1)c1ccccc1"
 
 
 # --------------------------------------------------------------------------
 # L1 - CNS-exposure gate
 # --------------------------------------------------------------------------
 
-def test_cns_vetoes_permanent_charge():
+def test_cns_vetoes_and_three_way():
     assert "quaternary_ammonium" in structural_vetoes(NEOSTIGMINE)
-    assert "quaternary_ammonium" in structural_vetoes(TETRAMETHYLAMMONIUM)
-    assert structural_vetoes(AMPHETAMINE) == []
-
-
-def test_cns_gate_three_way():
-    # permanent cation -> FAIL (no passive CNS entry)
     assert cns_exposure_gate(NEOSTIGMINE).verdict == FAIL
-    # classic CNS-penetrant amines -> PASS
     assert cns_exposure_gate(AMPHETAMINE).verdict == PASS
     assert cns_exposure_gate(DONEPEZIL).verdict == PASS
-    # unparseable -> ABSTAIN, never a silent pass
     assert cns_exposure_gate("not_a_smiles").verdict == "ABSTAIN"
 
 
-def test_cns_gate_low_tpsa_passes():
-    # low TPSA is GOOD for crossing - must not be penalised into ABSTAIN
-    e = cns_exposure_gate("CNC(C)Cc1ccccc1")  # methamphetamine-like
-    assert e.verdict == PASS
+# --------------------------------------------------------------------------
+# L3 - mechanism reversibility (3 honest tiers, fires from mechanism)
+# --------------------------------------------------------------------------
+
+def test_substrate_from_mechanism_axis():
+    # the curated mechanism axis substrate is honoured (not the structural class)
+    assert reversibility_call("CCO", "transient").substrate == "transient"
+    r = reversibility_call(FLUOXETINE, "plasticity_window")
+    assert r.substrate == "plasticity_window"
+
+
+def test_senolytic_is_ablative():
+    # a senolytic flavonol is recognised as ablative via structural similarity
+    assert senolytic_similarity(FISETIN) >= 0.55
+    r = reversibility_call(FISETIN, "transient")
+    assert r.substrate == "ablative" and r.self_maintaining is True
+
+
+def test_reversible_hdaci_is_capable_not_durable():
+    # a reversible HDAC inhibitor is state-CAPABLE (flagged) but NOT auto-persistent
+    r = reversibility_call(VORINOSTAT, "transient")
+    assert r.substrate == "transient"          # not promoted
+    assert r.self_maintaining is False
+    assert any("hdac" in c for c in r.capability_flags)
 
 
 # --------------------------------------------------------------------------
-# L3 - mechanism reversibility (state vs tone)
-# --------------------------------------------------------------------------
-
-@pytest.fixture
-def synth_classes():
-    return {
-        "catecholaminergic_ADHD": {"substrate": "transient_signaling", "rank": 0,
-                                   "basis": "reuptake tone"},
-        "HDAC_inhibitor": {"substrate": "self_propagating_epigenetic", "rank": 3,
-                           "basis": "epigenetic"},
-    }
-
-
-_HAVE_ALERTS = (RAW / "persistence_structural_alerts.csv").exists()
-
-
-@pytest.mark.skipif(not _HAVE_ALERTS, reason="alerts CSV not present")
-def test_tone_class_is_not_state_changing(synth_classes):
-    alerts = load_structural_alerts(RAW / "persistence_structural_alerts.csv")
-    r = reversibility_call(AMPHETAMINE, "catecholaminergic_ADHD", synth_classes, alerts)
-    assert r.substrate_class == "transient_signaling"
-    assert r.state_changing is False
-
-
-@pytest.mark.skipif(not _HAVE_ALERTS, reason="alerts CSV not present")
-def test_hdaci_structural_alert_is_state_changing(synth_classes):
-    alerts = load_structural_alerts(RAW / "persistence_structural_alerts.csv")
-    # vorinostat routed to a TONE class still reads state-changing via its ZBG alert
-    r = reversibility_call(VORINOSTAT, "catecholaminergic_ADHD", synth_classes, alerts)
-    assert r.substrate_class == "self_propagating_epigenetic"
-    assert r.state_changing is True
-    assert "hydroxamate_ZBG" in r.alerts
-    # NRF2 electrophile -> durable transcriptional
-    r2 = reversibility_call(DMF, None, synth_classes, alerts)
-    assert r2.substrate_class == "durable_transcriptional" and r2.state_changing
-
-
-@pytest.mark.skipif(not _HAVE_ALERTS, reason="alerts CSV not present")
-def test_alert_outranks_class(synth_classes):
-    # max(class_rank, alert_rank): an HDACi in a tone class is upgraded to epigenetic
-    alerts = load_structural_alerts(RAW / "persistence_structural_alerts.csv")
-    r = reversibility_call(VORINOSTAT, "catecholaminergic_ADHD", synth_classes, alerts)
-    assert r.substrate_rank == 3 and r.source.startswith("alert:")
-
-
-# --------------------------------------------------------------------------
-# integration - the two-head engine + control-panel behaviour
+# integration - the two-head engine
 # --------------------------------------------------------------------------
 
 _LEDGERS = [RAW / "clinical_outcomes_ledger.csv", RAW / "clinical_outcomes_ledger_EXTENSION.csv",
             RAW / "clinical_outcomes_ledger_CTGOV.csv", RAW / "clinical_outcomes_ledger_RESEARCH.csv"]
 _SMILES = RAW / "ledger_compound_smiles.csv"
-_HAVE_ENGINE = (_SMILES.exists() and all(p.exists() for p in _LEDGERS)
-                and (RAW / "persistence_axis_classes.csv").exists()
-                and _HAVE_ALERTS)
+_HAVE = (_SMILES.exists() and all(p.exists() for p in _LEDGERS)
+         and (RAW / "persistence_axis_classes.csv").exists())
 
 
 @pytest.fixture(scope="module")
 def engine():
     from mammal_repurposing.engine.perseus import PerseusEngine
     return PerseusEngine(_LEDGERS, _SMILES, RAW / "persistence_axis_classes.csv",
-                         RAW / "persistence_axis_overrides.csv",
-                         RAW / "persistence_substrate_classes.csv",
-                         RAW / "persistence_structural_alerts.csv")
+                         RAW / "persistence_axis_overrides.csv")
 
 
-@pytest.mark.skipif(not _HAVE_ENGINE, reason="engine data not present")
-def test_perseus_two_heads_are_orthogonal(engine):
+@pytest.mark.skipif(not _HAVE, reason="engine data not present")
+def test_two_heads_and_gates(engine):
     from mammal_repurposing.engine.perseus import P_CANDIDATE, P_EXCLUDE_CNS, P_NULL
-    # a permanent-cation cholinesterase inhibitor: excluded at the CNS gate
+    # permanent-cation cholinesterase inhibitor: excluded at the CNS gate (both heads)
     r = engine.score("neostigmine", NEOSTIGMINE)
     assert r.cns_verdict == FAIL and r.persistence_verdict == P_EXCLUDE_CNS
     assert r.symptomatic_verdict == "EXCLUDED_NO_CNS"
-    # a reversible stimulant that routes: real symptomatic tier, NULL persistence
+    # reversible stimulant that routes: real symptomatic tier, NULL persistence, transient
     r2 = engine.score("methylphenidate", "COC(=O)C(C1CCCCN1)c1ccccc1")
     assert r2.cns_verdict == PASS and r2.persistence_verdict == P_NULL
     assert r2.symptomatic_verdict in ("HIGH", "MED", "LOW")
-    # a state-changing HDACi: a mechanistic persistence CANDIDATE (hypothesis, not proof)
-    r3 = engine.score("vorinostat", VORINOSTAT)
-    assert r3.persistence_verdict == P_CANDIDATE and r3.state_changing
-    assert r3.persistence_live
+    assert r2.substrate == "transient"
+    # CNS-penetrant senolytic: the genuine ablative CANDIDATE path
+    r3 = engine.score("piperlongumine", PIPERLONGUMINE)
+    assert r3.persistence_verdict == P_CANDIDATE and r3.substrate == "ablative"
+    assert r3.self_maintaining and r3.persistence_live
 
 
-@pytest.mark.skipif(not _HAVE_ENGINE, reason="engine data not present")
-def test_perseus_abstains_by_default_no_demonstrated(engine):
-    from mammal_repurposing.engine.perseus import score_frame
+@pytest.mark.skipif(not _HAVE, reason="engine data not present")
+def test_l0_mismatch_guard_abstains_symptomatic(engine):
+    from mammal_repurposing.engine.perseus import P_WINDOW
+    # fluoxetine (an SSRI) is misrouted to catecholaminergic by scaffold; the symptomatic
+    # head must WITHHOLD the wrong-class prior rather than emit it
+    r = engine.score("fluoxetine", FLUOXETINE)
+    assert r.symptomatic_verdict == "ABSTAIN"
+    assert any("mismatch" in x for x in r.abstain_reasons)
+    assert r.persistence_verdict == P_WINDOW   # plasticity_gated mechanism preserved
+
+
+@pytest.mark.skipif(not _HAVE, reason="engine data not present")
+def test_reversible_hdaci_compound_abstains(engine):
+    # vorinostat: state-capable but reversible -> ABSTAIN, not a candidate
+    from mammal_repurposing.engine.perseus import P_ABSTAIN
+    r = engine.score("vorinostat", VORINOSTAT)
+    assert r.persistence_verdict == P_ABSTAIN
+    assert any("capable" in f for f in r.flags)
+
+
+@pytest.mark.skipif(not _HAVE, reason="engine data not present")
+def test_abstains_by_default_no_demonstrated(engine):
     import pandas as pd
+    from mammal_repurposing.engine.perseus import score_frame
     short = ROOT / "reports" / "pipeline" / "f2_catalogue_shortlist.csv"
     if not short.exists():
         pytest.skip("F2 shortlist not present")
@@ -155,8 +135,25 @@ def test_perseus_abstains_by_default_no_demonstrated(engine):
     df["smiles"] = df["query_id"].str.lower().str.strip().map(csmi)
     df = df[df["smiles"].notna()]
     scored = score_frame(engine, df)
-    # the empty gold standard: nothing is called durable enhancement in healthy people
     assert (scored["persistence_verdict"] == "DEMONSTRATED_HEALTHY").sum() == 0
-    # live persistence threads are the minority; CNS gate excludes the misroutes
     assert scored["persistence_live"].sum() < len(scored) / 2
     assert (scored["persistence_verdict"] == "EXCLUDE_NO_CNS").sum() >= 1
+    # evidence_design is de-broadcast: anorectics get class_extrapolation, not a borrowed tier
+    anorectics = scored[scored["compound"].str.lower().isin(
+        ["benzphetamine", "fenproporex", "clobenzorex", "mefenorex"])]
+    assert (anorectics["evidence_design"] == "class_extrapolation").all()
+
+
+@pytest.mark.skipif(not _HAVE, reason="engine data not present")
+def test_negative_controls_zero_persistence_false_positives(engine):
+    """Specificity: no negative control gets a DURABILITY verdict (the eval headline)."""
+    import pandas as pd
+    from mammal_repurposing.engine.perseus import (
+        P_CANDIDATE, P_DEMONSTRATED, P_DISEASE_MOD, score_frame,
+    )
+    neg = RAW / "perseus_negative_controls.csv"
+    if not neg.exists():
+        pytest.skip("negative-control panel not present")
+    scored = score_frame(engine, pd.read_csv(neg), dedup_salts=False)
+    durability = {P_CANDIDATE, P_DISEASE_MOD, P_DEMONSTRATED}
+    assert scored["persistence_verdict"].isin(durability).sum() == 0

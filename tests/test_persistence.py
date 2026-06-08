@@ -133,6 +133,8 @@ def test_known_compound_calls():
     assert call_for("neostigmine", "AChE_inhibitor", classes, overrides).status == "not_applicable"
     # opioid -> cognition-negative
     assert call_for("oxycodone", "AChE_inhibitor", classes, overrides).status == "cognition_negative"
-    # plain stimulant -> class default tested_negative
-    assert call_for("dexmethylphenidate", "catecholaminergic_ADHD",
-                    classes, overrides).status == "tested_negative"
+    # plain stimulant -> class default 'symptomatic' (real reversible effect; the class's
+    # persistence evidence is borrowed via class_extrapolation, not a per-compound study)
+    call = call_for("dexmethylphenidate", "catecholaminergic_ADHD", classes, overrides)
+    assert call.status == "symptomatic"
+    assert call.evidence_design == "class_extrapolation"

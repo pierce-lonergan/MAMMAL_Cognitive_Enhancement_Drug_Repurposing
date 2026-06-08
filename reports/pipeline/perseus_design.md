@@ -6,6 +6,48 @@ synthesis; 26 agents). The verification layer refuted 6 fabricated/mis-cited num
 before they entered the design (appendix). This document is the engineering spec and the
 status of the buildable v1.
 
+## v2 revisions (post expert review, 2026-06-07)
+
+An expert review judged the framework strong (~9/10) but the v1 artifact weaker (~5/10):
+the L3 substrate was inert on the real data (constant `transient_signaling` because it
+keyed off the misrouted structural class), the class-prior artifact had reappeared in
+`evidence_design`, and several integrity bugs survived. All were fixed:
+
+1. **L3 fires from MECHANISM, not the structural class** - substrate now comes from the
+   curated persistence axis (so L3 and L5 are one coherent call and can no longer
+   contradict), and the ordinal is collapsed to **3 honest tiers** -
+   `transient < plasticity_window < ablative` - with a separate `self_maintaining` flag.
+   Reversible epigenetic/NRF2 chemotypes are CAPABILITY FLAGS only (not promoted), because
+   transient engagement does not self-maintain (appendix #6: BDNF->TrkB is self-limiting).
+   Only ablative (senolytic / aggregate-clearing) is durable by construction.
+2. **evidence_design de-broadcast** - a new weakest tier `class_extrapolation` carries a
+   class fact borrowed onto a member with no per-compound study (the anorectics no longer
+   inherit methylphenidate's `randomized_discontinuation`).
+3. **NULL split** into NULL_SYMPTOMATIC / TESTED_NEGATIVE / EXCLUDE_NOT_COGNITION; the
+   NSAIDs are re-bucketed out of "symptomatic" into not-cognition.
+4. **L0-mismatch guard** - a `known_mechanism_class` that contradicts the structural route
+   (fluoxetine=SSRI, duloxetine=SNRI, rasagiline/selegiline=MAO-B) forces the SYMPTOMATIC
+   head to ABSTAIN instead of emitting a wrong-class prior.
+5. **Prodrugs** scored as the active species (serdexmethylphenidate -> dexmethylphenidate);
+   novel prodrugs not in the curated map are a documented limitation.
+6. **Governor fixes** - anti-amyloid mAbs downgraded to `longitudinal_followup` (parallel-
+   group cannot reach delayed-start under the engine's own rule); selegiline corrected off
+   `delayed_start_rct` (DATATOP/Sano were not delayed-start - only rasagiline/ADAGIO is);
+   the fenoprofen-calcium templating leak fixed by neutralised-parent salt dedup.
+7. **Salts collapsed** to a neutralised parent before scoring.
+
+**Honest novelty (demoted from the v1 overclaim).** PERSEUS is NOT yet a "validated
+computable persistence predictor." It is a **CNS-gated, abstain-by-default, evidence-design-
+governed wrapper that reports symptomatic and persistence as separate outputs and refuses to
+call anything demonstrated** - a guardrail on MAMMAL/F2 that correctly stops a symptomatic
++0.40 from masquerading as durability. The control panel (13/13) is a set of CONSISTENCY
+unit tests, not out-of-sample validation. The genuine evaluation result so far is
+SPECIFICITY: `scripts/101_perseus_eval.py` -> **0 / 15 persistence false positives**
+(reversible-enhancer + persistence-illusion panels). Sensitivity / PPV remain
+unidentifiable without a curated POSITIVE persistence ledger + PU / leave-one-mechanism-out
+estimator (the next deliverable). The "first structure-computable persistence prior" claim
+is withdrawn until the persistence-target DTI module + that evaluator land.
+
 ## Thesis
 
 Treat "helps cognition" and "persists after cessation" as **two orthogonal outputs, never
