@@ -186,7 +186,9 @@ realistic ~1% prior" - which no current repurposing predictor reports for persis
    in-range 0.75); NTRK2 stays residualized-confirmed (0.81, in-range 1.00). **Net:** the
    durable axis now has ONE confirmed size-independent member (BCL2, ablative) plus a
    confirmed size-independent plasticity channel (NTRK2); BCL-xL and the reversible capability
-   channels carry no size-free signal. Next: gate operative inference on residualized-pass
+   channels carry no size-free signal. Figure: `scripts/108` ->
+   `reports/figures/persistence_dti/size_confound_deentanglement.png` (BCL2 engagers above the
+   size line; raw-vs-residualized AUROC per channel). Next: gate operative inference on residualized-pass
    (keeps BCL2 + NTRK2, drops the size-entangled BCL-xL); the verified positive-compound
    ledger (psychoplastogens) to finally measure SENSITIVITY; a persistence-target head
    fine-tune.

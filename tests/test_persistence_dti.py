@@ -166,6 +166,22 @@ def test_ablative_wins_when_both_engaged():
 # real panel loads
 # --------------------------------------------------------------------------
 
+@pytest.mark.skipif(not (ROOT / "data" / "results" / "persistence_dti_scores.csv").exists()
+                    or not (ROOT / "data" / "results" / "persistence_dti_calibration_mwresid.json").exists(),
+                    reason="calibration artifacts not generated")
+def test_size_confound_figure_generates(tmp_path, monkeypatch):
+    import importlib.util
+    pytest.importorskip("matplotlib")
+    spec = importlib.util.spec_from_file_location(
+        "fig108", ROOT / "scripts" / "108_persistence_dti_figure.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    out = tmp_path / "fig.png"
+    monkeypatch.setattr(mod, "OUT", out)
+    assert mod.main() == 0
+    assert out.exists() and out.stat().st_size > 5000
+
+
 @pytest.mark.skipif(not (INTERIM / "persistence_targets.csv").exists(),
                     reason="persistence target panel not fetched")
 def test_real_panel_tiers():
