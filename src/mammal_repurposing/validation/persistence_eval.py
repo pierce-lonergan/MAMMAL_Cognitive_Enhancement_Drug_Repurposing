@@ -93,3 +93,35 @@ def label_budget(prior: float = 0.01, half_width: float = 0.1,
     p = max(min(prior, 0.5), 1e-6)
     n_total = (confidence_z ** 2) * p * (1 - p) / (half_width ** 2)
     return int(math.ceil(n_total / p))   # positives needed = n_total / prior
+
+
+def sensitivity(records: list[dict]) -> dict:
+    """The first real SENSITIVITY measurement, enabled by a NON-EMPTY verified-positive
+    ledger (compounds with durable post-cessation cognitive/neuroplastic effects).
+
+    records: [{compound, persistence_verdict, domain}] - already filtered to structure-
+    scoreable verified positives. A positive is "flagged" if PERSEUS asserts ANY durability
+    (verdict durability level >= 1), i.e. it is NOT dismissed as null / abstain / excluded.
+    Reports overall recall and the per-domain breakdown (cognition vs neuroplasticity vs
+    mood), since PERSEUS's substrate axis is expected to catch some mechanisms and miss
+    others - that gap is itself the deliverable, not a hidden failure.
+    """
+    n = len(records)
+    if n == 0:
+        return {"n": 0, "n_flagged": 0, "sensitivity": float("nan"),
+                "flagged": [], "missed": [], "by_domain": {}}
+    flagged = [r for r in records if VERDICT_DURABILITY.get(r["persistence_verdict"], 0) >= 1]
+    missed = [r for r in records if VERDICT_DURABILITY.get(r["persistence_verdict"], 0) == 0]
+    by_domain: dict[str, list[int]] = {}
+    for r in records:
+        d = r.get("domain", "?")
+        by_domain.setdefault(d, [0, 0])
+        by_domain[d][1] += 1
+        if VERDICT_DURABILITY.get(r["persistence_verdict"], 0) >= 1:
+            by_domain[d][0] += 1
+    return {
+        "n": n, "n_flagged": len(flagged), "sensitivity": len(flagged) / n,
+        "flagged": [r["compound"] for r in flagged],
+        "missed": [r["compound"] for r in missed],
+        "by_domain": {d: {"flagged": v[0], "n": v[1]} for d, v in by_domain.items()},
+    }

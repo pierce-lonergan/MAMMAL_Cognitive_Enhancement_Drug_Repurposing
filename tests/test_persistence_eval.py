@@ -5,7 +5,7 @@ Pure numpy - no engine - so these are fast and deterministic.
 from __future__ import annotations
 
 from mammal_repurposing.validation.persistence_eval import (
-    coverage_accuracy_curve, evaluate, label_budget, over_claims,
+    coverage_accuracy_curve, evaluate, label_budget, over_claims, sensitivity,
 )
 
 
@@ -50,3 +50,24 @@ def test_coverage_accuracy_curve_monotone_coverage():
 
 def test_label_budget_positive_and_scales_with_rarity():
     assert label_budget(prior=0.01) > label_budget(prior=0.1) > 0
+
+
+def test_sensitivity_recall_over_verified_positives():
+    recs = [
+        # flagged: PERSEUS asserts durability (level >= 1)
+        {"compound": "a", "persistence_verdict": "CANDIDATE_MECHANISTIC", "domain": "neuroplasticity"},
+        {"compound": "b", "persistence_verdict": "WINDOW_CONDITIONAL", "domain": "neuroplasticity"},
+        # missed: PERSEUS dismisses as null / abstain
+        {"compound": "c", "persistence_verdict": "NULL_SYMPTOMATIC", "domain": "cognition"},
+        {"compound": "d", "persistence_verdict": "ABSTAIN", "domain": "mood"},
+    ]
+    s = sensitivity(recs)
+    assert s["n"] == 4 and s["n_flagged"] == 2 and s["sensitivity"] == 0.5
+    assert set(s["flagged"]) == {"a", "b"} and set(s["missed"]) == {"c", "d"}
+    assert s["by_domain"]["neuroplasticity"] == {"flagged": 2, "n": 2}
+    assert s["by_domain"]["cognition"] == {"flagged": 0, "n": 1}
+
+
+def test_sensitivity_empty_is_nan():
+    s = sensitivity([])
+    assert s["n"] == 0 and s["sensitivity"] != s["sensitivity"]   # nan
