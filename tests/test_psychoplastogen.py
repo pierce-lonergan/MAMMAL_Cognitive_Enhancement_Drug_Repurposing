@@ -74,6 +74,17 @@ def test_non_serotonergic_have_no_scaffold():
         assert serotonergic_scaffold(smi) is None
 
 
+def test_triptan_veto_covers_sulfone_and_triazole_d6():
+    # D6 decoy-scan fix: the D4 veto caught only sulfonamide/carbamate triptans; the broader scan
+    # found rizatriptan (1,2,4-triazolylmethyl) and eletriptan (phenyl SULFONE, not sulfonamide)
+    # slipping through. The broadened sulfonyl + triazole vetoes catch them. SMILES from PubChem.
+    rizatriptan = "CN(C)CCC1=CNC2=C1C=C(C=C2)CN3C=NC=N3"               # triazolylmethyl
+    eletriptan = "CN1CCCC1CC2=CNC3=C2C=C(C=C3)CCS(=O)(=O)C4=CC=CC=C4"  # phenyl sulfone
+    for smi in (rizatriptan, eletriptan):
+        c = psychoplastogen_window(smi)
+        assert c.scaffold is None and c.window is False
+
+
 def test_pergolide_thioether_veto_d5():
     # D5 adversarial-audit fix: pergolide is a dopaminergic CLAVINE ergoline, NOT a 5-HT2A
     # psychoplastogen. Its aliphatic thioether (CH2-S-CH3) is the veto signal - verified absent

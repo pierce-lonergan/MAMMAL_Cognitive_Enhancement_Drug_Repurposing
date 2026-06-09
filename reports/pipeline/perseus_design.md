@@ -262,6 +262,21 @@ surfaced two false positives and, while fixing them honestly, one recall gap:
   (`test_psychoplastogen.py`). The lesson mirrors the distillation probe: the win came from checking
   a structural hypothesis against the whole ground-truth set rather than the immediate test case.
 
+### D6 - systematic L4 precision scan (31-decoy scaffold-matched panel)
+
+Scaled the D5 audit into a systematic FPR scan: a 31-compound panel of marketed CNS drugs that
+share the window's scaffold families (triptans, 5-HT3 antagonists, melatonergics, indole alkaloids,
+dopaminergic/antagonist ergolines, di-substituted phenethylamines, N1-substituted indoles) but are
+NOT psychoplastogens (`scripts/117_window_decoy_scan.py`; SMILES cached in `data/raw/
+l4_decoy_panel.csv`, report `reports/pipeline/l4_window_precision_v1.md`). The scan caught the D4
+triptan veto being INCOMPLETE: it only matched sulfonamide/carbamate, so rizatriptan (a
+1,2,4-triazolylmethyl) and eletriptan (a phenyl SULFONE, not a sulfonamide) slipped through window-
+positive. Broadened the veto to any sulfonyl + 1,2,4-triazole (both ledger-verified absent from
+positives). Result: **FPR 3/31 -> 1/31 (0.03)**, the lone remaining FP being the documented,
+structure-irreducible methysergide; positive-control recall stays 1.00. The window is now hardened
+against the full marketed serotonergic-look-alike space, with its scope boundary (non-serotonergic
+durability classes) explicitly stated rather than silently failed.
+
 ## Remaining roadmap (FUTURE_WORK)
 
 1. **L1 Stage-3 free exposure (SHIPPED v2.6, efflux-aware conformal logBB).**

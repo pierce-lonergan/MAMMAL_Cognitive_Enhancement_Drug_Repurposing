@@ -77,8 +77,12 @@ def _mol(smiles: str):
 # psychedelic scaffold but are NOT 5-HT2A-agonist psychoplastogens. Scaffold+permeability cannot
 # resolve receptor SUBTYPE or AGONISM from structure, so a few decisive non-agonist motifs are
 # rejected outright:
-#   - sulfonamide / cyclic carbamate (oxazolidinone) -> TRIPTAN pharmacophore (5-HT1B/1D agonists:
-#     sumatriptan/zolmitriptan), D4 audit.
+#   - any SULFONYL, cyclic carbamate (oxazolidinone), or 1,2,4-TRIAZOLE -> the TRIPTAN
+#     pharmacophore (5-HT1B/1D antimigraine agonists). The class carries a polar C5 appendage that
+#     varies by drug: sulfonamide (sumatriptan/naratriptan/almotriptan), sulfone (eletriptan),
+#     oxazolidinone (zolmitriptan), triazolylmethyl (rizatriptan). D4 vetoed only the sulfonamide/
+#     carbamate; the D6 decoy scan caught rizatriptan/eletriptan slipping, so the sulfonyl veto is
+#     broadened and triazole added. All four motifs are verified absent from the positive ledger.
 #   - aliphatic THIOETHER (C-S-C) -> dopaminergic CLAVINE ergolines (pergolide), D5 audit. Verified
 #     absent from every compound in the persistence positive ledger, so this is collateral-free.
 # DOCUMENTED RESIDUAL LIMIT (D5): the lysergamide ANTAGONIST methysergide (a 5-HT2 antagonist) is
@@ -88,9 +92,10 @@ def _mol(smiles: str):
 # agonist-vs-antagonist within the lysergamide series is left to the functional/DTI layer, not this
 # structural screen. methysergide is therefore a known, accepted false-positive of the window.
 _SCAFFOLD_VETO = [
-    "[SX4](=O)(=O)[#7]",   # sulfonamide (sumatriptan)
+    "[SX4](=O)(=O)",       # any sulfonyl: sulfonamide (sumatriptan/naratriptan/almotriptan) + sulfone (eletriptan)
     "[NX3]C(=O)[OX2]",     # carbamate / oxazolidinone (zolmitriptan)
-    "[CX4][SX2][CX4]",     # aliphatic thioether (pergolide); no ledger psychoplastogen has one
+    "c1ncnn1",             # 1,2,4-triazole (rizatriptan)
+    "[CX4][SX2][CX4]",     # aliphatic thioether (pergolide clavine)
 ]
 
 

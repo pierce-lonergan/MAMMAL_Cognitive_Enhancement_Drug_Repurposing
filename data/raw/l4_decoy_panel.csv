@@ -1,0 +1,38 @@
+name,role,family,klass,smiles,scaffold,window,clogp,tpsa,hbd,expected
+sumatriptan,decoy,tryptamine,triptan 5-HT1B/1D,CNS(=O)(=O)CC1=CC2=C(C=C1)NC=C2CCN(C)C,,False,1.32,65.2,2,False
+rizatriptan,decoy,tryptamine,triptan 5-HT1B/1D,CN(C)CCC1=CNC2=C1C=C(C=C2)CN3C=NC=N3,,False,1.91,49.7,1,False
+eletriptan,decoy,tryptamine,triptan 5-HT1B/1D,CN1CCCC1CC2=CNC3=C2C=C(C=C3)CCS(=O)(=O)C4=CC=CC=C4,,False,3.82,53.2,1,False
+almotriptan,decoy,tryptamine,triptan 5-HT1B/1D,CN(C)CCC1=CNC2=C1C=C(C=C2)CS(=O)(=O)N3CCCC3,,False,2.2,56.4,1,False
+naratriptan,decoy,tryptamine,triptan 5-HT1B/1D,CNS(=O)(=O)CCC1=CC2=C(C=C1)NC=C2C3CCN(CC3)C,,False,2.07,65.2,2,False
+frovatriptan,decoy,tryptamine,triptan 5-HT1B/1D,CNC1CCC2=C(C1)C3=C(N2)C=CC(=C3)C(=O)N,tryptamine,False,1.34,70.9,3,False
+ondansetron,decoy,indole,5-HT3 antagonist,CC1=NC=CN1CC2CCC3=C(C2=O)C4=CC=CC=C4N3C,,False,3.13,39.8,0,False
+granisetron,decoy,indole,5-HT3 antagonist,CN1C2CCCC1CC(C2)NC(=O)C3=NN(C4=CC=CC=C43)C,,False,2.32,50.2,1,False
+melatonin,decoy,tryptamine,MT1/MT2 agonist,CC(=O)NCCC1=CNC2=C1C=C(C=C2)OC,,False,1.86,54.1,2,False
+ramelteon,decoy,indole,MT1/MT2 agonist,CCC(=O)NCCC1CCC2=C1C3=C(C=C2)OCC3,,False,2.57,38.3,1,False
+agomelatine,decoy,naphthalene,MT agonist/5-HT2C antag,CC(=O)NCCC1=CC=CC2=C1C=C(C=C2)OC,,False,2.53,38.3,1,False
+tasimelteon,decoy,benzofuran,MT1/MT2 agonist,CCC(=O)NCC1CC1C2=C3CCOC3=CC=C2,,False,2.25,38.3,1,False
+yohimbine,decoy,indole,alpha2 antagonist,COC(=O)C1C(CCC2C1CC3C4=C(CCN3C2)C5=CC=CC=C5N4)O,tryptamine,False,2.65,65.6,2,False
+reserpine,decoy,indole,VMAT inhibitor,COC1C(CC2CN3CCC4=C(C3CC2C1C(=O)OC)NC5=C4C=CC(=C5)OC)OC(=O)C6=CC(=C(C(=C6)OC)OC)OC,tryptamine,False,4.17,117.8,1,False
+vinpocetine,decoy,indole,PDE1/vasodilator nootropic,CCC12CCCN3C1C4=C(CC3)C5=CC=CC=C5N4C(=C2)C(=O)OCC,,False,4.15,34.5,0,False
+tadalafil,decoy,indole,PDE5 inhibitor,CN1CC(=O)N2C(C1=O)CC3=C(C2C4=CC5=C(C=C4)OCO5)NC6=CC=CC=C36,,False,2.21,74.9,1,False
+tryptophan,decoy,tryptamine,amino acid,C1=CC=C2C(=C1)C(=CN2)CC(C(=O)O)N,tryptamine,False,1.12,79.1,3,False
+oxitriptan,decoy,tryptamine,5-HTP precursor,C1=CC2=C(C=C1O)C(=CN2)CC(C(=O)O)N,tryptamine,False,0.83,99.3,4,False
+serotonin,decoy,tryptamine,endogenous (impermeant),C1=CC2=C(C=C1O)C(=CN2)CCN,tryptamine,False,1.37,62.0,3,False
+bromocriptine,decoy,ergoline,D2 agonist,CC(C)CC1C(=O)N2CCCC2C3(N1C(=O)C(O3)(C(C)C)NC(=O)C4CN(C5CC6=C(NC7=CC=CC(=C67)C5=C4)Br)C)O,tryptamine,False,3.19,118.2,3,False
+cabergoline,decoy,ergoline,D2 agonist,CCNC(=O)N(CCCN(C)C)C(=O)C1CC2C(CC3=CNC4=CC=CC2=C34)N(C1)CC=C,tryptamine,False,3.19,71.7,2,False
+pergolide,decoy,ergoline,D2 agonist (clavine),CCCN1CC(CC2C1CC3=CNC4=CC=CC2=C34)CSC,,False,4.27,19.0,1,False
+methysergide,decoy,ergoline,5-HT2 antagonist,CCC(CO)NC(=O)C1CN(C2CC3=CN(C4=CC=CC(=C34)C2=C1)C)C,ergoline,True,1.94,57.5,2,False
+metergoline,decoy,ergoline,5-HT antagonist,CN1CC(CC2C1CC3=CN(C4=CC=CC2=C34)C)CNC(=O)OCC5=CC=CC=C5,,False,4.06,46.5,1,False
+ergotamine,decoy,ergoline,5-HT1/alpha agonist,CC1(C(=O)N2C(C(=O)N3CCCC3C2(O1)O)CC4=CC=CC=C4)NC(=O)C5CN(C6CC7=CNC8=CC=CC(=C78)C6=C5)C,tryptamine,False,1.99,118.2,3,False
+dihydroergotamine,decoy,ergoline,antimigraine,CC1(C(=O)N2C(C(=O)N3CCCC3C2(O1)O)CC4=CC=CC=C4)NC(=O)C5CC6C(CC7=CNC8=CC=CC6=C78)N(C5)C,tryptamine,False,2.08,118.2,3,False
+nicergoline,decoy,ergoline,alpha blocker,CN1CC(CC2(C1CC3=CN(C4=CC=CC2=C34)C)OC)COC(=O)C5=CC(=CN=C5)Br,,False,3.91,56.6,0,False
+verapamil,decoy,phenethylamine,"Ca channel blocker (3,4-diOMe)",CC(C)C(CCCN(C)CCC1=CC(=C(C=C1)OC)OC)(C#N)C2=CC(=C(C=C2)OC)OC,psychedelic_phenethylamine,False,5.09,64.0,0,False
+trimetazidine,decoy,phenethylamine,"anti-anginal (3,4,5-triOMe)",COC1=C(C(=C(C=C1)CN2CCNCC2)OC)OC,,False,1.12,43.0,1,False
+methoxamine,decoy,phenethylamine,"alpha1 agonist (2,5-diOMe)",CC(C(C1=C(C=CC(=C1)OC)OC)O)N,,False,1.08,64.7,2,False
+indomethacin,decoy,indole,NSAID (N1-aroyl indole),CC1=C(C2=C(N1C(=O)C3=CC=C(C=C3)Cl)C=CC(=C2)OC)CC(=O)O,,False,3.93,68.5,1,False
+lysergide,positive,psychedelic,psychoplastogen,CCN(CC)C(=O)C1CN(C2CC3=CNC4=CC=CC(=C34)C2=C1)C,tryptamine,True,2.91,39.3,1,True
+psilocin,positive,psychedelic,psychoplastogen,CN(C)CCC1=CNC2=C1C(=CC=C2)O,tryptamine,True,1.98,39.3,2,True
+dimethyltryptamine,positive,psychedelic,psychoplastogen,CN(C)CCC1=CNC2=CC=CC=C21,tryptamine,True,2.27,19.0,1,True
+"5-methoxy-N,N-dimethyltryptamine",positive,psychedelic,psychoplastogen,CN(C)CCC1=CNC2=C1C=C(C=C2)OC,tryptamine,True,2.28,28.3,1,True
+mescaline,positive,psychedelic,psychoplastogen,COC1=CC(=CC(=C1OC)OC)CCN,psychedelic_phenethylamine,True,1.21,53.7,1,True
+ibogaine,positive,psychedelic,psychoplastogen,CCC1CC2CC3C1N(C2)CCC4=C3NC5=C4C=C(C=C5)OC,tryptamine,True,3.94,28.3,1,True
