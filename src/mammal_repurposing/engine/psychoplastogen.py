@@ -69,12 +69,24 @@ def _mol(smiles: str):
     return Chem.MolFromSmiles(str(smiles))
 
 
+# TRIPTAN veto (critical-audit fix): triptans (sumatriptan/zolmitriptan/...) are tryptamines but
+# 5-HT1B/1D agonists, NOT 5-HT2A psychoplastogens - scaffold+permeability cannot resolve the
+# subtype, so an indole bearing the triptan pharmacophore (a sulfonamide or a cyclic carbamate /
+# oxazolidinone 5-substituent) is rejected. Documented limitation: 5-HT2A-vs-5-HT1 selectivity
+# is not structure-derivable here beyond this motif veto.
+_TRIPTAN_VETO = ["[SX4](=O)(=O)[#7]", "[NX3]C(=O)[OX2]"]   # sulfonamide; carbamate/oxazolidinone
+
+
 def serotonergic_scaffold(smiles: str) -> str | None:
     """Identify a 5-HT2A-axis agonist chemotype: tryptamine, psychedelic phenethylamine
-    (2+ aromatic OMe/halogen substituents), or ergoline. None if no match."""
+    (2+ aromatic OMe/halogen substituents), or ergoline. None if no match. Triptan-pharmacophore
+    tryptamines (5-HT1 agonists) are vetoed."""
     from rdkit import Chem
     mol = _mol(smiles)
     if mol is None:
+        return None
+    if any((vp := Chem.MolFromSmarts(v)) is not None and mol.HasSubstructMatch(vp)
+           for v in _TRIPTAN_VETO):
         return None
     if (p := Chem.MolFromSmarts(_TRYPTAMINE)) is not None and mol.HasSubstructMatch(p):
         return "tryptamine"

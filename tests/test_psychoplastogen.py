@@ -44,9 +44,27 @@ def test_tryptamine_core_nonplastogens_are_window_negative():
     # idalopirdine: bulky N-benzyl amine -> scaffold veto (not a 5-HT2A-agonist pharmacophore)
     ida = psychoplastogen_window(IDALOPIRDINE)
     assert ida.scaffold is None and ida.window is False
-    # sumatriptan: small-amine tryptamine but the sulfonamide makes it impermeant
-    su = psychoplastogen_window(SUMATRIPTAN)
-    assert su.scaffold == "tryptamine" and su.intracellular_access is False and su.window is False
+
+
+def test_triptans_are_vetoed_not_psychoplastogens():
+    # critical-audit fix: triptans are tryptamines but 5-HT1B/1D agonists, NOT 5-HT2A
+    # psychoplastogens. The triptan pharmacophore (sulfonamide / cyclic carbamate) is vetoed so
+    # they never reach the permeability gate (scaffold None, window False).
+    sumatriptan = "CNS(=O)(=O)Cc1ccc2[nH]cc(CCN(C)C)c2c1"      # sulfonamide
+    zolmitriptan = "O=C1OCC(Cc2ccc3[nH]cc(CCN(C)C)c3c2)N1"     # oxazolidinone (slips TPSA gate)
+    for smi in (sumatriptan, zolmitriptan):
+        c = psychoplastogen_window(smi)
+        assert c.scaffold is None and c.window is False
+
+
+def test_permeant_endogenous_monoamine_decoys_are_window_negative():
+    # specificity stress test: permeant CNS monoamines / decoys that are NOT durable
+    # psychoplastogens must stay window-negative (dopamine/melatonin/methamphetamine/venlafaxine)
+    for smi in ("NCCc1ccc(O)c(O)c1",                        # dopamine (polar catechol)
+                "CC(=O)NCCc1c[nH]c2ccc(OC)cc12",            # melatonin (N-acetyl -> amide veto)
+                "CC(NC)Cc1ccccc1",                          # methamphetamine (no OMe -> no scaffold)
+                "COc1ccc(C(CN(C)C)C2(O)CCCCC2)cc1"):        # venlafaxine
+        assert psychoplastogen_window(smi).window is False
 
 
 def test_non_serotonergic_have_no_scaffold():

@@ -80,3 +80,5 @@ logs/
 *.pth
 *.ckpt
 .venv-mammal/
+
+.venv-boltz*/
