@@ -143,9 +143,21 @@ realistic ~1% prior" - which no current repurposing predictor reports for persis
 
 ## Remaining roadmap (FUTURE_WORK)
 
-1. **L1 Stage-3 free exposure (Kp,uu)**: fit an efflux-aware unbound brain/plasma regressor
-   (small public rat Kp,uu / B3DB set) + conformal applicability band; until then Stage 3
-   returns ABSTAIN.
+1. **L1 Stage-3 free exposure (SHIPPED v2.6, efflux-aware conformal logBB).**
+   `engine/free_exposure.py`, `scripts/110-111`, wired into `cns_exposure.py`. Replaces the
+   Stage-3 ABSTAIN stub with a LightGBM logBB regressor on B3DB (CC0, 1058 cpds) + a cited
+   Didziapetris P-gp efflux feature (the model-within-a-model lever) + Mondrian split-conformal
+   bands (numpy) + a kNN applicability-domain abstain. Bemis-Murcko scaffold split (no analog
+   leakage): R2 0.23, RMSE 0.60, conformal coverage 0.85 - honestly at/below the field ceiling
+   (public CNS-penetration models plateau ~0.3-0.6; the deliverable is the calibrated interval
+   + abstain rule, not a high R2). The Stage-3 gate refines a physchem PASS efflux-awarely:
+   only a confidently predicted P-gp SUBSTRATE with sub-threshold logBB downgrades PASS->ABSTAIN
+   (CNS-penetrant small molecules untouched, so the symptomatic + L4 plasticity heads are
+   preserved - psychoplastogen recall held at 7/13). **HONEST SCOPE:** the trained target is
+   logBB (total brain:plasma), a passive-penetration proxy; the unbound Kp,uu that finally
+   governs free exposure is efflux-dominated and its public data are tiny/license-encumbered,
+   so true Kp,uu remains the documented residual gap (swap in ADMET-AI Pgp + a licensed Friden/
+   Morales Kp,uu spine to close it). Report: `reports/pipeline/cns_exposure_kpuu_v1.md`.
 2. **Persistence-target DTI module (SHIPPED v1, calibration-gated; honest-negative).**
    `engine/persistence_dti.py`, `scripts/103-105`, `reports/pipeline/persistence_dti_*.md`.
    A 9-target substrate panel (BCL2/BCL-xL = ablative; HDAC1/2/6, DNMT1, EHMT2, KEAP1 =
