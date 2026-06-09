@@ -16,7 +16,7 @@ import pytest
 pytest.importorskip("rdkit")
 
 from mammal_repurposing.engine.mechanism_router import (  # noqa: E402
-    nmda_router, nmda_scaffold,
+    muscarinic_router, muscarinic_scaffold, nmda_router, nmda_scaffold,
 )
 
 TABLE = Path(__file__).resolve().parents[1] / "data" / "raw" / "nmda_trapping_table.csv"
@@ -71,6 +71,27 @@ def test_non_nmda_returns_no_class():
 def test_scaffold_detection():
     assert nmda_scaffold(KETAMINE) == "arylcyclohexylamine"
     assert nmda_scaffold(PSILOCIN) is None
+
+
+SCOPOLAMINE = "CN1C2CC(CC1C3C2O3)OC(=O)C(CO)C4=CC=CC=C4"      # ledger SMILES (scopine/tropane)
+IPRATROPIUM = "CC(C)[N+]1(C2CCC1CC(C2)OC(=O)C(CO)C3=CC=CC=C3)C"  # peripheral quaternary muscarinic
+
+
+def test_muscarinic_tropane_abstains_with_reason():
+    # L4b muscarinic lane recognises the tropane/scopine chemotype and ABSTAINS-with-reason - it
+    # NEVER promotes durability (scopolamine's carryover is a single-compound clinical fact).
+    c = muscarinic_router(SCOPOLAMINE)
+    assert c.mechanism_class == "tropane_muscarinic" and c.verdict == "ABSTAIN"
+    assert c.window is False and c.reasons and "evidence layer" in c.reasons[0]
+    assert muscarinic_scaffold(SCOPOLAMINE) == "tropane"
+
+
+def test_muscarinic_quaternary_veto_and_non_tropane():
+    # peripheral quaternary muscarinic (ipratropium) is vetoed (never reaches the CNS) -> no class
+    assert muscarinic_router(IPRATROPIUM).mechanism_class is None
+    # non-tropane chemotypes -> no muscarinic class (psilocin serotonergic, ketamine arylcyclohexyl)
+    assert muscarinic_router(PSILOCIN).mechanism_class is None
+    assert muscarinic_router(KETAMINE).mechanism_class is None
 
 
 def test_novel_arylcyclohexylamine_abstains_with_reason():

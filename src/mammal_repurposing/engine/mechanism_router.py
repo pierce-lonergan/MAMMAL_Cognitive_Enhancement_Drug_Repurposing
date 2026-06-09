@@ -34,6 +34,14 @@ _TABLE = Path(__file__).resolve().parents[3] / "data" / "raw" / "nmda_trapping_t
 _ARYLCYCLOHEXYLAMINE = "[NX3,NX4][CX4]1([cX3])[#6][#6][#6][#6][#6]1"
 # adamantane cage (aminoadamantane: memantine / amantadine), matched as a ring-system substructure.
 _ADAMANTANE = "C1C2CC3CC1CC(C2)C3"
+# tropane (8-azabicyclo[3.2.1]octane: atropine / cocaine) + scopine (the 6,7-epoxy tropane of
+# scopolamine). The muscarinic router recognises this chemotype to ABSTAIN-with-reason; it does NOT
+# promote durability (scopolamine's rapid-antidepressant carryover is a single-drug clinical fact,
+# not a structure-derivable class property - cocaine/benztropine share the scaffold and are not
+# durable plastogens). A permanent-charge (quaternary-N) veto drops peripheral muscarinics
+# (ipratropium/glycopyrrolate) that never reach the CNS.
+_TROPANE = "C1CC2CCC(C1)N2"
+_SCOPINE = "C1CC2NC(C1)C1OC21"
 
 
 @dataclass
@@ -140,3 +148,39 @@ def nmda_router(smiles) -> MechanismRouterCall:
                      "route to the evidence layer"])
     return MechanismRouterCall(mechanism_class=None,
                                reasons=["no NMDA-channel-blocker scaffold"])
+
+
+def muscarinic_scaffold(smiles) -> str | None:
+    """tropane / scopine (8-azabicyclo[3.2.1]octane) chemotype, else None. A permanent positive
+    charge (quaternary N) vetoes peripheral muscarinics that do not reach the CNS."""
+    from rdkit import Chem
+    mol = _mol(smiles)
+    if mol is None:
+        return None
+    quat = Chem.MolFromSmarts("[NX4+]")
+    if quat is not None and mol.HasSubstructMatch(quat):
+        return None                                    # peripheral quaternary muscarinic - vetoed
+    for core in (_TROPANE, _SCOPINE):
+        q = Chem.MolFromSmiles(core)
+        if q is not None and mol.HasSubstructMatch(q):
+            return "tropane"
+    return None
+
+
+def muscarinic_router(smiles) -> MechanismRouterCall:
+    """L4b muscarinic / tropane lane (abstain-with-reason; NEVER promotes durability). Recognises
+    the tropane/scopine chemotype so PERSEUS routes it to the evidence layer with a reason instead
+    of silently missing it. Honest scope: scopolamine's rapid-antidepressant post-cessation
+    carryover (Furey 2006, replicated) is a single-compound clinical fact, not a structure-derivable
+    property of the chemotype (cocaine/benztropine share the scaffold and are not durable
+    plastogens), so the structural layer ABSTAINS and durability is left to the curated evidence
+    layer."""
+    scaf = muscarinic_scaffold(smiles)
+    if scaf is None:
+        return MechanismRouterCall(mechanism_class=None, reasons=["no tropane/muscarinic scaffold"])
+    return MechanismRouterCall(
+        mechanism_class="tropane_muscarinic", verdict="ABSTAIN", scaffold=scaf,
+        reasons=["tropane/scopine chemotype recognized; muscarinic-antagonist rapid-antidepressant "
+                 "durability is a single-compound clinical fact (scopolamine; Furey 2006, "
+                 "replicated), NOT a structure-derivable class property -> abstain, route to the "
+                 "evidence layer"])

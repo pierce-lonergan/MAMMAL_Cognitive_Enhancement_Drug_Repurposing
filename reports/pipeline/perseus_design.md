@@ -313,9 +313,14 @@ pre-registered negatives (memantine, amantadine) score NEGATIVE. The structure-o
 (descriptor-identical ketamine vs memantine, separated only by the table) is locked as a regression
 test. Honesty caveats from curation preserved in the table notes: several blocks_resting cells are
 read-across (esketamine/arketamine/amantadine/lanicemine), and arketamine is flagged the weakest
-WINDOW call (a conservative reviewer could move it to ABSTAIN). Neurosteroid + muscarinic routers
-remain deferred (the research found no structural durability signal there - abstain is the honest
-default).
+WINDOW call (a conservative reviewer could move it to ABSTAIN). The MUSCARINIC/tropane router is now also
+SHIPPED (abstain-with-reason only): `muscarinic_router` recognises the tropane/scopine chemotype
+(atropine/cocaine/scopolamine), vetoes peripheral quaternary muscarinics (ipratropium), and
+ABSTAINS - it NEVER promotes durability, because scopolamine's rapid-antidepressant carryover is a
+single-compound clinical fact, not a structure-derivable class property; durability for the curated
+scopolamine row stays with the evidence layer. The neurosteroid router remains deferred (no
+structural durability signal). Kp,uu data-acquisition routes (the real Stage-3 target upgrade) are
+documented in `reports/pipeline/kpuu_data_acquisition_guide.md`.
 
 ## Remaining roadmap (FUTURE_WORK)
 

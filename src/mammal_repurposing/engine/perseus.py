@@ -28,7 +28,7 @@ from dataclasses import asdict, dataclass, field
 
 from mammal_repurposing.engine.cns_exposure import FAIL, PASS, cns_exposure_gate
 from mammal_repurposing.engine.psychoplastogen import psychoplastogen_window
-from mammal_repurposing.engine.mechanism_router import nmda_router
+from mammal_repurposing.engine.mechanism_router import muscarinic_router, nmda_router
 from mammal_repurposing.engine.reversibility import reversibility_call
 from mammal_repurposing.reporting.trial_watch import _norm_drug, load_combined_ledger
 from mammal_repurposing.validation.novel_compound import (
@@ -139,6 +139,10 @@ class PerseusEngine:
         nmda = nmda_router(active_smiles)
         if nmda.mechanism_class:
             flags.append(f"nmda_router:{nmda.verdict}")
+        # L4b muscarinic/tropane lane (abstain-with-reason only; never promotes durability)
+        musc = muscarinic_router(active_smiles)
+        if musc.mechanism_class:
+            flags.append(f"muscarinic_router:{musc.verdict}")
 
         # structure-vs-mechanism mismatch (L0 misroute guard)
         mismatch = (axis.known_mechanism_class is not None and cls is not None
@@ -165,7 +169,7 @@ class PerseusEngine:
             if cns.verdict != PASS:
                 reasons.append("symptomatic effect plausible but CNS exposure unconfirmed")
 
-        pv = self._persistence_verdict(cns, route, rev, axis, reasons, psy, nmda)
+        pv = self._persistence_verdict(cns, route, rev, axis, reasons, psy, nmda, musc)
 
         return PerseusResult(
             compound=compound, smiles=smiles, symptomatic_verdict=sym, assigned_class=cls,
@@ -176,7 +180,8 @@ class PerseusEngine:
             evidence_design=axis.evidence_design,
             persistence_basis=self._basis(pv, rev, axis), flags=flags, abstain_reasons=reasons)
 
-    def _persistence_verdict(self, cns, route, rev, axis, reasons, psy=None, nmda=None) -> str:
+    def _persistence_verdict(self, cns, route, rev, axis, reasons, psy=None, nmda=None,
+                             musc=None) -> str:
         if cns.verdict == FAIL:
             return P_EXCLUDE_CNS
         # L4b: a CURATED NMDA-table identity is authoritative for durability - the citation-backed
@@ -250,6 +255,14 @@ class PerseusEngine:
             reasons.append("NMDA-channel-blocker scaffold; durability not structure-derivable -> "
                            "abstain (route to evidence layer): "
                            + (nmda.reasons[0] if nmda.reasons else ""))
+            return P_ABSTAIN
+        # L4b muscarinic/tropane chemotype with no curated evidence: abstain-with-reason (never
+        # promotes durability - scopolamine's carryover is a single-compound clinical fact).
+        if (musc is not None and musc.mechanism_class == "tropane_muscarinic"
+                and cns.verdict == PASS):
+            reasons.append("tropane/muscarinic chemotype; durability not structure-derivable -> "
+                           "abstain (route to evidence layer): "
+                           + (musc.reasons[0] if musc.reasons else ""))
             return P_ABSTAIN
         if route.tier == "ABSTAIN":
             return P_ABSTAIN
