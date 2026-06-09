@@ -141,6 +141,23 @@ realistic ~1% prior" - which no current repurposing predictor reports for persis
 - Evidence-design-tiered confidence governor: parallel-group on-drug benefit contributes
   ZERO to persistence confidence; only delayed-start/discontinuation can raise it.
 
+## v2.8 four-frontier batch (the roadmap items below, mostly shipped)
+
+- **F1 HDACi pulsed self-maintaining tier** (`reversibility.py`, Nat Genet 2025): a curated
+  pulsed-HDACi now earns a conditional epigenetic-memory WINDOW hypothesis instead of a flat
+  abstain; default behaviour unchanged, never auto-durable.
+- **F2 AMPA-PAM + PNN/ECM channels** (`scripts/114`): pre-registered negatives CONFIRMED -
+  GRIA1 orthosteric 0.09, AMPA-PAM 0.26 (allosteric blindness), MMP9/PNN 0.42, all fail the
+  size-matched gate. With TrkB-TMD (0.23), this COMPLETES the durability-node negative map:
+  only senolytic-ablative (BCL2) is sequence-DTI-recoverable; TrkB-TMD, AMPA-PAM and PNN/ECM
+  are all off-axis - which is exactly why durability is routed through the L4 permeability
+  window and the engine stays abstain-by-default on the rest.
+- **F3 pluggable efflux** (`free_exposure.py`): the Stage-3 efflux feature accepts an external
+  ADMET-AI Pgp probability (guarded hook, Didziapetris fallback); both ADMET-AI-Pgp and a true
+  unbound-Kp,uu spine are documented as data/dep-blocked upgrade paths, not faked.
+- **F4 ledger expansion** (16->19): +tabernanthalog/MDMA/7,8-DHF (cited); recall 8/16 with the
+  Jeffreys CI tightened to 0.27-0.73, neuroplasticity 6/6, off-channel mechanisms honestly 0.
+
 ## Remaining roadmap (FUTURE_WORK)
 
 1. **L1 Stage-3 free exposure (SHIPPED v2.6, efflux-aware conformal logBB).**
