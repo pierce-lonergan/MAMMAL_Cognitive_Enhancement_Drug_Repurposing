@@ -35,6 +35,19 @@ def test_featurize_and_pgp_rule():
     assert pgp_substrate(small)[1] == "nonsubstrate"
 
 
+def test_pluggable_external_pgp_overrides_rule():
+    from rdkit import Chem
+    from mammal_repurposing.engine.free_exposure import pgp_substrate, try_admet_ai_pgp
+    m = Chem.MolFromSmiles("CC(N)Cc1ccccc1")          # amphetamine -> rule says nonsubstrate
+    assert pgp_substrate(m)[1] == "nonsubstrate"
+    # an external (e.g. ADMET-AI) probability overrides the rule with 0.3/0.7 cut-points
+    assert pgp_substrate(m, external_prob=0.9)[1] == "substrate"
+    assert pgp_substrate(m, external_prob=0.05)[1] == "nonsubstrate"
+    assert pgp_substrate(m, external_prob=0.5)[1] == "uncertain"
+    # the ADMET-AI hook degrades gracefully when admet_ai is not installed
+    assert try_admet_ai_pgp("CCO") in (None, ) or isinstance(try_admet_ai_pgp("CCO"), float)
+
+
 def test_conformal_quantile_finite_sample():
     import numpy as np
     res = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])

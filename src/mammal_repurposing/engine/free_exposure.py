@@ -18,6 +18,15 @@ penetration call. Design follows the deep-research Gap-2 recommendation:
   * The field ceiling is real (public rat Kp,uu R2 ~0.3-0.6); the deliverable is the calibrated
     interval + abstain rule, not a high R2.
 
+  TWO documented upgrade paths (both currently data/dependency-blocked, NOT faked):
+    1. EFFLUX: swap the Didziapetris rule for ADMET-AI's Pgp_Broccatelli probability - the
+       featurizer threads an external probability through `try_admet_ai_pgp`; `pip install
+       admet-ai` then retrain (scripts/111). Falls back to the rule when admet_ai is absent.
+    2. TARGET: replace logBB with true unbound rat Kp,uu by adding a Friden-2009 / Morales-2024
+       Kp,uu spine (small, partly license-encumbered - request reuse before vendoring). Same
+       regressor + conformal pipeline; only the training table changes. Until that data is in
+       hand the honest target is logBB and Kp,uu stays the residual gap.
+
 featurize / P-gp / conformal / AD math are RDKit+numpy (CI-safe); training needs lightgbm.
 """
 from __future__ import annotations
@@ -56,9 +65,47 @@ def _descriptors(mol) -> list[float] | None:
     return [float(vals[k]) for k in _DESC]
 
 
-def pgp_substrate(mol) -> tuple[float, str]:
-    """Rule-based P-gp-substrate likelihood (Didziapetris 2003): efflux is favoured by many
-    H-bonding heteroatoms and high MW. Returns (efflux_score in [0,1], category)."""
+def try_admet_ai_pgp(smiles: str) -> float | None:
+    """Optional upgrade: ADMET-AI's Pgp_Broccatelli probability as the efflux feature (the
+    deep-research Gap-2 recommendation). Returns None if admet_ai is not installed, so the
+    rule-based fallback below keeps the pipeline CI-safe and dependency-free. To ADOPT it,
+    install admet-ai and retrain with scripts/111 (the featurizer threads it through cleanly)."""
+    try:
+        from admet_ai import ADMETModel  # noqa: PLC0415
+    except Exception:
+        return None
+    try:
+        model = _admet_model()
+        pred = model.predict(smiles=smiles)
+        for k in ("Pgp_Broccatelli", "Pgp_Inhibition", "Pgp_substrate"):
+            if k in pred:
+                return float(pred[k])
+    except Exception:  # pragma: no cover
+        return None
+    return None
+
+
+def _admet_model():
+    if not hasattr(_admet_model, "_m"):
+        from admet_ai import ADMETModel  # noqa: PLC0415
+        _admet_model._m = ADMETModel()
+    return _admet_model._m
+
+
+def pgp_substrate(mol, *, external_prob: float | None = None) -> tuple[float, str]:
+    """P-gp-substrate efflux likelihood -> (score in [0,1], category).
+
+    If ``external_prob`` is supplied (e.g. ADMET-AI Pgp_Broccatelli), it is used directly with
+    0.3/0.7 cut-points; otherwise the cited rule-based fallback (Didziapetris 2003): efflux is
+    favoured by many H-bonding heteroatoms (N+O) and high MW. The rule is the default so the
+    fitted Stage-3 model and CI stay dependency-free; the external hook is the documented
+    upgrade path."""
+    if external_prob is not None:
+        if external_prob >= 0.7:
+            return float(external_prob), "substrate"
+        if external_prob <= 0.3:
+            return float(external_prob), "nonsubstrate"
+        return float(external_prob), "uncertain"
     from rdkit.Chem import Descriptors, rdMolDescriptors
     n_no = Descriptors.NOCount(mol)            # N + O count
     mw = rdMolDescriptors.CalcExactMolWt(mol)
@@ -69,9 +116,11 @@ def pgp_substrate(mol) -> tuple[float, str]:
     return 0.5, "uncertain"
 
 
-def featurize(smiles: str) -> tuple[np.ndarray, str] | None:
+def featurize(smiles: str, *, use_admet_ai: bool = False) -> tuple[np.ndarray, str] | None:
     """Return (feature_vector, pgp_category) or None if unparseable. The efflux score is
-    appended as the final feature (the model-within-a-model lever)."""
+    appended as the final feature (the model-within-a-model lever). With use_admet_ai=True the
+    ADMET-AI Pgp probability replaces the rule when admet_ai is installed (else it falls back
+    silently) - keep the train (scripts/111) and inference settings consistent."""
     from rdkit import Chem
     from rdkit import RDLogger
     RDLogger.DisableLog("rdApp.*")
@@ -81,7 +130,8 @@ def featurize(smiles: str) -> tuple[np.ndarray, str] | None:
     desc = _descriptors(mol)
     if desc is None:
         return None
-    efflux, cat = pgp_substrate(mol)
+    ext = try_admet_ai_pgp(smiles) if use_admet_ai else None
+    efflux, cat = pgp_substrate(mol, external_prob=ext)
     return np.asarray(desc + [efflux], dtype=float), cat
 
 
