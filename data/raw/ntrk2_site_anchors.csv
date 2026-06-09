@@ -1,0 +1,10 @@
+compound,site,source,smiles,mw,role
+fluoxetine,tmd_wedge,Casarotto 2021 Cell - binds TrkB transmembrane-domain crossed-dimer wedge (the durability site),CNCCC(C1=CC=CC=C1)OC2=CC=C(C=C2)C(F)(F)F,309.33,engager
+imipramine,tmd_wedge,Casarotto 2021 Cell - TrkB-TMD binder,CN(C)CCCN1C2=CC=CC=C2CCC3=CC=CC=C31,280.42,engager
+ketamine,tmd_wedge,Casarotto 2021 / Cordeiro 2024 - TrkB-TMD binder; the rapid-antidepressant site,CNC1(CCCCC1=O)C2=CC=CC=C2Cl,237.73,engager
+"(2R,6R)-hydroxynorketamine",tmd_wedge,"Casarotto 2021 - active ketamine metabolite, TrkB-TMD",C1CC(C(=O)C(C1)(C2=CC=CC=C2Cl)N)O,239.7,engager
+"7,8-dihydroxyflavone",ecd,TrkB extracellular-domain agonist (small molecule),C1=CC=C(C=C1)C2=CC(=O)C3=C(O2)C(=C(C=C3)O)O,254.24,engager
+lm22a-4,ecd,TrkB ECD partial agonist (BDNF loop-domain mimetic),C1=C(C=C(C=C1C(=O)NCCO)C(=O)NCCO)C(=O)NCCO,339.35,engager
+larotrectinib,atp_pocket,pan-TRK intracellular ATP-site kinase inhibitor (FDA),C1CC(N(C1)C2=NC3=C(C=NN3C=C2)NC(=O)N4CCC(C4)O)C5=C(C=CC(=C5)F)F,428.44,engager
+entrectinib,atp_pocket,pan-TRK ATP-site inhibitor (FDA),CN1CCN(CC1)C2=CC(=C(C=C2)C(=O)NC3=NNC4=C3C=C(C=C4)CC5=CC(=CC(=C5)F)F)NC6CCOCC6,560.65,engager
+selitrectinib,atp_pocket,next-gen TRK ATP-site inhibitor (LOXO-195),CC1CCC2=C(C=C(C=N2)F)C3CCCN3C4=NC5=C(C=NN5C=C4)C(=O)N1,380.43,engager

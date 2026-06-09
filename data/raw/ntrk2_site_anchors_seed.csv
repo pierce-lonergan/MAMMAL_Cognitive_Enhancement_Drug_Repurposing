@@ -1,0 +1,10 @@
+compound,site,source
+fluoxetine,tmd_wedge,"Casarotto 2021 Cell - binds TrkB transmembrane-domain crossed-dimer wedge (the durability site)"
+imipramine,tmd_wedge,"Casarotto 2021 Cell - TrkB-TMD binder"
+ketamine,tmd_wedge,"Casarotto 2021 / Cordeiro 2024 - TrkB-TMD binder; the rapid-antidepressant site"
+"(2R,6R)-hydroxynorketamine",tmd_wedge,"Casarotto 2021 - active ketamine metabolite, TrkB-TMD"
+"7,8-dihydroxyflavone",ecd,"TrkB extracellular-domain agonist (small molecule)"
+lm22a-4,ecd,"TrkB ECD partial agonist (BDNF loop-domain mimetic)"
+larotrectinib,atp_pocket,"pan-TRK intracellular ATP-site kinase inhibitor (FDA)"
+entrectinib,atp_pocket,"pan-TRK ATP-site inhibitor (FDA)"
+selitrectinib,atp_pocket,"next-gen TRK ATP-site inhibitor (LOXO-195)"
