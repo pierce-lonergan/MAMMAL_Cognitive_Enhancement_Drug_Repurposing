@@ -88,7 +88,13 @@ def try_admet_ai_pgp(smiles: str) -> float | None:
 def _admet_model():
     if not hasattr(_admet_model, "_m"):
         from admet_ai import ADMETModel  # noqa: PLC0415
-        _admet_model._m = ADMETModel()
+        # num_workers=0: chemprop's DataLoader otherwise spawns workers that re-import the entry
+        # module and crash on Windows ("DataLoader worker exited unexpectedly"). In-process is
+        # robust and matches scripts/115 cache generation (train/inference feature consistency).
+        try:
+            _admet_model._m = ADMETModel(num_workers=0)
+        except TypeError:
+            _admet_model._m = ADMETModel()
     return _admet_model._m
 
 
@@ -116,11 +122,16 @@ def pgp_substrate(mol, *, external_prob: float | None = None) -> tuple[float, st
     return 0.5, "uncertain"
 
 
-def featurize(smiles: str, *, use_admet_ai: bool = False) -> tuple[np.ndarray, str] | None:
+def featurize(smiles: str, *, use_admet_ai: bool = False,
+              pgp_override: float | None = None) -> tuple[np.ndarray, str] | None:
     """Return (feature_vector, pgp_category) or None if unparseable. The efflux score is
-    appended as the final feature (the model-within-a-model lever). With use_admet_ai=True the
-    ADMET-AI Pgp probability replaces the rule when admet_ai is installed (else it falls back
-    silently) - keep the train (scripts/111) and inference settings consistent."""
+    appended as the final feature (the model-within-a-model lever).
+
+    Efflux-feature precedence: ``pgp_override`` (a pre-computed probability, e.g. a CACHED
+    ADMET-AI Pgp_Broccatelli value for batch training - see scripts/115/111) > live ADMET-AI
+    call when ``use_admet_ai=True`` and admet_ai is installed > the Didziapetris rule. Threading
+    a cached value avoids re-loading ~40 chemprop models per compound at train time. Keep the
+    train (scripts/111) and inference settings consistent so the fitted efflux feature matches."""
     from rdkit import Chem
     from rdkit import RDLogger
     RDLogger.DisableLog("rdApp.*")
@@ -130,7 +141,12 @@ def featurize(smiles: str, *, use_admet_ai: bool = False) -> tuple[np.ndarray, s
     desc = _descriptors(mol)
     if desc is None:
         return None
-    ext = try_admet_ai_pgp(smiles) if use_admet_ai else None
+    if pgp_override is not None:
+        ext: float | None = float(pgp_override)
+    elif use_admet_ai:
+        ext = try_admet_ai_pgp(smiles)
+    else:
+        ext = None
     efflux, cat = pgp_substrate(mol, external_prob=ext)
     return np.asarray(desc + [efflux], dtype=float), cat
 
@@ -216,17 +232,19 @@ class FreeExposureModel:
     ad_k: int = 5
     alpha: float = 0.1
     metrics: dict = field(default_factory=dict)
+    use_admet_ai: bool = False        # featurization contract: if this model was trained on the
+    #                                   ADMET-AI Pgp feature, predict() MUST featurize the same way
+    #                                   (live admet_ai call) so train/inference features match.
 
     def _ad_distance(self, x_scaled: np.ndarray) -> float:
         d = np.sqrt(((self.train_scaled - x_scaled) ** 2).sum(axis=1))
         kth = np.partition(d, min(self.ad_k, len(d) - 1))[:self.ad_k]
         return float(kth.mean())
 
-    def predict(self, smiles: str) -> FreeExposurePrediction | None:
-        feat = featurize(smiles)
-        if feat is None:
-            return None
-        x, cat = feat
+    def predict_from_feature(self, x: np.ndarray, cat: str) -> FreeExposurePrediction:
+        """Conformal+AD prediction from an already-computed feature vector. Lets batch callers
+        (training/eval) reuse cached features instead of re-featurizing (and re-calling admet_ai)
+        per query - guaranteeing the eval features are byte-identical to the training features."""
         x_scaled = (x - self.scaler_mean) / self.scaler_std
         yhat = float(self.model.predict(x.reshape(1, -1))[0])
         q = self.conformal.get(cat, self.conformal["_pooled"])
@@ -234,6 +252,14 @@ class FreeExposureModel:
         return FreeExposurePrediction(
             logbb=yhat, lo=yhat - q, hi=yhat + q, pgp_category=cat,
             pgp_efflux_score=float(x[-1]), in_domain=adist <= self.ad_threshold, ad_distance=adist)
+
+    def predict(self, smiles: str) -> FreeExposurePrediction | None:
+        # honour the model's featurization contract so inference features match training
+        feat = featurize(smiles, use_admet_ai=getattr(self, "use_admet_ai", False))
+        if feat is None:
+            return None
+        x, cat = feat
+        return self.predict_from_feature(x, cat)
 
     def save(self, path) -> None:
         import joblib

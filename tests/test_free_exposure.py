@@ -48,6 +48,17 @@ def test_pluggable_external_pgp_overrides_rule():
     assert try_admet_ai_pgp("CCO") in (None, ) or isinstance(try_admet_ai_pgp("CCO"), float)
 
 
+def test_featurize_pgp_override_threads_through():
+    # D1: a cached probability (e.g. ADMET-AI Pgp_Broccatelli) passed as pgp_override becomes the
+    # last feature AND sets the Mondrian category via the 0.3/0.7 cut-points - without it the
+    # Didziapetris rule applies. amphetamine: rule -> nonsubstrate (efflux 0.0).
+    rule = featurize("CC(N)Cc1ccccc1")
+    ovr = featurize("CC(N)Cc1ccccc1", pgp_override=0.9)
+    assert rule is not None and ovr is not None
+    assert rule[1] == "nonsubstrate" and rule[0][-1] == 0.0
+    assert ovr[1] == "substrate" and abs(ovr[0][-1] - 0.9) < 1e-9
+
+
 def test_conformal_quantile_finite_sample():
     import numpy as np
     res = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
@@ -104,3 +115,45 @@ def test_stage3_preserves_cns_penetrant_psychedelic():
     # L4 psychoplastogen window is not broken by the new gate
     from mammal_repurposing.engine.cns_exposure import PASS as CPASS, cns_exposure_gate
     assert cns_exposure_gate("CN(C)CCc1c[nH]c2cccc(O)c12").verdict == CPASS
+
+
+@pytest.mark.skipif(not MODEL.exists(), reason="Stage-3 model not trained")
+def test_predict_from_feature_matches_predict():
+    # D1: the batch feature-level path must equal the smiles path for the (rule) shipped model,
+    # so training-set coverage eval is byte-identical to live inference.
+    pytest.importorskip("lightgbm")
+    from mammal_repurposing.engine.free_exposure import FreeExposureModel
+    m = FreeExposureModel.load(MODEL)
+    smi = "COc1cc2c(cc1OC)C(=O)C(CC3CCN(Cc4ccccc4)CC3)C2"   # donepezil
+    p1 = m.predict(smi)
+    feat = featurize(smi, use_admet_ai=getattr(m, "use_admet_ai", False))
+    assert p1 is not None and feat is not None
+    p2 = m.predict_from_feature(feat[0], feat[1])
+    assert abs(p1.logbb - p2.logbb) < 1e-9 and p1.pgp_category == p2.pgp_category
+    assert abs(p1.lo - p2.lo) < 1e-9 and abs(p1.hi - p2.hi) < 1e-9
+
+
+def test_stage3_default_loads_rule_model_not_admet(monkeypatch):
+    # D1: with PERSEUS_STAGE3_ADMET unset the loader must pick the CI-safe rule model
+    # (use_admet_ai False) even when the heavier ADMET variant joblib sits alongside it.
+    import mammal_repurposing.engine.cns_exposure as cx
+    monkeypatch.delenv("PERSEUS_STAGE3_ADMET", raising=False)
+    cx._S3_MODEL = "__unset__"                  # reset the lazy singleton
+    try:
+        m = cx._load_free_exposure_model()
+        if m is not None:                       # only meaningful if a model is present
+            assert getattr(m, "use_admet_ai", False) is False
+    finally:
+        cx._S3_MODEL = "__unset__"              # leave the cache clean for other tests
+
+
+def test_admet_variant_carries_contract_flag():
+    # D1: the saved ADMET variant must record use_admet_ai=True so predict() featurizes the same
+    # way it was trained (no silent rule/ADMET feature mismatch). Loading the joblib does NOT call
+    # admet_ai (only predict() would), so this stays CI-safe.
+    admet = ROOT / "data" / "interim" / "free_exposure_model_admet.joblib"
+    if not admet.exists():
+        pytest.skip("ADMET Stage-3 variant not trained (run scripts/115 + 111)")
+    pytest.importorskip("lightgbm")
+    from mammal_repurposing.engine.free_exposure import FreeExposureModel
+    assert getattr(FreeExposureModel.load(admet), "use_admet_ai", False) is True
