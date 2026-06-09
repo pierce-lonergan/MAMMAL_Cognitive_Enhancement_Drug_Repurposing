@@ -129,6 +129,21 @@ def test_psychoplastogen_window_fires_for_permeant_psychedelic(engine):
 
 
 @pytest.mark.skipif(not _HAVE, reason="engine data not present")
+def test_l4b_nmda_router_separates_ketamine_from_memantine(engine):
+    from mammal_repurposing.engine.perseus import P_TESTED_NEG, P_WINDOW
+    # L4b pre-registered ablation at the engine level: ketamine and memantine are
+    # descriptor-indistinguishable (clogP 2.90/2.69, TPSA 29.1/26.0), so only the curated NMDA
+    # trapping-kinetics table separates them. ketamine (resting-block trapper) -> plasticity
+    # WINDOW; memantine (spares the resting pool) -> TESTED_NEGATIVE.
+    rk = engine.score("ketamine", "CNC1(c2ccccc2Cl)CCCCC1=O")
+    assert rk.persistence_verdict == P_WINDOW and rk.persistence_live
+    assert any("nmda_router:WINDOW" in f for f in rk.flags)
+    rm = engine.score("memantine", "CC12CC3CC(C)(C1)CC(N)(C3)C2")
+    assert rm.persistence_verdict == P_TESTED_NEG and not rm.persistence_live
+    assert any("nmda_router:NEGATIVE" in f for f in rm.flags)
+
+
+@pytest.mark.skipif(not _HAVE, reason="engine data not present")
 def test_l0_mismatch_guard_abstains_symptomatic(engine):
     from mammal_repurposing.engine.perseus import P_WINDOW
     # fluoxetine (an SSRI) is misrouted to catecholaminergic by scaffold; the symptomatic

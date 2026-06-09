@@ -299,6 +299,24 @@ basis (zuranolone = PPD Deligiannidis 2021, Day-45 P=.003; scopolamine = replica
 carryover) found the recommendation OVERSTATED, so neither row was changed - the check prevented a
 wrong downgrade of two true positives.
 
+**SHIPPED (L4b NMDA router + curated trapping table).** Built the abstain-with-reason mechanism
+router (`engine/mechanism_router.py`) + a citation-verified curated PD table (`scripts/118` ->
+`data/raw/nmda_trapping_table.csv`, 11 compounds; a second Opus-4.8 lane verified every PMID via
+Europe PMC, report `nmda_trapping_table_curation.md`). The table encodes the trapping-kinetics
+verdict per compound (WINDOW: ketamine/esketamine/arketamine; NEGATIVE: memantine/amantadine/
+lanicemine; ABSTAIN: HNK/N2O/DXM/PCP/MK-801) and is AUTHORITATIVE over similarity routing in
+`perseus._persistence_verdict` (a curated NMDA identity beats a routed symptomatic status); novel
+arylcyclohexylamine/aminoadamantane scaffolds with no table entry ABSTAIN-with-reason rather than
+being silently missed. Net effect: ledger recall **9/16 -> 10/16 (0.62)** by recovering R-ketamine
+(the one ledger NMDA positive with established durability) while N2O stays an honest ABSTAIN and the
+pre-registered negatives (memantine, amantadine) score NEGATIVE. The structure-only ablation
+(descriptor-identical ketamine vs memantine, separated only by the table) is locked as a regression
+test. Honesty caveats from curation preserved in the table notes: several blocks_resting cells are
+read-across (esketamine/arketamine/amantadine/lanicemine), and arketamine is flagged the weakest
+WINDOW call (a conservative reviewer could move it to ABSTAIN). Neurosteroid + muscarinic routers
+remain deferred (the research found no structural durability signal there - abstain is the honest
+default).
+
 ## Remaining roadmap (FUTURE_WORK)
 
 1. **L1 Stage-3 free exposure (SHIPPED v2.6, efflux-aware conformal logBB).**

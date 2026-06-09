@@ -26,10 +26,9 @@ from __future__ import annotations
 import logging
 from dataclasses import asdict, dataclass, field
 
-import numpy as np
-
 from mammal_repurposing.engine.cns_exposure import FAIL, PASS, cns_exposure_gate
 from mammal_repurposing.engine.psychoplastogen import psychoplastogen_window
+from mammal_repurposing.engine.mechanism_router import nmda_router
 from mammal_repurposing.engine.reversibility import reversibility_call
 from mammal_repurposing.reporting.trial_watch import _norm_drug, load_combined_ledger
 from mammal_repurposing.validation.novel_compound import (
@@ -135,6 +134,12 @@ class PerseusEngine:
         if psy.window:
             flags.append(f"psychoplastogen_window:{psy.scaffold}")
 
+        # L4b NMDA trapping-kinetics router (curated PD; off BOTH the affinity AND the structure
+        # axes - ketamine and memantine are descriptor-identical, separated only by the table).
+        nmda = nmda_router(active_smiles)
+        if nmda.mechanism_class:
+            flags.append(f"nmda_router:{nmda.verdict}")
+
         # structure-vs-mechanism mismatch (L0 misroute guard)
         mismatch = (axis.known_mechanism_class is not None and cls is not None
                     and axis.known_mechanism_class != cls)
@@ -160,7 +165,7 @@ class PerseusEngine:
             if cns.verdict != PASS:
                 reasons.append("symptomatic effect plausible but CNS exposure unconfirmed")
 
-        pv = self._persistence_verdict(cns, route, rev, axis, reasons, psy)
+        pv = self._persistence_verdict(cns, route, rev, axis, reasons, psy, nmda)
 
         return PerseusResult(
             compound=compound, smiles=smiles, symptomatic_verdict=sym, assigned_class=cls,
@@ -171,9 +176,25 @@ class PerseusEngine:
             evidence_design=axis.evidence_design,
             persistence_basis=self._basis(pv, rev, axis), flags=flags, abstain_reasons=reasons)
 
-    def _persistence_verdict(self, cns, route, rev, axis, reasons, psy=None) -> str:
+    def _persistence_verdict(self, cns, route, rev, axis, reasons, psy=None, nmda=None) -> str:
         if cns.verdict == FAIL:
             return P_EXCLUDE_CNS
+        # L4b: a CURATED NMDA-table identity is authoritative for durability - the citation-backed
+        # trapping-kinetics verdict beats similarity routing (ketamine and memantine are descriptor-
+        # identical, so only this table separates them). Scaffold-only matches with no table entry
+        # take the abstain-with-reason path further down instead.
+        if nmda is not None and nmda.compound is not None and cns.verdict == PASS:
+            if nmda.verdict == "WINDOW":
+                reasons.append("NMDA trapping-kinetics plasticity window (curated PD, off-structure): "
+                               + (nmda.reasons[0] if nmda.reasons else ""))
+                return P_WINDOW
+            if nmda.verdict == "NEGATIVE":
+                reasons.append("NMDA-channel blocker, curated non-durable: "
+                               + (nmda.reasons[0] if nmda.reasons else ""))
+                return P_TESTED_NEG
+            reasons.append("NMDA-channel blocker, durability not established (curated PD): "
+                           + (nmda.reasons[0] if nmda.reasons else ""))
+            return P_ABSTAIN
         st = axis.status
         if st in ("not_applicable", "cognition_negative"):
             return P_EXCLUDE_AXIS
@@ -221,6 +242,15 @@ class PerseusEngine:
             reasons.append("psychoplastogen plasticity window (off-DTI-axis, permeability-gated): "
                            + (psy.reasons[0] if psy.reasons else ""))
             return P_WINDOW
+        # L4b scaffold-only NMDA-channel blocker (matches an arylcyclohexylamine / aminoadamantane
+        # scaffold but is NOT in the curated table): ABSTAIN-with-reason rather than be silently
+        # missed - durability is trapping kinetics, not structure, so route to the evidence layer.
+        if (nmda is not None and nmda.mechanism_class == "nmda_channel_blocker"
+                and nmda.compound is None and cns.verdict == PASS):
+            reasons.append("NMDA-channel-blocker scaffold; durability not structure-derivable -> "
+                           "abstain (route to evidence layer): "
+                           + (nmda.reasons[0] if nmda.reasons else ""))
+            return P_ABSTAIN
         if route.tier == "ABSTAIN":
             return P_ABSTAIN
         return P_NULL  # tone-changing, routed, no curated persistence -> symptomatic by default
