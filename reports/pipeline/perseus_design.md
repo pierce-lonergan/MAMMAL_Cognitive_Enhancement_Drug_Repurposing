@@ -213,18 +213,24 @@ realistic ~1% prior" - which no current repurposing predictor reports for persis
    is window-NEGATIVE while DMT is window-POSITIVE despite near-identical 5-HT2A affinity - the
    discriminator is membrane permeability, OFF the DTI axis. On the verified positive ledger
    this lifts PERSEUS recall 0/13 -> 7/13 (neuroplasticity domain 5/5: psilocin/LSD/DMT/
-   5-MeO-DMT/DOI) at FPR 0/15. STILL FUTURE: the TrkB-transmembrane-domain leg (ketamine/
-   fluoxetine site) is information-theoretically invisible to a 1D-sequence DTI model
-   (Casarotto 2021 crossed-dimer-in-lipid) - a documented off-axis limit, candidate for a
-   Boltz-2/structure second opinion, not MAMMAL.
+   5-MeO-DMT/DOI) at FPR 0/15. The TrkB-transmembrane-domain leg (ketamine/fluoxetine site) is
+   now CONFIRMED off-axis by a pre-registered site-split calibration (`scripts/112`, v2.7):
+   NTRK2 tmd_wedge AUROC 0.23 (below chance), ecd 0.44, atp_pocket 0.59 - MAMMAL is blind to all
+   three NTRK2 sites and worst at the durability TMD site, so durability is routed through the
+   off-axis L4 window not a TrkB DTI score; even a Boltz-2 second opinion is insufficient
+   (cholesterol-dependent crossed-dimer-in-lipid, Casarotto 2021).
 4. **Persistence ground-truth ledger + empty-positive evaluator (SHIPPED v2.5).** Verified
    positive ledger recovered from the deep-research workflow (`data/raw/persistence_positive_
    ledger.csv`, 16 cited compounds). `validation/persistence_pu_eval.py` + `scripts/109`:
    sensitivity 0.54 (Jeffreys 95% CI 0.28-0.78) with FPR 0/15 (Jeffreys upper 0.15) and a
    PPV-vs-prior curve (0.03 at a 1% prior under the conservative upper FPR) - the bidirectional
    metric the empty-positive class previously made unidentifiable. SAR caveat surfaced (the
-   positives are trial-availability-biased). FUTURE: grouped leave-one-mechanism-out + a
-   label-shift conformal operating point.
+   positives are trial-availability-biased). v2.7 adds grouped leave-one-MECHANISM-out
+   (`scripts/113`): serotonergic-psychedelic recall 0.86 (6/7), iboga 1/1, 0.00 on every
+   non-serotonergic mechanism (correctly off-channel) - the window is an unfitted rule so LOMO
+   confirms scaffold-generalization not chemotype memorization; plus a label-shift deployment
+   transport (Saerens 2002 / Lipton 2018) making the rare-event PPV trap explicit (proper
+   conformal needs a continuous score the categorical head lacks - it lives in Stage-3).
 5. **Population x regime + bias-provenance covariates**: force ABSTAIN on healthy-young-
    durable-gain; report all-evidence vs bias-hardened scores.
 
