@@ -4,16 +4,20 @@ The Uppsala group (Hammarlund-Udenaes / Irena Loryan / Markus Friden) authored m
 Kp,uu,brain literature and curate large internal Kp,uu tables. They are the highest-yield academic
 contact for a real, SMILES-linked Kp,uu dataset under a shareable license.
 
-WHO to email (verify current addresses on the group's Uppsala University Pharmacy / Translational
-PKPD page before sending):
-- Prof. Margareta Hammarlund-Udenaes (group founder)
-- Assoc. Prof. Irena Loryan (corresponding author on the 2022 Kp,uu review and several datasets)
-- Dr. Markus Friden (first author, Friden 2009 J Med Chem 52:6233 - the seminal Kp,uu set)
+WHO to email (addresses verified from the official Uppsala University staff profiles, uu.se/katalog,
+2026-06; use the @uu.se domain - the @farmbio.uu.se variant is legacy):
+- PRIMARY: Assoc. Prof. Irena Loryan - **irena.loryan@uu.se** - active Translational PKPD group lead
+  and corresponding author on the 2022 Kp,uu review and several Kp,uu datasets. Address her first.
+- CC: Prof. (emeritus) Margareta Hammarlund-Udenaes - **margareta.hammarlund-udenaes@uu.se** -
+  group founder; now emeritus (retired) so she may be less active, but CC her as the senior contact.
+- (Dr. Markus Friden, first author of Friden 2009 J Med Chem 52:6233, moved to industry/AstraZeneca
+  - no current Uppsala address; reach him via LinkedIn only if you specifically want the 2009 set,
+  otherwise Loryan can point you to it.)
 
 ------------------------------------------------------------------------
 Subject: Reuse of a Kp,uu,brain dataset for an open-source CNS free-exposure model (non-commercial)
 
-Dear Prof. Hammarlund-Udenaes and Dr. Loryan,
+Dear Dr. Loryan and Prof. Hammarlund-Udenaes,
 
 I am developing an open-source, non-commercial machine-learning model of unbound brain exposure
 (Kp,uu,brain) as part of a CNS drug-repurposing project. Our current Stage-3 model uses logBB
