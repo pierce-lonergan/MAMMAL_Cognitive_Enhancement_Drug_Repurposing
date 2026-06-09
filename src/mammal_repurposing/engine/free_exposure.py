@@ -71,16 +71,12 @@ def try_admet_ai_pgp(smiles: str) -> float | None:
     rule-based fallback below keeps the pipeline CI-safe and dependency-free. To ADOPT it,
     install admet-ai and retrain with scripts/111 (the featurizer threads it through cleanly)."""
     try:
-        from admet_ai import ADMETModel  # noqa: PLC0415
-    except Exception:
-        return None
-    try:
-        model = _admet_model()
+        model = _admet_model()                 # imports admet_ai lazily; raises if absent
         pred = model.predict(smiles=smiles)
         for k in ("Pgp_Broccatelli", "Pgp_Inhibition", "Pgp_substrate"):
             if k in pred:
                 return float(pred[k])
-    except Exception:  # pragma: no cover
+    except Exception:  # pragma: no cover  (admet_ai missing or a per-compound inference failure)
         return None
     return None
 
@@ -145,6 +141,13 @@ def featurize(smiles: str, *, use_admet_ai: bool = False,
         ext: float | None = float(pgp_override)
     elif use_admet_ai:
         ext = try_admet_ai_pgp(smiles)
+        if ext is None:
+            # ADMET-AI featurization was REQUESTED but is unavailable for this compound (admet_ai
+            # absent, or a per-compound inference failure). Refuse to featurize rather than silently
+            # feed a rule-derived efflux value into a model trained on ADMET-AI features - that
+            # train/inference contract mismatch would make the prediction quietly wrong. Returning
+            # None makes the caller (FreeExposureModel.predict -> Stage-3) abstain, which is safe.
+            return None
     else:
         ext = None
     efflux, cat = pgp_substrate(mol, external_prob=ext)

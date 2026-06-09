@@ -205,6 +205,37 @@ Dependency-resolution status (for reproduction): system Python 3.13 now has adme
 crepes 0.9.0 + mapie (torch untouched, used only for the ADMET variant + conformal cross-check);
 `.venv-boltz312` has boltz 2.2.1. Full suite 619 passed / 2 skipped.
 
+### Post-D1 scrutiny (adversarial self-audit of the D1 changeset)
+
+A bug-sweep + empirical audit of the D1 work was run (the user asked to "scrutinize what we just
+did"). Outcome:
+
+- **Scariest risk REFUTED empirically.** The ADMET opt-in model trains on the *cached* Pgp but
+  predicts on the *live* Pgp - a classic train/inference skew. Direct check: `max |cached - live|
+  = 0.00000` over sampled compounds, and cache key coverage is **1058/1058** (zero silent
+  rule-fallback contamination in the ADMET training set). The two are bit-identical, so the
+  Mondrian-category-skew the audit hypothesized cannot occur (categories are deterministic
+  functions of a reproducible efflux value).
+- **Two real issues found and fixed.** (1) `featurize(use_admet_ai=True)` previously fell back to
+  the *rule* efflux value if the live ADMET call failed for a compound - silently feeding an
+  out-of-distribution feature into an ADMET-trained model. Now it returns None (Stage-3 ABSTAINs)
+  rather than predict wrongly. (2) An F401 dead probe-import in `try_admet_ai_pgp` removed. +1 test
+  pins the new abstain-on-failure contract.
+- **Innovation probe - distillation - rigorously NEGATIVE (and informative).** Tested whether
+  ADMET-AI's Pgp could be DISTILLED into the 14 RDKit descriptors we already compute, to get the
+  ADMET gain with ZERO inference dependency (`scripts/116`). The student reproduces the teacher
+  well (descriptor->Pgp test R2 **0.799**, Spearman 0.894) - BUT the distilled-efflux Stage-3
+  logBB R2 is **0.198, WORSE than the rule's 0.214** (vs live-ADMET 0.276). Mechanism: the Stage-3
+  model already contains MolWt/TPSA/HBD/NOCount, so a descriptor-distilled Pgp is largely
+  REDUNDANT with existing features and only adds approximation noise; the +0.062 that real ADMET-AI
+  buys is **graph-level signal in the orthogonal complement of the bulk descriptors**, which
+  distillation into those same descriptors provably cannot recover. There is no free lunch - the
+  ADMET gain is irreducible to 2D descriptors, so live-ADMET opt-in is the only route to it. This
+  STRENGTHENS the D1 rule-default / ADMET-opt-in split with a mechanistic reason rather than just a
+  cost argument. (Normalized/adaptive conformal was considered as a separate efficiency lever and
+  REJECTED here: tightening the band would be anti-aligned with the honest-scope design, where the
+  wide abstain band deliberately carries the logBB-vs-Kp,uu residual.)
+
 ## Remaining roadmap (FUTURE_WORK)
 
 1. **L1 Stage-3 free exposure (SHIPPED v2.6, efflux-aware conformal logBB).**

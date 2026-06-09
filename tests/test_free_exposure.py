@@ -59,6 +59,17 @@ def test_featurize_pgp_override_threads_through():
     assert ovr[1] == "substrate" and abs(ovr[0][-1] - 0.9) < 1e-9
 
 
+def test_admet_featurize_abstains_when_live_call_unavailable(monkeypatch):
+    # D1-scrutiny fix: featurize(use_admet_ai=True) must REFUSE (return None) when the live ADMET
+    # call is unavailable, NOT silently feed a rule-derived efflux value into a model trained on
+    # ADMET features (that train/inference contract mismatch would be a quiet wrong prediction).
+    import mammal_repurposing.engine.free_exposure as fe
+    monkeypatch.setattr(fe, "try_admet_ai_pgp", lambda smi: None)
+    assert fe.featurize("CCO", use_admet_ai=True) is None       # ADMET requested but down -> abstain
+    assert fe.featurize("CCO") is not None                       # default rule path unaffected
+    assert fe.featurize("CCO", pgp_override=0.9) is not None     # explicit cached override still works
+
+
 def test_conformal_quantile_finite_sample():
     import numpy as np
     res = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
