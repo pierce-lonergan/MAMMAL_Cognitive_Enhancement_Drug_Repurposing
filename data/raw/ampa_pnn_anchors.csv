@@ -1,0 +1,13 @@
+compound,channel,site,source,smiles,mw,role
+glutamate,AMPA,orthosteric,endogenous AMPA-receptor agonist (GRIA1 orthosteric),C(CC(=O)O)C(C(=O)O)N,147.1,engager
+quisqualate,AMPA,orthosteric,AMPA/kainate orthosteric agonist,C(C(C(=O)O)N)N1C(=O)NC(=O)O1,189.1,engager
+kainic acid,AMPA,orthosteric,kainate/AMPA orthosteric agonist,CC(=C)C1CNC(C1CC(=O)O)C(=O)O,213.2,engager
+cyclothiazide,AMPA,pam,AMPA positive allosteric modulator (desensitization blocker) - the durability-relevant PAM site,C1C2CC(C1C=C2)C3NC4=CC(=C(C=C4S(=O)(=O)N3)S(=O)(=O)N)Cl,389.9,engager
+aniracetam,AMPA,pam,AMPA PAM / ampakine (the plasticity-relevant allosteric lever),COC1=CC=C(C=C1)C(=O)N2CCCC2=O,219.2,engager
+CX-516,AMPA,pam,ampakine AMPA PAM (Cortex/Ampalex),C1CCN(CC1)C(=O)C2=CC3=NC=CN=C3C=C2,241.3,engager
+CX-717,AMPA,pam,ampakine AMPA PAM,C1COCCN1C(=O)C2=CC3=NON=C3C=C2,233.2,engager
+marimastat,PNN_ECM,mmp_inhibitor,broad-spectrum MMP inhibitor (incl. MMP9; PNN/ECM remodeling),CC(C)CC(C(C(=O)NO)O)C(=O)NC(C(=O)NC)C(C)(C)C,331.4,engager
+batimastat,PNN_ECM,mmp_inhibitor,broad-spectrum MMP inhibitor,CC(C)CC(C(CSC1=CC=CS1)C(=O)NO)C(=O)NC(CC2=CC=CC=C2)C(=O)NC,477.7,engager
+prinomastat,PNN_ECM,mmp_inhibitor,MMP inhibitor,CC1(C(N(CCS1)S(=O)(=O)C2=CC=C(C=C2)OC3=CC=NC=C3)C(=O)NO)C,423.5,engager
+ilomastat,PNN_ECM,mmp_inhibitor,broad MMP inhibitor (GM6001/galardin),CC(C)CC(CC(=O)NO)C(=O)NC(CC1=CNC2=CC=CC=C21)C(=O)NC,388.5,engager
+doxycycline,PNN_ECM,mmp_inhibitor,tetracycline with MMP-inhibitory activity (PNN remodeling),CC1C2C(C3C(C(=O)C(=C(C3(C(=O)C2=C(C4=C1C=CC=C4O)O)O)O)C(=O)N)N(C)C)O,444.4,engager
