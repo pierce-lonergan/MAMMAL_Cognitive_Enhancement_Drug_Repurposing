@@ -102,6 +102,34 @@ redistribute: COMMISSION the measurement at a CRO. You own the resulting data ou
 3. IF the model still under-performs on YOUR chemical space: commission a focused CRO Kp,uu panel
    (Route 3) on the psychoplastogen / candidate compounds - data you fully own and can redistribute.
 
+## Route-1 EXECUTION LOG (what actually cleared, [date stamp on commit])
+
+Route 1 was executed end-to-end. Findings (these CONFIRM, with specifics, that clean open Kp,uu data
+is essentially unavailable - the "externally blocked" verdict holds):
+- **Loryan 2022 (PMC9246790)** is a REVIEW/survey (CC-BY) with NO machine-readable Kp,uu table or
+  structures - its SI is a survey questionnaire. Not a data source. Ruled out.
+- **Heliyon 2024 (PMC10828645)** is the one OA EXPERIMENTAL source but: license is **CC-BY-NC-ND**
+  (NoDerivatives), it ANONYMISES 256/292 in-house structures, and reports PREDICTED (not measured)
+  Kp,uu for most named rows. Exact parsing of its SI (`mmc1.docx`, gitignored - not redistributed)
+  yielded only **10 named marketed drugs with MEASURED Kp,uu,brain** (sulpiride, sertraline,
+  methylphenidate, zolpidem, risperidone, propoxyphene, hydroxyzine, haloperidol, meprobamate,
+  phenacetin). Far too few to TRAIN a regressor.
+- **Polaris Biogen ADME-Fang** could not be installed (polaris-lib forces a source build of numpy
+  that fails under Python 3.13, same class of failure as boltz) - and it is efflux/PPB, not Kp,uu.
+  Deferred (isolated 3.12 venv if wanted later).
+
+USEFUL OUTCOME (the honest deliverable): the 10 measured-Kp,uu FACTS were used as an independent
+ANCHOR to quantify the shipped logBB proxy (`scripts/119_kpuu_anchor_validation.py`, report
+`kpuu_anchor_validation_v1.md`): **Spearman(predicted logBB, measured Kp,uu) = 0.50**, logBB-gate vs
+true Kp,uu>=0.3 agreement **7/10** (n=10, wide CI). So the proxy rank-tracks true unbound exposure
+moderately - it leaves about half the rank-variance and ~30% of gate calls on the table, which is
+the measured, quantified case for paying to obtain a real Kp,uu spine.
+
+NEXT ACTIONS PREPARED (ready-to-send, in `reports/pipeline/kpuu_requests/`): an Uppsala author
+data-request email (Route 2), the ACS RightsLink steps for the Friden 2009 table (Route 2), and a
+CRO request-for-quote with the exact Kp,uu assay spec (Route 3). These need YOUR action (send /
+sign / commission) - they cannot be executed programmatically.
+
 ## How it drops into the existing pipeline (no architecture change)
 
 `engine/free_exposure.py` is already built target-agnostic: same RDKit featurizer + LightGBM +

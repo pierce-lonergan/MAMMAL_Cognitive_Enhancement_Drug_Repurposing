@@ -82,3 +82,7 @@ logs/
 .venv-mammal/
 
 .venv-boltz*/
+
+# Kp,uu acquisition: do NOT commit the NoDerivatives Heliyon SI source file
+data/raw/_heliyon_mmc1.docx
+data/raw/kpuu_anchors_cache.csv
