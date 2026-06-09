@@ -74,6 +74,27 @@ def test_non_serotonergic_have_no_scaffold():
         assert serotonergic_scaffold(smi) is None
 
 
+def test_pergolide_thioether_veto_d5():
+    # D5 adversarial-audit fix: pergolide is a dopaminergic CLAVINE ergoline, NOT a 5-HT2A
+    # psychoplastogen. Its aliphatic thioether (CH2-S-CH3) is the veto signal - verified absent
+    # from every compound in the persistence positive ledger, so the veto is collateral-free.
+    # SMILES from PubChem.
+    pergolide = "CCCN1CC(CC2C1CC3=CNC4=CC=CC2=C34)CSC"
+    c = psychoplastogen_window(pergolide)
+    assert c.scaffold is None and c.window is False
+
+
+def test_isodmt_recall_d5():
+    # D5 recall innovation: isoDMTs put the aminoethyl on the indole N1 (C3 free), so the
+    # C3-requiring tryptamine SMARTS misses them although they are genuine psychoplastogens
+    # (Dunlap/Olson). zalsupindole / AAZ-A-154 is the ledger exemplar (SMILES from the ledger).
+    zalsupindole = "CC(CN1C=CC2=C1C=CC(=C2)OC)N(C)C"
+    c = psychoplastogen_window(zalsupindole)
+    assert c.scaffold == "isodmt" and c.window is True
+    # N1-substitution is therefore a POSITIVE signal and must never be vetoed (it would suppress
+    # the whole isoDMT class) - which is exactly why methysergide stays an accepted, documented FP.
+
+
 def test_window_never_auto_durable_caveat():
     c = psychoplastogen_window(DMT)
     assert "paired with experience" in c.caveat and "never auto-durable" in c.caveat

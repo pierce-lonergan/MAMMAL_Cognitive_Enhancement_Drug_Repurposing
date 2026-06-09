@@ -40,6 +40,10 @@ ACCESS_HBD_MAX = 2
 # (DMT/psilocin: N is H or methyl) from bulky-amine tryptamine drugs that are NOT plastogenic
 # agonists (e.g. idalopirdine, a 5-HT6 antagonist with an N-benzyl arm).
 _TRYPTAMINE = "c1ccc2c(c1)c(c[nH]2)CC[NX3;!$([NX3][CH2][a]);!$([NX3][a]);!$([NX3]C=O)]"
+# isoDMT (D5 recall innovation): the aminoethyl is on the indole N1, not C3 (Dunlap/Olson isoDMT
+# psychoplastogens, e.g. zalsupindole/AAZ-A-154). The C3-requiring _TRYPTAMINE SMARTS misses these,
+# so they are detected separately. Same small-amine guard (no N-aryl / amide) as the tryptamine.
+_ISODMT = "c1ccc2c(c1)c[cH]n2[CH2][CH1,CH2][NX3;!$([NX3][a]);!$([NX3]C=O)]"
 _PHENETHYL = "[cX3]1[cX3][cX3][cX3][cX3][cX3]1[CH2][CH1,CH2][NX3]"  # 2-aryl-ethyl/propyl-amine core
 _ERGOLINE_SMILES = "C1CN(C)C2Cc3c[nH]c4cccc(c34)C2=C1"  # ergoline ring system (LSD/lysergamides)
 _AROM_OME = "[c][OX2][CH3]"                            # aromatic methoxy (psychedelic phenethylamines)
@@ -49,7 +53,7 @@ _AROM_HALO = "[c][F,Cl,Br,I]"                          # aromatic halogen (DOI/D
 @dataclass
 class PsychoplastogenCall:
     window: bool                       # plasticity-window-positive?
-    scaffold: str | None = None        # tryptamine | psychedelic_phenethylamine | ergoline
+    scaffold: str | None = None        # tryptamine | isodmt | psychedelic_phenethylamine | ergoline
     clogp: float = float("nan")
     tpsa: float = float("nan")
     hbd: int = -1
@@ -69,27 +73,43 @@ def _mol(smiles: str):
     return Chem.MolFromSmiles(str(smiles))
 
 
-# TRIPTAN veto (critical-audit fix): triptans (sumatriptan/zolmitriptan/...) are tryptamines but
-# 5-HT1B/1D agonists, NOT 5-HT2A psychoplastogens - scaffold+permeability cannot resolve the
-# subtype, so an indole bearing the triptan pharmacophore (a sulfonamide or a cyclic carbamate /
-# oxazolidinone 5-substituent) is rejected. Documented limitation: 5-HT2A-vs-5-HT1 selectivity
-# is not structure-derivable here beyond this motif veto.
-_TRIPTAN_VETO = ["[SX4](=O)(=O)[#7]", "[NX3]C(=O)[OX2]"]   # sulfonamide; carbamate/oxazolidinone
+# Scaffold vetoes (adversarial-audit fixes): indole/ergoline-bearing drugs that share a
+# psychedelic scaffold but are NOT 5-HT2A-agonist psychoplastogens. Scaffold+permeability cannot
+# resolve receptor SUBTYPE or AGONISM from structure, so a few decisive non-agonist motifs are
+# rejected outright:
+#   - sulfonamide / cyclic carbamate (oxazolidinone) -> TRIPTAN pharmacophore (5-HT1B/1D agonists:
+#     sumatriptan/zolmitriptan), D4 audit.
+#   - aliphatic THIOETHER (C-S-C) -> dopaminergic CLAVINE ergolines (pergolide), D5 audit. Verified
+#     absent from every compound in the persistence positive ledger, so this is collateral-free.
+# DOCUMENTED RESIDUAL LIMIT (D5): the lysergamide ANTAGONIST methysergide (a 5-HT2 antagonist) is
+# NOT separable here - its only structural marker vs LSD is indole-N1-methylation, which is exactly
+# the feature that defines the isoDMT psychoplastogens we now DETECT as positives (zalsupindole /
+# AAZ-A-154). So N1-substitution must NOT be vetoed (it would suppress the whole isoDMT class);
+# agonist-vs-antagonist within the lysergamide series is left to the functional/DTI layer, not this
+# structural screen. methysergide is therefore a known, accepted false-positive of the window.
+_SCAFFOLD_VETO = [
+    "[SX4](=O)(=O)[#7]",   # sulfonamide (sumatriptan)
+    "[NX3]C(=O)[OX2]",     # carbamate / oxazolidinone (zolmitriptan)
+    "[CX4][SX2][CX4]",     # aliphatic thioether (pergolide); no ledger psychoplastogen has one
+]
 
 
 def serotonergic_scaffold(smiles: str) -> str | None:
-    """Identify a 5-HT2A-axis agonist chemotype: tryptamine, psychedelic phenethylamine
-    (2+ aromatic OMe/halogen substituents), or ergoline. None if no match. Triptan-pharmacophore
-    tryptamines (5-HT1 agonists) are vetoed."""
+    """Identify a 5-HT2A-axis agonist chemotype: tryptamine (C3-aminoethyl indole), isoDMT
+    (N1-aminoethyl indole), psychedelic phenethylamine (2+ aromatic OMe/halogen substituents), or
+    ergoline. None if no match. Non-agonist scaffold motifs (triptan sulfonamide/carbamate;
+    dopaminergic-clavine thioether) are vetoed."""
     from rdkit import Chem
     mol = _mol(smiles)
     if mol is None:
         return None
     if any((vp := Chem.MolFromSmarts(v)) is not None and mol.HasSubstructMatch(vp)
-           for v in _TRIPTAN_VETO):
+           for v in _SCAFFOLD_VETO):
         return None
     if (p := Chem.MolFromSmarts(_TRYPTAMINE)) is not None and mol.HasSubstructMatch(p):
         return "tryptamine"
+    if (ip := Chem.MolFromSmarts(_ISODMT)) is not None and mol.HasSubstructMatch(ip):
+        return "isodmt"
     erg = Chem.MolFromSmiles(_ERGOLINE_SMILES)
     if erg is not None and mol.HasSubstructMatch(erg):
         return "ergoline"

@@ -236,6 +236,32 @@ did"). Outcome:
   REJECTED here: tightening the band would be anti-aligned with the honest-scope design, where the
   wide abstain band deliberately carries the logBB-vs-Kp,uu residual.)
 
+### D5 - L4 window adversarial audit (the core innovation): 1 precision fix + 1 recall win
+
+The scrutiny then turned on the L4 psychoplastogen window itself - PERSEUS's actual differentiator -
+by probing it against PubChem-verified, UNAMBIGUOUS non-psychedelic drugs that share the indole/
+ergoline scaffold (dopaminergic ergolines, 5-HT antagonists, triptans, endogenous monoamines). It
+surfaced two false positives and, while fixing them honestly, one recall gap:
+
+- **PRECISION FP #1 - pergolide (FIXED).** A dopaminergic CLAVINE ergoline scored window-positive
+  (TPSA 19, permeant). The decisive, non-overfit discriminator: an aliphatic THIOETHER (C-S-C),
+  which is verified ABSENT from every compound in the positive ledger - so an aliphatic-thioether
+  scaffold veto kills pergolide with zero collateral. Shipped.
+- **PRECISION FP #2 - methysergide (DOCUMENTED, not vetoed).** A 5-HT2 ANTAGONIST lysergamide. Its
+  only structural marker vs LSD is indole-N1-methylation - but that is exactly the feature that
+  defines the isoDMT psychoplastogens (below), so vetoing N1 would destroy true positives. Checking
+  the candidate veto against the FULL ledger BEFORE shipping it prevented this overfit. methysergide
+  is therefore an accepted, documented window false-positive; agonist-vs-antagonist within the
+  lysergamide series is not structure-derivable and is left to the functional/DTI layer.
+- **RECALL WIN - isoDMT detection (NEW).** The audit revealed the window MISSED isoDMTs (the amino-
+  ethyl is on the indole N1, not C3; Dunlap/Olson) because the `_TRYPTAMINE` SMARTS requires a
+  C3-aminoethyl. zalsupindole / AAZ-A-154 (a ledger positive) was being silently missed. Added an
+  `_ISODMT` detector (N1-aminoethyl indole, same small-amine guard); verified collateral-free (0 new
+  false positives across serotonin/melatonin/triptans/pergolide/methysergide/decoys). **Ledger recall
+  8/16 -> 9/16 (0.56)**; zalsupindole now WINDOW_CONDITIONAL. +2 regression tests
+  (`test_psychoplastogen.py`). The lesson mirrors the distillation probe: the win came from checking
+  a structural hypothesis against the whole ground-truth set rather than the immediate test case.
+
 ## Remaining roadmap (FUTURE_WORK)
 
 1. **L1 Stage-3 free exposure (SHIPPED v2.6, efflux-aware conformal logBB).**
