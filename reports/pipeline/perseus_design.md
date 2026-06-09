@@ -277,6 +277,28 @@ structure-irreducible methysergide; positive-control recall stays 1.00. The wind
 against the full marketed serotonergic-look-alike space, with its scope boundary (non-serotonergic
 durability classes) explicitly stated rather than silently failed.
 
+### L4b research lane - non-serotonergic durable plasticity (NMDA + neurosteroid)
+
+Two parallel Opus-4.8 research lanes asked whether a SECOND off-axis structural window can be built
+for the non-serotonergic rapid-acting antidepressants (the bulk of the 7/16 recall gap). Full
+synthesis: `reports/pipeline/l4b_second_window_synthesis.md`; lane reports
+`research_nmda_durability_window.md`, `research_neurosteroid_convergent_window.md`.
+
+**Decision: no structural second window is justified.** For the NMDA class the durability
+discriminator is channel TRAPPING / resting-state block (Gideons 2014), a pharmacodynamic property
+off BOTH the affinity AND the cheap-ADMET axis - confirmed in-repo: ketamine (clogP 2.90/TPSA 29.1)
+and the negative control memantine (2.69/26.0) are descriptor-indistinguishable, so the L4
+permeability trick provably cannot transfer. For the neurosteroids, post-cessation durability is not
+established (washout-observation tier), and the convergent BDNF->TrkB->mTORC1 pathway is purely
+downstream/intracellular, hence invisible from ligand structure (consistent with the grouped-LOMO
+0.00 recall on these classes). The honest forward design is abstain-with-reason mechanism routers + a
+small curated NMDA trapping-kinetics table + the evidence-design governor, all abstain-by-default
+(designed, deferred for greenlight). **Integrity note:** lane B recommended re-tagging the zuranolone
+and scopolamine ledger positives as over-credited; verification against the ledger's actual cited
+basis (zuranolone = PPD Deligiannidis 2021, Day-45 P=.003; scopolamine = replicated 12-16 d
+carryover) found the recommendation OVERSTATED, so neither row was changed - the check prevented a
+wrong downgrade of two true positives.
+
 ## Remaining roadmap (FUTURE_WORK)
 
 1. **L1 Stage-3 free exposure (SHIPPED v2.6, efflux-aware conformal logBB).**
