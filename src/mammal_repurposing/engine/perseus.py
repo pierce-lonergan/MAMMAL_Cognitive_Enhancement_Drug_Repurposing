@@ -204,6 +204,12 @@ class PerseusEngine:
             reasons.append("plasticity-window mechanism -> durable only if paired with training")
             return P_WINDOW
         if rev.capability_flags:
+            if rev.pulsed_self_maintaining and cns.verdict == PASS:
+                reasons.append(f"pulsed-HDACi self-maintaining hypothesis ({', '.join(rev.capability_flags)}): "
+                               "transient inhibition can leave self-maintaining gene-expression / "
+                               "3D-genome memory at a gene subset (Nat Genet 2025) -> conditional "
+                               "window, NOT demonstrated durable")
+                return P_WINDOW
             reasons.append(f"state-CAPABLE chemotype ({', '.join(rev.capability_flags)}) but "
                            "engagement is reversible and self-maintenance after washout is "
                            "unproven -> abstain on durable cognition")

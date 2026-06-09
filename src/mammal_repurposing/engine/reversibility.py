@@ -65,6 +65,11 @@ class ReversibilityCall:
     capability_flags: list[str] = field(default_factory=list)  # epigenetic/NRF2 capable (reversible)
     covalent_flags: list[str] = field(default_factory=list)
     senolytic_like: bool = False
+    # pulsed-HDACi self-maintenance (Nat Genet 2025: TRANSIENT/intermittent HDAC inhibition can
+    # induce partially self-maintaining gene-expression + 3D-genome-folding memory after washout
+    # at a SUBSET of genes). Default OFF; a HYPOTHESIS that fires only when the curated axis
+    # supplies pulsed-dosing self-maintenance evidence - it does NOT auto-promote to durable.
+    pulsed_self_maintaining: bool = False
 
 
 def _fp(smiles: str):
@@ -122,7 +127,12 @@ def reversibility_call(smiles: str, axis_substrate: str = "transient",
     cap = _smarts_hits(smiles, _CAPABILITY_SMARTS)
     cov = _smarts_hits(smiles, _COVALENT_SMARTS)
     rank, sub, src = max(cands, key=lambda c: c[0])
+    # a HDACi chemotype curated as self-maintaining = the pulsed-epigenetic-memory hypothesis
+    # (Nat Genet 2025); a capability flag alone stays reversible-by-default (no auto-credit).
+    hdaci = any("hdac" in c for c in cap)
+    pulsed = bool(hdaci and axis_self_maintaining and sub != "ablative")
     return ReversibilityCall(
         substrate=sub, substrate_rank=rank,
         self_maintaining=bool(axis_self_maintaining or sub == "ablative"),
-        source=src, capability_flags=cap, covalent_flags=cov, senolytic_like=senolytic)
+        source=src, capability_flags=cap, covalent_flags=cov, senolytic_like=senolytic,
+        pulsed_self_maintaining=pulsed)

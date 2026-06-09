@@ -63,6 +63,18 @@ def test_reversible_hdaci_is_capable_not_durable():
     assert r.substrate == "transient"          # not promoted
     assert r.self_maintaining is False
     assert any("hdac" in c for c in r.capability_flags)
+    assert r.pulsed_self_maintaining is False   # default: reversible-only
+
+
+def test_pulsed_hdaci_self_maintaining_hypothesis():
+    # Nat Genet 2025 correction: a HDACi curated as self-maintaining (pulsed dosing) earns the
+    # pulsed-epigenetic-memory HYPOTHESIS flag - but only with that curated evidence, and it
+    # still does NOT auto-promote the substrate to durable.
+    r = reversibility_call(VORINOSTAT, "transient", axis_self_maintaining=True)
+    assert r.pulsed_self_maintaining is True
+    assert r.substrate == "transient" and any("hdac" in c for c in r.capability_flags)
+    # a non-HDACi self-maintaining axis call does NOT spuriously set the pulsed flag
+    assert reversibility_call("CCO", "transient", axis_self_maintaining=True).pulsed_self_maintaining is False
 
 
 # --------------------------------------------------------------------------
