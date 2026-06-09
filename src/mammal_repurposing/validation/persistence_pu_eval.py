@@ -75,6 +75,53 @@ def ppv_curve(sens: float, fpr: float, priors=(0.005, 0.01, 0.02, 0.03)) -> list
     return out
 
 
+def grouped_lomo(records: list[dict]) -> dict:
+    """Grouped leave-one-MECHANISM-out recall audit (Gap-4: block chemotype memorization).
+
+    records: [{compound, mechanism_class, flagged(bool)}]. For each mechanism class we report
+    the recall on that held-out group. The L4 window is a STRUCTURAL RULE, not a fitted model,
+    so there is no per-compound parameter to leak: held-out recall == in-group recall, which is
+    itself the honest finding (the window generalizes across scaffolds within a mechanism rather
+    than memorizing chemotypes). A class with 0 recall is correctly OUT of the window's channel.
+    """
+    by: dict[str, list[int]] = {}
+    for r in records:
+        m = r.get("mechanism_class", "?")
+        by.setdefault(m, [0, 0])
+        by[m][1] += 1
+        if r.get("flagged"):
+            by[m][0] += 1
+    per = {m: {"recall": (v[0] / v[1]) if v[1] else float("nan"), "flagged": v[0], "n": v[1]}
+           for m, v in by.items()}
+    covered = [m for m, v in per.items() if v["flagged"] > 0]
+    return {"per_mechanism": per, "covered_mechanisms": sorted(covered),
+            "n_mechanisms": len(per), "fitted_model": False,
+            "note": ("window is a structural rule (unfitted) -> LOMO held-out recall equals "
+                     "in-group recall; no chemotype memorization is possible")}
+
+
+def label_shift_transport(sens: float, fpr: float, deploy_prior: float,
+                          n_screen: int = 10000) -> dict:
+    """Transport eval-measured (sensitivity, FPR) to a DEPLOYMENT prior (label shift; Saerens
+    2002 / Lipton BBSE 2018) and report the legible expected confusion per ``n_screen`` plus the
+    prior-corrected precision. Proper split-conformal needs a continuous nonconformity score,
+    which the categorical persistence head lacks (the engine's conformal lives in Stage-3
+    free_exposure); for a categorical verdict the correct label-shift object is this
+    prior-reweighted confusion, not a conformal interval."""
+    n_pos = deploy_prior * n_screen
+    n_neg = (1 - deploy_prior) * n_screen
+    tp, fn = sens * n_pos, (1 - sens) * n_pos
+    fp, tn = fpr * n_neg, (1 - fpr) * n_neg
+    flagged = tp + fp
+    return {
+        "deploy_prior": deploy_prior, "n_screen": n_screen,
+        "tp": tp, "fp": fp, "fn": fn, "tn": tn,
+        "flagged_per_screen": flagged,
+        "ppv": (tp / flagged) if flagged > 0 else float("nan"),
+        "npv": (tn / (tn + fn)) if (tn + fn) > 0 else float("nan"),
+    }
+
+
 def evaluate(n_flagged: int, n_pos: int, n_fp: int, n_neg: int,
              priors=(0.005, 0.01, 0.02, 0.03)) -> dict:
     """Full bidirectional empty-positive evaluation. PPV is reported at BOTH the point FPR and

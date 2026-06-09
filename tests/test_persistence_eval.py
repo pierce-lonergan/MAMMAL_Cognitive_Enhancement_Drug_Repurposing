@@ -102,3 +102,27 @@ def test_wilson_and_jeffreys_agree_roughly():
     wlo, whi = wilson_ci(7, 13)
     jlo, jhi = jeffreys_ci(7, 13)
     assert abs(wlo - jlo) < 0.12 and abs(whi - jhi) < 0.12
+
+
+def test_grouped_lomo_per_mechanism_recall():
+    from mammal_repurposing.validation.persistence_pu_eval import grouped_lomo
+    recs = [
+        {"compound": "psilocin", "mechanism_class": "serotonergic", "flagged": True},
+        {"compound": "lsd", "mechanism_class": "serotonergic", "flagged": True},
+        {"compound": "ketamine", "mechanism_class": "nmda", "flagged": False},
+        {"compound": "scopolamine", "mechanism_class": "muscarinic", "flagged": False},
+    ]
+    g = grouped_lomo(recs)
+    assert g["per_mechanism"]["serotonergic"]["recall"] == 1.0
+    assert g["per_mechanism"]["nmda"]["recall"] == 0.0
+    assert g["covered_mechanisms"] == ["serotonergic"] and g["fitted_model"] is False
+
+
+def test_label_shift_transport_prior_correction():
+    from mammal_repurposing.validation.persistence_pu_eval import label_shift_transport
+    # zero FPR -> perfect precision; the expected confusion scales with the deployment prior
+    t = label_shift_transport(sens=0.5, fpr=0.0, deploy_prior=0.01, n_screen=10000)
+    assert t["tp"] == 50 and t["fp"] == 0 and t["ppv"] == 1.0
+    # nonzero FPR at a 1% base rate sinks PPV even at decent sensitivity (the rare-disease trap)
+    t2 = label_shift_transport(sens=0.5, fpr=0.15, deploy_prior=0.01, n_screen=10000)
+    assert t2["fp"] > t2["tp"] and t2["ppv"] < 0.05
