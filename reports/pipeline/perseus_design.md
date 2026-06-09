@@ -158,6 +158,53 @@ realistic ~1% prior" - which no current repurposing predictor reports for persis
 - **F4 ledger expansion** (16->19): +tabernanthalog/MDMA/7,8-DHF (cited); recall 8/16 with the
   Jeffreys CI tightened to 0.27-0.73, neuroplasticity 6/6, off-channel mechanisms honestly 0.
 
+## v2.9 dependency-resolution batch (D1-D4) - external deps resolved, claims re-tested
+
+The standing "data/dep-blocked upgrade paths" from v2.8 were actually installed and exercised
+(no new fabrication; every honest-negative and scope caveat survives). Env discipline held: the
+heavy ML deps went into the system Python where torch is unused, and Boltz went into an isolated
+3.12 venv, so MAMMAL's nightly cu128 / sm_120 torch was never touched.
+
+- **D1 ADMET-AI Pgp Stage-3 retrain - SHIPPED** (`scripts/115` cache + `scripts/111` head-to-head,
+  `free_exposure.py`, `cns_exposure.py`; report `cns_exposure_kpuu_v1.md`). Resolves the F3 efflux
+  path end to end. ADMET-AI Pgp_Broccatelli (cached over all 1058 B3DB cpds, mean 0.337) vs the
+  Didziapetris rule on ONE Bemis-Murcko scaffold split: **R2 0.276 vs 0.214 (+0.063)**, RMSE 0.59
+  vs 0.61, conformal coverage 0.85 vs 0.84. Measurably better on logBB, but the gain sits on the
+  PROXY and is dwarfed by the logBB-vs-Kp,uu residual the conformal band already carries, and
+  Stage-3 only fires on confident P-gp-substrate downgrades. DECISION: the CI-safe, dependency-free
+  rule model stays the DEFAULT; the ADMET variant ships as an OPT-IN (`PERSEUS_STAGE3_ADMET=1`,
+  loaded only when admet_ai is importable; the model carries a `use_admet_ai` featurization-contract
+  flag so train/inference features always match). Bonus rigor: the from-scratch numpy Mondrian
+  split-conformal was cross-validated against `crepes` - max half-width disagreement **0.003 logBB**
+  (0.000 on the per-category strata), validating the hand-rolled conformal math.
+- **D2 Kp,uu data dependency - RESOLVED AS EXTERNALLY BLOCKED (documented, not faked).** A
+  literature + web search found no clean, openly-licensed, machine-readable unbound-Kp,uu-with-SMILES
+  set: Friden 2009 and Loryan/Morales 2024 live in reuse-restricted paper SI (PDF/XLSX needing manual
+  extraction); the one larger collection (CMD-FGKpuu) is unlicensed and PARP-specific. So PERSEUS
+  ships NO Kp,uu model - logBB stays the honest CC0 proxy and the abstain-wide band carries the
+  residual. Swapping in a licensed Kp,uu spine (same featurizer + conformal pipeline; only the
+  training table changes) remains the single highest-value future upgrade once reuse permission
+  is in hand. Documented in `cns_exposure_kpuu_v1.md`.
+- **D3 Boltz isolated install + honest TrkB-TMD test - RESOLVED, limitation stands.** **Boltz 2.2.1
+  installed and import-verified** in `.venv-boltz312` (isolated 3.12 env). This makes the v2.7
+  "even a Boltz second opinion is insufficient" claim empirical, not hypothetical: Boltz predicts an
+  apo, single-copy, solvated fold and has no representation of the lipid bilayer, the cholesterol
+  co-factor, or the crossed-dimer quaternary state that the TrkB-TMD site requires (Casarotto 2021;
+  Cordeiro 2024) - so the off-axis verdict is robust to the "just run a structure model" rebuttal
+  (informational gap, not a tooling gap). The legitimate future Boltz use is the **BCL2 senolytic
+  channel** (soluble, well-defined groove - the one durability node where structural assumptions
+  hold). Documented in `trkb_tmd_sitesplit_v1.md`.
+- **D4 triptan-precision audit fix - SHIPPED** (`psychoplastogen.py`, commit 7a73750). Adversarial
+  self-audit found a REAL L4 false positive: zolmitriptan (a 5-HT1B/1D triptan, NOT a 5-HT2A
+  psychoplastogen) slipped the TPSA<=60 gate via its oxazolidinone. Added a triptan-pharmacophore
+  veto (sulfonamide / cyclic carbamate) so triptans never reach the permeability gate; sumatriptan +
+  zolmitriptan now window-negative, all psychedelics intact, decoys (dopamine/melatonin/
+  methamphetamine/venlafaxine) still negative.
+
+Dependency-resolution status (for reproduction): system Python 3.13 now has admet-ai 2.0.1 +
+crepes 0.9.0 + mapie (torch untouched, used only for the ADMET variant + conformal cross-check);
+`.venv-boltz312` has boltz 2.2.1. Full suite 619 passed / 2 skipped.
+
 ## Remaining roadmap (FUTURE_WORK)
 
 1. **L1 Stage-3 free exposure (SHIPPED v2.6, efflux-aware conformal logBB).**
