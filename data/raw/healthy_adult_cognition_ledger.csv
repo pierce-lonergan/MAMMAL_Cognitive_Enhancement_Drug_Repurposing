@@ -1,0 +1,20 @@
+compound,mechanism_class,supergroup,primary_domain,representative_g,ci_lo,ci_hi,n_studies,population,enhances_healthy_young,evidence_tier,citation_short,pmid_doi,robustness,verified
+methylphenidate,catecholaminergic,stimulant,overall,0.21,0.09,0.32,24,healthy,1,clean_MA,Roberts 2020 Eur Neuropsychopharmacol,PMID:32709551,overall 0.21 Egger NS; best domain recall 0.43 (0.20-0.65) I2=0,1
+modafinil,catecholaminergic,stimulant,overall,0.12,0.02,0.21,14,healthy_nonSD,1,clean_MA,Roberts 2020 Eur Neuropsychopharmacol,PMID:32709551,overall 0.12 TOST-equivalent-to-zero trivially small; best domain updating 0.28,1
+dextroamphetamine,catecholaminergic,stimulant,overall,0.21,-0.06,0.47,10,healthy_nonSD,0,clean_MA,Roberts 2020 Eur Neuropsychopharmacol,PMID:32709551,NULL all domains I2=91; SAME overall g as MPH (0.21) opposite outcome,1
+caffeine,adenosinergic,stimulant,attention_rt,0.28,,,31,rested_healthy,1,clean_MA,Klove & Petersen 2025 Psychopharmacology,PMID:40335666,accuracy 0.27 RT 0.28; exact CI paywalled (point est verified),1
+nicotine,cholinergic_nachr,stimulant,alerting_attention,0.34,0.18,0.50,9,nonsmokers,1,clean_MA,Heishman 2010 Psychopharmacology,PMID:20414766,6 domains all CI>0 (0.16-0.44); holds in non-smokers; best episodic memory 0.44,1
+guarana,adenosinergic,stimulant,overall,0.076,,,8,healthy,0,clean_MA,Hack 2023 Nutrients,PMID:36678305,overall null p=0.14; only RT subgroup 0.20 significant,1
+l_theanine,glutamate_gaba,nonstimulant,choice_rt,0.35,0.10,0.61,4,healthy,0,clean_MA,Payne 2025 Nutrition Reviews,PMID:40314930,only choice-RT significant (faster); simple-RT null - borderline,1
+ginkgo_biloba,botanical,nonstimulant,memory,-0.04,,,13,healthy,0,clean_MA,Laws 2012 Hum Psychopharmacol,PMID:23001963,clean NULL memory/exec/attention; effects unrelated to age/dose,1
+bacopa_monnieri,botanical,nonstimulant,memory,0.0,,,9,healthy,0,clean_MA,Wang 2025 Front Pharmacol,PMID:40213691,network MA ~placebo (SUCRA 50.7) for memory,1
+omega_3,nutrient_pufa,nonstimulant,global,0.0,,,11,healthy_unimpaired,0,clean_MA,Wei 2024 BMC Medicine,doi:10.1186/s12916-024-03296-0,global cognition null in cognitively-unimpaired,1
+panax_ginseng,botanical,nonstimulant,overall,0.06,-0.64,0.77,15,mixed,0,mixed_pop,Zeng 2024 Phytother Res,PMID:39474788,overall NS; memory signal is mixed-population not healthy-clean,1
+creatine,bioenergetic,nonstimulant,memory_young,0.03,-0.14,0.20,8,healthy_young,0,clean_MA,Prokopidis 2023 Nutrition Reviews,PMID:35984306,young null (0.03); benefit is older-adult only (0.88),1
+ashwagandha,herbal_adaptogen,nonstimulant,memory,0.52,0.27,0.78,6,mixed_stressed,,contested,Zhu 2026 Front Pharmacol,doi:10.3389/fphar.2026.1799467,no healthy-only subgroup; exec -0.42 incongruent; likely inflated,0
+tyrosine,catecholamine_precursor,other,,,,,,healthy,,absent,Jongkees 2015 J Psychiatr Res (review),PMID:26424423,no healthy MA; weak recommendation under stress/load only,0
+rhodiola_rosea,adaptogen,other,,,,,,healthy,,absent,Ishaque 2012 BMC Complement Altern Med (SR),PMID:22643043,systematic review not MA; all trials high risk of bias,0
+citicoline,cholinergic_precursor,other,,,,,,,,absent,no healthy-adult MA,,stroke/dementia-dominated MAs only; healthy = single RCTs,0
+piracetam,racetam,other,,,,,,,,absent,Waegemans 2002 (dementia),PMID:12006732,no healthy MA; dementia MAs only; 2024 SR no enhancement,0
+phosphatidylserine,phospholipid,other,,,,,,,,absent,elderly cognitive-decline MA,,no healthy MA; only elderly/subjective-decline data,0
+vinpocetine,vasodilator_pde,other,,,,,,,,absent,Cochrane CD003119,doi:10.1002/14651858.CD003119,no healthy MA; Cochrane dementia evidence inconclusive,0
