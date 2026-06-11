@@ -141,7 +141,7 @@ def specificity_threshold(pos_scores, neg_scores, *, target_fpr: float = 0.05) -
     almost everyone. An abstain-by-default system needs the conservative cut instead: a novel
     compound must out-score essentially all known non-engagers to count as engaged.
     """
-    pos, neg = _clean(pos_scores), _clean(neg_scores)
+    neg = _clean(neg_scores)   # threshold is the non-engager (1-fpr) quantile; pos_scores unused
     if neg.size == 0:
         return float("nan")
     return float(np.quantile(neg, 1.0 - target_fpr))

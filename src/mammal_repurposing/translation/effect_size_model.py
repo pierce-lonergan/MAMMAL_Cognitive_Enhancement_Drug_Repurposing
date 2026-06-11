@@ -274,9 +274,13 @@ def fit_effect_size_nuts(
                         if o.class_name in class_names else -1
                         for o in observations])
     pchembl_mean = np.array([o.pchembl_post_mean for o in observations])
-    pchembl_sd = np.array([o.pchembl_post_sd for o in observations])
     relevance_mean = np.array([o.relevance_post_mean for o in observations])
-    relevance_sd = np.array([o.relevance_post_sd for o in observations])
+    # ARCHITECTURE NOTE (see docs/ARCHITECTURE_REVIEW.md, item 1): the upstream posterior SDs are
+    # available but NOT yet propagated - the model consumes the point estimates below, so the
+    # current intervals are conditional on the engagement/relevance means being known exactly
+    # (errors-in-variables extension deferred; it would widen, not shift, the predictions).
+    pchembl_sd = np.array([o.pchembl_post_sd for o in observations])    # noqa: F841 (deferred EIV)
+    relevance_sd = np.array([o.relevance_post_sd for o in observations])  # noqa: F841 (deferred EIV)
     moderators_mat = np.array([list(o.moderators) for o in observations])
     pbpk_auc = np.array([o.pbpk_auc_brain for o in observations])
     obs_g = np.array([o.observed_g if o.observed_g is not None else np.nan
