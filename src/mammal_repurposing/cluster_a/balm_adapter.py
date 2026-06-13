@@ -273,7 +273,16 @@ def _balm_score_pair_direct(
         else:
             chem_proj = chem_emb
 
-        # Cosine similarity in shared space
+        # Cosine similarity in shared space. Guard the dim match explicitly: if the BALM projection
+        # head is missing/partial, prot_proj (e.g. 1280-d) and chem_proj (384-d) differ, and the
+        # bare cosine raises a cryptic shape error that the caller swallows as a silent skip
+        # (all-zero scores). Fail with a clear, diagnosable message instead.
+        if prot_proj.shape[-1] != chem_proj.shape[-1]:
+            raise ValueError(
+                f"BALM projection head missing/partial: protein dim {prot_proj.shape[-1]} != "
+                f"compound dim {chem_proj.shape[-1]}; both modalities must project to a shared "
+                f"space. Provide complete protein_proj/compound_proj weights."
+            )
         cos = torch.nn.functional.cosine_similarity(prot_proj, chem_proj, dim=-1).item()
 
     # Platt-style calibration to pchembl

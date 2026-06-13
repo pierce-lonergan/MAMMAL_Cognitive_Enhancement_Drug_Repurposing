@@ -245,8 +245,13 @@ def normalize_profiles(
             "`pip install pycytominer`."
         )
     from pycytominer import normalize, feature_select
+    # Normalize PER plate/source (strata), not globally: fitting the DMSO negative-control
+    # statistics across all plates/13 sources at once defeats the plate-effect correction the
+    # docstring promises. strata is built only from columns actually present (None = legacy).
+    strata = [c for c in ("source", "Metadata_Plate") if c in df.columns] or None
     norm_df = normalize(
         profiles=df,
+        strata=strata,
         features="infer",
         meta_features="infer",
         samples=f"Metadata_pert_iname == '{negative_control_label}'",

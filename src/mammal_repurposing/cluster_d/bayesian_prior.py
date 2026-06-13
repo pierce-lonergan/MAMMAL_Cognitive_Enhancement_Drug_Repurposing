@@ -122,6 +122,7 @@ def fit_cluster_d_prior_stub(
     y_ahba: dict[str, float] | None = None,
     y_l2g: dict[str, float] | None = None,
     y_sc: dict[str, float] | None = None,
+    uniprot_to_gene: dict[str, str] | None = None,
 ) -> ClusterDPosterior:
     """Stage 0 stub — returns uniform w=0.5 per target when no input streams.
 
@@ -142,12 +143,14 @@ def fit_cluster_d_prior_stub(
     if contributions:
         theta /= contributions
 
-    # Apply reference anchors as priors
+    # Apply reference anchors as priors. DEFAULT_ANCHORS is keyed by the anchor identifier (gene
+    # symbol). Pass `uniprot_to_gene` to resolve a UniProt accession -> gene so anchors fire on real
+    # accessions; without the map, fall back to a direct key match (legacy behaviour). The previous
+    # code only did the direct match, so anchors silently never fired on UniProt-accession input.
     for i, t in enumerate(target_uniprots):
-        # Look up by gene symbol via reverse map (we'd need targets.parquet
-        # in real use; here we just check uniprot keys)
-        if t in DEFAULT_ANCHORS:
-            theta[i] = 0.5 * theta[i] + 0.5 * DEFAULT_ANCHORS[t]
+        key = uniprot_to_gene.get(t, t) if uniprot_to_gene else t
+        if key in DEFAULT_ANCHORS:
+            theta[i] = 0.5 * theta[i] + 0.5 * DEFAULT_ANCHORS[key]
 
     theta_mean = {t: float(v) for t, v in zip(target_uniprots, theta)}
     w_pipeline = {t: float(1.0 / (1.0 + np.exp(-v))) for t, v in zip(target_uniprots, theta)}

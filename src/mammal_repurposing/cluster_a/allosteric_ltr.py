@@ -78,7 +78,8 @@ def physchem_descriptors(smiles: str) -> dict[str, float]:
 def build_feature_table(pairs: pd.DataFrame, *,
                         mammal: pd.DataFrame | None = None,
                         tanimoto: pd.DataFrame | None = None,
-                        boltz: pd.DataFrame | None = None) -> pd.DataFrame:
+                        boltz: pd.DataFrame | None = None,
+                        impute: bool = True) -> pd.DataFrame:
     """Assemble the fusion feature table for a set of (compound, target) pairs.
 
     `pairs` must have columns: compound_name, target_uniprot, smiles.
@@ -113,13 +114,17 @@ def build_feature_table(pairs: pd.DataFrame, *,
     phys = df["smiles"].apply(physchem_descriptors).apply(pd.Series)
     df = pd.concat([df, phys], axis=1)
 
-    # impute numeric features: per-target mean -> global mean -> 0
+    # Ensure every fusion feature column exists (a missing join source -> all-NaN column).
     for c in [c for c in FUSION_FEATURES if c not in ("has_boltz",)]:
         if c not in df.columns:
             df[c] = np.nan
-        df[c] = df.groupby("target_uniprot")[c].transform(
-            lambda s: s.fillna(s.mean()))
-        df[c] = df[c].fillna(df[c].mean()).fillna(0.0)
+    # Impute numeric features: per-target mean -> global mean -> 0. Skip when impute=False so a
+    # cross-validation caller (loto_evaluate) can impute PER-FOLD on train statistics only, instead
+    # of inheriting full-frame means that leak the held-out target into its own imputation.
+    if impute:
+        for c in [c for c in FUSION_FEATURES if c not in ("has_boltz",)]:
+            df[c] = df.groupby("target_uniprot")[c].transform(lambda s: s.fillna(s.mean()))
+            df[c] = df[c].fillna(df[c].mean()).fillna(0.0)
     return df.drop(columns=["_ck"])
 
 
@@ -253,10 +258,21 @@ def loto_evaluate(labeled: pd.DataFrame, *, label_col: str = "pact",
     counts = df.groupby("target_uniprot").size()
     folds = [t for t, n in counts.items() if n >= min_n]
 
+    feat_cols = [c for c in features if c != "has_boltz"]
     held: list[pd.DataFrame] = []
     for t in folds:
-        train = df[df["target_uniprot"] != t]
+        train = df[df["target_uniprot"] != t].copy()
         test = df[df["target_uniprot"] == t].copy()
+        # Per-FOLD imputation using TRAIN statistics only, so the held-out target's feature stats
+        # never leak into its own imputation. No-op when df was already imputed (the default), so
+        # existing results are unchanged; only bites when the caller passed impute=False.
+        for c in feat_cols:
+            if c not in train.columns:
+                continue
+            train[c] = train.groupby("target_uniprot")[c].transform(lambda s: s.fillna(s.mean()))
+            gmean = train[c].mean()
+            train[c] = train[c].fillna(gmean).fillna(0.0)
+            test[c] = test[c].fillna(gmean).fillna(0.0)
         model, feats = train_fusion_ranker(train, label_col, features, seed=seed)
         test["fused_score"] = model.predict(test[feats].to_numpy(float))
         held.append(test)

@@ -161,7 +161,9 @@ All verified green (full non-slow suite + ruff bug-rules).
   pKd clip) while claiming guaranteed coverage. Switched to the split-conformal order statistic +
   clip to [2,11], matching `conformal.py`. (Unshipped V6.A.4 skeleton.)
 
-### Group A2 — deferred (confirmed, but dead/dormant path or multi-step refactor; fix specified, NOT applied to avoid breaking untested code in an autonomous batch)
+### Group A2 — follow-up fixes (initially deferred as dead/dormant/multi-step) — now ALL APPLIED (full non-slow suite green)
+Each was confirmed real but on a dead/dormant path or needed a multi-step/caller change; all six were
+applied in a follow-up pass with the exact fixes below.
 
 - **cluster_d/bayesian_prior.py:146-150** stub anchor lookup keyed on gene symbol but applied to
   UniProt accessions -> anchors never fire. Fix: add optional `uniprot_to_gene` map (default None =

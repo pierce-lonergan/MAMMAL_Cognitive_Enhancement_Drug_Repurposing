@@ -158,7 +158,12 @@ def score_affinity(
     """
     _AFFINITY_CACHE_DIR.mkdir(parents=True, exist_ok=True)
     pair_h = _pair_hash(sequence, smiles)
-    cache_path = _AFFINITY_CACHE_DIR / f"{pair_h}.json"
+    # Include non-default scoring settings in the cache key so a result computed under a different
+    # mode / recycling / diffusion is not served for a different setting. Canonical defaults yield
+    # an EMPTY suffix, preserving every pre-existing cache filename (backward compatible).
+    settings_suffix = ("" if (mode == "full" and recycling_steps == 3 and diffusion_samples == 1)
+                       else f"_{mode}_r{recycling_steps}_d{diffusion_samples}")
+    cache_path = _AFFINITY_CACHE_DIR / f"{pair_h}{settings_suffix}.json"
 
     if use_cache and cache_path.exists():
         with open(cache_path) as f:

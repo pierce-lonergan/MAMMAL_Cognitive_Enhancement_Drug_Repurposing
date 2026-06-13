@@ -252,7 +252,7 @@ def main() -> int:
     ch["pact"] = ch["best_pchembl"].astype(float)
     loto_feat = A.build_feature_table(
         ch[["compound_name", "target_uniprot", "smiles"]],
-        mammal=dti, tanimoto=tani, boltz=boltz)
+        mammal=dti, tanimoto=tani, boltz=boltz, impute=False)  # loto_evaluate imputes per-fold
     loto_feat = loto_feat.merge(ch[["compound_name", "target_uniprot", "pact"]],
                                 on=["compound_name", "target_uniprot"], how="left")
     loto_feat = loto_feat[loto_feat["pact"].notna()].reset_index(drop=True)

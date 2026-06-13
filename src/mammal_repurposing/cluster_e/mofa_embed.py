@@ -255,10 +255,24 @@ def _fit_mofapy2(
     ent.build()
     ent.run()
 
-    # Extract factor matrix
+    # Extract factor matrix. When mofapy2 returns a per-group dict, vstack stacks the groups in
+    # group_names order, so rows arrive in group-CONCATENATION order, NOT original compound order.
+    # Restore compound order via the row->compound-index permutation (when the groups form a clean
+    # 0..n-1 partition); otherwise leave concat order and WARN rather than silently mis-map rows.
     Z = ent.model.getExpectations("Z", expand=True)
     if isinstance(Z, dict):    # per-group dict
-        factor_matrix = np.vstack(list(Z.values()))
+        if all(gn in Z for gn in group_names):
+            factor_matrix = np.vstack([Z[gn] for gn in group_names])
+            perm = [i for gn in group_names for i in groups[gn]]
+            if sorted(perm) == list(range(n_compounds)):
+                factor_matrix = factor_matrix[np.argsort(perm)]
+            else:
+                logger.warning("MOFA+ groups are not a clean 0..n-1 partition; factor_matrix rows "
+                               "left in group-concatenation order (compound order not restored).")
+        else:
+            factor_matrix = np.vstack(list(Z.values()))
+            logger.warning("MOFA+ Z keys do not match group names; factor_matrix rows left in "
+                           "group-concatenation order.")
     else:
         factor_matrix = np.asarray(Z)
 
