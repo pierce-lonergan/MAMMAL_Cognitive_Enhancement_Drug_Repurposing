@@ -230,6 +230,10 @@ class PerseusEngine:
             reasons.append("plasticity-window mechanism -> durable only if paired with training")
             return P_WINDOW
         if rev.capability_flags:
+            # NOTE: this pulsed-HDACi self-maintaining WINDOW branch is currently unreachable on
+            # the live curated data - it needs axis.status == unknown AND pulsed_self_maintaining,
+            # but uncurated compounds resolve to _UNKNOWN with self_maintaining=False. Retained
+            # for when uncurated state-capable chemotypes are scored. See docs/BUG_AUDIT_2026-06.md.
             if rev.pulsed_self_maintaining and cns.verdict == PASS:
                 reasons.append(f"pulsed-HDACi self-maintaining hypothesis ({', '.join(rev.capability_flags)}): "
                                "transient inhibition can leave self-maintaining gene-expression / "

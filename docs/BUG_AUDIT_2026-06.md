@@ -122,9 +122,134 @@ four.
 - Changed files are clean on the ruff bug-rules (the two residual `F841` are the pre-existing PyMC
   `with pm.Model() as model:` context bindings, documented in `docs/ARCHITECTURE_REVIEW.md`).
 
-## Wave 2 (validation/leakage core, engine/PERSEUS, fusion, calibration, cluster_a/d/e, fetchers,
-analysis, diagnostics, pockets/reporting, top-level, arch-security, leakage-deep)
+## Wave 2 (validation/leakage core, engine/PERSEUS, fusion, calibration, cluster_a/d/e, fetchers, analysis, diagnostics, pockets/reporting, top-level, arch-security, leakage-deep)
 
-Re-run of the 14 rate-limited subsystems is in progress; findings will be appended here and fixed in
-a follow-up pass. The leakage-deep tracer over the validation/calibration path is the highest-value
-remaining check (the manuscript's #1 risk).
+Re-ran the 14 rate-limited subsystems in two staggered waves. 38 candidates -> **29 confirmed**, 2
+needs-human, 2 by-design, 5 false alarms. Same disposition policy as wave 1.
+
+### Group A2 — safe mechanical fixes APPLIED (results_impact none, fix_is_safe true)
+All verified green (full non-slow suite + ruff bug-rules).
+
+- **pubchem.py** `_get_property` @retry only caught `TransportError`; a 5xx raises `HTTPStatusError`
+  and was never retried (defeating the `# retry` on `raise_for_status`), aborting the whole SMILES
+  batch on one transient 503. Added `HTTPStatusError` to the retry types (matches sibling fetchers).
+- **gates/admet_gates.py:147** leaked file handle in a third `yaml.safe_load(open(...))` -> `with`.
+- **analysis/composites.py:126** `global_composite` used `mean(axis=1)` (skipna) -> a compound
+  missing an entire panel was scored on the rest (rank inflation). `skipna=False`. (Byte-identical
+  today: 0 NaN in the panel columns.)
+- **calibration/isotonic.py** `bool("decreasing") == bool("increasing") == True` -> a string
+  direction always fit INCREASING. Parse strings explicitly in `_make_iso`; same parse for the
+  stored `inferred` label. (Shipped driver passes bools, so no published number moves.)
+- **calibration/conformal.py** (`fit_inductive_conformal` + `q_alpha_from_loco`) clamped the
+  conformal rank to the max residual when `rank > n_cal`; correct behaviour is `+inf` (abstain),
+  else coverage is anti-conservative at tight alpha / small fold. (Published alpha=0.20, n_cal>=5
+  never clamps -> no change.)
+- **cluster_a/tanimoto_ranker.py** library fingerprint hardcoded radius=2/bits=2048, ignoring
+  `cfg.fp_radius/fp_bits` used for the actives -> mismatched FPs under any non-default config.
+  Threaded the config through. (Defaults == hardcoded -> no change today.)
+- **cluster_d/validation_gates.py** `gate_2_spearman_vs_smd` applied the non-finite filter AFTER the
+  n>=5 guard -> could run Spearman+bootstrap on <5 pairs. Re-check len after filtering. (Production
+  posterior has 0 NaN -> n=11 verdict unchanged.)
+- **diagnostics/per_head_bias.py** `np.cov` on a single-feature embedding returns a 0-d scalar ->
+  `cov.shape[0]` IndexError. `np.atleast_2d(...)`.
+- **fusion/rrf.py** `n_rankers_contributing` over-counted under `missing_rank_strategy='worst'`
+  (counted the filled worst-ranks). Capture the contribution mask before the fill. (Diagnostic-only
+  column, never read downstream; 'worst' branch is dead.)
+- **engine/perseus.py:233** documented the pulsed-HDACi WINDOW branch as currently unreachable on
+  curated data.
+- **calibration/venn_abers.py:113** used a plain `np.quantile` (no finite-sample order statistic, no
+  pKd clip) while claiming guaranteed coverage. Switched to the split-conformal order statistic +
+  clip to [2,11], matching `conformal.py`. (Unshipped V6.A.4 skeleton.)
+
+### Group A2 — deferred (confirmed, but dead/dormant path or multi-step refactor; fix specified, NOT applied to avoid breaking untested code in an autonomous batch)
+
+- **cluster_d/bayesian_prior.py:146-150** stub anchor lookup keyed on gene symbol but applied to
+  UniProt accessions -> anchors never fire. Fix: add optional `uniprot_to_gene` map (default None =
+  legacy) AND wire it from scripts 55/62. Deferred: needs caller wiring; stub path, not the
+  published NUTS path.
+- **cluster_e/mofa_embed.py:242,259-263** MOFA+ `factor_matrix` rows in group-concat order, not
+  compound order; no permutation recorded. Fix: record/apply the group permutation. Deferred: dead
+  (mofapy2 not installed, no `groups` callers).
+- **cluster_e/ingest_jumpcp.py:248-254** `pycytominer.normalize` called without `strata` -> DMSO
+  stats fit globally, contradicting the per-plate docstring. Fix: `strata=[source, plate]` guarded.
+  Deferred: dead V8.1b scaffold (pycytominer not installed; raises before this line).
+- **cluster_a/balm_adapter.py:277** cosine on 1280-d vs 384-d (missing projection head) raises and is
+  swallowed as "skipped" -> silent all-zero scores. Fix: validate proj-head keys at load, raise
+  clearly. Deferred: dormant (no BALM weights exist).
+- **cluster_a/allosteric_ltr.py:122** global-mean imputation fit on the full frame before the LOTO
+  split -> minuscule leakage of held-out target stats into fold imputation. Fix: `impute` flag +
+  fit means on the TRAIN fold only inside `loto_evaluate`. Deferred: shipped path, multi-function
+  refactor; the verifier confirmed it does NOT change the published +0.621, so it is leakage-
+  hardening best done with author awareness, not urgent.
+- **cluster_a/boltzina.py:160** affinity cache key omits mode/recycling/diffusion settings -> stale
+  hit if params change. Fix: backward-compatible settings suffix on the cache filename. Deferred:
+  latent (no caller varies these).
+
+### Group B2 — RESULTS-CHANGING, FLAGGED for human sign-off (NOT applied)
+Each alters a published manuscript number and/or needs a coordinated re-run + author re-bless. Exact
+fixes are in the remediation plan (task wczp01qeh output). Highest-impact first:
+
+- **B2 (HIGH) cluster_d/panel_expansion.py:300-302** gene-symbol resolution reverse-searches only
+  `COGNITION_EXPANSION_TARGETS` -> GRIN2B silently dropped from the NUTS fit (designed-6-anchor model
+  shipped with 4 active). Fix: explicit canonical UniProt->gene map (can be built from
+  targets_seed.csv) applied in both branches; then re-run the expanded-panel NUTS and regenerate
+  `cluster_d_posterior_expanded_*` parquets. Recovers GRIN2B (4->5 anchors).
+- **B3 (HIGH) fusion/lambdamart_meta.py:210** NDCG quintile edges discretized over train+test before
+  the split -> test labels define training buckets. Fix: discretize on TRAIN only after the split.
+  Published held-out NDCG@25 0.8912 -> ~0.9117 (still PASSES). Regenerate `lambdamart_meta_v1.md`.
+- **B5 (MED) gates/admet_gates.py:95-100** `value or 0.5` coerces a legitimate 0.0 ADMET probability
+  to 0.5 (and leaves NaN->NaN). Fix: `pd.isna`-based default preserving genuine 0.0. Affects
+  `admet_score` -> fusion / shortlist; regenerate those. (Exact-0.0 endpoints may be rare; verify
+  magnitude before re-bless.)
+- **B6 (MED) fetchers/chembl_sqlite.py:255-258** `best_standard_value_nm` writes raw
+  `standard_value` with no `standard_units='nM'` filter -> a uM/M value can be labeled nM. Fix:
+  convert by the selected `standard_units` (keep the query unchanged). Regenerate the parquet;
+  verify `status` labels unchanged.
+- **B1 (MED) scripts/43_v5_conformal_calibration.py:94** the "held-out coverage" test fold is drawn
+  from the same array used to fit the calibrator -> published `held_out_cov=1.00` is in-sample. At
+  n=10 a real carve-out is infeasible; recommend RELABEL to `insample_coverage` (or implement true
+  LOCO via the existing `q_alpha_from_loco`). Author decision.
+- **B7 (LOW) calibration/hierarchical_bayes.py:271** the shrinkage path computes `single_target_rho`
+  with Pearson `corrcoef` while the framework convention is Spearman (|diff|~0.10 at n=7-10). Fix:
+  `spearmanr` on the live shrinkage path (do NOT touch the NUTS pooled-rho at line 226) OR relabel
+  the column "Pearson r". Author decision; regenerate `hierarchical_bayes_v1.md`.
+- **B4 (HIGH) reporting/clinician_dossier.py:176** `1.2816 * sd` is a two-sided 80% z but the
+  symmetric interval is labeled "90% CrI". Fix: relabel to "80% CrI" (numbers unchanged) OR widen to
+  a true 90% (z=1.6449) — a coverage decision. Author decision; regenerate `clinician_dossiers_v1.md`.
+
+### Group C2 — needs human judgment
+- **C1 (HIGH-leverage) calibration/diagnostics.py:84** `bootstrap_loco_rho` fits on the resample but
+  scores on the FULL original array -> an apparent (in-sample) bootstrap, not OOB. Its optimistic
+  `ci_low` feeds the ship/escalate Tier gate (`post_fit_tier`): on pure-null data ~24% pass vs 0%
+  honest. Fix: score on held-out indices per iteration. fix_is_safe, but it re-assigns Tier A/B/C in
+  the `decisions` CSV (fail-safe direction). Re-run script 32 after.
+- **C2 (HIGH) calibration/hierarchical_bayes.py:196** the NUTS model forces a positive (`HalfNormal`)
+  slope -> structurally cannot fit the negative-rho SLC6/GRIN families it exists to rescue. Latent
+  (PyMC not installed; the shrinkage path ships). Fix: unconstrained Normal priors (move
+  `beta_family` to mu, `HalfCauchy` scale). Activate only after verifying the directional rescue.
+- **C3 (LOW) calibration/pocket_routed.py:142** in-sample SSR lift structurally favors the routed
+  model (+48% on random-label synthetic). Only consumer is the synthetic demo script 48. Switch to
+  grouped-CV OOB before presenting any lift figure.
+- **C4 (LOW) analysis/benchmark.py:80** `np.std(ddof=0)` (population) vs `ddof=1` (sample) elsewhere;
+  both published. Recommend document-not-change (ddof=0 handles n=1 groups gracefully).
+- **C5 (LOW) cluster_d/bayesian_prior.py:363-387** `roberts_2020_ceiling_check` accepts an
+  `upper_quantile` it never uses and compares a point prediction, not the promised 90% upper bound.
+  results_impact none (the shipped Roberts gate flows through `validation_gates.gate_1`). Tighten
+  the docstring or drop the unused param.
+
+### Systemic architecture vulnerability (wave 2) — the most important finding
+
+**Evaluation/calibration self-assessment is pervasively contaminated by in-sample (pre-split)
+statistics, and the inflated metrics feed the automated ship/escalate gates and published validation
+numbers.** The same anti-pattern recurs in four independent modules with no shared guard:
+`diagnostics.py:84` (apparent bootstrap -> Tier gate, C1), `lambdamart_meta.py:210` (discretize
+before split -> published NDCG, B3), `scripts/43:94` (coverage fold from the fit array -> published
+coverage=1.00, B1), `pocket_routed.py:142` (in-sample lift -> +48% on noise, C3). Root cause:
+discretization / imputation / scoring are performed on the full frame BEFORE the train/test or LOCO
+split, and there is no centralized "fit-on-train, apply-to-test" primitive — every module re-folds
+ad hoc and several get the fit/score boundary wrong in the optimistic direction.
+
+**Recommended remediation:** a single audited `fit_edges()/apply_edges()` + grouped-CV utility used
+by all calibration/evaluation paths, plus a CI regression test that feeds RANDOM-LABEL null input and
+asserts every self-evaluation metric collapses to ~0 / fails its gate. This would have caught all
+four at once and is the single highest-value hardening for the manuscript's validation claims.

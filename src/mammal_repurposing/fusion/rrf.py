@@ -89,6 +89,10 @@ def rrf(
             continue
         # Higher score = better rank => sort descending then rank
         ranks = s.rank(method="min", ascending=r.ascending)
+        # Record which items this ranker ACTUALLY placed, BEFORE any worst-fill. Under
+        # missing_rank_strategy='worst' every item receives a finite filled rank, so counting
+        # `~ranks.isna()` afterwards would over-count n_rankers_contributing.
+        contributed = ranks.notna().reindex(all_items, fill_value=False)
         # If we want missing items to get worst rank, fill from ranks.max()+1
         if missing_rank_strategy == "worst":
             worst = float(ranks.max()) + 1.0
@@ -100,7 +104,7 @@ def rrf(
         contrib = (r.weight / (k_const + ranks)).fillna(0.0)
         contrib_cols[f"contribution_{r.name}"] = contrib
         rrf_score = rrf_score.add(contrib, fill_value=0.0)
-        n_contrib = n_contrib.add((~ranks.isna()).astype(int), fill_value=0)
+        n_contrib = n_contrib.add(contributed.astype(int), fill_value=0)
 
     out = pd.DataFrame({
         **{name: col for name, col in rank_cols.items()},

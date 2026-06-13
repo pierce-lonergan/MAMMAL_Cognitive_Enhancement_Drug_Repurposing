@@ -122,8 +122,10 @@ def compute_composites(
     }
 
     df = pd.DataFrame(panel_scores).reset_index().rename(columns={"index": "compound_name"})
-    # Global composite = unweighted mean across the three panels
-    df["global_composite"] = df[list(COMPOSITE_PANELS.keys())].mean(axis=1)
+    # Global composite = unweighted mean across the three panels. skipna=False: a compound
+    # missing an ENTIRE panel must not be silently scored on the remaining panels (that inflates
+    # its rank); a missing panel makes the global composite NaN, as the "mean of three" implies.
+    df["global_composite"] = df[list(COMPOSITE_PANELS.keys())].mean(axis=1, skipna=False)
 
     pp = compute_polypharm(scores, threshold=threshold)
     df = df.merge(pp, on="compound_name", how="left")

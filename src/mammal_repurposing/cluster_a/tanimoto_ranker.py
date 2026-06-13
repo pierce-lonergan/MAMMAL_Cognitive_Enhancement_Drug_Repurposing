@@ -57,8 +57,10 @@ def _score_one(
     library_smi: str,
     active_fps: list,
     aggregator: str,
+    radius: int = 2,
+    n_bits: int = 2048,
 ) -> float:
-    lib_fp = _smi_to_fp(library_smi)
+    lib_fp = _smi_to_fp(library_smi, radius, n_bits)
     if lib_fp is None or not active_fps:
         return float("nan")
     sims = [float(DataStructs.TanimotoSimilarity(lib_fp, afp)) for afp in active_fps]
@@ -80,7 +82,11 @@ def score_library_against_target(
     cfg = config or TanimotoRankerConfig()
     active_fps = [_smi_to_fp(s, cfg.fp_radius, cfg.fp_bits) for s in chembl_active_smiles]
     active_fps = [fp for fp in active_fps if fp is not None]
-    return [_score_one(s, active_fps, cfg.aggregator) for s in library_smiles]
+    # Thread the configured radius/bits into the LIBRARY fingerprint too, so a non-default
+    # cfg.fp_radius/fp_bits does not silently compare mismatched fingerprints (actives use cfg,
+    # library used the hardcoded 2/2048).
+    return [_score_one(s, active_fps, cfg.aggregator, cfg.fp_radius, cfg.fp_bits)
+            for s in library_smiles]
 
 
 def build_long_format_ranker(

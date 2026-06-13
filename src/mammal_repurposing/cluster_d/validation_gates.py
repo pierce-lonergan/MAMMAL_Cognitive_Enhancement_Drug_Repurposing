@@ -204,6 +204,16 @@ def gate_2_spearman_vs_smd(
     # collapse the whole gate to rho=0 / DEGRADE.
     finite = np.isfinite(theta_arr) & np.isfinite(smd_arr)
     theta_arr, smd_arr = theta_arr[finite], smd_arr[finite]
+    # Re-check AFTER dropping non-finite pairs: the n>=5 guard above counted RAW pairs, so a few
+    # NaN theta-bars (a target that did not fit / has no coverage) could leave <5 finite pairs and
+    # run spearmanr + bootstrap on too little data.
+    if len(theta_arr) < 5:
+        return GateResult(
+            gate_name="gate_2_spearman_vs_smd",
+            pass_status="INSUFFICIENT_DATA",
+            metric_threshold=threshold,
+            detail=f"Only {len(theta_arr)} finite (theta-bar, SMD) pairs after dropping non-finite; need >=5",
+        )
     rho, _ = spearmanr(theta_arr, smd_arr)
 
     # Bootstrap CI

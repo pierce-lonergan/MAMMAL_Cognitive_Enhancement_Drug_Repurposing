@@ -104,7 +104,9 @@ def compute_ood_fraction(
     if T.shape[0] < 5 or Q.shape[0] < 1:
         return float("nan")
     mu = T.mean(axis=0)
-    cov = np.cov(T, rowvar=False)
+    # atleast_2d: a single-feature embedding makes np.cov return a 0-d scalar, so cov.shape[0]
+    # below would IndexError.
+    cov = np.atleast_2d(np.cov(T, rowvar=False))
     # Regularised inverse (covariance often near-singular for small n)
     cov_reg = cov + 1e-4 * np.eye(cov.shape[0])
     try:

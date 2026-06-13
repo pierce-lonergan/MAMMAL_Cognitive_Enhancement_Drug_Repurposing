@@ -50,7 +50,14 @@ class IsotonicCalibrationResult:
 
 
 def _make_iso(direction: str | bool) -> IsotonicRegression:
-    inc = "auto" if direction == "auto" or direction is None else bool(direction)
+    # Parse string directions explicitly: bool("decreasing") and bool("increasing") are BOTH
+    # truthy, so the old `bool(direction)` silently fit an INCREASING curve for "decreasing".
+    if direction in (True, "increasing"):
+        inc: bool | str = True
+    elif direction in (False, "decreasing"):
+        inc = False
+    else:  # "auto" or None
+        inc = "auto"
     return IsotonicRegression(
         increasing=inc,
         out_of_bounds="clip",
@@ -108,8 +115,10 @@ def fit_isotonic_with_diagnostics(
 
     # Inferred direction after auto — read sklearn's attribute
     inferred = "increasing" if getattr(iso, "increasing_", True) else "decreasing"
-    if direction != "auto" and direction is not None:
-        inferred = "increasing" if direction is True else "decreasing"
+    if direction not in ("auto", None):
+        # Match the same string-aware parse used in _make_iso so the stored label reflects the
+        # direction actually fitted (not "decreasing" mislabeled because `direction is True`).
+        inferred = "increasing" if direction in (True, "increasing") else "decreasing"
 
     # LOCO predictions
     def _fit_predict(x_tr, y_tr, x_te):

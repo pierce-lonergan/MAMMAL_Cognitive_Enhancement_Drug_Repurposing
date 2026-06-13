@@ -91,12 +91,14 @@ def fit_inductive_conformal(
     # Residuals on cal fold
     cal_pred = iso.predict(raw_pkd[cal_idx])
     residuals = np.abs(truth_pchembl[cal_idx] - cal_pred)
-    # q_alpha = ceil((n_cal + 1) * (1 - alpha)) order statistic
+    # q_alpha = ceil((n_cal + 1) * (1 - alpha)) order statistic. When that rank exceeds n_cal the
+    # finite-sample (1-alpha) quantile does not exist, so the valid conformal interval is +inf
+    # (abstain). Clamping to the max residual instead (the old behaviour) silently UNDER-covers at
+    # tight alpha / small n_cal. The finite-rank path is unchanged.
     n_cal_actual = len(residuals)
     rank = int(np.ceil((n_cal_actual + 1) * (1 - alpha)))
-    rank = max(1, min(rank, n_cal_actual))     # clamp
     sorted_res = np.sort(residuals)
-    q_alpha = float(sorted_res[rank - 1])
+    q_alpha = float("inf") if rank > n_cal_actual else float(sorted_res[max(1, rank) - 1])
 
     # Empirical coverage on the SAME cal fold (sanity, not validity)
     in_interval = residuals <= q_alpha
@@ -156,5 +158,6 @@ def q_alpha_from_loco(residuals: np.ndarray, alpha: float = 0.20) -> float:
         return float("nan")
     n = residuals.size
     rank = int(np.ceil((n + 1) * (1 - alpha)))
-    rank = max(1, min(rank, n))
-    return float(np.sort(residuals)[rank - 1])
+    if rank > n:
+        return float("inf")     # (1-alpha) order statistic does not exist -> abstain
+    return float(np.sort(residuals)[max(1, rank) - 1])

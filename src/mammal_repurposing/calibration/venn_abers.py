@@ -109,11 +109,15 @@ class VennAbersRegressor:
         cal_pred = iso.predict(self._cal_x)
         residuals = np.abs(self._cal_y - cal_pred)
 
-        # Quantile threshold for (1 - alpha) coverage
-        q = np.quantile(residuals, 1 - self.cfg.alpha)
+        # (1 - alpha) split-conformal order statistic (matching calibration/conformal.py), not a
+        # plain np.quantile, so the marginal-coverage claim in the docstring actually holds at
+        # finite n; interval clipped to the pKd domain [2, 11]. rank > n -> +inf (abstain).
+        n_res = residuals.size
+        rank = int(np.ceil((n_res + 1) * (1 - self.cfg.alpha)))
+        q = float("inf") if rank > n_res else float(np.sort(residuals)[max(1, rank) - 1])
         point = iso.predict(x_query)
-        lower = point - q
-        upper = point + q
+        lower = np.clip(point - q, 2.0, 11.0)
+        upper = np.clip(point + q, 2.0, 11.0)
         return lower, upper
 
     def predict_sigma(self, x_query: np.ndarray) -> np.ndarray:

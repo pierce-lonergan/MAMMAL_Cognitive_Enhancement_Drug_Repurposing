@@ -144,7 +144,8 @@ def apply_gates(
     """
     gates, _ = load_threshold_config(thresholds_path)
     weights = load_weights_config(weights_path)
-    cfg = yaml.safe_load(open(thresholds_path, encoding="utf-8"))
+    with open(thresholds_path, encoding="utf-8") as _fh:
+        cfg = yaml.safe_load(_fh)
     col_map = cfg.get("admet_ai_column_map", {})
 
     bypass_lookup: dict[str, bool] = {}

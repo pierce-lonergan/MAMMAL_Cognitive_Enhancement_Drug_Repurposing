@@ -80,7 +80,7 @@ def _extract_smiles(payload: dict) -> tuple[str | None, str | None, int | None]:
     reraise=True,
     stop=stop_after_attempt(HTTP_MAX_RETRIES),
     wait=wait_exponential(multiplier=1, min=1, max=10),
-    retry=retry_if_exception_type(httpx.TransportError),
+    retry=retry_if_exception_type((httpx.TransportError, httpx.HTTPStatusError)),
 )
 def _get_property(client: httpx.Client, name: str) -> dict | None:
     """Single-name PubChem property lookup. Returns parsed JSON or None on 404."""
