@@ -43,7 +43,8 @@ class CognitionAnchor:
 
     @classmethod
     def from_config(cls, path: Path | str = PROJECT_ROOT / "configs" / "weights.yaml"):
-        cfg = yaml.safe_load(open(path, encoding="utf-8"))["cognition_virtual_anchor"]
+        with open(path, encoding="utf-8") as _fh:
+            cfg = yaml.safe_load(_fh)["cognition_virtual_anchor"]
         ids = [d["id"] for d in cfg["disease_nodes"]]
         weights = {d["id"]: float(d["weight"]) for d in cfg["disease_nodes"]}
         return cls(

@@ -24,7 +24,6 @@ that's captured in liability, not here.
 from __future__ import annotations
 
 import logging
-from collections import defaultdict
 from dataclasses import dataclass
 
 import pandas as pd
@@ -203,7 +202,14 @@ def build_moa_ranker_long(
 
         # Build per-inchikey best-MoA-score map
         moa_df_norm = moa_df.copy()
-        per_compound_score: dict[str, float] = defaultdict(lambda: cfg.unknown_score)
+        # Plain dict + (-inf) sentinel, NOT defaultdict: indexing a defaultdict
+        # materializes the key at unknown_score (0.4) BEFORE the comparison, so a
+        # wrong-direction annotation (sc=0.0, e.g. an antagonist at a target that wants
+        # agonism) never beats 0.4 and gets floored to 0.4 == "no annotation" instead of
+        # the correct 0.0. The (-inf) sentinel lets the first real score (incl. 0.0) win,
+        # and unannotated compounds still fall through to unknown_score below (the key is
+        # only present when a real annotation set it).
+        per_compound_score: dict[str, float] = {}
         for _, r in moa_df_norm.iterrows():
             ik = str(r.get("inchikey") or "").strip()
             if not ik:
@@ -215,7 +221,7 @@ def build_moa_ranker_long(
                 cfg,
             )
             # Keep the most-favourable annotation per compound
-            if sc > per_compound_score[ik]:
+            if sc > per_compound_score.get(ik, float("-inf")):
                 per_compound_score[ik] = sc
 
         # Score library compounds

@@ -347,6 +347,14 @@ def aggregate_per_compound(long_df: pd.DataFrame) -> pd.DataFrame:
     def _wmean(g: pd.DataFrame, col: str) -> float:
         w = g["weight"].astype(float)
         v = g[col].astype(float)
+        # Mask to the non-NaN entries of THIS column first. pandas .sum() skips NaN, so
+        # without masking the numerator (w*v).sum() drops NaN terms while the denominator
+        # w.sum() keeps their weights -> a one-directional low bias; an all-NaN group would
+        # return a spurious 0.0 (max safety) instead of NaN (unknown).
+        mask = v.notna()
+        if mask.sum() == 0:
+            return float("nan")
+        w, v = w[mask], v[mask]
         if w.sum() == 0:
             return float(v.mean())
         return float((w * v).sum() / w.sum())

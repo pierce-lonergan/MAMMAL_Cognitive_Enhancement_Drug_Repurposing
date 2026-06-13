@@ -33,7 +33,8 @@ def classify_disagreements(
     weights_path: Path | str = DEFAULT_WEIGHTS_PATH,
 ) -> pd.DataFrame:
     """Add a `disagreement_archetype` column based on per-cluster contributions."""
-    cfg = yaml.safe_load(open(weights_path, encoding="utf-8"))
+    with open(weights_path, encoding="utf-8") as _fh:
+        cfg = yaml.safe_load(_fh)
     d = cfg.get("disagreement", {})
     pkd_strong = float(d.get("mammal_pkd_strong", 7.0))
     pkd_weak = float(d.get("mammal_pkd_weak", 5.5))
@@ -123,7 +124,11 @@ def render_markdown(provenance: pd.DataFrame, top_per_archetype: int = 10) -> st
             ]
             if c in subset.columns
         ]
-        head = subset.head(top_per_archetype)[cols_to_show]
+        # Show the genuinely top-ranked members, not the input-order-first rows (the
+        # provenance frame arrives in compounds-seed order; rrf_score is a merged column).
+        ranked = (subset.sort_values("rrf_score", ascending=False)
+                  if "rrf_score" in subset.columns else subset)
+        head = ranked.head(top_per_archetype)[cols_to_show]
         lines.append(head.to_markdown(index=False))
         lines.append("")
 

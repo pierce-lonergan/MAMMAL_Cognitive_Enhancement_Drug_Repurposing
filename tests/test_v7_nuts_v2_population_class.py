@@ -55,10 +55,27 @@ def test_observation_default_population_is_mixed():
     assert obs.population == "mixed"
 
 
+def test_nuts_v2_fail_closes_on_v2_class_without_v2_prior_table():
+    """B1 regression (docs/BUG_AUDIT_2026-06.md): fit_effect_size_nuts_v2's class-level
+    priors are keyed by the V1 taxonomy (list_class_names()), but every production anchor
+    carries a V2 class name. Passing a V2 name (zero overlap with V1) used to silently
+    collapse every compound onto class 0 (AChE-I); it must now FAIL CLOSED with a ValueError
+    rather than emit a degenerate posterior. Runs fast: the guard fires before sampling."""
+    obs = [_make_obs("mph", "DA_STIMULANTS_MPH", "HC", observed_g=0.43)]
+    with pytest.raises(ValueError, match="not in the V1 class-prior vocabulary"):
+        fit_effect_size_nuts_v2(obs, n_chains=1, n_draws=10, n_tune=10)
+
+
 # ---------------------------------------------------------------------------
 # V2 NUTS run on small synthetic dataset
 # ---------------------------------------------------------------------------
 
+@pytest.mark.xfail(
+    reason="B1 (docs/BUG_AUDIT_2026-06.md): fit_effect_size_nuts_v2 class priors are "
+           "V1-keyed and now fail-close on V2 class names. Needs a V2 class-level prior "
+           "table (k-weighted pool over subdomain_prior_table_v2) before this can pass.",
+    strict=False, raises=ValueError,
+)
 @pytest.mark.slow
 def test_nuts_v2_runs_with_two_populations():
     """Smoke test: V2 NUTS converges on a 6-compound × 2-population panel."""
@@ -90,6 +107,12 @@ def test_nuts_v2_runs_with_two_populations():
     assert -0.5 < posterior.g_mean["mph_adhd"] < 1.0
 
 
+@pytest.mark.xfail(
+    reason="B1 (docs/BUG_AUDIT_2026-06.md): fit_effect_size_nuts_v2 class priors are "
+           "V1-keyed and now fail-close on V2 class names. Needs a V2 class-level prior "
+           "table before the population x class interaction can be exercised on V2 anchors.",
+    strict=False, raises=ValueError,
+)
 @pytest.mark.slow
 def test_nuts_v2_interaction_captures_population_heterogeneity():
     """When same class has dramatically different g in two populations, the

@@ -388,7 +388,10 @@ def fit_effect_size_nuts(
     g_2p5 = {c: float(np.percentile(g_flat[:, i], 2.5)) for i, c in enumerate(compounds)}
     g_97p5 = {c: float(np.percentile(g_flat[:, i], 97.5)) for i, c in enumerate(compounds)}
     g_90_upper = {c: float(np.percentile(g_flat[:, i], 90.0)) for i, c in enumerate(compounds)}
-    class_mu = {c: float(np.mean([prisma_means[ci] for ci in [cls_idx[i]] if ci >= 0]) or 0.0)
+    # cls_idx[i] is -1 for an unknown class (see the `else -1` above); map that to 0.0
+    # explicitly. The old `float(np.mean([]) or 0.0)` returned nan, because np.float64 nan
+    # is truthy so `nan or 0.0` short-circuits to nan - defeating the intended fallback.
+    class_mu = {c: (float(prisma_means[cls_idx[i]]) if cls_idx[i] >= 0 else 0.0)
                 for i, c in enumerate(compounds)}
     gate_active = {c: bool(observations[i].relevance_post_mean > 0.10)
                    for i, c in enumerate(compounds)}
@@ -491,20 +494,28 @@ def fit_effect_size_nuts_v2(
     if n_obs == 0:
         raise ValueError("Cannot fit on zero observations")
 
-    # Index classes and populations. Unknown classes fall back to index 0, but
-    # warn loudly rather than silently scoring them as class 0 (AChE-I).
+    # Index classes and populations. The class-level priors (prisma_means / tau_class) are
+    # keyed by the V1 taxonomy returned by list_class_names(). FAIL CLOSED if any observation
+    # carries a class outside that vocabulary instead of the old silent `else 0` fallback:
+    # the production anchors all use the V2 taxonomy (AChE_INHIBITORS, DA_STIMULANTS_MPH, ...),
+    # which has ZERO overlap with the V1 names, so every observation was being scored as
+    # class 0 (AChE-I). That collapsed the entire mu_class / iota (population x class) /
+    # tau_class hierarchy onto one class and reported class_mu = 0.18 for every compound.
+    # Emitting confident-but-wrong posteriors is worse than failing. A correct V2 run needs a
+    # V2 class-level prior table (k-weighted pool over subdomain_prior_table_v2); until that
+    # exists this guard prevents silently-degenerate output. See docs/BUG_AUDIT_2026-06.md (B1).
     unknown = sorted({o.class_name for o in observations
                       if o.class_name not in class_names})
     if unknown:
-        logger.warning(
-            "fit: %d observation(s) reference unknown mechanism class(es) %s; "
-            "falling back to class index 0 (%s). Check the class taxonomy.",
-            sum(o.class_name in unknown for o in observations),
-            unknown, class_names[0] if class_names else "?",
+        raise ValueError(
+            f"fit_effect_size_nuts_v2: {len(unknown)} mechanism class(es) {unknown} are not "
+            f"in the V1 class-prior vocabulary {class_names}. This function's class-level priors "
+            f"are V1-keyed; running V2-taxonomy anchors through it silently collapses every "
+            f"compound onto class 0 (AChE-I). Build a V2 class-level prior table and switch "
+            f"class_names/prisma_means to list_class_names_v2() before running. "
+            f"See docs/BUG_AUDIT_2026-06.md (B1)."
         )
-    cls_idx = np.array([class_names.index(o.class_name)
-                        if o.class_name in class_names else 0
-                        for o in observations])
+    cls_idx = np.array([class_names.index(o.class_name) for o in observations])
     populations = sorted(set(o.population for o in observations))
     pop_to_idx = {p: i for i, p in enumerate(populations)}
     pop_idx = np.array([pop_to_idx[o.population] for o in observations])
