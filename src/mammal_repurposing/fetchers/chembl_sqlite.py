@@ -202,6 +202,27 @@ def lookup_activity(
                               params=(inchikey, target_uniprot))
 
 
+# nM-per-unit conversion for molar concentrations. Units that are NOT a molar concentration
+# (e.g. "%", "ug.mL-1") map to None so a non-nM value is never silently labelled as nM.
+_NM_PER_UNIT: dict[str, float] = {
+    "nM": 1.0, "nmol/L": 1.0, "nmol.L-1": 1.0,
+    "uM": 1e3, "µM": 1e3, "μM": 1e3, "umol/L": 1e3,
+    "mM": 1e6, "M": 1e9, "pM": 1e-3, "fM": 1e-6,
+}
+
+
+def _standard_value_to_nm(value, units) -> Optional[float]:
+    """Convert a ChEMBL standard_value expressed in `units` to nM. Returns None for a missing value
+    or a non-molar unit, so best_standard_value_nm is never a uM/M value mislabelled as nM (the
+    column previously stored the RAW standard_value with no unit conversion)."""
+    if value is None or pd.isna(value):
+        return None
+    if units is None or pd.isna(units):
+        return None
+    mult = _NM_PER_UNIT.get(str(units).strip())
+    return None if mult is None else float(value) * mult
+
+
 def lookup_pair_evidence(
     target_uniprot: str,
     smiles: str,
@@ -252,9 +273,8 @@ def lookup_pair_evidence(
         n_records=n_records,
         best_pchembl=best,
         best_activity_type=str(best_row.get("standard_type") or ""),
-        best_standard_value_nm=(
-            float(best_row["standard_value"])
-            if pd.notna(best_row.get("standard_value")) else None
+        best_standard_value_nm=_standard_value_to_nm(
+            best_row.get("standard_value"), best_row.get("standard_units")
         ),
     )
 

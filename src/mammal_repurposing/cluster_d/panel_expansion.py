@@ -282,6 +282,32 @@ COGNITION_EXPANSION_TARGETS: list[tuple[str, str, str]] = [
 ]
 
 
+# Canonical UniProt -> gene-symbol map for the 22-target panel + liability/expansion extras,
+# sourced from data/raw/targets_seed.csv. Used so a panel anchor's gene_symbol is its REAL gene
+# (e.g. GRIN2B) rather than its UniProt accession: the downstream gene-keyed NUTS reference-anchor
+# match silently dropped any target whose gene_symbol fell back to the accession (notably
+# GRIN2B/Q13224 -> the designed-6-anchor model fit with only 4-5 active). See BUG_AUDIT_2026-06 B2.
+_CANONICAL_UNIPROT_TO_GENE: dict[str, str] = {
+    "P22303": "ACHE", "P36544": "CHRNA7", "P42261": "GRIA1", "P42262": "GRIA2",
+    "P42263": "GRIA3", "P48058": "GRIA4", "Q12879": "GRIN2A", "Q13224": "GRIN2B",
+    "P21728": "DRD1", "Q01959": "SLC6A3", "P08913": "ADRA2A", "P23975": "SLC6A2",
+    "Q9Y5N1": "HRH3", "O43613": "HCRTR1", "O43614": "HCRTR2", "Q08499": "PDE4D",
+    "O76083": "PDE9A", "Q16620": "NTRK2", "Q99720": "SIGMAR1", "O43526": "KCNQ2",
+    "O43525": "KCNQ3", "O60741": "HCN1",
+    "P08908": "HTR1A", "Q13639": "HTR4", "P48067": "SLC6A9", "Q14416": "GRM2",
+    "Q14832": "GRM3", "P41594": "GRM5", "P11229": "CHRM1", "P08173": "CHRM4",
+    "P50406": "HTR6",
+}
+
+
+def _resolve_gene(uniprot: str) -> str:
+    """Canonical gene symbol for a UniProt accession: the curated panel map first, then the
+    expansion-target list, then the accession itself only as a last resort."""
+    if uniprot in _CANONICAL_UNIPROT_TO_GENE:
+        return _CANONICAL_UNIPROT_TO_GENE[uniprot]
+    return next((g for u, g, _ in COGNITION_EXPANSION_TARGETS if u == uniprot), uniprot)
+
+
 def build_expanded_panel(
     include_22_subset: bool = True,
     include_liability_subset: bool = True,
@@ -297,9 +323,7 @@ def build_expanded_panel(
     # Add the 22-target panel first
     if include_22_subset:
         for uniprot in PANEL_22_TARGETS:
-            # Look up gene symbol from COGNITION_EXPANSION_TARGETS if present
-            gene = next((g for u, g, _ in COGNITION_EXPANSION_TARGETS
-                          if u == uniprot), uniprot)
+            gene = _resolve_gene(uniprot)
             targets.append(PanelTarget(
                 uniprot=uniprot,
                 gene_symbol=gene,
@@ -314,8 +338,7 @@ def build_expanded_panel(
         for uniprot in LIABILITY_PANEL_22_EXTRA:
             if any(t.uniprot == uniprot for t in targets):
                 continue    # dedupe
-            gene = next((g for u, g, _ in COGNITION_EXPANSION_TARGETS
-                          if u == uniprot), uniprot)
+            gene = _resolve_gene(uniprot)
             targets.append(PanelTarget(
                 uniprot=uniprot,
                 gene_symbol=gene,

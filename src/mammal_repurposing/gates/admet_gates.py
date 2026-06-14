@@ -85,6 +85,19 @@ def _normalize_caco2(log_papp: float | None) -> float:
     return (clipped + 8.0) / 5.0
 
 
+def _prob_or_default(value, default: float = 0.5) -> float:
+    """ADMET probability with a None/NaN -> default fallback that PRESERVES a genuine 0.0.
+    The old `float(value or default)` coerced a legitimate 0.0 probability to `default` (0.5) and
+    let a NaN poison the whole composite; this maps ONLY missing/NaN to the default."""
+    if value is None:
+        return default
+    try:
+        f = float(value)
+    except (TypeError, ValueError):
+        return default
+    return default if pd.isna(f) else f
+
+
 def compute_admet_score(
     row: pd.Series,
     *,
@@ -92,11 +105,11 @@ def compute_admet_score(
     col_map: dict,
 ) -> float:
     """Compute the cognition-weighted ADMET composite score per weights.yaml."""
-    bbb = float(row.get(col_map["bbb_permeability"], 0.5) or 0.5)
-    herg = float(row.get(col_map["herg_inhibition"], 0.5) or 0.5)
-    pgp = float(row.get(col_map["pgp_substrate"], 0.5) or 0.5)
-    dili = float(row.get(col_map["dili"], 0.5) or 0.5)
-    cyp3a4 = float(row.get(col_map["cyp3a4_inhibition"], 0.5) or 0.5)
+    bbb = _prob_or_default(row.get(col_map["bbb_permeability"]))
+    herg = _prob_or_default(row.get(col_map["herg_inhibition"]))
+    pgp = _prob_or_default(row.get(col_map["pgp_substrate"]))
+    dili = _prob_or_default(row.get(col_map["dili"]))
+    cyp3a4 = _prob_or_default(row.get(col_map["cyp3a4_inhibition"]))
     caco2_norm = _normalize_caco2(row.get(col_map["caco2_permeability"]))
 
     w = weights["admet_score"]

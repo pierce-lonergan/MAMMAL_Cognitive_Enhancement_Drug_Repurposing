@@ -187,9 +187,23 @@ applied in a follow-up pass with the exact fixes below.
   hit if params change. Fix: backward-compatible settings suffix on the cache filename. Deferred:
   latent (no caller varies these).
 
-### Group B2 — RESULTS-CHANGING, FLAGGED for human sign-off (NOT applied)
-Each alters a published manuscript number and/or needs a coordinated re-run + author re-bless. Exact
-fixes are in the remediation plan (task wczp01qeh output). Highest-impact first:
+### Group B2 — RESULTS-CHANGING
+**Status (follow-up pass):** the CODE fix for **B2, B5, B6 has been APPLIED** (the code was genuinely
+wrong) — but their downstream reports/parquets are now **STALE** and must be regenerated + author
+re-blessed before the numbers are cited; they were NOT regenerated here (never silently overwrite a
+published number). **B3** is folded into the systemic leakage-primitive fix (see the dedicated
+section). **B1, B4, B7 remain FLAGGED** for your decision (each is a relabel/convention choice).
+
+REGENERATION CHECKLIST after the applied code fixes:
+- B2 (panel_expansion gene map): re-run `scripts/62_v6b5_nuts_expanded.py` (+ 55) -> regenerate
+  `cluster_d_posterior_expanded_*` parquets and the V6.B panel figures; verify GRIN2B is now an
+  active anchor and R-hat<1.01 / 0 divergences.
+- B5 (admet `value or 0.5`): re-run `scripts/15_v2_fusion.py` + selectivity/shortlist; re-run
+  `validate_positive_controls`. Affects only compounds with an exact-0.0 endpoint (likely rare).
+- B6 (chembl units): regenerate the ChEMBL-evidence parquet; the `status` label is unaffected
+  (it is computed from `pchembl_value`, not `best_standard_value_nm`), only the reported nM value.
+
+Exact fixes are in the remediation plan (task wczp01qeh output). Highest-impact first:
 
 - **B2 (HIGH) cluster_d/panel_expansion.py:300-302** gene-symbol resolution reverse-searches only
   `COGNITION_EXPANSION_TARGETS` -> GRIN2B silently dropped from the NUTS fit (designed-6-anchor model
