@@ -11,6 +11,7 @@ from mammal_repurposing.validation.folding import (
     apply_quantile_edges,
     fit_quantile_edges,
     oob_bootstrap_rho,
+    oob_grouped_ssr,
 )
 
 
@@ -71,3 +72,39 @@ def test_quantile_edges_handle_nan_and_degenerate():
     # NaN inputs map to the lowest bucket, never raise
     out = apply_quantile_edges(np.array([np.nan, 1.0]), np.array([0.5]))
     assert out[0] == 0
+
+
+def test_oob_grouped_ssr_scores_every_point_once_held_out():
+    """Deterministic OOF accounting: each of n points lands in exactly one eval fold, so a
+    constant-zero predictor accumulates sum(truth^2) as its total out-of-fold SSR."""
+    truth = np.arange(1, 21, dtype=float)
+    ssr = oob_grouped_ssr(len(truth), lambda tr, ev: np.zeros(len(ev)), truth, n_splits=5, seed=0)
+    assert abs(ssr - float(np.sum(truth ** 2))) < 1e-6
+
+
+def test_routing_lift_oob_collapses_vs_in_sample():
+    """C3 regression: the pocket-routed lift is now scored OUT-OF-FOLD. On a SHARED-slope dataset
+    (the pocket label carries no real per-pocket signal) the IN-SAMPLE SSR lift over-credits the
+    more-flexible routed model by ~20-33%; the out-of-fold lift collapses well below that. The
+    pre-fix code returned the in-sample lift itself, so `oob_lift < insample_lift - 10` FAILS before
+    the fix and PASSES after."""
+    from mammal_repurposing.calibration.pocket_routed import (
+        _make_iso,
+        evaluate_routing_lift,
+        fit_pocket_routed,
+        predict_with_routing,
+    )
+    rng = np.random.default_rng(0)
+    n = 80
+    raw = rng.uniform(5.0, 9.0, n)
+    truth = 1.0 * raw + rng.normal(0, 0.3, n)            # ONE shared slope; pocket label is noise
+    pcls = np.array(["S1", "S2"] * (n // 2))
+    g = _make_iso("auto"); g.fit(raw, truth)
+    g_ssr = float(np.sum((truth - g.predict(raw)) ** 2))
+    cal = fit_pocket_routed("__t__", raw, truth, pcls)
+    rp, _ = predict_with_routing(cal, raw, pcls)
+    insample_lift = 100.0 * (g_ssr - float(np.sum((truth - rp) ** 2))) / max(g_ssr, 1e-9)
+    oob_lift = evaluate_routing_lift(raw, truth, pcls)["lift_pct"]
+    assert insample_lift > 15.0, f"in-sample should over-credit routing, got {insample_lift:.2f}"
+    assert oob_lift < insample_lift - 10.0, (
+        f"out-of-fold lift must collapse the artifact: in-sample={insample_lift:.2f} oob={oob_lift:.2f}")

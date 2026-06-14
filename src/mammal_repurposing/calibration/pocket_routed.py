@@ -125,12 +125,20 @@ def evaluate_routing_lift(
     pocket_classes: np.ndarray,
     direction: str | bool = "auto",
 ) -> dict:
-    """Measure whether per-pocket isotonic outperforms global isotonic on
-    a sum-of-squared-residuals basis. Hypothesis: routing gives lower SSR
-    when the per-pocket relationships truly differ.
+    """Measure whether per-pocket isotonic outperforms global isotonic on a sum-of-squared-residuals
+    basis, scored OUT-OF-FOLD. Hypothesis: routing gives lower SSR when the per-pocket relationships
+    truly differ.
 
-    Returns dict with: global_ssr, routed_ssr, lift_pct.
+    The SSRs are computed via shuffled 5-fold cross-validation (validation.folding.oob_grouped_ssr):
+    each fold fits on the train split and scores residuals on the held-out split only. The previous
+    version fit AND scored both models on the full array; because the routed model has strictly more
+    free parameters it always fits the training residuals at least as well, so the in-sample lift
+    was a structural over-fitting artifact (+48% even on random-label data). Out-of-fold scoring
+    removes that artifact (see docs/BUG_AUDIT_2026-06.md, C3).
+
+    Returns dict with: global_ssr (OOF), routed_ssr (OOF), lift_pct.
     """
+    from ..validation.folding import oob_grouped_ssr
     raw = np.asarray(raw_pkd, dtype=float)
     truth = np.asarray(truth_pchembl, dtype=float)
     pcls = np.asarray(pocket_classes)
@@ -138,20 +146,26 @@ def evaluate_routing_lift(
         return {"global_ssr": float("nan"), "routed_ssr": float("nan"),
                 "lift_pct": float("nan"),
                 "note": "n < 10; insufficient"}
-    # Global
-    global_iso = _make_iso(direction)
-    global_iso.fit(raw, truth)
-    global_pred = global_iso.predict(raw)
-    global_ssr = float(np.sum((truth - global_pred) ** 2))
-    # Routed (with same min_n_per_pocket policy)
-    cal = fit_pocket_routed("__eval__", raw, truth, pcls, direction=direction)
-    routed_pred, _ = predict_with_routing(cal, raw, pcls)
-    routed_ssr = float(np.sum((truth - routed_pred) ** 2))
+
+    def _global_pred(tr, ev):
+        iso = _make_iso(direction)
+        iso.fit(raw[tr], truth[tr])
+        return iso.predict(raw[ev])
+
+    def _routed_pred(tr, ev):
+        cal_tr = fit_pocket_routed("__oob__", raw[tr], truth[tr], pcls[tr], direction=direction)
+        return predict_with_routing(cal_tr, raw[ev], pcls[ev])[0]
+
+    global_ssr = oob_grouped_ssr(len(raw), _global_pred, truth, n_splits=5, seed=42)
+    routed_ssr = oob_grouped_ssr(len(raw), _routed_pred, truth, n_splits=5, seed=42)
     lift_pct = 100.0 * (global_ssr - routed_ssr) / max(global_ssr, 1e-9)
+    # n_by_pocket is a descriptive count (no leakage concern) -> fit on full for the report only.
+    cal_full = fit_pocket_routed("__eval__", raw, truth, pcls, direction=direction)
     return {
         "global_ssr": global_ssr,
         "routed_ssr": routed_ssr,
         "lift_pct": lift_pct,
         "n_total": int(len(raw)),
-        "n_by_pocket": cal.n_by_pocket,
+        "n_by_pocket": cal_full.n_by_pocket,
+        "scoring": "out-of-fold 5-fold CV (OOB SSR, not in-sample)",
     }

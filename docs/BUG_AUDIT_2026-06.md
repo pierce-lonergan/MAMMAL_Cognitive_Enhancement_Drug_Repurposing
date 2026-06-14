@@ -347,3 +347,21 @@ because the upper-bound input CAN be plumbed (optional `target_smd_sd`), so the 
 honest in BEHAVIOR (the stronger fix) rather than only in name; dropping the arg would permanently
 forfeit the real upper-bound check. Also fixed a stale docstring line that claimed None input returns
 REGIME_OK (it returns NO_SMD_PREDICTION).
+
+## C3 — pocket-routed lift was in-sample (over-fitting artifact) — RESOLVED (zero published-number change; synthetic-demo only)
+**Defect:** `calibration/pocket_routed.py:evaluate_routing_lift` fit AND scored both the global and
+the routed isotonic on the full array. The routed model has strictly more free parameters, so it
+always fits the training residuals at least as well -> the in-sample lift is a structural artifact
+(the audit measured ~+48% on random-label / +20-33% on shared-slope data with no per-pocket signal).
+Only consumer is the synthetic demo `scripts/48`, so no manuscript number depends on it.
+**Chosen direction:** added a reusable grouped-CV OOF primitive `oob_grouped_ssr` to
+`validation/folding.py` (each fold fits on train, accumulates squared residuals on the held-out fold
+only) and rewired `evaluate_routing_lift` to compute both SSRs out-of-fold. This was the *last*
+unwired contaminated evaluation path, so "every evaluation path shares one audited fold primitive"
+is now true. Verified by `tests/test_folding.py`: a deterministic OOF-accounting test for the
+primitive + a contrast test showing the in-sample lift (~32%) collapses out-of-fold on a no-signal
+split (fails-before: the old code returned the 32% in-sample lift). The genuine-distinct-pockets
+test still shows a real OOB lift > 10.
+**Rejected alternative:** keep the in-sample lift "because the demo expects it" — rejected: it
+presents pure over-fitting as a +48% generalization gain, the exact leakage family the systemic
+primitive exists to kill.

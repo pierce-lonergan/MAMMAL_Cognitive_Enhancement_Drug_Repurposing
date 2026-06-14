@@ -108,3 +108,49 @@ def oob_bootstrap_rho(
         float(np.percentile(rhos, ci_low)),
         float(np.percentile(rhos, ci_high)),
     )
+
+
+def oob_grouped_ssr(
+    n_total: int,
+    fit_predict_by_index,
+    truth: np.ndarray,
+    *,
+    n_splits: int = 5,
+    seed: int = 42,
+) -> float:
+    """Out-of-fold sum-of-squared-residuals via shuffled K-fold CV.
+
+    For each fold, ``fit_predict_by_index(train_idx, eval_idx)`` must fit on the TRAIN indices and
+    return predictions for the EVAL indices; squared residuals are accumulated on the HELD-OUT fold
+    ONLY (never the points used to fit). Returns the total out-of-fold SSR. Use this to compare two
+    models' generalization honestly instead of their in-sample fit -- a more flexible model (e.g. a
+    per-group routed calibrator vs a single global one) ALWAYS fits the training residuals at least
+    as well, so an in-sample SSR comparison structurally favors it even on pure noise. Because each
+    of the ``n_total`` points lands in exactly one eval fold, the total is the OOF SSR over all
+    points. Folds with <2 train or <1 eval points are skipped.
+    """
+    truth = np.asarray(truth, dtype=float)
+    n_total = int(n_total)
+    if n_total < 2:
+        return float("nan")
+    rng = np.random.default_rng(seed)
+    idx = np.arange(n_total)
+    rng.shuffle(idx)
+    n_splits = max(2, min(n_splits, n_total))
+    folds = np.array_split(idx, n_splits)
+    ssr = 0.0
+    scored = 0
+    for k in range(n_splits):
+        eval_idx = folds[k]
+        train_idx = np.concatenate([folds[j] for j in range(n_splits) if j != k])
+        if train_idx.size < 2 or eval_idx.size < 1:
+            continue
+        try:
+            pred = np.asarray(fit_predict_by_index(train_idx, eval_idx), dtype=float)
+        except Exception:
+            continue
+        if pred.shape[0] != eval_idx.shape[0]:
+            continue
+        ssr += float(np.sum((truth[eval_idx] - pred) ** 2))
+        scored += int(eval_idx.size)
+    return ssr if scored > 0 else float("nan")
