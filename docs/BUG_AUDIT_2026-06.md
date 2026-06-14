@@ -404,3 +404,24 @@ less-favorable, honest number). See `docs/PREREG_DEVIATIONS_2026-06.md`.
 post-fix it returns a sub-1.00 finite-sample coverage near the 0.80 nominal.
 **FLAG (NOT regenerated here):** `reports/pipeline/conformal_calibration_v1.md` is STALE (its
 `held_out_coverage` column is in-sample); re-run `scripts/43` to regenerate with `loco_coverage`.
+
+## B4 — clinician dossier shipped an 80% interval labeled "90% CrI" — RESOLVED (results-changing; conservative; report flagged stale)
+**Defect:** `reporting/clinician_dossier.py` used z = 1.2816 (= Phi^-1(0.90), a two-sided 80%
+interval) for the symmetric fallback CrI while LABELING it "90% CrI". Clinician-facing
+UNDER-coverage: a clinician calibrating to 90% receives a too-narrow interval biased toward
+over-confidence.
+**Chosen direction (widen to a TRUE 90%):** z 1.2816 -> 1.6449 (= Phi^-1(0.95)) at all 6 symmetric
+fallback sites, keeping the now-honest "90% CrI" label. This RESTORES conformance with the V7
+pre-registered 90% commitment.
+**Rejected alternative:** relabel to "80% CrI" (numbers unchanged) — rejected: that keeps a too-narrow
+interval in front of a clinician AND deviates from the registered 90% choice. Over-covering a
+clinical bound is safe; under-covering it is not.
+**Reconciliation:** the ONE item that deviates from a real registered/primary-analysis commitment
+(the V7 plan locks "90% CrI"); widening RESTORES it. Manuscript NOT AFFECTED (the dossier CrI level
+is absent). Direction = conservative (a wider, clinician-safe interval). See
+`docs/PREREG_DEVIATIONS_2026-06.md`. Only the SYMMETRIC fallback changed; anchor-provided CIs are
+untouched.
+**Test (`tests/test_dossier_ci.py`):** the prior-only fallback half-width = 1.6449*sd (true 90%), not
+1.2816*sd -> fails-before/passes-after; all 7 existing dossier tests still pass (g + grade unaffected).
+**FLAG (NOT regenerated here):** `reports/pipeline/clinician_dossiers_v1.md` is STALE (its fallback
+CIs are 80%-wide labeled 90%); regenerate after sign-off.

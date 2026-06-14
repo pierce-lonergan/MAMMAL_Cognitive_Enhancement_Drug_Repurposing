@@ -172,12 +172,15 @@ def build_dossier(compound: str, indication: str, *,
         # indication-matched real pivotal outcome (point estimate)
         g = float(ledger_row.get("clinical_g", np.nan))
         # k + CI from the anchor table if the same drug is there, else derive
+        # z = 1.6449 = Phi^-1(0.95) -> a TRUE two-sided 90% CrI, matching the "90% CrI" label AND
+        # the V7 pre-registered 90% commitment. Was 1.2816 = Phi^-1(0.90), a two-sided 80% interval
+        # mislabeled 90% -> clinician-facing UNDER-coverage. See docs/BUG_AUDIT_2026-06.md (B4).
         if anchor_row is not None:
-            ci_lo = float(anchor_row.get("CI_lo", g - 1.2816 * class_sd))
-            ci_hi = float(anchor_row.get("CI_hi", g + 1.2816 * class_sd))
+            ci_lo = float(anchor_row.get("CI_lo", g - 1.6449 * class_sd))
+            ci_hi = float(anchor_row.get("CI_hi", g + 1.6449 * class_sd))
             k_rcts = int(anchor_row.get("k", 3))
         else:
-            ci_lo, ci_hi = g - 1.2816 * class_sd, g + 1.2816 * class_sd
+            ci_lo, ci_hi = g - 1.6449 * class_sd, g + 1.6449 * class_sd
             k_rcts = prior.k_total if prior is not None else 3
     elif anchor_row is not None:
         g = float(anchor_row.get("pooled_g", np.nan))
@@ -186,8 +189,8 @@ def build_dossier(compound: str, indication: str, *,
         k_rcts = int(anchor_row.get("k", 1))
     elif prior is not None:
         g = prior.mean
-        ci_lo = prior.mean - 1.2816 * prior.sd
-        ci_hi = prior.mean + 1.2816 * prior.sd
+        ci_lo = prior.mean - 1.6449 * prior.sd   # true two-sided 90% CrI (B4); was 1.2816 = 80%
+        ci_hi = prior.mean + 1.6449 * prior.sd
         k_rcts = prior.k_total
     else:
         g, ci_lo, ci_hi, k_rcts = float("nan"), float("nan"), float("nan"), 0
