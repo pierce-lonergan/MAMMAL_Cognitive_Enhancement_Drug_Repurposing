@@ -161,3 +161,28 @@ def q_alpha_from_loco(residuals: np.ndarray, alpha: float = 0.20) -> float:
     if rank > n:
         return float("inf")     # (1-alpha) order statistic does not exist -> abstain
     return float(np.sort(residuals)[max(1, rank) - 1])
+
+
+def loco_coverage(
+    raw_pkd: np.ndarray,
+    truth_pchembl: np.ndarray,
+    alpha: float = 0.20,
+    direction: str | bool = "auto",
+) -> float:
+    """Honest leave-one-out (LOCO) empirical coverage of the conformal interval.
+
+    For each point the calibrator is refit on the OTHER n-1 points (via loco_residuals_fallback),
+    the interval half-width q_alpha is the LOO (1-alpha) order statistic, and coverage is the
+    fraction of LOO residuals within q_alpha. Unlike a "held-out" fold drawn from the SAME array
+    used to fit the calibrator (which a memorizing model trivially covers -> ~1.00 in-sample), no
+    point is ever scored on a calibrator that saw it. At small n this is DISCRETE (finite-sample):
+    treat it as an estimate with wide Monte-Carlo error, not a point guarantee. Returns nan for
+    empty/all-non-finite input.
+    """
+    res = np.asarray(loco_residuals_fallback(raw_pkd, truth_pchembl, direction=direction),
+                     dtype=float)
+    res = res[np.isfinite(res)]
+    if res.size == 0:
+        return float("nan")
+    q = q_alpha_from_loco(res, alpha=alpha)
+    return float(np.mean(res <= q))

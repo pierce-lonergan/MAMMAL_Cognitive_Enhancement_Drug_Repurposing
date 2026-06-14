@@ -384,3 +384,23 @@ LOCK — asserts `pkd_std` equals the population (ddof=0) SD and differs from th
 an input that distinguishes them, so any future flip to ddof=1 FAILS; plus an n=1 group returns 0.0
 (not nan). (This item is immaterial-by-design, so the test is a forward guard rather than a
 fails-before/passes-after — the documented exception in the directive's governing principle.)
+
+## B1 — conformal "held-out" coverage was in-sample (=1.00) — RESOLVED (results-changing; report flagged stale)
+**Defect:** `scripts/43_v5_conformal_calibration.py` computed `held_out_coverage` by re-scoring a
+random 20% subset of the SAME array used to fit the calibrator -> a memorizing model trivially covers
+itself (reported 1.00).
+**Chosen direction (make the claim TRUE, not relabel it weaker):** implemented honest leave-one-out
+(LOCO) coverage via a new `conformal.loco_coverage()` that reuses the existing audited LOO primitive
+(`loco_residuals_fallback`) + `q_alpha_from_loco`; renamed the reported key `held_out_coverage` ->
+`loco_coverage` with an explicit finite-sample caveat. The number DROPS (1.00 -> ~0.8-0.9 at n=10), an
+honest sub-1.00 estimate.
+**Rejected alternative:** relabel to `insample_coverage` — rejected: that is equivalent to publishing
+"we have no coverage guarantee"; LOCO is the STANDARD small-n conformal approach (n=10 is the reason
+it exists), and an honest sub-1.00 LOCO is MORE credible than a perfect in-sample 1.00.
+**Reconciliation:** pre-reg SILENT (deviation from the report's "held-out" claim, outside any
+registered analysis); manuscript NOT AFFECTED (1.00 absent). Direction = conservative/fail-safe (a
+less-favorable, honest number). See `docs/PREREG_DEVIATIONS_2026-06.md`.
+**Test (`tests/test_folding.py`):** `loco_coverage` did not exist pre-fix (import fails-before);
+post-fix it returns a sub-1.00 finite-sample coverage near the 0.80 nominal.
+**FLAG (NOT regenerated here):** `reports/pipeline/conformal_calibration_v1.md` is STALE (its
+`held_out_coverage` column is in-sample); re-run `scripts/43` to regenerate with `loco_coverage`.

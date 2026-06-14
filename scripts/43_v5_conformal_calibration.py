@@ -3,7 +3,7 @@
 For every cognition-panel target with ≥10 ChEMBL pchembl≥8 actives joined to
 the library, fit split-conformal at alpha=0.20 and report:
     n_train, n_cal, q_alpha, empirical_coverage (cal fold),
-    held-out coverage (separate test fold).
+    LOCO coverage (honest leave-one-out; the prior "held-out" fold was in-sample, ~1.00).
 
 Outputs:
     data/calibration/conformal/<uniprot>.json
@@ -26,7 +26,7 @@ if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
 from mammal_repurposing.calibration.conformal import (  # noqa: E402
-    fit_inductive_conformal, predict_with_interval,
+    fit_inductive_conformal, loco_coverage,
 )
 from mammal_repurposing.fetchers.chembl_sqlite import (  # noqa: E402
     chembl_actives_with_smiles_for_target,
@@ -90,14 +90,12 @@ def main() -> int:
             })
             continue
 
-        # Held-out test: separately resampled fold for nominal-coverage check
-        rng = np.random.default_rng(args.seed + 1)
-        idx = np.arange(len(raw_pkd))
-        rng.shuffle(idx)
-        test_idx = idx[: max(3, len(idx) // 5)]
-        _, lo, hi = predict_with_interval(res, raw_pkd[test_idx])
-        in_interval = (truth[test_idx] >= lo) & (truth[test_idx] <= hi)
-        held_out_coverage = float(in_interval.mean()) if len(in_interval) else None
+        # Honest leave-one-out (LOCO) empirical coverage: each point is scored by a calibrator refit
+        # on the OTHER n-1 points, so it is never scored on a model that saw it. The previous
+        # "held-out" fold was drawn from the SAME array used to fit the calibrator -> trivially ~1.00
+        # (in-sample). At n=10 / alpha=0.2 this is finite-sample (discrete): an estimate, not a point
+        # guarantee. See docs/BUG_AUDIT_2026-06.md (B1) + docs/PREREG_DEVIATIONS_2026-06.md.
+        loco_cov = loco_coverage(raw_pkd, truth, alpha=args.alpha)
 
         entry = {
             "target_uniprot": uniprot, "gene": t["gene"],
@@ -108,8 +106,8 @@ def main() -> int:
             "q_alpha": round(res.q_alpha, 4),
             "empirical_coverage_cal": (round(res.empirical_coverage, 3)
                                        if res.empirical_coverage is not None else None),
-            "held_out_coverage": (round(held_out_coverage, 3)
-                                  if held_out_coverage is not None else None),
+            "loco_coverage": (round(loco_cov, 3) if np.isfinite(loco_cov) else None),
+            "loco_coverage_note": "leave-one-out empirical coverage; finite-sample / discrete at small n",
             "raw_min": round(res.raw_min, 3),
             "raw_max": round(res.raw_max, 3),
             "status": "OK",
@@ -117,10 +115,10 @@ def main() -> int:
         results.append(entry)
         (args.out_dir / f"{uniprot}.json").write_text(
             json.dumps(entry, indent=2), encoding="utf-8")
-        logger.info("  %s (%s): n=%d n_cal=%d q_alpha=%.3f emp=%.2f held=%.2f",
+        logger.info("  %s (%s): n=%d n_cal=%d q_alpha=%.3f emp=%.2f loco=%.2f",
                     t["gene"], uniprot, entry["n"], entry["n_cal"],
                     entry["q_alpha"], entry["empirical_coverage_cal"] or 0,
-                    entry["held_out_coverage"] or 0)
+                    entry["loco_coverage"] or 0)
 
     # Report
     L: list[str] = []

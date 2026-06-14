@@ -74,6 +74,21 @@ def test_quantile_edges_handle_nan_and_degenerate():
     assert out[0] == 0
 
 
+def test_loco_coverage_is_honest_not_in_sample():
+    """B1: leave-one-out conformal coverage must NOT be the trivial in-sample ~1.00 a memorizing
+    calibrator achieves on a fold drawn from its OWN fit array. The loco_coverage helper does not
+    exist on the pre-fix code (import fails-before); post-fix it reports an honest sub-1.00
+    finite-sample coverage near the 0.80 nominal, because each point is scored by a calibrator refit
+    on the OTHER n-1 points."""
+    from mammal_repurposing.calibration.conformal import loco_coverage
+    rng = np.random.default_rng(0)
+    raw = np.sort(rng.uniform(4.0, 9.0, 14))
+    truth = raw + rng.normal(0, 0.6, 14)            # real scatter (not trivially perfect)
+    loco_cov = loco_coverage(raw, truth, alpha=0.20)
+    assert loco_cov < 1.0, "honest LOCO coverage must not be the trivial in-sample 1.00"
+    assert 0.5 <= loco_cov <= 0.95, f"LOCO coverage should sit near nominal 0.80, got {loco_cov:.3f}"
+
+
 def test_oob_grouped_ssr_scores_every_point_once_held_out():
     """Deterministic OOF accounting: each of n points lands in exactly one eval fold, so a
     constant-zero predictor accumulates sum(truth^2) as its total out-of-fold SSR."""
