@@ -365,3 +365,22 @@ test still shows a real OOB lift > 10.
 **Rejected alternative:** keep the in-sample lift "because the demo expects it" — rejected: it
 presents pure over-fitting as a +48% generalization gain, the exact leakage family the systemic
 primitive exists to kill.
+
+## C4 — SD ddof inconsistency (ddof=0 here vs ddof=1 elsewhere) — RESOLVED by documentation (zero number change, by design)
+**Defect:** `analysis/benchmark.py:79` reports `np.std(preds)` (population, ddof=0) while
+`validation/within_class.py:98` and `diagnostics/prior_collapse.py:58` use sample SD (ddof=1) — all
+published. The real defect is the *silent* inconsistency, not the value (immaterial at the published
+n; `ddof=0` also handles n=1 groups gracefully where `ddof=1` -> nan).
+**Chosen direction (the directive's documented exception, "document-not-change"):** kept `ddof=0` in
+benchmark.py, added a rationale comment, and set **ddof=0 as the go-forward project convention for
+DESCRIPTIVE SDs**; sample SD (ddof=1) is reserved for INFERENTIAL estimates and confined to the two
+n>1-guarded sites above. The `ddof=1` sites' numbers were NOT changed.
+**Rejected alternative:** change the elsewhere-sites to `ddof=1` (or benchmark to match them) —
+rejected: that would perturb other published numbers for an immaterial change, a pure reproducibility
+cost with zero inferential gain. The silent inconsistency is killed by documentation, not by churning
+numbers.
+**Test (`tests/test_benchmark.py`, also first coverage for a zero-coverage module):** a convention-
+LOCK — asserts `pkd_std` equals the population (ddof=0) SD and differs from the sample (ddof=1) SD on
+an input that distinguishes them, so any future flip to ddof=1 FAILS; plus an n=1 group returns 0.0
+(not nan). (This item is immaterial-by-design, so the test is a forward guard rather than a
+fails-before/passes-after — the documented exception in the directive's governing principle.)

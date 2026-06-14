@@ -76,6 +76,12 @@ def analyze_benchmark(scored: pd.DataFrame) -> list[BenchmarkTargetRow]:
                 binding_mode=mode,
                 n=len(mode_grp),
                 pkd_mean=float(np.mean(preds)),
+                # ddof=0 (population SD) is the GO-FORWARD project convention for DESCRIPTIVE SDs:
+                # the benchmark is the population of test cases, and ddof=0 degrades gracefully on
+                # n=1 groups (ddof=1 -> nan). Sample SD (ddof=1) is reserved for INFERENTIAL
+                # estimates only (validation/within_class.py:98, diagnostics/prior_collapse.py:58),
+                # both guarded for n>1. The split is immaterial at the published n; see
+                # docs/BUG_AUDIT_2026-06.md (C4).
                 pkd_std=float(np.std(preds)),
                 spearman_predicted_vs_measured=rho,
             )
