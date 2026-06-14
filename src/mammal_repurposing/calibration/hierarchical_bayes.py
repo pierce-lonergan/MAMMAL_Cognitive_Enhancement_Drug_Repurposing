@@ -81,6 +81,14 @@ class HierarchicalCalibrationResult:
     shrinkage_weight: float = float("nan")
     method: str = "shrinkage"
     note: str = ""
+    # C2: with the sign-agnostic slope prior the slope SIGN is estimable. A confidently-NEGATIVE
+    # slope marks an INVERTED (informative-but-flipped) family; such "rescues" are kept OUT of the
+    # primary positive-thesis shortlist - their pooled rho is moved to exploratory_negative_rho and
+    # the target is dropped from pooled_rho. direction in {positive,negative,ambiguous};
+    # slope_sign_prob[t] = P(beta_t > 0) from the posterior. (Populated only by the NUTS path.)
+    exploratory_negative_rho: dict[str, float] = field(default_factory=dict)
+    direction: dict[str, str] = field(default_factory=dict)
+    slope_sign_prob: dict[str, float] = field(default_factory=dict)
 
 
 def empirical_bayes_shrinkage(
@@ -141,6 +149,38 @@ def empirical_bayes_shrinkage(
     )
 
 
+def classify_and_route(
+    pooled_rho: dict[str, float],
+    slope_sign_prob: dict[str, float],
+    *,
+    neg_prob_threshold: float = 0.90,
+) -> tuple[dict[str, float], dict[str, float], dict[str, str]]:
+    """Split per-target pooled rho by the estimated SLOPE sign (C2).
+
+    A target whose posterior probability of a NEGATIVE slope (1 - P(beta>0)) exceeds
+    `neg_prob_threshold` is an INVERTED (informative-but-flipped) family: it is removed from the
+    primary `pooled_rho` and recorded in `exploratory_negative_rho`, so an inverted rescue never
+    enters the primary positive-direction shortlist. Returns
+    (primary_pooled_rho, exploratory_negative_rho, direction) where direction[t] is one of
+    {"positive", "negative", "ambiguous"}.
+    """
+    primary: dict[str, float] = {}
+    exploratory: dict[str, float] = {}
+    direction: dict[str, str] = {}
+    for t, rho in pooled_rho.items():
+        p_pos = slope_sign_prob.get(t, 0.5)
+        if (1.0 - p_pos) >= neg_prob_threshold:        # confidently NEGATIVE slope -> inverted
+            direction[t] = "negative"
+            exploratory[t] = rho
+        elif p_pos >= neg_prob_threshold:              # confidently positive slope
+            direction[t] = "positive"
+            primary[t] = rho
+        else:                                          # sign not resolved -> keep, but flag
+            direction[t] = "ambiguous"
+            primary[t] = rho
+    return primary, exploratory, direction
+
+
 def hierarchical_bayesian_nuts(
     family: str,
     per_target_data: dict[str, tuple[np.ndarray, np.ndarray]],
@@ -156,15 +196,20 @@ def hierarchical_bayesian_nuts(
 
     Model:
         alpha_target_i  ~ Normal(alpha_family, sigma_alpha)        # per-target intercept
-        beta_target_i   ~ HalfNormal(beta_family * sigma_beta)     # per-target slope
+        beta_target_i   ~ Normal(beta_family, sigma_beta)          # per-target slope (sign-agnostic)
         alpha_family    ~ Normal(0, 1)
-        beta_family     ~ HalfNormal(1)
+        beta_family     ~ Normal(0, 1)                             # was HalfNormal -> sign estimable
         sigma_alpha,
         sigma_beta      ~ HalfCauchy(0.5)
         y_i ~ Normal(alpha_i + beta_i * x_i, noise)
 
-    Per-target post-cal ρ = corr(beta_i * x_i + alpha_i, y_i)
-    aggregated over the posterior draws.
+    The slope prior is SIGN-AGNOSTIC (Normal, not HalfNormal) so the model can fit the
+    NEGATIVELY-correlated families this rescue path exists to serve. A confidently-negative slope
+    marks an INVERTED (informative-but-flipped) family; those are routed to
+    `exploratory_negative_rho` and excluded from `pooled_rho`, so an inverted rescue never enters
+    the primary positive-direction shortlist (see docs/BUG_AUDIT_2026-06.md, C2).
+
+    Per-target post-cal ρ = corr(beta_i * x_i + alpha_i, y_i) aggregated over the posterior draws.
     """
     if not PYMC_AVAILABLE:
         raise ImportError("PyMC not installed — use empirical_bayes_shrinkage() instead")
@@ -188,12 +233,15 @@ def hierarchical_bayesian_nuts(
 
     with pm.Model() as model:
         alpha_family = pm.Normal("alpha_family", mu=0.0, sigma=1.0)
-        beta_family = pm.HalfNormal("beta_family", sigma=1.0)
+        # Sign-agnostic slope: Normal(mu=beta_family) + HalfCauchy scale (was HalfNormal, which
+        # constrained every per-target slope >= 0 and so could not fit the negative-rho families
+        # this module exists to rescue). See docs/BUG_AUDIT_2026-06.md (C2).
+        beta_family = pm.Normal("beta_family", mu=0.0, sigma=1.0)
         sigma_alpha = pm.HalfCauchy("sigma_alpha", beta=0.5)
         sigma_beta = pm.HalfCauchy("sigma_beta", beta=0.5)
 
         alpha = pm.Normal("alpha", mu=alpha_family, sigma=sigma_alpha, shape=n_targets)
-        beta = pm.HalfNormal("beta", sigma=beta_family * sigma_beta, shape=n_targets)
+        beta = pm.Normal("beta", mu=beta_family, sigma=sigma_beta, shape=n_targets)
         noise = pm.HalfNormal("noise", sigma=1.0)
 
         mu = alpha[idx_arr] + beta[idx_arr] * x_arr
@@ -211,12 +259,15 @@ def hierarchical_bayesian_nuts(
     pooled_hi: dict[str, float] = {}
     n_per_target_dict: dict[str, int] = {}
     single_target_rho: dict[str, float] = {}
+    slope_sign_prob: dict[str, float] = {}
     for i, t in enumerate(targets):
         mask = idx_arr == i
         n_per_target_dict[t] = int(mask.sum())
         # Pull posterior draws of alpha_i, beta_i
         alpha_draws = idata.posterior["alpha"].values[:, :, i].flatten()
         beta_draws = idata.posterior["beta"].values[:, :, i].flatten()
+        # P(slope > 0): now meaningful because the slope prior is sign-agnostic.
+        slope_sign_prob[t] = float(np.mean(beta_draws > 0))
         # Predicted = alpha + beta * x  for each draw → compute correlation
         x_target = x_arr[mask]
         y_target = y_arr[mask]
@@ -235,19 +286,30 @@ def hierarchical_bayesian_nuts(
         else:
             single_target_rho[t] = float("nan")
 
-    family_mean = float(np.mean(list(pooled_rho.values())))
+    # C2: route confidently-negative-slope (inverted) families out of the primary pooled_rho so
+    # they cannot enter the positive-direction shortlist; surface them in exploratory_negative_rho.
+    primary_pooled, exploratory_neg, direction = classify_and_route(pooled_rho, slope_sign_prob)
+    family_mean = (float(np.mean(list(primary_pooled.values())))
+                   if primary_pooled else float("nan"))
+    n_exploratory = len(exploratory_neg)
     return HierarchicalCalibrationResult(
         family=family,
         targets=targets,
         n_per_target=n_per_target_dict,
         single_target_rho=single_target_rho,
-        pooled_rho=pooled_rho,
+        pooled_rho=primary_pooled,
         pooled_ci_lower=pooled_lo,
         pooled_ci_upper=pooled_hi,
         family_mean_rho=family_mean,
         shrinkage_weight=float("nan"),
         method="pymc_nuts",
-        note=f"PyMC NUTS: {n_chains} chains × {n_draws} draws + {n_tune} warmup",
+        note=(f"PyMC NUTS: {n_chains} chains × {n_draws} draws + {n_tune} warmup"
+              + (f"; {n_exploratory} inverted (negative-slope) target(s) routed to "
+                 "exploratory_negative_rho, excluded from the primary shortlist"
+                 if n_exploratory else "")),
+        exploratory_negative_rho=exploratory_neg,
+        direction=direction,
+        slope_sign_prob=slope_sign_prob,
     )
 
 

@@ -294,3 +294,37 @@ Remaining (documented, lower value, not yet wired): **C3** `calibration/pocket_r
 SSR lift (synthetic-demo-only, no manuscript number) and **B1** `scripts/43` conformal-coverage
 relabel (a script-level author decision) — both should move onto `folding` / a grouped-CV helper in
 a follow-up.
+
+---
+
+# RESOLUTION — the seven judgment calls (2026-06 remediation directive)
+
+Each of B1/B4/B7/C2/C3/C4/C5 is resolved below with the **chosen direction** and the **rejected
+alternative + why** (so a future agent does not "helpfully" revert). MAMMAL has no D-code/ship-doc
+registry, so these stanzas + the `B*/C*` item codes ARE the durable per-item record. Convention note
+recorded for posterity: the directive's "D-code registry / ship-doc / pre-commit changelog gate" are
+MOMENTUM-X conventions and do not exist in this repo (CI = ruff E9/F63/F7/F82 + non-slow pytest); the
+intent is honored via these stanzas. Phase-2 (results-changing) number movements are tracked in
+`docs/PREREG_DEVIATIONS_2026-06.md`.
+
+## C2 — hierarchical NUTS slope prior forced positivity — RESOLVED (zero published-number change; latent path)
+**Defect:** `calibration/hierarchical_bayes.py` NUTS model drew the per-target slope from
+`HalfNormal` (slope >= 0), so it could not fit the negative-rho SLC6/GRIN families the rescue path
+exists for, and the slope SIGN was not estimable. Latent today (the shipped path is the shrinkage
+fallback), so no published number moves.
+**Chosen direction:** made the slope prior **sign-agnostic** — `beta_family ~ Normal(0,1)` (mu),
+`beta ~ Normal(mu=beta_family, sigma=sigma_beta)` with the `HalfCauchy` scale. Added a `classify_and_route`
+helper + three result fields (`exploratory_negative_rho`, `direction`, `slope_sign_prob`): a
+confidently-negative-slope ("inverted but informative") family is now **removed from `pooled_rho`
+and routed to `exploratory_negative_rho`**, so an inverted rescue can never enter the primary
+positive-direction shortlist. Verified by `tests/test_hierarchical_directional.py` (a fast routing
+test + a slow NUTS test that recovers the negative slope and routes it — both fail on the old prior).
+**Rejected alternative:** "just unconstrain and let negative-rho families flow into the shortlist" —
+rejected because enabling a negative-direction claim is a substantive scientific change not inside
+the manuscript's positive-direction thesis; routing to a labeled exploratory output preserves the
+estimable sign WITHOUT silently expanding the shortlist's claim. "Leave the HalfNormal" — rejected:
+a hidden hard constraint that defeats the module's stated purpose is a defect regardless of how the
+rescue is ultimately surfaced.
+**Follow-up (latent path):** when the NUTS path is next run, `scripts/49_v5_hierarchical_grin.py`
+should print an explicit "Exploratory: sign-estimated negative-rho families (NOT shortlisted)"
+section from `exploratory_negative_rho` (the data is already separated in the result).
