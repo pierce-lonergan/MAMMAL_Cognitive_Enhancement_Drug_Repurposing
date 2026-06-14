@@ -52,50 +52,21 @@ def bootstrap_loco_rho(
     ci_low: float = 2.5,
     ci_high: float = 97.5,
 ) -> tuple[float, float, float, float]:
-    """Bootstrap the post-cal Spearman ρ.
+    """Out-of-bag bootstrap of the post-cal Spearman rho.
 
-    For each bootstrap iteration:
-      - resample with replacement, refit the calibrator on the resample,
-        predict on the original raw values, compute Spearman ρ vs truth.
+    Delegates to the shared leakage-safe primitive (validation.folding.oob_bootstrap_rho): each
+    iteration fits the calibrator on the in-bag resample and scores rho on the OUT-OF-BAG points
+    ONLY. The previous version refit on the resample but scored on the FULL original raw array, so
+    ~63% of every resample was in-sample -> an optimistic ci_low that fed the ship/escalate Tier
+    gate (pure-null data could pass `ci_low > 0`). See docs/BUG_AUDIT_2026-06.md (C1).
 
-    Returns: (point_estimate, mean_boot_rho, ci_low, ci_high). Point estimate
-    is the on-fit-data ρ; bootstrap statistics characterise its variability.
+    Returns: (point_insample, mean_oob_rho, ci_low, ci_high). The point estimate is the in-sample
+    fit-on-full anchor; the bootstrap mean + CI are now out-of-bag.
     """
-    raw = np.asarray(raw, dtype=float)
-    truth = np.asarray(truth, dtype=float)
-    n = len(raw)
-    if n < 4:
-        return float("nan"), float("nan"), float("nan"), float("nan")
-
-    # Point estimate via fit-on-full + predict-on-full (in-sample ρ)
-    try:
-        pred_full = fit_predict_fn(raw, truth, raw)
-        point = float(spearmanr(pred_full, truth)[0])
-    except Exception:
-        point = float("nan")
-
-    rng = np.random.default_rng(seed)
-    rhos = []
-    for _ in range(n_iter):
-        idx = rng.integers(0, n, n)
-        if len(np.unique(idx)) < 4:
-            continue
-        try:
-            pred = fit_predict_fn(raw[idx], truth[idx], raw)
-            r, _ = spearmanr(pred, truth)
-            if not np.isnan(r):
-                rhos.append(r)
-        except Exception:
-            continue
-
-    if not rhos:
-        return point, float("nan"), float("nan"), float("nan")
-
-    return (
-        point,
-        float(np.mean(rhos)),
-        float(np.percentile(rhos, ci_low)),
-        float(np.percentile(rhos, ci_high)),
+    from ..validation.folding import oob_bootstrap_rho
+    return oob_bootstrap_rho(
+        raw, truth, fit_predict_fn,
+        n_iter=n_iter, seed=seed, ci_low=ci_low, ci_high=ci_high,
     )
 
 

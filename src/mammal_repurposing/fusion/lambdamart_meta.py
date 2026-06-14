@@ -206,12 +206,18 @@ def fit_lambdamart(
         else:
             df[c] = df[c].fillna(df[c].median() if df[c].notna().any() else 0.0)
 
-    # Discretize label to NDCG gain
-    df["__gain"] = discretize_pchembl(df[label_col].to_numpy(), n_buckets=5)
-
+    # Split FIRST, then discretize the label into NDCG gain buckets with edges fit on TRAIN ONLY.
+    # Discretizing over train+test before the split lets the held-out labels define the training
+    # buckets -> leakage into the published held-out NDCG. See docs/BUG_AUDIT_2026-06.md (B3).
+    from ..validation.folding import apply_quantile_edges, fit_quantile_edges
     train, test = train_test_split_by_target(df, test_frac=test_frac, seed=seed)
     if len(train) == 0:
         raise ValueError("train split empty after target hold-out")
+    train = train.copy()
+    test = test.copy()
+    _gain_edges = fit_quantile_edges(train[label_col].to_numpy(), n_bins=5)
+    train["__gain"] = apply_quantile_edges(train[label_col].to_numpy(), _gain_edges)
+    test["__gain"] = apply_quantile_edges(test[label_col].to_numpy(), _gain_edges)
 
     # Sort train by group so LightGBM's group array works
     train = train.sort_values("target_uniprot").reset_index(drop=True)

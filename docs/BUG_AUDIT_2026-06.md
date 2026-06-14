@@ -269,3 +269,28 @@ ad hoc and several get the fit/score boundary wrong in the optimistic direction.
 by all calibration/evaluation paths, plus a CI regression test that feeds RANDOM-LABEL null input and
 asserts every self-evaluation metric collapses to ~0 / fails its gate. This would have caught all
 four at once and is the single highest-value hardening for the manuscript's validation claims.
+
+### Systemic fix — DELIVERED (primitive + null test + 2 paths wired)
+
+Built `src/mammal_repurposing/validation/folding.py`:
+- `fit_quantile_edges` / `apply_quantile_edges` — discretize using edges fit on TRAIN only.
+- `oob_bootstrap_rho` — bootstrap a Spearman rho scored OUT-OF-BAG only (never the fit points).
+
+`tests/test_folding.py` is the random-label null regression test: it asserts that an OOB bootstrap of
+a MEMORIZING calibrator scores rho > 0.9 IN-SAMPLE yet its OOB CI still spans 0 on pure noise (the
+exact property the contaminated paths lacked), plus that quantile edges fit on train apply
+monotonically to held-out data. Full non-slow suite green.
+
+Wired onto the primitive (RESULTS-CHANGING -> regenerate + re-bless before citing):
+- **C1**: `calibration/diagnostics.py::bootstrap_loco_rho` now delegates to `oob_bootstrap_rho`, so
+  the Tier-gate CI is honest. Re-run `scripts/32_*` (the Tier A/B/C `decisions` CSV may change, in
+  the fail-safe direction — only demotes optimistic ship calls).
+- **B3**: `fusion/lambdamart_meta.py::fit_lambdamart` now splits BEFORE discretizing and fits the
+  NDCG-gain edges on train only. Re-run -> published held-out NDCG changes (still PASSES per the
+  audit); regenerate `lambdamart_meta_v1.md`. (The in-sample baseline at L297 is intentionally left
+  as-is.)
+
+Remaining (documented, lower value, not yet wired): **C3** `calibration/pocket_routed.py` in-sample
+SSR lift (synthetic-demo-only, no manuscript number) and **B1** `scripts/43` conformal-coverage
+relabel (a script-level author decision) — both should move onto `folding` / a grouped-CV helper in
+a follow-up.
