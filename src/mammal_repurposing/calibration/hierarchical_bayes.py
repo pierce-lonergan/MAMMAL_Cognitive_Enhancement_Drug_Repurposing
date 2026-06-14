@@ -35,6 +35,7 @@ import logging
 from dataclasses import dataclass, field
 
 import numpy as np
+from scipy.stats import spearmanr
 
 logger = logging.getLogger(__name__)
 
@@ -330,6 +331,10 @@ def fit_family(
     n_per: dict[str, int] = {}
     for t, (x, y) in per_target_data.items():
         n_per[t] = len(x)
-        single_rho[t] = (float(np.corrcoef(x, y)[0, 1])
+        # B7: Spearman (rank) rho -- the framework convention (manuscript Methods + V7 gates) and the
+        # more robust statistic for the n=7-10 effect sizes here. Was Pearson np.corrcoef. The NUTS
+        # path's pooled-rho (and its single-rho diagnostic) are intentionally left as Pearson; only
+        # this shipped shrinkage path is harmonized. See docs/BUG_AUDIT_2026-06.md (B7).
+        single_rho[t] = (float(spearmanr(x, y)[0])
                          if len(x) > 1 else float("nan"))
     return empirical_bayes_shrinkage(family, single_rho, n_per)

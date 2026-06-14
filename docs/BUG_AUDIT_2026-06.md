@@ -425,3 +425,41 @@ untouched.
 1.2816*sd -> fails-before/passes-after; all 7 existing dossier tests still pass (g + grade unaffected).
 **FLAG (NOT regenerated here):** `reports/pipeline/clinician_dossiers_v1.md` is STALE (its fallback
 CIs are 80%-wide labeled 90%); regenerate after sign-off.
+
+## B7 — shrinkage `single_target_rho` used Pearson, convention is Spearman — RESOLVED (results-changing; report flagged stale)
+**Defect:** `calibration/hierarchical_bayes.py` `fit_family` (the SHIPPED shrinkage path) computed
+`single_target_rho` with Pearson `np.corrcoef` while the framework convention (manuscript Methods +
+V7 gates) is Spearman; |diff| ~0.10 at n=7-10.
+**Chosen direction (switch to Spearman):** the live shrinkage path now uses `spearmanr`. The NUTS
+pooled-rho (line 277) AND its single-rho diagnostic (line 285) are intentionally LEFT as Pearson per
+the directive's scope (the latent NUTS path is cordoned off; swapping the NUTS pooled-rho on a
+monotone fit would collapse pooled==single and erase the rescue effect).
+**Rejected alternative:** relabel the column "Pearson r" — rejected: the "ρ" symbol + framework
+convention show Spearman was intended, and rank correlation is more robust for n=7-10 biological
+effect sizes with outliers/non-normality. Reporting Pearson under the same ρ symbol as the rest of
+the framework is a misleading cross-module inconsistency.
+**Reconciliation:** pre-reg SILENT (the rescue rho's statistic was never registered); deviation from
+the framework Spearman convention. Manuscript NOT AFFECTED (single-rho values absent). Direction =
+neutral (harmonizes to the convention). See `docs/PREREG_DEVIATIONS_2026-06.md`.
+**Test (`tests/test_hierarchical_shrinkage_rho.py`):** on a monotone-nonlinear relationship (Spearman
+1.0 vs Pearson ~0.93) the shrinkage `single_target_rho` == Spearman -> fails-before/passes-after; the
+3 existing hierarchical tests still pass.
+**FLAG (NOT regenerated here):** `reports/pipeline/hierarchical_bayes_v1.md` "Single ρ" / "Pooled ρ"
+columns are STALE (Pearson-derived); regenerate after sign-off.
+
+---
+
+**ALL SEVEN judgment calls (B1, B4, B7, C2, C3, C4, C5) are RESOLVED** (commits e8f360d -> the B7
+commit). Phase 1 (C2/C5/C3/C4) moved zero published numbers. Phase 2 (B1/B4/B7) changed the code but
+NOT the reports — every affected report is flagged stale in the regeneration checklist below and in
+`docs/PREREG_DEVIATIONS_2026-06.md` (the only registered-commitment deviation is B4, which the fix
+RESTORES; all four are absent from the manuscript, so none is erratum-warranting). Each item has a
+fails-before/passes-after (or, for the immaterial C4, a convention-lock) regression test, and the
+full non-slow suite + CI ruff rules are green after every commit.
+
+### Regeneration checklist for the Phase-2 fixes (flagged, NOT regenerated here)
+- **B1** -> re-run `scripts/43_v5_conformal_calibration.py` => `reports/pipeline/conformal_calibration_v1.md` (`held_out_coverage` -> `loco_coverage`).
+- **B3** (already shipped) -> re-run lambdamart => `reports/pipeline/lambdamart_meta_v1.md` (NDCG@25 0.8912 -> ~0.9117).
+- **B4** -> regenerate `reports/pipeline/clinician_dossiers_v1.md` (fallback CIs now true 90%).
+- **B7** -> re-run the shrinkage path => `reports/pipeline/hierarchical_bayes_v1.md` ("Single ρ" now Spearman).
+- **B2/B5/B6 + C1** (earlier this sweep) -> per their own checklists above.
