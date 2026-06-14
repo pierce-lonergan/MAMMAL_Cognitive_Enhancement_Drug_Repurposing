@@ -368,23 +368,32 @@ def roberts_2020_ceiling_check(
     target_smd_predictions: dict[str, float] | None = None,
     smd_ceiling: float = 0.5,
     upper_quantile: float = 0.90,
+    target_smd_sd: dict[str, float] | None = None,
 ) -> dict[str, str]:
     """Gate 1 from Cluster D §G — Roberts 2020 SMD ceiling.
 
-    "No target's predicted modulator effect-size posterior may exceed
-     Hedges' g = 0.5 at 90% credible upper bound."
+    "No target's predicted modulator effect-size posterior may exceed Hedges' g = 0.5 at the
+    `upper_quantile` (default 90%) credible UPPER BOUND."
 
-    If `target_smd_predictions` is None, this is a no-op (no SMD predictions
-    available); returns each target as REGIME_OK.
+    When `target_smd_sd[t]` is provided, the check uses the promised upper bound
+    ``pred + z(upper_quantile) * sd`` (z = Phi^-1(upper_quantile)) — this is the honest gate. When
+    the SD is NOT provided the check DEGRADES to a conservative POINT comparison (``pred > ceiling``)
+    and `upper_quantile` cannot be applied for that target; the degradation is explicit, NOT silent
+    (the previous code ignored `upper_quantile` entirely, doing a point comparison while the
+    function name and param promised an upper bound). A target absent from
+    `target_smd_predictions` returns NO_SMD_PREDICTION.
     """
+    from scipy.stats import norm
+    z = float(norm.ppf(upper_quantile))
     out: dict[str, str] = {}
     for t in posterior.targets:
         if not target_smd_predictions or t not in target_smd_predictions:
             out[t] = "NO_SMD_PREDICTION"
             continue
         smd = target_smd_predictions[t]
-        if smd > smd_ceiling:
-            out[t] = "REGIME_VIOLATION"
-        else:
-            out[t] = "REGIME_OK"
+        sd = (target_smd_sd or {}).get(t)
+        # Use the upper_quantile credible upper bound when an SD is available; else degrade to the
+        # point estimate (documented above).
+        bound = smd + z * sd if sd is not None else smd
+        out[t] = "REGIME_VIOLATION" if bound > smd_ceiling else "REGIME_OK"
     return out

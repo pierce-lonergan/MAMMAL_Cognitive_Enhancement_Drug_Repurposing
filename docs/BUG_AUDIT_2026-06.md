@@ -328,3 +328,22 @@ rescue is ultimately surfaced.
 **Follow-up (latent path):** when the NUTS path is next run, `scripts/49_v5_hierarchical_grin.py`
 should print an explicit "Exploratory: sign-estimated negative-rho families (NOT shortlisted)"
 section from `exploratory_negative_rho` (the data is already separated in the result).
+
+## C5 — `roberts_2020_ceiling_check` checked a point, not the 90% upper bound — RESOLVED (zero published-number change)
+**Defect:** `cluster_d/bayesian_prior.py:roberts_2020_ceiling_check` accepted an `upper_quantile`
+param it never used and compared the POINT prediction against the ceiling, while its name + docstring
+promised a 90% credible UPPER BOUND — a latent landmine (a future caller wiring it into a real gate
+silently gets a point comparison). `results_impact` none (the shipped Roberts gate flows through
+`validation_gates.gate_1_roberts_ceiling`, not this function).
+**Chosen direction (the directive's primary "make it honest in behavior"):** plumbed the missing
+input — added optional `target_smd_sd`; when an SD is supplied the check now computes the promised
+bound `pred + z(upper_quantile)*sd` (z = Phi^-1(upper_quantile)) and compares THAT. The
+`upper_quantile` param is therefore genuinely used. When no SD is supplied it degrades to a
+conservative point comparison, documented explicitly (so existing point-only callers/tests are
+unchanged). Verified by `tests/test_roberts_ceiling_upper_bound.py`: a target with point 0.40 (< 0.5)
+but 90% upper bound 0.656 now returns REGIME_VIOLATION (the old code returned REGIME_OK).
+**Rejected alternative:** the directive's fallback "just rename + drop the vestigial arg" — rejected
+because the upper-bound input CAN be plumbed (optional `target_smd_sd`), so the function can be made
+honest in BEHAVIOR (the stronger fix) rather than only in name; dropping the arg would permanently
+forfeit the real upper-bound check. Also fixed a stale docstring line that claimed None input returns
+REGIME_OK (it returns NO_SMD_PREDICTION).
