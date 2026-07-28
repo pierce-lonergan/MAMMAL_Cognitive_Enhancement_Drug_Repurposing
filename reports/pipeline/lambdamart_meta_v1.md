@@ -7,7 +7,7 @@ Supervised LightGBM `lambdarank` trained on the 275 CORROBORATED ChEMBL evidence
 - **n_train**: 214 CORROBORATED pairs across 16 targets
 - **n_test**:  60 CORROBORATED pairs across 5 held-out targets
 - **Test targets**: O60741, O76083, P08913, Q08499, Q9Y5N1
-- **LambdaMART NDCG@25 (held-out)**: 0.8912
+- **LambdaMART NDCG@25 (held-out)**: 0.8716
 - **Baseline (raw MAMMAL pkd) NDCG@25 (in-sample)**: 0.7739
 
 **Hypothesis** (LambdaMART NDCG@25 ≥ baseline − 0.02 tolerance): PASS
@@ -16,15 +16,15 @@ Supervised LightGBM `lambdarank` trained on the 275 CORROBORATED ChEMBL evidence
 
 | Feature | Gain |
 |---|---|
-| admet_score | 236.2 |
-| raw_pkd_dti | 164.1 |
-| calibrated_pkd_dti | 114.7 |
-| target_phase_a7_rho | 28.4 |
-| n_tier_3_liab | 18.5 |
-| boltzina_aff | 17.6 |
-| n_tier_2_liab | 12.5 |
-| n_tier_1_liab | 0.0 |
+| admet_score | 221.9 |
+| calibrated_pkd_dti | 173.7 |
+| raw_pkd_dti | 143.4 |
+| target_phase_a7_rho | 42.8 |
+| n_tier_3_liab | 18.8 |
+| n_tier_2_liab | 4.1 |
+| boltzina_aff | 1.0 |
 | moa_score | 0.0 |
+| n_tier_1_liab | 0.0 |
 
 ## Production use
 

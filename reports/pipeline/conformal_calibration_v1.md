@@ -2,25 +2,29 @@
 
 Split-conformal isotonic prediction intervals at **nominal coverage = 80%**. For each cognition target with ≥10 joined ChEMBL truth points, fit isotonic on 70% of the data, compute residuals on the remaining 30%, and emit q_α = the ⌈(n_cal+1)(1-α)⌉-th order statistic of the residuals.
 
-Targets fit: **5** of 21 attempted.
+Targets fit: **5** of 30 attempted.
 
 ## Per-target conformal calibrators
 
-| Target | Gene | n | n_train | n_cal | q_α (pKd half-width) | Emp cov (cal) | Held-out cov |
+| Target | Gene | n | n_train | n_cal | q_α (pKd half-width) | Emp cov (cal, in-sample) | LOCO cov (honest) |
 |---|---|---|---|---|---|---|---|
-| P42261 | GRIA1 | 12 | 7 | 5 | 1.472 | 1.00 | 1.00 |
-| Q01959 | SLC6A3 | 10 | 5 | 5 | 1.470 | 1.00 | 1.00 |
-| P08913 | ADRA2A | 10 | 5 | 5 | 0.413 | 1.00 | 1.00 |
+| P42261 | GRIA1 | 12 | 7 | 5 | 1.472 | 1.00 | 0.92 |
+| Q01959 | SLC6A3 | 10 | 5 | 5 | 1.470 | 1.00 | 0.90 |
+| P08913 | ADRA2A | 10 | 5 | 5 | 0.413 | 1.00 | 0.90 |
 | O76083 | PDE9A | 10 | 5 | 5 | 0.400 | 1.00 | 1.00 |
-| Q16620 | NTRK2 | 10 | 5 | 5 | 1.513 | 1.00 | 1.00 |
+| Q16620 | NTRK2 | 10 | 5 | 5 | 1.513 | 1.00 | 0.90 |
 
-## Skipped (n < 10): 16 targets
+## Skipped (n < 10): 25 targets
 
-CHRNA7(n=8), ACHE(n=2), GRIA2(n=3), GRIA3(n=1), GRIA4(n=3), GRIN2A(n=1), GRIN2B(n=9), DRD1(n=9), SLC6A2(n=7), HRH3(n=5), HCRTR1(n=4), HCRTR2(n=5), PDE4D(n=8), SIGMAR1(n=8), KCNQ2(n=1), KCNQ3(n=0)
+CHRNA7(n=8), ACHE(n=2), GRIA2(n=3), GRIA3(n=1), GRIA4(n=3), GRIN2A(n=1), GRIN2B(n=9), DRD1(n=9), SLC6A2(n=7), HRH3(n=5), HCRTR1(n=4), HCRTR2(n=5), PDE4D(n=8), SIGMAR1(n=8), KCNQ2(n=1), KCNQ3(n=0), HTR1A(n=0), HTR4(n=0), SLC6A9(n=0), GRM2(n=0), GRM3(n=0), GRM5(n=0), CHRM1(n=0), CHRM4(n=0), HTR6(n=0)
 
 ## Validation guarantee
 
-Under the exchangeability assumption, the marginal coverage of this predictor is guaranteed ≥ 80% on any new exchangeable test point. The empirical coverages above are computed on the calibration / held-out folds themselves and are a sanity check, not the validity certificate.
+Under the exchangeability assumption, the marginal coverage of this predictor is guaranteed ≥ 80% on any new exchangeable test point.
+
+- **Emp cov (cal, in-sample)** is computed on the calibration fold the quantile was read from, so it is *definitionally* near 1.00 — a sanity check only, NOT evidence of coverage.
+- **LOCO cov (honest)** is leave-one-out: every point is scored by a calibrator refit on the other n-1 points, so no point is ever scored by a model that saw it. This column replaces the previous "held-out" column, which drew its test fold from the SAME array used to fit the calibrator and therefore reported a meaningless 1.00 for every target (docs/BUG_AUDIT_2026-06.md, B1).
+- At these n (10-12) LOCO coverage is **discrete** — it can only take multiples of 1/n — so treat it as a finite-sample estimate with wide Monte-Carlo error around the 80% nominal, not a point guarantee.
 
 **Headline ρ comparison**: the §7.11 isotonic LOCO ρ is a POINT-estimate quality metric; conformal q_α is the matching INTERVAL-width metric. Both calibrators ride on top of the same fitted isotonic — a tight q_α indicates the model's residuals are concentrated, a wide q_α flags fundamentally uncertain targets where the production pipeline should be skeptical.
 

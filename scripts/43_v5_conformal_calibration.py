@@ -137,11 +137,11 @@ def main() -> int:
     if ok:
         L.append("## Per-target conformal calibrators")
         L.append("")
-        L.append("| Target | Gene | n | n_train | n_cal | q_α (pKd half-width) | Emp cov (cal) | Held-out cov |")
+        L.append("| Target | Gene | n | n_train | n_cal | q_α (pKd half-width) | Emp cov (cal, in-sample) | LOCO cov (honest) |")
         L.append("|---|---|---|---|---|---|---|---|")
         for r in ok:
             ec = r["empirical_coverage_cal"]
-            hc = r["held_out_coverage"]
+            hc = r["loco_coverage"]
             L.append(f"| {r['target_uniprot']} | {r['gene']} | "
                      f"{r['n']} | {r['n_train']} | {r['n_cal']} | "
                      f"{r['q_alpha']:.3f} | "
@@ -160,9 +160,19 @@ def main() -> int:
     L.append("")
     L.append(f"Under the exchangeability assumption, the marginal coverage of "
              f"this predictor is guaranteed ≥ {1 - args.alpha:.0%} on any new "
-             "exchangeable test point. The empirical coverages above are "
-             "computed on the calibration / held-out folds themselves and are "
-             "a sanity check, not the validity certificate.")
+             "exchangeable test point.")
+    L.append("")
+    L.append("- **Emp cov (cal, in-sample)** is computed on the calibration fold the quantile was "
+             "read from, so it is *definitionally* near 1.00 — a sanity check only, NOT evidence "
+             "of coverage.")
+    L.append("- **LOCO cov (honest)** is leave-one-out: every point is scored by a calibrator refit "
+             "on the other n-1 points, so no point is ever scored by a model that saw it. This "
+             "column replaces the previous \"held-out\" column, which drew its test fold from the "
+             "SAME array used to fit the calibrator and therefore reported a meaningless 1.00 for "
+             "every target (docs/BUG_AUDIT_2026-06.md, B1).")
+    L.append(f"- At these n (10-12) LOCO coverage is **discrete** — it can only take multiples of "
+             f"1/n — so treat it as a finite-sample estimate with wide Monte-Carlo error around the "
+             f"{1 - args.alpha:.0%} nominal, not a point guarantee.")
     L.append("")
     L.append("**Headline ρ comparison**: the §7.11 isotonic LOCO ρ is a "
              "POINT-estimate quality metric; conformal q_α is the matching "

@@ -23,6 +23,7 @@ Quality filters applied (cap noise from low-confidence assays):
 from __future__ import annotations
 
 import logging
+import os
 import sqlite3
 from functools import lru_cache
 from pathlib import Path
@@ -51,11 +52,23 @@ class PairEvidence(TypedDict):
     best_standard_value_nm: Optional[float]
 
 
+# PINNED ChEMBL release. Every published number in this repo was computed against ChEMBL 36;
+# leaving this unpinned silently re-bases results onto whatever release is current at re-run time.
+CHEMBL_VERSION: str = os.environ.get("MAMMAL_CHEMBL_VERSION", "36")
+
+
 def get_conn() -> sqlite3.Connection:
     """Lazy-open the local ChEMBL SQLite mirror via chembl-downloader.
 
+    The ChEMBL release is PINNED to `CHEMBL_VERSION` (default "36" — the release every published
+    number in this repo was computed against). Previously this called
+    `download_extract_sqlite()` with no version, which resolves to `latest()`: once ChEMBL published
+    37 the same code silently re-based every ChEMBL-derived result onto a different data release
+    (and triggered a 5.4 GB download). A pinned release is required for a reproducible paper.
+    Override deliberately via the MAMMAL_CHEMBL_VERSION env var.
+
     Note on chembl-downloader 0.5.2 API quirks:
-        - `latest()` returns a version string like "36" (NOT a path).
+        - `latest()` returns a version string like "36" (NOT a path) — and it CHANGES over time.
         - `download_extract_sqlite()` returns a `Path` to the .db file and is
           idempotent (no re-download if cached). We use it for path resolution.
         - `connect()` is a context manager; not useful for a singleton pattern.
@@ -67,7 +80,7 @@ def get_conn() -> sqlite3.Connection:
     import chembl_downloader  # noqa: PLC0415
 
     try:
-        _DB_PATH = Path(chembl_downloader.download_extract_sqlite())
+        _DB_PATH = Path(chembl_downloader.download_extract_sqlite(version=CHEMBL_VERSION))
     except Exception as e:
         raise FileNotFoundError(
             "ChEMBL SQLite not available. Run:\n"

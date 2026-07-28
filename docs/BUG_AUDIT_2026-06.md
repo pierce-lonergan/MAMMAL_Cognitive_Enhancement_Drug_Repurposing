@@ -457,9 +457,81 @@ RESTORES; all four are absent from the manuscript, so none is erratum-warranting
 fails-before/passes-after (or, for the immaterial C4, a convention-lock) regression test, and the
 full non-slow suite + CI ruff rules are green after every commit.
 
-### Regeneration checklist for the Phase-2 fixes (flagged, NOT regenerated here)
-- **B1** -> re-run `scripts/43_v5_conformal_calibration.py` => `reports/pipeline/conformal_calibration_v1.md` (`held_out_coverage` -> `loco_coverage`).
-- **B3** (already shipped) -> re-run lambdamart => `reports/pipeline/lambdamart_meta_v1.md` (NDCG@25 0.8912 -> ~0.9117).
-- **B4** -> regenerate `reports/pipeline/clinician_dossiers_v1.md` (fallback CIs now true 90%).
-- **B7** -> re-run the shrinkage path => `reports/pipeline/hierarchical_bayes_v1.md` ("Single ρ" now Spearman).
-- **B2/B5/B6 + C1** (earlier this sweep) -> per their own checklists above.
+---
+
+# WAVE 3 — defects found by ACTUALLY RUNNING the pipeline (2026-07-28)
+
+Regenerating the stale reports exposed four defects that no amount of static review had surfaced,
+because they only exist at run time. Measured before/after numbers are in
+`docs/PREREG_DEVIATIONS_2026-06.md`.
+
+## C6 — the hierarchical NUTS path emitted UNCONVERGED numbers, and its pooled-ρ metric is degenerate
+**How it surfaced:** PyMC became installed during this sweep, so `fit_family(prefer_pymc=...)`
+silently switched the shipped path from James-Stein shrinkage to NUTS for the first time ever.
+**Defect 1 (fail-open):** the NUTS fit produced **148 / 160 / 281 divergences** (R-hat up to 1.010)
+on the live panel and wrote those posteriors into `hierarchical_bayes_v1.md` as authoritative, with
+no convergence check anywhere.
+**Defect 2 (degenerate metric):** `pooled_rho` is computed as `corr(alpha_i + beta_i * x_i, y_i)`.
+Pearson correlation is INVARIANT under a positive affine transform, so this identically equals
+`sign(beta_i) * corr(x_i, y_i)` — it can never differ in MAGNITUDE from `single_target_rho`.
+The metric is structurally incapable of expressing the pooling the module exists to perform.
+Verified numerically to 1e-12 and locked by a test. Observed live: Δρ = +0.001 / +0.000 / −0.001.
+**Defect 3 (false provenance):** the report header printed "**Method**: PyMC NUTS" whenever PyMC was
+merely importable, while the per-family note hard-coded "PyMC not installed" — so the regenerated
+report simultaneously claimed NUTS, claimed PyMC was absent, and showed shrinkage numbers.
+**Fix:** added convergence diagnostics (`n_divergences`, `rhat_max`, `ess_min`, `converged`) and made
+`fit_family` **fail closed** — a non-converged NUTS fit is rejected and falls back to the
+deterministic shrinkage estimator, with the real reason recorded in the note. The header now reports
+the method ACTUALLY used per family. The degeneracy is documented at the definition site and locked
+by `tests/test_hierarchical_convergence_gate.py`.
+**Consequence:** B7's Spearman fix only became visible after this, because the NUTS path (still
+Pearson by design) had been shadowing the shrinkage path.
+**NOT fixed (deliberate):** the degenerate pooled-ρ metric itself. Making the NUTS path actually pool
+requires modelling the correlations (e.g. hierarchical Fisher-z) rather than the (α, β) regression —
+a modelling decision, not a bug fix. Until then the shrinkage estimator is the only path that
+performs real partial pooling, and the gate keeps the broken one out of the reports.
+
+## C7 — the ChEMBL release was never pinned (silent data-provenance drift)
+`fetchers/chembl_sqlite.get_conn()` called `download_extract_sqlite()` with no version, which
+resolves to `latest()`. Every published ChEMBL-derived number was computed against **ChEMBL 36**;
+by this sweep `latest()` had become **37**, so a naive re-run would have silently re-based every
+result onto a different data release (and started a 5.4 GB download — observed). The module's own
+docstring asserted "`latest()` returns 36", which had quietly become false.
+**Fix:** pinned `CHEMBL_VERSION = os.environ.get("MAMMAL_CHEMBL_VERSION", "36")` and passed it
+through, so re-runs are reproducible and hit the existing cache. Deliberate upgrades are opt-in.
+
+## B4 (completion) — the dossier interval defect was deeper than the z-multiplier
+Regenerating revealed that widening z 1.2816 -> 1.6449 changed **nothing** in the shipped dossiers,
+because every card takes its interval verbatim from the curated modulator-anchor table; the
+symmetric fallback is almost never hit. Two real defects were behind that:
+1. **Unverifiable label** — anchor CIs are copied from source meta-analyses and the anchor table
+   records only "CI on g where available", never the LEVEL. Rendering them as "90% CrI" asserts a
+   level that is not recorded anywhere. Now labelled by provenance ("CI as published by source
+   meta-analysis" vs "90% CrI, class prior"); no level is claimed that cannot be supported.
+2. **Point estimate outside its own interval** — in the ledger branch `g` comes from the compound's
+   own pivotal trial while `CI_lo/CI_hi` come from the anchor's pooled estimate. For
+   **methylphenidate/ADHD** this shipped as `g = +0.50` with `CI = [+0.10, +0.32]` — a clinician-facing
+   card whose point estimate lies outside its stated interval. Now: if the anchor interval does not
+   bracket `g`, the two are recognised as different quantities, the interval falls back to a
+   class-prior 90% CrI centred on `g`, and the discrepancy is stated as an explicit caveat rather
+   than silently reconciled.
+
+## B3 — the predicted improvement was WRONG (retracted)
+The wave-2 audit estimated the leakage fix would move held-out NDCG@25 0.8912 -> ~0.9117 (favorable,
+"max scrutiny"). Measured: **0.8716** — the number goes DOWN, which is the coherent direction for
+removing leakage. The ~0.9117 figure was an unvalidated estimate and is retracted in the deviations
+ledger. Hypothesis still PASSES.
+
+### Regeneration checklist — STATUS
+- **B1** — DONE 2026-07-28. `scripts/43` re-run => `conformal_calibration_v1.md` now reports honest
+  LOCO coverage (0.90–1.00) instead of the in-sample 1.00.
+- **B3** — DONE 2026-07-28. `scripts/47` re-run => NDCG@25 **0.8912 -> 0.8716** (down; prediction
+  retracted). Hypothesis still PASSES.
+- **B4** — DONE 2026-07-28. `scripts/80` re-run => provenance-labelled intervals + the
+  methylphenidate point-outside-interval defect fixed.
+- **B7** — DONE 2026-07-28. `scripts/49` re-run => "Single ρ" now Spearman (and materially weaker).
+- **B2** — partially observable: the gene-map fix is confirmed live (the dossier now renders `HTR6`
+  instead of the raw accession `P50406`). The expanded-panel NUTS re-run (`scripts/62`) is still
+  OUTSTANDING.
+- **B5 / B6 / C1** — OUTSTANDING: re-run `scripts/15` (fusion) + `23` (cluster C) + `26` (shortlist)
+  + `32` (Tier decisions) to refresh the admet/units/Tier-gate artefacts.

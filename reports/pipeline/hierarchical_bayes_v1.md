@@ -1,6 +1,9 @@
 # Hierarchical Bayesian Calibration v1 (§7.15)
 
-**Method**: James-Stein empirical-Bayes shrinkage (PyMC not installed)
+**Method (as actually used)**: James-Stein empirical-Bayes shrinkage  
+_PyMC importable: True._
+
+> **NUTS was attempted and REJECTED by the convergence gate** for at least one family (see per-family notes). The shrinkage estimator's numbers are reported instead; an unconverged posterior is not published as if it were authoritative.
 
 Per-family hierarchical calibration that pools strength across subunit-related targets. Predicted gain: GRIN2A/GRIN2B move from single-target ρ ≈ -0.3 toward pooled ρ ≥ +0.10 via the family prior.
 
@@ -9,40 +12,40 @@ Per-family hierarchical calibration that pools strength across subunit-related t
 
 ## Family `SLC6`
 
-Method: `empirical_bayes_shrinkage`. Family mean ρ = -0.216.
+Method: `empirical_bayes_shrinkage`. Family mean ρ = -0.178.
 Shrinkage weight (mean): 0.498 (higher = less shrunk; lower = more pooled).
 
 | Target | n | Single ρ | Pooled ρ | 95% CI | Δρ |
 |---|---|---|---|---|---|
-| P23975 | 7 | -0.229 | -0.222 | [-0.84, +0.64] | +0.007 |
-| Q01959 | 10 | -0.207 | -0.211 | [-0.75, +0.49] | -0.004 |
+| P23975 | 7 | -0.164 | -0.171 | [-0.82, +0.67] | -0.008 |
+| Q01959 | 10 | -0.188 | -0.184 | [-0.73, +0.51] | +0.005 |
 
-_Note_: PyMC not installed; using James-Stein shrinkage. Install pymc + numpyro for full NUTS posterior credible intervals.
+_Note_: PyMC NUTS ran but did NOT converge (divergences=148, r_hat_max=1.000, ess_min=1088); these numbers are the deterministic James-Stein shrinkage estimator instead. Publishing an unconverged posterior would be misleading (see docs/BUG_AUDIT_2026-06.md, C6).
 
 ## Family `PDE`
 
-Method: `empirical_bayes_shrinkage`. Family mean ρ = +0.313.
+Method: `empirical_bayes_shrinkage`. Family mean ρ = +0.175.
 Shrinkage weight (mean): 0.499 (higher = less shrunk; lower = more pooled).
 
 | Target | n | Single ρ | Pooled ρ | 95% CI | Δρ |
 |---|---|---|---|---|---|
-| O76083 | 10 | +0.217 | +0.264 | [-0.45, +0.77] | +0.047 |
-| Q08499 | 8 | +0.433 | +0.371 | [-0.47, +0.86] | -0.062 |
+| O76083 | 10 | +0.089 | +0.131 | [-0.55, +0.70] | +0.042 |
+| Q08499 | 8 | +0.282 | +0.227 | [-0.58, +0.81] | -0.055 |
 
-_Note_: PyMC not installed; using James-Stein shrinkage. Install pymc + numpyro for full NUTS posterior credible intervals.
+_Note_: PyMC NUTS ran but did NOT converge (divergences=160, r_hat_max=1.000, ess_min=1343); these numbers are the deterministic James-Stein shrinkage estimator instead. Publishing an unconverged posterior would be misleading (see docs/BUG_AUDIT_2026-06.md, C6).
 
 ## Family `GRIA`
 
-Method: `empirical_bayes_shrinkage`. Family mean ρ = +0.230.
+Method: `empirical_bayes_shrinkage`. Family mean ρ = +0.174.
 Shrinkage weight (mean): 0.471 (higher = less shrunk; lower = more pooled).
 
 | Target | n | Single ρ | Pooled ρ | 95% CI | Δρ |
 |---|---|---|---|---|---|
-| P42261 | 12 | +0.123 | +0.168 | [-0.45, +0.68] | +0.044 |
-| P42262 | 3 | +0.251 | +0.239 | [-1.00, +1.00] | -0.012 |
-| P48058 | 3 | +0.637 | +0.399 | [-1.00, +1.00] | -0.238 |
+| P42261 | 12 | +0.011 | +0.078 | [-0.52, +0.62] | +0.068 |
+| P42262 | 3 | +0.500 | +0.309 | [-1.00, +1.00] | -0.191 |
+| P48058 | 3 | +0.500 | +0.309 | [-1.00, +1.00] | -0.191 |
 
-_Note_: PyMC not installed; using James-Stein shrinkage. Install pymc + numpyro for full NUTS posterior credible intervals.
+_Note_: PyMC NUTS ran but did NOT converge (divergences=281, r_hat_max=1.010, ess_min=1148); these numbers are the deterministic James-Stein shrinkage estimator instead. Publishing an unconverged posterior would be misleading (see docs/BUG_AUDIT_2026-06.md, C6).
 
 ## When PyMC + numpyro arrive
 

@@ -90,12 +90,19 @@ class HierarchicalCalibrationResult:
     exploratory_negative_rho: dict[str, float] = field(default_factory=dict)
     direction: dict[str, str] = field(default_factory=dict)
     slope_sign_prob: dict[str, float] = field(default_factory=dict)
+    # C6: NUTS convergence diagnostics. `converged` False => the sampler's numbers are NOT
+    # trustworthy and fit_family falls back to the shrinkage estimator.
+    n_divergences: int = -1
+    rhat_max: float = float("nan")
+    ess_min: float = float("nan")
+    converged: bool = True          # shrinkage path is deterministic => trivially "converged"
 
 
 def empirical_bayes_shrinkage(
     family: str,
     single_target_rho: dict[str, float],
     n_per_target: dict[str, int],
+    note: str | None = None,
 ) -> HierarchicalCalibrationResult:
     """James-Stein shrinkage toward the family mean.
 
@@ -145,8 +152,11 @@ def empirical_bayes_shrinkage(
         family_mean_rho=family_mean,
         shrinkage_weight=float(np.mean(weights)),
         method="empirical_bayes_shrinkage",
-        note=("PyMC not installed; using James-Stein shrinkage. "
-              "Install pymc + numpyro for full NUTS posterior credible intervals."),
+        # The note must state the ACTUAL reason this path was taken. It previously hard-coded
+        # "PyMC not installed", which became false once PyMC was installed and the real reason
+        # became "NUTS did not converge" (see C6).
+        note=note or ("Using James-Stein shrinkage. "
+                      "Install pymc + numpyro for the full NUTS posterior path."),
     )
 
 
@@ -254,6 +264,23 @@ def hierarchical_bayesian_nuts(
             nuts_sampler="numpyro", progressbar=False,
         )
 
+    # --- Convergence diagnostics (fail-closed gate; see docs/BUG_AUDIT_2026-06.md, C6) ----------
+    # An unconverged sampler must NOT emit numbers that look authoritative. On the live panel this
+    # model produces 148-281 divergences with R-hat > 1.01 (n=3-12 per target + an uncentered
+    # predictor => funnel/ridge geometry), so `fit_family` falls back to the shrinkage estimator
+    # whenever `converged` is False.
+    try:
+        import arviz as az
+        n_divergences = int(idata.sample_stats["diverging"].values.sum())
+        _summ = az.summary(idata, var_names=["alpha", "beta"])
+        rhat_max = float(_summ["r_hat"].max())
+        ess_min = float(_summ["ess_bulk"].min())
+    except Exception:      # diagnostics unavailable -> treat as NOT converged (fail closed)
+        n_divergences, rhat_max, ess_min = -1, float("nan"), float("nan")
+    converged = bool(n_divergences == 0
+                     and np.isfinite(rhat_max) and rhat_max <= 1.01
+                     and np.isfinite(ess_min) and ess_min >= 400.0)
+
     # Posterior per-target ρ
     pooled_rho: dict[str, float] = {}
     pooled_lo: dict[str, float] = {}
@@ -307,10 +334,16 @@ def hierarchical_bayesian_nuts(
         note=(f"PyMC NUTS: {n_chains} chains × {n_draws} draws + {n_tune} warmup"
               + (f"; {n_exploratory} inverted (negative-slope) target(s) routed to "
                  "exploratory_negative_rho, excluded from the primary shortlist"
-                 if n_exploratory else "")),
+                 if n_exploratory else "")
+              + (f"; CONVERGENCE FAIL (divergences={n_divergences}, r_hat_max={rhat_max:.3f}, "
+                 f"ess_min={ess_min:.0f})" if not converged else "")),
         exploratory_negative_rho=exploratory_neg,
         direction=direction,
         slope_sign_prob=slope_sign_prob,
+        n_divergences=n_divergences,
+        rhat_max=rhat_max,
+        ess_min=ess_min,
+        converged=converged,
     )
 
 
@@ -320,12 +353,41 @@ def fit_family(
     prefer_pymc: bool = True,
     **kwargs,
 ) -> HierarchicalCalibrationResult:
-    """Auto-pick the heavier method when PyMC is available; shrinkage otherwise."""
+    """Auto-pick the heavier method when PyMC is available; shrinkage otherwise.
+
+    The NUTS result is ACCEPTED ONLY IF IT CONVERGED. On the live panel (n=3-12 points per target)
+    the regression model diverges badly, and an unconverged posterior must never be published as if
+    it were authoritative -- so a non-converged fit falls back to the deterministic, well-behaved
+    James-Stein shrinkage estimator (the path all shipped numbers were computed with).
+
+    KNOWN DESIGN DEFECT in the NUTS path's pooled_rho (docs/BUG_AUDIT_2026-06.md, C6): it is
+    computed as corr(alpha_i + beta_i * x_i, y_i), but Pearson correlation is INVARIANT under a
+    positive affine transform, so that quantity identically equals sign(beta_i) * corr(x_i, y_i) --
+    it can never differ in magnitude from single_target_rho and therefore CANNOT express pooling at
+    all. Until the NUTS path models the correlations themselves (e.g. hierarchical Fisher-z), only
+    the shrinkage estimator actually performs the partial pooling this module promises.
+    """
+    fallback_note: str | None = None
+    if not (prefer_pymc and PYMC_AVAILABLE):
+        fallback_note = ("PyMC not installed (or not requested); using James-Stein shrinkage. "
+                         "Install pymc + numpyro for the NUTS posterior path.")
     if prefer_pymc and PYMC_AVAILABLE:
         try:
-            return hierarchical_bayesian_nuts(family, per_target_data, **kwargs)
+            res = hierarchical_bayesian_nuts(family, per_target_data, **kwargs)
+            if res.converged:
+                return res
+            logger.warning(
+                "PyMC NUTS did NOT converge for family %s (divergences=%d, r_hat_max=%.3f, "
+                "ess_min=%.0f); falling back to shrinkage rather than publishing an unconverged "
+                "posterior.", family, res.n_divergences, res.rhat_max, res.ess_min)
+            fallback_note = (
+                f"PyMC NUTS ran but did NOT converge (divergences={res.n_divergences}, "
+                f"r_hat_max={res.rhat_max:.3f}, ess_min={res.ess_min:.0f}); these numbers are the "
+                "deterministic James-Stein shrinkage estimator instead. Publishing an unconverged "
+                "posterior would be misleading (see docs/BUG_AUDIT_2026-06.md, C6).")
         except Exception as e:
             logger.warning("PyMC NUTS failed (%s); falling back to shrinkage", e)
+            fallback_note = f"PyMC NUTS raised ({e}); using James-Stein shrinkage instead."
     # Shrinkage path needs only single-target rho + n
     single_rho: dict[str, float] = {}
     n_per: dict[str, int] = {}
@@ -337,4 +399,4 @@ def fit_family(
         # this shipped shrinkage path is harmonized. See docs/BUG_AUDIT_2026-06.md (B7).
         single_rho[t] = (float(spearmanr(x, y)[0])
                          if len(x) > 1 else float("nan"))
-    return empirical_bayes_shrinkage(family, single_rho, n_per)
+    return empirical_bayes_shrinkage(family, single_rho, n_per, note=fallback_note)

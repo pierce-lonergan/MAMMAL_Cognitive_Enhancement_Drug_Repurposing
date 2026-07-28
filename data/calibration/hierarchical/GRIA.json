@@ -11,27 +11,34 @@
     "P48058": 3
   },
   "single_target_rho": {
-    "P42261": 0.12338961510819457,
-    "P42262": 0.2510864942326038,
-    "P48058": 0.6368811107825003
+    "P42261": 0.010658555565629,
+    "P42262": 0.5,
+    "P48058": 0.5
   },
   "pooled_rho": {
-    "P42261": 0.16765443525445972,
-    "P42262": 0.23888330330109664,
-    "P48058": 0.3986846657665915
+    "P42261": 0.07822250987094792,
+    "P42262": 0.3089002789877238,
+    "P48058": 0.3089002789877238
   },
   "pooled_ci_lower": {
-    "P42261": -0.4531490729237905,
+    "P42261": -0.5197150866375272,
     "P42262": -1.0,
     "P48058": -1.0
   },
   "pooled_ci_upper": {
-    "P42261": 0.6789484207050775,
+    "P42261": 0.6247233098370696,
     "P42262": 1.0,
     "P48058": 1.0
   },
-  "family_mean_rho": 0.23025434424131375,
+  "family_mean_rho": 0.173772370377086,
   "shrinkage_weight": 0.4714045207910316,
   "method": "empirical_bayes_shrinkage",
-  "note": "PyMC not installed; using James-Stein shrinkage. Install pymc + numpyro for full NUTS posterior credible intervals."
+  "note": "PyMC NUTS ran but did NOT converge (divergences=281, r_hat_max=1.010, ess_min=1148); these numbers are the deterministic James-Stein shrinkage estimator instead. Publishing an unconverged posterior would be misleading (see docs/BUG_AUDIT_2026-06.md, C6).",
+  "exploratory_negative_rho": {},
+  "direction": {},
+  "slope_sign_prob": {},
+  "n_divergences": -1,
+  "rhat_max": NaN,
+  "ess_min": NaN,
+  "converged": true
 }

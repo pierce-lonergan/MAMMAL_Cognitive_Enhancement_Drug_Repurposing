@@ -11,7 +11,7 @@ One-page, GRADE-style evidence cards — the single artifact a clinician reads i
 | | |
 |---|---|
 | **Mechanism** | AChE_inhibitor at ACHE |
-| **Predicted cognition effect** | Hedges' g = **+0.36** (90% CrI +0.27 to +0.44) |
+| **Predicted cognition effect** | Hedges' g = **+0.36** (CI as published by source meta-analysis: +0.27 to +0.44) |
 | **Evidence quality (GRADE)** | 🟢 HIGH |
 | **Mechanism-class track record** | SUCCESS (3 class drugs, 18 pooled RCTs) |
 | **Class exemplars** | Donepezil, Galantamine, Rivastigmine |
@@ -38,7 +38,7 @@ One-page, GRADE-style evidence cards — the single artifact a clinician reads i
 | | |
 |---|---|
 | **Mechanism** | NMDA_modulator at GRIN2B |
-| **Predicted cognition effect** | Hedges' g = **+0.29** (90% CrI +0.14 to +0.43) |
+| **Predicted cognition effect** | Hedges' g = **+0.29** (CI as published by source meta-analysis: +0.14 to +0.43) |
 | **Evidence quality (GRADE)** | 🟢 HIGH |
 | **Mechanism-class track record** | SUCCESS (1 class drugs, 4 pooled RCTs) |
 | **Class exemplars** | Memantine |
@@ -65,7 +65,7 @@ One-page, GRADE-style evidence cards — the single artifact a clinician reads i
 | | |
 |---|---|
 | **Mechanism** | catecholaminergic at SLC6A3 |
-| **Predicted cognition effect** | Hedges' g = **+0.50** (90% CrI +0.10 to +0.32) |
+| **Predicted cognition effect** | Hedges' g = **+0.50** (90% CrI, class prior: +0.37 to +0.63) |
 | **Evidence quality (GRADE)** | 🟡 MODERATE |
 | **Mechanism-class track record** | SUCCESS (3 class drugs, 1 pooled RCTs) |
 | **Class exemplars** | Lisdexamfetamine, dextroamphetamine, methylphenidate |
@@ -82,6 +82,7 @@ One-page, GRADE-style evidence cards — the single artifact a clinician reads i
 **Provenance:** V6.A multi-head DTI (target engagement) · V6.B Cluster D θ̄ (cognition relevance) · V7 / disease-conditioned class prior (effect size) · Gap-3 mechanism-class track record (prognosis) · 44-target off-target liability panel · Gap-4 allosteric LTR (binding-reliability flag).
 
 **Caveats & failure modes:**
+- ⚠ Interval provenance: this compound's own pivotal-trial g (+0.50) is NOT bracketed by the pooled modulator-anchor interval [+0.10, +0.32] — they estimate different quantities (different pooled analysis / endpoint / population). The interval shown is a class-prior 90% CrI centred on the pivotal-trial estimate; the anchor's pooled interval is reported here rather than silently paired with it.
 - Predicted cognition effect is bounded by the Roberts 2020 ceiling (healthy-adult SMD ≈ 0.2-0.5); disease effects can be larger.
 - MAMMAL's sequence-only binding score is structurally blind at this (allosteric/transporter) target; engagement is uncertain (see Gap-4 allosteric learn-to-rank).
 - Off-target liability flags are MODEL-PREDICTED (MAMMAL DTI), unvalidated — confirm against the drug's known safety profile.
@@ -93,7 +94,7 @@ One-page, GRADE-style evidence cards — the single artifact a clinician reads i
 | | |
 |---|---|
 | **Mechanism** | H3_cognition at HRH3 |
-| **Predicted cognition effect** | Hedges' g = **+0.61** (90% CrI +0.30 to +0.92) |
+| **Predicted cognition effect** | Hedges' g = **+0.61** (CI as published by source meta-analysis: +0.30 to +0.92) |
 | **Evidence quality (GRADE)** | 🟡 MODERATE |
 | **Mechanism-class track record** | SUCCESS (1 class drugs, 2 pooled RCTs) |
 | **Class exemplars** | Pitolisant |
@@ -119,8 +120,8 @@ One-page, GRADE-style evidence cards — the single artifact a clinician reads i
 
 | | |
 |---|---|
-| **Mechanism** | 5HT6_antagonist at P50406 |
-| **Predicted cognition effect** | Hedges' g = **-0.05** (90% CrI -0.16 to +0.05) |
+| **Mechanism** | 5HT6_antagonist at HTR6 |
+| **Predicted cognition effect** | Hedges' g = **-0.05** (CI as published by source meta-analysis: -0.16 to +0.05) |
 | **Evidence quality (GRADE)** | 🟢 HIGH |
 | **Mechanism-class track record** | FAILURE (3 class drugs, 3 pooled RCTs) |
 | **Class exemplars** | Idalopirdine, SUVN-502, intepirdine |
@@ -142,7 +143,7 @@ One-page, GRADE-style evidence cards — the single artifact a clinician reads i
 | | |
 |---|---|
 | **Mechanism** | alpha7_nAChR at CHRNA7 |
-| **Predicted cognition effect** | Hedges' g = **+0.00** (90% CrI -0.10 to +0.10) |
+| **Predicted cognition effect** | Hedges' g = **+0.00** (CI as published by source meta-analysis: -0.10 to +0.10) |
 | **Evidence quality (GRADE)** | 🟢 HIGH |
 | **Mechanism-class track record** | FAILURE (5 class drugs, 2 pooled RCTs) |
 | **Class exemplars** | ABT-126, DMXB-A, Encenicline, TC-5619, Varenicline |
@@ -171,7 +172,7 @@ One-page, GRADE-style evidence cards — the single artifact a clinician reads i
 | | |
 |---|---|
 | **Mechanism** | AChE_inhibitor at ACHE |
-| **Predicted cognition effect** | Hedges' g = **+0.37** (90% CrI +0.31 to +0.42) |
+| **Predicted cognition effect** | Hedges' g = **+0.37** (CI as published by source meta-analysis: +0.31 to +0.42) |
 | **Evidence quality (GRADE)** | 🟢 HIGH |
 | **Mechanism-class track record** | SUCCESS (3 class drugs, 12 pooled RCTs) |
 | **Class exemplars** | Donepezil, Galantamine, Rivastigmine |

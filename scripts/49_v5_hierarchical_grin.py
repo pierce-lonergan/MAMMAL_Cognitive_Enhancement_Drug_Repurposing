@@ -107,11 +107,17 @@ def main() -> int:
         out_path = args.out_dir / f"{family}.json"
         out_path.write_text(json.dumps(asdict(res), indent=2, default=str),
                             encoding="utf-8")
-        logger.info("  → %s; mean Δρ (pooled - single) = %+.3f",
+        # NOTE: pooled_rho may NOT contain every target — the C2 sign-agnostic NUTS path routes
+        # confidently-negative-slope (inverted) targets into exploratory_negative_rho and drops them
+        # from pooled_rho. Index with .get so a routed target cannot KeyError here.
+        _deltas = [res.pooled_rho[t] - res.single_target_rho[t]
+                   for t in res.targets
+                   if t in res.pooled_rho and not np.isnan(res.single_target_rho[t])]
+        logger.info("  → %s; mean Δρ (pooled - single) = %+.3f over %d primary target(s); "
+                    "%d inverted target(s) routed to exploratory",
                     out_path,
-                    np.mean([res.pooled_rho[t] - res.single_target_rho[t]
-                             for t in res.targets
-                             if not np.isnan(res.single_target_rho[t])]))
+                    float(np.mean(_deltas)) if _deltas else float("nan"),
+                    len(_deltas), len(getattr(res, "exploratory_negative_rho", {}) or {}))
         results.append(asdict(res))
 
     # Hypothesis check: GRIN family pooled ρ for GRIN2A or GRIN2B ≥ +0.10
@@ -127,7 +133,20 @@ def main() -> int:
     L: list[str] = []
     L.append("# Hierarchical Bayesian Calibration v1 (§7.15)")
     L.append("")
-    L.append(f"**Method**: {'PyMC NUTS' if PYMC_AVAILABLE else 'James-Stein empirical-Bayes shrinkage (PyMC not installed)'}")
+    # Report the method ACTUALLY used per family, not merely whether PyMC is importable: the NUTS
+    # path can run and then be rejected by the C6 convergence gate, in which case these numbers are
+    # the shrinkage estimator's. Claiming "PyMC NUTS" over shrinkage numbers is a false provenance.
+    _methods = sorted({r["method"] for r in results}) or ["(no families fit)"]
+    _pretty = {"pymc_nuts": "PyMC NUTS",
+               "empirical_bayes_shrinkage": "James-Stein empirical-Bayes shrinkage"}
+    L.append("**Method (as actually used)**: "
+             + ", ".join(_pretty.get(m, m) for m in _methods)
+             + f"  \n_PyMC importable: {PYMC_AVAILABLE}._")
+    if any(r["method"] == "empirical_bayes_shrinkage" for r in results) and PYMC_AVAILABLE:
+        L.append("")
+        L.append("> **NUTS was attempted and REJECTED by the convergence gate** for at least one "
+                 "family (see per-family notes). The shrinkage estimator's numbers are reported "
+                 "instead; an unconverged posterior is not published as if it were authoritative.")
     L.append("")
     L.append("Per-family hierarchical calibration that pools strength across "
              "subunit-related targets. Predicted gain: GRIN2A/GRIN2B move from "
@@ -161,6 +180,23 @@ def main() -> int:
                      f"[{lo:+.2f}, {hi:+.2f}] | "
                      f"{delta:+.3f} |")
         L.append("")
+        # C2: inverted (confidently-negative-slope) targets are NOT in pooled_rho and are NOT
+        # shortlisted. Surface them explicitly so the exclusion is visible, never silent.
+        expl = r.get("exploratory_negative_rho") or {}
+        if expl:
+            L.append("**Exploratory: sign-estimated NEGATIVE-slope (inverted) targets — NOT "
+                     "shortlisted.** These targets' MAMMAL-vs-truth slope is confidently negative, "
+                     "so the calibrator is informative but INVERTED. They are excluded from the "
+                     "primary (positive-direction) pooled rho and from the hypothesis gate; they are "
+                     "reported here as an exploratory signal only (see docs/BUG_AUDIT_2026-06.md, C2).")
+            L.append("")
+            L.append("| Target | n | Single ρ | Exploratory pooled ρ | P(slope > 0) |")
+            L.append("|---|---|---|---|---|")
+            for t, v in expl.items():
+                L.append(f"| {t} | {r['n_per_target'].get(t, 0)} | "
+                         f"{r['single_target_rho'].get(t, float('nan')):+.3f} | {v:+.3f} | "
+                         f"{(r.get('slope_sign_prob') or {}).get(t, float('nan')):.3f} |")
+            L.append("")
         if r.get("note"):
             L.append(f"_Note_: {r['note']}")
         L.append("")

@@ -85,6 +85,12 @@ class DossierCard:
     provenance: list[str] = field(default_factory=list)
     caveats: list[str] = field(default_factory=list)
     own_trial: bool = False
+    # B4 (completion): the interval has TWO possible provenances and they are NOT the same level.
+    # "source_anchor"  -> CI copied verbatim from the curated modulator-anchor table, i.e. the
+    #                     interval the source meta-analysis published. That table records "CI on g
+    #                     where available" and does NOT record the level, so we must not assert one.
+    # "class_prior_90" -> our own symmetric z=1.6449 * class_sd interval: a true two-sided 90% CrI.
+    ci_source: str = "class_prior_90"
 
 
 def grade_evidence(*, k_rcts: int, n_class_drugs: int, class_sd: float,
@@ -176,24 +182,31 @@ def build_dossier(compound: str, indication: str, *,
         # the V7 pre-registered 90% commitment. Was 1.2816 = Phi^-1(0.90), a two-sided 80% interval
         # mislabeled 90% -> clinician-facing UNDER-coverage. See docs/BUG_AUDIT_2026-06.md (B4).
         if anchor_row is not None:
+            _has_anchor_ci = (anchor_row.get("CI_lo") is not None
+                              and not pd.isna(anchor_row.get("CI_lo")))
             ci_lo = float(anchor_row.get("CI_lo", g - 1.6449 * class_sd))
             ci_hi = float(anchor_row.get("CI_hi", g + 1.6449 * class_sd))
             k_rcts = int(anchor_row.get("k", 3))
+            ci_source = "source_anchor" if _has_anchor_ci else "class_prior_90"
         else:
             ci_lo, ci_hi = g - 1.6449 * class_sd, g + 1.6449 * class_sd
             k_rcts = prior.k_total if prior is not None else 3
+            ci_source = "class_prior_90"
     elif anchor_row is not None:
         g = float(anchor_row.get("pooled_g", np.nan))
         ci_lo = float(anchor_row.get("CI_lo", np.nan))
         ci_hi = float(anchor_row.get("CI_hi", np.nan))
         k_rcts = int(anchor_row.get("k", 1))
+        ci_source = "source_anchor"
     elif prior is not None:
         g = prior.mean
         ci_lo = prior.mean - 1.6449 * prior.sd   # true two-sided 90% CrI (B4); was 1.2816 = 80%
         ci_hi = prior.mean + 1.6449 * prior.sd
         k_rcts = prior.k_total
+        ci_source = "class_prior_90"
     else:
         g, ci_lo, ci_hi, k_rcts = float("nan"), float("nan"), float("nan"), 0
+        ci_source = "none"
 
     class_sd = prior.sd if prior is not None else float("nan")
     n_class = prior.n_drugs if prior is not None else 0
@@ -219,6 +232,24 @@ def build_dossier(compound: str, indication: str, *,
         provenance.append("Gap-4 allosteric LTR (binding-reliability flag)")
 
     caveats = []
+    # B4 (completion): the point estimate and the interval can come from DIFFERENT sources -- g from
+    # the compound's own pivotal trial (clinical ledger) but CI_lo/CI_hi from the modulator-anchor
+    # table's pooled estimate. When the anchor interval does not bracket g they are describing
+    # different quantities, and pairing them puts a point estimate OUTSIDE its own stated interval
+    # in front of a clinician (observed live for methylphenidate/ADHD: g=+0.50, CI=[+0.10,+0.32]).
+    # Fall back to the class-prior 90% CrI centred on the actual point estimate, and SAY SO.
+    if (ci_source == "source_anchor" and np.isfinite(g)
+            and np.isfinite(ci_lo) and np.isfinite(ci_hi) and not (ci_lo <= g <= ci_hi)):
+        _anchor_lo, _anchor_hi = ci_lo, ci_hi
+        _sd = class_sd if np.isfinite(class_sd) else 0.15
+        ci_lo, ci_hi = g - 1.6449 * _sd, g + 1.6449 * _sd
+        ci_source = "class_prior_90"
+        caveats.append(
+            f"⚠ Interval provenance: this compound's own pivotal-trial g ({g:+.2f}) is NOT bracketed "
+            f"by the pooled modulator-anchor interval [{_anchor_lo:+.2f}, {_anchor_hi:+.2f}] — they "
+            "estimate different quantities (different pooled analysis / endpoint / population). The "
+            "interval shown is a class-prior 90% CrI centred on the pivotal-trial estimate; the "
+            "anchor's pooled interval is reported here rather than silently paired with it.")
     caveats.append("Predicted cognition effect is bounded by the Roberts 2020 ceiling "
                    "(healthy-adult SMD ≈ 0.2-0.5); disease effects can be larger.")
     if not own_trial:
@@ -239,7 +270,7 @@ def build_dossier(compound: str, indication: str, *,
 
     return DossierCard(
         compound=compound, indication=indication, mechanism_class=mechanism_class,
-        target_gene=target_gene, g=g, g_ci_lo=ci_lo, g_ci_hi=ci_hi,
+        target_gene=target_gene, g=g, g_ci_lo=ci_lo, g_ci_hi=ci_hi, ci_source=ci_source,
         grade=grade, grade_reasons=reasons, class_verdict=verdict,
         class_n_drugs=n_class, class_k_rcts=k_rcts, class_siblings=siblings,
         liabilities=liabilities, provenance=provenance, caveats=caveats,
@@ -254,7 +285,12 @@ def render_card_md(card: DossierCard) -> str:
     L.append("")
     grade_badge = {"HIGH": "🟢 HIGH", "MODERATE": "🟡 MODERATE",
                    "LOW": "🟠 LOW", "VERY LOW": "🔴 VERY LOW"}.get(card.grade, card.grade)
-    g_str = (f"**{card.g:+.2f}** (90% CrI {card.g_ci_lo:+.2f} to {card.g_ci_hi:+.2f})"
+    # B4: label the interval by its ACTUAL provenance. Anchor CIs are copied from the source
+    # meta-analysis and the anchor table does not record their level, so calling them "90% CrI"
+    # would assert a level we cannot verify; only the class-prior fallback is a true 90% CrI.
+    _ci_label = {"source_anchor": "CI as published by source meta-analysis",
+                 "class_prior_90": "90% CrI, class prior"}.get(card.ci_source, "interval")
+    g_str = (f"**{card.g:+.2f}** ({_ci_label}: {card.g_ci_lo:+.2f} to {card.g_ci_hi:+.2f})"
              if np.isfinite(card.g) else "not estimable")
     L.append("| | |")
     L.append("|---|---|")
