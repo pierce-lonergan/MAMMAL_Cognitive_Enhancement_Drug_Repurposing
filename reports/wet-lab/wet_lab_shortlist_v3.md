@@ -5,8 +5,8 @@ Per-target weights from `configs/weights_calibrated.yaml` (see `reports/pipeline
 
 Coverage at this snapshot:
   - MAMMAL DTI: 6,556 (target, compound) pairs
-  - Boltzina:   264 pairs (overnight WSL2 sweep in progress)
-  - PrimeKG/TxGNN: absent
+  - Boltzina:   1,175 pairs (sweep complete)
+  - PrimeKG/TxGNN: 117 compounds
   - ChEMBL evidence backstop: 6,556 rows
 
 **This shortlist is a PRIORITISATION, not a wet-lab recommendation.** Read `reports/paper-drafts/methodology_v1.md` for the known failure modes (4 MAMMAL_ONLY_INVERTED targets including DAT/NET, Boltz coverage still partial). Each compound's calibrated rank reflects which targets it scores well on AFTER down-weighting WEAK / INVERTED targets.
@@ -63,7 +63,7 @@ Coverage at this snapshot:
   - admet_score = 0.899  |  gate = `PASS`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.001, `kg_shortest_path_min`=1.000, `kg_n_targets_reachable`=22.000
 
 **ChEMBL ground truth (across panel):**
   - NOVEL: 22
@@ -89,7 +89,7 @@ Coverage at this snapshot:
   - gates_flagged: `dili=0.873`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.000, `kg_shortest_path_min`=-1.000, `kg_n_targets_reachable`=0.000
 
 **ChEMBL ground truth (across panel):**
   - NOVEL: 22
@@ -115,7 +115,7 @@ Coverage at this snapshot:
   - gates_flagged: `pgp_substrate=0.899;herg_inhibition=0.946`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.001, `kg_shortest_path_min`=1.000, `kg_n_targets_reachable`=22.000
 
 **ChEMBL ground truth (across panel):**
   - AMBIGUOUS: 1 | CORROBORATED: 2 | NOVEL: 19
@@ -140,7 +140,7 @@ Coverage at this snapshot:
   - admet_score = 0.835  |  gate = `PASS`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.000, `kg_shortest_path_min`=-1.000, `kg_n_targets_reachable`=0.000
 
 **ChEMBL ground truth (across panel):**
   - CORROBORATED: 4 | NOVEL: 18
@@ -165,7 +165,7 @@ Coverage at this snapshot:
   - admet_score = 0.837  |  gate = `PASS`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.000, `kg_shortest_path_min`=-1.000, `kg_n_targets_reachable`=0.000
 
 **ChEMBL ground truth (across panel):**
   - CORROBORATED: 4 | NOVEL: 18
@@ -182,13 +182,15 @@ Coverage at this snapshot:
   - Polypharmacology (n MAMMAL targets): 22
 
 **Cluster A.2 — Boltzina (structure-aware):**
-  - _not yet covered by Boltz sweep_
+  - SLC6A2 (P23975): binder_prob = 0.464, affinity log10(IC50 µM) = 2.168
+  - CHRNA7 (P36544): binder_prob = 0.291, affinity log10(IC50 µM) = 3.059
+  - ADRA2A (P08913): binder_prob = 0.212, affinity log10(IC50 µM) = 0.992
 
 **Cluster B — ADMET-AI:**
   - admet_score = 0.899  |  gate = `PASS`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.001, `kg_shortest_path_min`=1.000, `kg_n_targets_reachable`=22.000
 
 **ChEMBL ground truth (across panel):**
   - CORROBORATED: 1 | NOVEL: 21
@@ -214,7 +216,7 @@ Coverage at this snapshot:
   - gates_flagged: `caco2_permeability=-5.986`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.000, `kg_shortest_path_min`=-1.000, `kg_n_targets_reachable`=0.000
 
 **ChEMBL ground truth (across panel):**
   - NOVEL: 22
@@ -240,7 +242,7 @@ Coverage at this snapshot:
   - gates_flagged: `dili=0.935`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.000, `kg_shortest_path_min`=-1.000, `kg_n_targets_reachable`=0.000
 
 **ChEMBL ground truth (across panel):**
   - CORROBORATED: 1 | NOVEL: 21
@@ -258,12 +260,14 @@ Coverage at this snapshot:
 
 **Cluster A.2 — Boltzina (structure-aware):**
   - PDE4D (Q08499): binder_prob = 0.907, affinity log10(IC50 µM) = -0.371
+  - CHRNA7 (P36544): binder_prob = 0.151, affinity log10(IC50 µM) = 0.926
+  - ADRA2A (P08913): binder_prob = 0.140, affinity log10(IC50 µM) = 0.614
 
 **Cluster B — ADMET-AI:**
   - admet_score = 0.877  |  gate = `PASS`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.001, `kg_shortest_path_min`=1.000, `kg_n_targets_reachable`=22.000
 
 **ChEMBL ground truth (across panel):**
   - CORROBORATED: 1 | NOVEL: 21
@@ -280,13 +284,15 @@ Coverage at this snapshot:
   - Polypharmacology (n MAMMAL targets): 22
 
 **Cluster A.2 — Boltzina (structure-aware):**
-  - _not yet covered by Boltz sweep_
+  - SLC6A2 (P23975): binder_prob = 0.371, affinity log10(IC50 µM) = 3.668
+  - SLC6A3 (Q01959): binder_prob = 0.357, affinity log10(IC50 µM) = 3.969
+  - ADRA2A (P08913): binder_prob = 0.183, affinity log10(IC50 µM) = 2.475
 
 **Cluster B — ADMET-AI:**
   - admet_score = 0.946  |  gate = `PASS`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.000, `kg_shortest_path_min`=2.000, `kg_n_targets_reachable`=22.000
 
 **ChEMBL ground truth (across panel):**
   - NOVEL: 22
@@ -303,13 +309,15 @@ Coverage at this snapshot:
   - Polypharmacology (n MAMMAL targets): 22
 
 **Cluster A.2 — Boltzina (structure-aware):**
-  - _not yet covered by Boltz sweep_
+  - SLC6A2 (P23975): binder_prob = 0.559, affinity log10(IC50 µM) = 3.944
+  - SLC6A3 (Q01959): binder_prob = 0.554, affinity log10(IC50 µM) = 3.795
+  - CHRNA7 (P36544): binder_prob = 0.169, affinity log10(IC50 µM) = 1.646
 
 **Cluster B — ADMET-AI:**
   - admet_score = 0.950  |  gate = `PASS`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.001, `kg_shortest_path_min`=1.000, `kg_n_targets_reachable`=22.000
 
 **ChEMBL ground truth (across panel):**
   - NOVEL: 22
@@ -326,13 +334,15 @@ Coverage at this snapshot:
   - Polypharmacology (n MAMMAL targets): 22
 
 **Cluster A.2 — Boltzina (structure-aware):**
-  - _not yet covered by Boltz sweep_
+  - SLC6A2 (P23975): binder_prob = 0.779, affinity log10(IC50 µM) = 0.400
+  - SLC6A3 (Q01959): binder_prob = 0.768, affinity log10(IC50 µM) = 0.524
+  - ADRA2A (P08913): binder_prob = 0.761, affinity log10(IC50 µM) = 0.059
 
 **Cluster B — ADMET-AI:**
   - admet_score = 0.915  |  gate = `PASS`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.001, `kg_shortest_path_min`=1.000, `kg_n_targets_reachable`=22.000
 
 **ChEMBL ground truth (across panel):**
   - NOVEL: 22
@@ -357,7 +367,7 @@ Coverage at this snapshot:
   - admet_score = 0.921  |  gate = `PASS`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.001, `kg_shortest_path_min`=1.000, `kg_n_targets_reachable`=22.000
 
 **ChEMBL ground truth (across panel):**
   - AMBIGUOUS: 1 | CORROBORATED: 2 | NOVEL: 19
@@ -383,7 +393,7 @@ Coverage at this snapshot:
   - gates_flagged: `herg_inhibition=0.962`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.001, `kg_shortest_path_min`=1.000, `kg_n_targets_reachable`=22.000
 
 **ChEMBL ground truth (across panel):**
   - AMBIGUOUS: 1 | CORROBORATED: 4 | NOVEL: 17
@@ -400,14 +410,16 @@ Coverage at this snapshot:
   - Polypharmacology (n MAMMAL targets): 22
 
 **Cluster A.2 — Boltzina (structure-aware):**
-  - _not yet covered by Boltz sweep_
+  - HCRTR1 (O43613): binder_prob = 0.750, affinity log10(IC50 µM) = -0.972
+  - HRH3 (Q9Y5N1): binder_prob = 0.436, affinity log10(IC50 µM) = -1.791
+  - CHRNA7 (P36544): binder_prob = 0.435, affinity log10(IC50 µM) = -1.047
 
 **Cluster B — ADMET-AI:**
   - admet_score = 0.638  |  gate = `FLAG`
   - gates_flagged: `cyp3a4_inhibition=0.859`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.001, `kg_shortest_path_min`=1.000, `kg_n_targets_reachable`=22.000
 
 **ChEMBL ground truth (across panel):**
   - NOVEL: 22
@@ -424,13 +436,15 @@ Coverage at this snapshot:
   - Polypharmacology (n MAMMAL targets): 22
 
 **Cluster A.2 — Boltzina (structure-aware):**
-  - _not yet covered by Boltz sweep_
+  - SLC6A2 (P23975): binder_prob = 0.863, affinity log10(IC50 µM) = 1.159
+  - ADRA2A (P08913): binder_prob = 0.834, affinity log10(IC50 µM) = -0.251
+  - SLC6A3 (Q01959): binder_prob = 0.807, affinity log10(IC50 µM) = 1.150
 
 **Cluster B — ADMET-AI:**
   - admet_score = 0.907  |  gate = `PASS`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.000, `kg_shortest_path_min`=2.000, `kg_n_targets_reachable`=22.000
 
 **ChEMBL ground truth (across panel):**
   - NOVEL: 22
@@ -456,7 +470,7 @@ Coverage at this snapshot:
   - gates_flagged: `bbb_permeability=0.162;dili=0.894`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.000, `kg_shortest_path_min`=-1.000, `kg_n_targets_reachable`=0.000
 
 **ChEMBL ground truth (across panel):**
   - CORROBORATED: 1 | NOVEL: 21
@@ -473,14 +487,16 @@ Coverage at this snapshot:
   - Polypharmacology (n MAMMAL targets): 22
 
 **Cluster A.2 — Boltzina (structure-aware):**
-  - _not yet covered by Boltz sweep_
+  - HRH3 (Q9Y5N1): binder_prob = 0.237, affinity log10(IC50 µM) = -0.083
+  - CHRNA7 (P36544): binder_prob = 0.201, affinity log10(IC50 µM) = -0.491
+  - HCRTR1 (O43613): binder_prob = 0.127, affinity log10(IC50 µM) = 0.382
 
 **Cluster B — ADMET-AI:**
   - admet_score = 0.566  |  gate = `FLAG`
   - gates_flagged: `dili=0.915`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.000, `kg_shortest_path_min`=-1.000, `kg_n_targets_reachable`=0.000
 
 **ChEMBL ground truth (across panel):**
   - NOVEL: 22
@@ -497,13 +513,15 @@ Coverage at this snapshot:
   - Polypharmacology (n MAMMAL targets): 22
 
 **Cluster A.2 — Boltzina (structure-aware):**
-  - _not yet covered by Boltz sweep_
+  - ADRA2A (P08913): binder_prob = 0.789, affinity log10(IC50 µM) = 1.112
+  - SLC6A2 (P23975): binder_prob = 0.769, affinity log10(IC50 µM) = 1.302
+  - CHRNA7 (P36544): binder_prob = 0.749, affinity log10(IC50 µM) = -0.248
 
 **Cluster B — ADMET-AI:**
   - admet_score = 0.916  |  gate = `PASS`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.001, `kg_shortest_path_min`=1.000, `kg_n_targets_reachable`=22.000
 
 **ChEMBL ground truth (across panel):**
   - CORROBORATED: 2 | NOVEL: 20
@@ -520,13 +538,15 @@ Coverage at this snapshot:
   - Polypharmacology (n MAMMAL targets): 22
 
 **Cluster A.2 — Boltzina (structure-aware):**
-  - _not yet covered by Boltz sweep_
+  - SLC6A3 (Q01959): binder_prob = 0.966, affinity log10(IC50 µM) = 0.005
+  - SLC6A2 (P23975): binder_prob = 0.966, affinity log10(IC50 µM) = -0.031
+  - ADRA2A (P08913): binder_prob = 0.939, affinity log10(IC50 µM) = -0.601
 
 **Cluster B — ADMET-AI:**
   - admet_score = 0.921  |  gate = `PASS`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.000, `kg_shortest_path_min`=-1.000, `kg_n_targets_reachable`=0.000
 
 **ChEMBL ground truth (across panel):**
   - NOVEL: 22
@@ -543,14 +563,16 @@ Coverage at this snapshot:
   - Polypharmacology (n MAMMAL targets): 22
 
 **Cluster A.2 — Boltzina (structure-aware):**
-  - _not yet covered by Boltz sweep_
+  - CHRNA7 (P36544): binder_prob = 0.191, affinity log10(IC50 µM) = 0.416
+  - HRH3 (Q9Y5N1): binder_prob = 0.149, affinity log10(IC50 µM) = 1.622
+  - ADRA2A (P08913): binder_prob = 0.107, affinity log10(IC50 µM) = 0.890
 
 **Cluster B — ADMET-AI:**
   - admet_score = 0.852  |  gate = `FLAG`
   - gates_flagged: `ames_mutagenicity=0.946`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.001, `kg_shortest_path_min`=1.000, `kg_n_targets_reachable`=22.000
 
 **ChEMBL ground truth (across panel):**
   - NOVEL: 22
@@ -567,13 +589,15 @@ Coverage at this snapshot:
   - Polypharmacology (n MAMMAL targets): 22
 
 **Cluster A.2 — Boltzina (structure-aware):**
-  - _not yet covered by Boltz sweep_
+  - HRH3 (Q9Y5N1): binder_prob = nan, affinity log10(IC50 µM) = nan
+  - CHRNA7 (P36544): binder_prob = nan, affinity log10(IC50 µM) = nan
+  - DRD1 (P21728): binder_prob = nan, affinity log10(IC50 µM) = nan
 
 **Cluster B — ADMET-AI:**
   - admet_score = 0.898  |  gate = `PASS`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.001, `kg_shortest_path_min`=1.000, `kg_n_targets_reachable`=22.000
 
 **ChEMBL ground truth (across panel):**
   - NOVEL: 22
@@ -590,13 +614,15 @@ Coverage at this snapshot:
   - Polypharmacology (n MAMMAL targets): 22
 
 **Cluster A.2 — Boltzina (structure-aware):**
+  - ADRA2A (P08913): binder_prob = 0.655, affinity log10(IC50 µM) = 0.409
+  - DRD1 (P21728): binder_prob = 0.537, affinity log10(IC50 µM) = 0.986
   - CHRNA7 (P36544): binder_prob = 0.498, affinity log10(IC50 µM) = 0.555
 
 **Cluster B — ADMET-AI:**
   - admet_score = 0.775  |  gate = `PASS`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.001, `kg_shortest_path_min`=1.000, `kg_n_targets_reachable`=22.000
 
 **ChEMBL ground truth (across panel):**
   - NOVEL: 22
@@ -614,13 +640,15 @@ Coverage at this snapshot:
 
 **Cluster A.2 — Boltzina (structure-aware):**
   - CHRNA7 (P36544): binder_prob = 0.766, affinity log10(IC50 µM) = -0.981
+  - HRH3 (Q9Y5N1): binder_prob = 0.646, affinity log10(IC50 µM) = -0.075
+  - DRD1 (P21728): binder_prob = 0.510, affinity log10(IC50 µM) = 1.118
 
 **Cluster B — ADMET-AI:**
   - admet_score = 0.507  |  gate = `FLAG`
   - gates_flagged: `herg_inhibition=0.964;cyp3a4_inhibition=0.872`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.000, `kg_shortest_path_min`=-1.000, `kg_n_targets_reachable`=0.000
 
 **ChEMBL ground truth (across panel):**
   - NOVEL: 22
@@ -646,7 +674,7 @@ Coverage at this snapshot:
   - gates_flagged: `dili=0.921`
 
 **Cluster C — PrimeKG + TxGNN:**
-  - _Cluster C not yet run (run `scripts/23_v3_cluster_c.py` in WSL2)_
+  - `kg_ppr_sum`=0.000, `kg_shortest_path_min`=-1.000, `kg_n_targets_reachable`=0.000
 
 **ChEMBL ground truth (across panel):**
   - CORROBORATED: 1 | NOVEL: 21
