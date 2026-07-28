@@ -131,9 +131,20 @@ def write_report(prim, n, n_enh, enh, ceiling, best_domain, au_stim, p_stim, au_
           "| predictor | what it is | AUROC | perm p |",
           "|---|---|---|---|",
           f"| acute CNS stimulant gate | supergroup == stimulant (coarse) | **{au_stim:.2f}** | {p_stim:.4f} |",
+          # (robustness caveat is appended below the table; see scripts/121)
           f"| mechanism-class prognostic prior | the DISEASE manuscript's AUROC-1.00 winner | "
           f"**{au_class:.2f}** | {p_class:.4f} |",
           f"| SMD magnitude | does a bigger effect size predict the binary | {au_mag:.2f} | n/a |",
+          "",
+          "> ⚠ **READ THE ROBUSTNESS AUDIT BEFORE CITING THE GATE** "
+          "(`healthy_adult_robustness_v1.md`, `scripts/121`). The stimulant gate above is NOT "
+          "robust: (1) `n_studies` — a pure statistical-power proxy with zero biology — predicts "
+          "the same label at AUROC 0.88, i.e. BETTER than the gate, because the binary label is "
+          "\"CI excludes 0\" and therefore conflates efficacy with study volume; and (2) the gate's "
+          "significance does not survive re-labelling l-theanine per this ledger's own stated "
+          "\"CI excludes 0\" rule (AUROC 0.86 -> 0.73, p 0.046 -> 0.176), under which a "
+          "NON-stimulant enters the enhancer set. At n=11 with 4 positives nothing here is "
+          "identifiable; treat the gate as a fragile descriptive contrast, not a finding.",
           "",
           "**The headline finding.** In disease pivotal trials the mechanism-class prognostic prior "
           "separated SUCCESS from FAILURE perfectly (AUROC 1.00) because the classes were "
