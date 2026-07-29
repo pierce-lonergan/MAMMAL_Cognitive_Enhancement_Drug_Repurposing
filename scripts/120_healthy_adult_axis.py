@@ -64,7 +64,14 @@ def class_purity(df: pd.DataFrame) -> list[tuple[str, int, int, bool]]:
 
 def main() -> int:
     df = pd.read_csv(LEDGER)
-    prim = df[df["evidence_tier"] == "clean_MA"].reset_index(drop=True)
+    # PRIMARY SET = clean healthy-adult MAs of genuine ENHANCER CANDIDATES. candidate_enhancer==0
+    # rows are impairment exposures (acute alcohol, dehydration, daytime melatonin, acute
+    # psychedelics); pooling them in would let a classifier score well trivially on easy negatives
+    # and inflate every AUROC below. See scripts/121 and docs/BUG_AUDIT_2026-06.md.
+    prim = df[df["evidence_tier"] == "clean_MA"]
+    if "candidate_enhancer" in prim.columns:
+        prim = prim[prim["candidate_enhancer"] != 0]
+    prim = prim.reset_index(drop=True)
     y = prim["enhances_healthy_young"].to_numpy(float)
     n, n_enh = len(prim), int(y.sum())
     L.info("primary clean-MA set: %d compounds, %d ENHANCE / %d NULL", n, n_enh, n - n_enh)

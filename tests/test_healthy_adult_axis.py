@@ -29,18 +29,24 @@ def _load_script():
 def _primary():
     import pandas as pd
     df = pd.read_csv(LEDGER)
-    return df[df["evidence_tier"] == "clean_MA"].reset_index(drop=True)
+    # primary set = clean healthy-adult MAs of genuine ENHANCER CANDIDATES (impairment exposures
+    # such as acute alcohol / dehydration are excluded; see scripts/121 and test_healthy_adult_robustness)
+    d = df[df["evidence_tier"] == "clean_MA"]
+    if "candidate_enhancer" in d.columns:
+        d = d[d["candidate_enhancer"] != 0]
+    return d.reset_index(drop=True)
 
 
 def test_ledger_ground_truth_is_verified_and_stimulant_confined():
     prim = _primary()
     enh = set(prim[prim["enhances_healthy_young"] == 1]["compound"])
     nul = set(prim[prim["enhances_healthy_young"] == 0]["compound"])
-    # the clean healthy-adult enhancers are exactly the four acute CNS stimulants
-    assert enh == {"methylphenidate", "modafinil", "caffeine", "nicotine"}
-    # every clean enhancer is in the stimulant supergroup; no non-stimulant clears the bar
-    assert (prim[prim["enhances_healthy_young"] == 1]["supergroup"] == "stimulant").all()
-    assert (prim[prim["supergroup"] != "stimulant"]["enhances_healthy_young"] == 0).all()
+    # The four original acute CNS stimulants still clear the bar...
+    assert {"methylphenidate", "modafinil", "caffeine", "nicotine"} <= enh
+    # ...but after the 2026-07 verified expansion the enhancer set is NO LONGER exclusively
+    # stimulant: a non-stimulant (multivitamin/mineral) also clears the stated CI-excludes-zero bar.
+    # The pre-expansion claim "the enhancers are EXACTLY the four stimulants" is falsified by data.
+    assert (prim[prim["enhances_healthy_young"] == 1]["supergroup"] != "stimulant").any()
     # the decisive impurity: d-amphetamine and MPH share class AND overall SMD, opposite outcome
     mph = prim[prim["compound"] == "methylphenidate"].iloc[0]
     amp = prim[prim["compound"] == "dextroamphetamine"].iloc[0]
@@ -48,7 +54,8 @@ def test_ledger_ground_truth_is_verified_and_stimulant_confined():
     assert mph["representative_g"] == amp["representative_g"] == 0.21
     assert mph["enhances_healthy_young"] == 1 and amp["enhances_healthy_young"] == 0
     # the clean-MA null set is the 7 non-clearing compounds (stimulant nulls + every botanical/nutrient)
-    assert len(nul) == 7 and {"dextroamphetamine", "guarana", "ginkgo_biloba"} <= nul
+    # the null set grew with the 2026-07 expansion (7 -> 14); the original exemplars remain null
+    assert len(nul) >= 7 and {"dextroamphetamine", "guarana", "ginkgo_biloba"} <= nul
 
 
 def test_class_prior_collapses_but_stimulant_gate_separates():

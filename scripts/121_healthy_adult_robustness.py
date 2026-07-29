@@ -44,7 +44,18 @@ MEANINGFUL_G = 0.20      # the smallest effect this project treats as practicall
 
 
 def clean_ma(ledger: pd.DataFrame) -> pd.DataFrame:
-    return ledger[ledger["evidence_tier"] == "clean_MA"].reset_index(drop=True)
+    """The PRIMARY analysis set: clean healthy-adult meta-analyses of genuine ENHANCER CANDIDATES.
+
+    `candidate_enhancer == 0` rows (acute alcohol, dehydration, daytime melatonin, acute psilocybin)
+    are real healthy-adult cognition meta-analyses, but they are IMPAIRMENT exposures -- nobody takes
+    them to get smarter. Including them would let any classifier score well trivially by learning
+    "alcohol is not a nootropic", inflating apparent predictive performance on easy negatives. They
+    are retained in the ledger as a separate stratum and analysed separately, never pooled in here.
+    """
+    d = ledger[ledger["evidence_tier"] == "clean_MA"]
+    if "candidate_enhancer" in d.columns:
+        d = d[d["candidate_enhancer"] != 0]
+    return d.reset_index(drop=True)
 
 
 def r1_power_confound(p: pd.DataFrame) -> dict:

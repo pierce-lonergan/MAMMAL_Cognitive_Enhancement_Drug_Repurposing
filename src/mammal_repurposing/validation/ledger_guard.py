@@ -100,10 +100,21 @@ def validate_ledger(df: pd.DataFrame) -> list[Violation]:
         pop = str(r.get("population") or "").strip().lower()
         hit = next((m for m in PATIENT_POPULATION_MARKERS if m in pop), None)
         if hit:
-            v.append(Violation(c, "error", "patient_population",
-                               f"population={pop!r} matches clinical marker {hit!r}; this ledger is "
-                               "healthy-adult ground truth and must not contain patient samples "
-                               "(mixed samples belong in evidence_tier='mixed_pop')"))
+            # A clinical marker is only a CONTRACT BREACH when the row also claims to be a clean
+            # healthy-adult estimate, or when the sample contains no healthy participants at all.
+            # A row explicitly tiered `mixed_pop` is SUPPOSED to name its clinical component -- that
+            # is the entire purpose of the tier, so flagging it would punish correct labelling.
+            includes_healthy = ("healthy" in pop) or ("mixed" in pop)
+            if tier == "clean_MA":
+                v.append(Violation(c, "error", "patient_population",
+                                   f"population={pop!r} matches clinical marker {hit!r} but the row "
+                                   "claims evidence_tier='clean_MA'; a clean estimate must be "
+                                   "healthy-adults-only. Re-tier it as 'mixed_pop'."))
+            elif not includes_healthy:
+                v.append(Violation(c, "error", "patient_population",
+                                   f"population={pop!r} matches clinical marker {hit!r} and names no "
+                                   "healthy component; this ledger is healthy-adult ground truth and "
+                                   "cannot carry a purely clinical sample."))
         if not _has_ci(r):
             v.append(Violation(c, "warn", "missing_ci",
                                "no CI recorded: this row cannot distinguish a true null from an "

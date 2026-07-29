@@ -71,6 +71,16 @@ def test_patient_population_is_an_error_but_healthy_variants_are_fine():
         assert any(x.rule == "patient_population" and x.severity == "error" for x in v), bad
 
 
+def test_clinical_marker_is_allowed_when_the_row_is_tiered_mixed_pop():
+    """A `mixed_pop` row is SUPPOSED to name its clinical component -- flagging that would punish
+    correct labelling. The same population on a `clean_MA` row IS a breach."""
+    mixed = _base_row(population="mixed_healthy_and_clinical", evidence_tier="mixed_pop")
+    assert not any(x.rule == "patient_population" for x in validate_ledger(mixed))
+    clean = _base_row(population="mixed_healthy_and_clinical", evidence_tier="clean_MA")
+    assert any(x.rule == "patient_population" and x.severity == "error"
+               for x in validate_ledger(clean))
+
+
 def test_duplicate_compounds_are_an_error():
     df = pd.concat([_base_row(), _base_row()], ignore_index=True)
     assert any(x.rule == "duplicate_compound" for x in validate_ledger(df))
