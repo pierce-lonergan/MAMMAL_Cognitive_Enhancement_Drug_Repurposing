@@ -1,0 +1,138 @@
+{
+ "generated": "2026-07-28",
+ "workflow": "permanent-enhancement-feasibility",
+ "lanes": [
+  {
+   "lane": "healthy-durable-precedent",
+   "bottom_line": "Durable enhancement in healthy adults has a precedent of exactly two unreplicated drug-x-training studies (n=8 returners; one conditional subgroup), both on narrow task-specific skills with no transfer -- while every drug-ALONE post-washout test in healthy volunteers is null. The asymmetry is itself the most informative result: it is directionally consistent with the plasticity-window-x-experience hypothesis, but the hypothesis is currently supported by evidence too thin to have survived a single replication attempt, and the one attempt on a neighbouring task failed.",
+   "n_findings": 8,
+   "verifications": [
+    {
+     "claim": "The only located demonstration of a >=1-month post-washout cognitive/perceptual gain attributable to drug-x-training in ",
+     "verdict": "CONFIRMED",
+     "correction": "The empirical claim needs no correction — population, design, 47.1 ± 4.6 vs 34.2 ± 6.9, signed-rank p = 0.036, n = 8, 5-15 months off-drug, and the quote are all verbatim accurate, and the paper adds that the design was double-blind and that 7/8 subjects individually favored donepezil. Only the uniqueness framing needs softening: this is not the ONLY located ≥1-month post-washout healthy-adult demonstration. Shellshear et al. 2015 (Hum Psychopharmacol, doi 10.1002/hup.2480) found healthy adults trained on new words under levodopa had better recognition accuracy at a drug-free 1-month follow-up for semantically-described items, and Chamoun et al. 2017 (PMC5359296) retested healthy adults trained on 3D-MOT under donepezil at 4-14 months off-drug (DPZ +86% vs baseline, p = 0.043, but n = 9, no significant drug-vs-control contrast, authors label it \"preliminary\"). Recommended rewording: \"the longest verified post-washout retention interval (5-15 months) among the located healthy-adult pharmacological-enhancement studies, and the best-controlled such demonstration (within-subject, double-blind, counterbalanced) — though not the only one.\" Also worth flagging as a limitation: with n = 8 and p = 0.036 the result is fragile, and the authors themselves report a near-significant donepezil-vs-placebo pre-training threshold difference (rank test p = 0.05, driven by one outlier, z = 2.42; p = 0.1 when excluded) that matters because percent learning is normalized to pre-training threshold."
+    },
+    {
+     "claim": "Donepezil produced a complete null on perceptual learning of letter identification and uncrowding in healthy adults -- s",
+     "verdict": "CONFIRMED",
+     "correction": "Two corrections. (1) DESIGN: this was not a controlled null. All 19 observers received donepezil 5 mg daily (Days 0-15) with no placebo or no-drug arm and no blinding; the authors state as a limitation that they \"did not include a control group that performed sequential training without ingesting donepezil.\" The reported \"no significant effect of group\" tests training ORDER (isolated-first n=9 vs flanked-first n=10), not drug; the donepezil null derives from comparison against historical non-drug cohorts in prior publications. Accurate phrasing: donepezil-trained healthy adults showed learning magnitude and rate indistinguishable from previously published untreated cohorts — a non-replication by historical comparison, not a placebo-controlled null. (2) AUTHORSHIP: Silver is the third of four authors; the last/senior author is Susana T. L. Chung (order: Levi, Li, Silver, Chung). Silver is a shared co-author with the durable Rokem & Silver result, but is not this paper's senior author. Additionally, the claim's assertion that no independent replication of the durable donepezil effect exists should be softened: Chamoun et al. 2017 (Front Hum Neurosci, Vaucher/Faubert lab, no Silver involvement) is an independent randomized double-blind placebo-controlled donepezil trial reporting a long-lasting training benefit at 4-14 months (donepezil +86% speed threshold, p=0.043; placebo +45%, p=0.068), though in a different paradigm (3D multiple-object tracking), with only n=9 at follow-up, assessed within-arm rather than by between-group interaction, and not presented by its authors as a replication."
+    },
+    {
+     "claim": "The valproate absolute-pitch study -- the most-cited precedent for pharmacologically reopening a critical period in heal",
+     "verdict": "CONFIRMED",
+     "correction": ""
+    }
+   ]
+  },
+  {
+   "lane": "critical-period-reopening",
+   "bottom_line": "The drug x experience hypothesis survives this lane and is arguably the only surviving route, but it currently rests on ONE n=8 healthy-adult study (Rokem & Silver 2013, PMID 23755006) for its entire post-washout durability claim; the same drug reverses sign on a different human plasticity assay, PNN degradation has never been attempted in a human brain, and every patient-population trial of pharmacological reopening plus training is null-to-subclinical. Treat this as the highest-value under-powered open target, NOT as an established mechanism — and note that the correct move (replicate/extend a healthy-adult drug x training design with a pre-registered post-washout endpoint) is a study nobody has run since 2013.",
+   "n_findings": 8,
+   "verifications": [
+    {
+     "claim": "The only healthy-adult study I found that satisfies all three project requirements at once — healthy population, drug x ",
+     "verdict": "CONFIRMED",
+     "correction": ""
+    },
+    {
+     "claim": "The only published human pharmacological attempt to reopen a canonical critical period succeeded on-drug — 15 days of va",
+     "verdict": "REJECT_MISDESCRIBED",
+     "correction": "Accurate version: Gervain et al. (Front Syst Neurosci 2013;7:102; PMID 24348349) is the first published attempt to change absolute-pitch (AP) ability in humans with any drug — not the only human pharmacological attempt to reopen a canonical critical period, since adult amblyopia (ocular-dominance) drug-plasticity trials predate and postdate it (levodopa, Gottlob & Stangler-Zuschrott 1990; citalopram, Lagas et al. Neural Plast 2019; fluoxetine, Huttunen et al. Sci Rep 2018 and a 42-patient Phase 2; donepezil pilot, Chung et al.). In 24 healthy adult males (median age 23, range 18-27; males only as a pregnancy precaution), 15 days of valproate with online pitch-class training on days 8-14 produced above-chance pitch-class identification on the day-15 on-drug test in the first arm — 5.09 vs 3.50 correct of 18 trials against a chance level of 3 (VPA t(10)=4.08, p=0.002; placebo t(11)=1.32, p=0.21; between-condition F(1,21)=6.37, p=0.02; n=23 analyzable after one record was lost to software malfunction). The result is acute and arm-1-only: 18 participants completed the second arm (17 analyzable), where both groups were at chance (VPA 2.75, placebo 3.33; F(1,16)=0.452 ns), and the crossover showed a Condition x Order interaction (F(1,15)=8.85, p=0.009) with the effect present only in VPA-first participants (F(1,8)=20.25, p=0.002) and absent in placebo-first (F(1,7)=1.13, p=0.32); the authors attribute this to training carry-over and present the study as a \"proof-of-concept.\" Additional limitations: no baseline AP test was obtainable, and the blind was largely penetrated (17 of 18 crossover completers correctly guessed their arm from drowsiness/nausea). Durability was not assessed, exactly as claimed — the authors state, \"it needs to be noted that we did not test how long the effect of the improvement in AP perception lasted. Future research will need to address this question by retesting participants after several days or weeks following the end of training.\""
+    },
+    {
+     "claim": "Cholinergic enhancement is not a general plasticity opener in adult humans: a single 5 mg dose of donepezil REDUCED, rat",
+     "verdict": "CONFIRMED",
+     "correction": ""
+    }
+   ]
+  },
+  {
+   "lane": "drug-plus-training",
+   "bottom_line": "Drug x training is the best-documented route to durable drug-induced functional gain in humans, but its two flagship paradigms both collapsed under scale: FLAME's motor benefit went to SMD 0.03 across 5907 randomised patients with high-GRADE certainty, and d-cycloserine-augmented exposure therapy peaked at d=0.25 and lost significance at follow-up. Critically, the peak augmentation effect (d~0.25) sits INSIDE the project's established acute-enhancement ceiling of 0.1-0.35, so pairing a plasticity drug with training has not yet bought any effect-size headroom at all — and in healthy adults the post-washout evidence base is two small unreplicated levodopa vocabulary studies. The plasticity-window hypothesis is not refuted, but it is currently UNSUPPORTED at scale, and any Nature-targeted claim must treat \"drug opens window, training writes it, change persists\" as an open question with a documented history of large-scale replication failure.",
+   "n_findings": 8,
+   "verifications": [
+    {
+     "claim": "FLAME, the founding drug+training precedent, reported a large motor-recovery advantage for fluoxetine added to physiothe",
+     "verdict": "CONFIRMED",
+     "correction": "Substantively accurate; one wording refinement. Replace \"no post-washout retention was ever measured\" with \"no post-washout retention was ever reported.\" The FLAME registration (NCT00657163) did pre-specify 12-month secondary assessments (Fugl-Meyer Stroke Scale at M12; modified Rankin, NIHSS, MADRS and mortality at M3 and M12), i.e. a timepoint nine months after drug cessation was planned and possibly collected — but no 12-month FLAME results were ever published, so no post-washout retention evidence exists in the literature. Two minor numerical notes: the paper's adjusted between-group difference is 9.8 FMMS points (95% CI 3.4-16.1), not 9.7 (9.7 is the raw difference of the two adjusted means); and the mRS secondary outcome is reported in the secondary literature both as \"scores of 1 or 2 in 15 vs 5 patients, p=0.015\" (as the claim states) and as \"mRS 0-2 in 34% vs 11%, p=0.021 adjusted,\" so the exact mRS categorisation and p-value should be checked against the published results table before being quoted as definitive."
+    },
+    {
+     "claim": "The scale replication of FLAME FAILED decisively and definitively: three independent pre-registered RCTs (FOCUS, AFFINIT",
+     "verdict": "CONFIRMED",
+     "correction": ""
+    },
+    {
+     "claim": "The 2021 Cochrane review, which incorporated the large trials, places the pooled effect of SSRIs on post-stroke MOTOR de",
+     "verdict": "REJECT_MISDESCRIBED",
+     "correction": "The 2021 Cochrane review (Legg et al., CD009286.pub4) does place pooled post-stroke motor deficit at SMD 0.03 (95% CI -0.02 to 0.08; 6 studies, 5518 participants), consistent with no motor benefit and contrary to FLAME's motor claim — but this outcome is rated MODERATE-certainty, not high, downgraded because motor data in several trials were self-reported rather than objectively assessed (I2=75%). HIGH-certainty ratings apply to disability (SMD -0.0, 95% CI -0.05 to 0.05), independence (RR 0.98, 95% CI 0.93-1.03), both depression outcomes, bone fractures (RR 2.35, 95% CI 1.62-3.41), and early discontinuation (RR 1.57); seizures (RR 1.40, 95% CI 1.00-1.98) are moderate-certainty (\"probably increased\"). Also, the durability statement should be softened: only 2 of 76 included studies reported data beyond end of treatment, so the absence of benefit is established at end of treatment (6 months in FOCUS/AFFINITY/EFFECTS) rather than across multiple durable timepoints. FLAME was reclassified to unclear risk of bias (baseline motor-score imbalance) and excluded from the low-risk-of-bias primary analysis."
+    }
+   ]
+  },
+  {
+   "lane": "window-biomarkers",
+   "bottom_line": "No validated human biomarker exists for \"a plasticity window is open\": the TMS/EEG plasticity assays fail reliability (cTBS ICC 0.16-0.53; ~39-45% responders; sensory-LTP meta-analysis null), BDNF genotype is null in ~three-quarters of data, and the one metrologically excellent marker (SV2A PET) sees nothing 24 h after ketamine — so a drug x experience protocol in healthy adults can currently only be timed by assumption (animal-derived window durations, PMID 37316665), not by measurement; the sole validated timing biomarkers are millisecond oscillatory-phase markers (mu-phase, slow-oscillation phase) that gate stimulation, not drug windows.",
+   "n_findings": 8,
+   "verifications": [
+    {
+     "claim": "The most widely used TMS index of cortical plasticity (cTBS aftereffect on MEP amplitude) has only poor-to-moderate test",
+     "verdict": "REJECT_MISDESCRIBED",
+     "correction": "Jannati et al. (Front Neurosci 2019;13:447, PMID 31156361) is real and the reliability numbers are reported exactly as stated: in 28 healthy adults (ages 21-65) undergoing two identical motor-cortex cTBS sessions (median 9.5 days apart), deltaMEP at T50 was the most reliable single measure in the whole sample (ICC = 0.53), AUC of deltaMEPs was most reliable over the full 60 min (ICC = 0.40), T5 ICC = 0.16 and T10 ICC = 0.11, with substantially better reliability in participants <35 years and in BDNF Val66Val and APOE e4- carriers. Aftereffects were tracked only to 60 min post-cTBS (acute).\n\nHowever, the paper does NOT conclude that cTBS is disqualified as an individual-level plasticity biomarker. Its conclusion is that aftereffects at most individual timepoints show \"low to moderate\" reliability and that cTBS should therefore be measured at T50 or as cumulative deltaMEP/AUC over 30-60 min post-cTBS, with substantially larger sample sizes for clinical-vs-healthy comparisons; the authors frame their goal as \"improving the utility of cTBS as a neurophysiologic index of cortical plasticity.\" The paper also reports that reliability reaches the authors' \"high\" band (ICC ~0.79-0.86) in more homogeneous subgroups, which cuts against a blanket disqualification. Separately, the descriptor \"the most widely used TMS index of cortical plasticity\" appears nowhere in the paper and is unsupported framing (PAS is a comparably established plasticity index).\n\nAccurate restatement: \"Test-retest reliability of cTBS aftereffects on MEP amplitude is low to moderate in healthy adults, with the best single measure reaching only ICC = 0.53 (deltaMEP at 50 min) and full-60-min AUC ICC = 0.40; the authors recommend measuring at 50 min or via cumulative 30-60 min AUC and using substantially larger samples, and note reliability is moderated by age, BDNF and APOE genotype.\""
+    },
+    {
+     "claim": "No baseline biomarker predicts who will show the expected plasticity response to standard plasticity-induction protocols",
+     "verdict": "CONFIRMED",
+     "correction": ""
+    },
+    {
+     "claim": "The EEG/MEG analogue of an LTP-like plasticity readout in humans -- sensory tetanisation of visual and auditory evoked p",
+     "verdict": "CONFIRMED",
+     "correction": ""
+    }
+   ]
+  },
+  {
+   "lane": "durability-trial-design",
+   "bottom_line": "The design needed to detect durable enhancement is known and quantified — a randomised WASHOUT/discontinuation design (>80% power vs. <60% for delayed-start, PMID 19025967) with a pre-randomisation repeated-testing burn-in and ~1,300-3,000 randomised healthy adults — but essentially nobody is running it: zero registered randomised-withdrawal cognition trials, no adequately powered post-washout cognitive primary endpoint in healthy adults anywhere I could find, and the one well-designed drug x training augmentation trial that reported (PMID 32212856) saw its d=0.57 advantage decay to d=0.21 by week 26 while still on drug and never tested washout. The durable-enhancement hypothesis is therefore not refuted — it is UNTESTED, and the reason is that the retest artifact (d=0.25-1.19) is as large as or larger than the target effect (SMD ~0.2), which makes every cheap design uninterpretable and prices the decisive study at ADAGIO-to-ACTIVE scale.",
+   "n_findings": 8,
+   "verifications": [
+    {
+     "claim": "A head-to-head simulation of the two candidate architectures found the randomised WASHOUT (discontinuation) design reach",
+     "verdict": "CONFIRMED",
+     "correction": ""
+    },
+    {
+     "claim": "The canonical adequately-resourced delayed-start trial (ADAGIO, rasagiline in Parkinson's disease, n=1,176 over 72 weeks",
+     "verdict": "CONFIRMED",
+     "correction": "No substantive correction needed. One refinement for precision: \"the 2 mg dose failed outright\" should read \"the 2 mg dose failed the hierarchical primary analysis.\" The 2 mg arm did meet the first of the three hierarchical endpoints — superiority to placebo in rate of UPDRS change between weeks 12 and 36 (0.07+/-0.02 vs 0.14+/-0.01 points per week, P<0.001), in fact a larger slope separation than the 1 mg arm achieved (0.09+/-0.02 vs 0.14+/-0.01, P=0.01). It then failed the second, gating endpoint (baseline-to-week-72 change, 3.47+/-0.50 vs 3.11+/-0.50, P=0.60), which under the prespecified hierarchical sequence halted testing and rendered the 2 mg result negative overall. The claim's P value and UPDRS figures are correctly assigned, and this detail strengthens the internal-discordance point (higher dose looked better early, worse at 72 weeks). Also note the QUOTE field is a paraphrase, not a verbatim sentence; the paper reads \"3.47+/-0.50 points in the early-start group and 3.11+/-0.50 points in the delayed-start group, P=0.60.\""
+    },
+    {
+     "claim": "Practice (retest) effects on composite cognitive measures in older adults assessed three times over a 6-12 month period ",
+     "verdict": "CONFIRMED",
+     "correction": "Claim stands; two refinements for precision rather than corrections of substance.\n\n1. PROVENANCE OF 0.25. This is a selective/narrative review (\"In this review, we selectively examined literature...\"), not new empirical data, and 0.25 is the authors' derived extrapolation, not a directly measured or pooled value. They build it from Calamia et al.'s meta-analytic moderator regression weights (composite practice effect z=0.24 for a modal middle-aged subject at 1-year retest; ES 0.24 for a global composite in 947 cognitively stable individuals) plus their own experience that a third assessment adds roughly half the T0-T1 gain. So \"run at d~0.25\" is the paper's headline estimate, correctly cited, but it is a modelled figure with no confidence interval. Component-test ESs in their ADNI table span 0.19-0.72 (Logical Memory immediate 0.43-0.72 is far larger than the composite). Also, the preclinical-AD extension is flagged by the authors as inference, not measurement: \"We further suggest that individuals with preclinical AD... will demonstrate practice effects that are similar in magnitude.\"\n\n2. MECHANISM FRAMING. The claim's durability gloss — \"the artifact is an upward drift, i.e. it manufactures apparent durable enhancement\" — is one of two directions the paper allows, and not the one it emphasises. The paper's primary warning is a type 2 error: practice effects arise in BOTH arms of a randomized trial, so they \"mask subtle decline in a placebo group, reducing the ability to detect improvements, if any, in the active treatment group,\" and inflate the required active-arm gain to ~0.50. The false-positive direction is stated but conditioned: \"effects might be misinterpreted as active drug effects in trials in which cohort differences in learning were present.\" The abstract commits only to \"type 1 or type 2 errors.\" Practically: retest drift manufactures apparent durable enhancement in UNCONTROLLED, single-arm, or within-subject pre/post durability follow-ups (and where arms differ in learning); in a properly randomized durability endpoint it is shared across arms and instead erodes power to detect the ~0.2 SMD. Either way the claim's operational upshot — a d~0.25 artifact at exactly the 6-12 month retention window swamps a d~0.2 durable target unless controlled — is what the paper argues."
+    }
+   ]
+  },
+  {
+   "lane": "adversarial-case-against",
+   "bottom_line": "Durable pharmacological enhancement in healthy adults is not merely unproven — it is structurally disfavoured: the brain runs a homeostatic controller that downscales potentiation nightly, enhancement in optimised systems is sign-flipping rather than additive (it demotes high performers), the capacity is bounded by real fitness trade-offs, the drug × training plasticity-window hypothesis has already failed in the largest test ever run (n=5,907, null at 12 months), and the entire acute effect-size ceiling (SMD 0.10-0.35) sits BELOW the d = 0.26 practice effect that appears with no intervention at all — so any future \"durable gain\" claim in healthy adults must clear a retest artifact larger than the drug effect it is looking for, using a post-washout design that, as far as I can find, has never been run.",
+   "n_findings": 8,
+   "verifications": [
+    {
+     "claim": "Sleep globally renormalises synaptic strength, actively erasing net potentiation accumulated during waking learning — so",
+     "verdict": "REJECT_MISDESCRIBED",
+     "correction": "Accurate version: In mouse motor and somatosensory cortex (de Vivo et al., Science 2017;355(6324):507-510; 6,920 synapses, 3D electron microscopy; no learning task, comparing sleep vs spontaneous or enforced wake), the axon-spine interface was ~18% smaller after ~7 h of sleep than after wake, with the decrease proportional to ASI size (multiplicative scaling). Critically, the scaling was SELECTIVE, not global: the largest ~20% of synapses and those lacking recycling endosomes were spared, implying a division between ~80% weaker/more plastic and ~20% stronger/more stable synapses. The authors' stated function for this renormalisation is memory-PRESERVING, not memory-erasing - it prevents runaway potentiation and saturation and restores signal-to-noise, and spares the synapses most active during sleep. The paper therefore does not establish that a durable learning gain must defeat a mechanism designed to undo it; it establishes a nightly net downscaling that preferentially spares exactly the strong-synapse population where a consolidated gain would be stored. Generality is further limited: Cary & Turrigiano (eLife 2021) found rat neocortical synaptic strengths stable across natural sleep/wake and stated downscaling is not universal across cell types and regions; Loschky et al. (eLife 2022) found no sleep/wake ASI change in cerebellum; and Yang et al. (Science 2014;344:1173-1178) found that in mouse M1 sleep promotes and protects learning-induced new spines. The two corroborating citations are bibliographically correct but describe cell-autonomous firing-rate homeostasis and metaplasticity, which are not sleep-gated mechanisms and should not be presented as evidence for a nightly sleep-dependent eraser."
+    },
+    {
+     "claim": "Dopaminergic cognitive enhancement is baseline-dependent and sign-flipping, not additive: the same dose that improves lo",
+     "verdict": "CONFIRMED",
+     "correction": ""
+    },
+    {
+     "claim": "The single most decisive healthy-adult test of the three canonical enhancers found they DEGRADE performance on a complex",
+     "verdict": "CONFIRMED",
+     "correction": ""
+    }
+   ]
+  }
+ ]
+}
