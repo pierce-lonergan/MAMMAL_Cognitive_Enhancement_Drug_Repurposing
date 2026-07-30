@@ -93,3 +93,25 @@ def test_live_ledger_has_no_error_severity_violations():
     v = validate_ledger(pd.read_csv(LEDGER))
     errors = [x for x in v if x.severity == "error"]
     assert not errors, "live ledger has error-severity violations:\n" + "\n".join(str(e) for e in errors)
+
+
+def test_durability_claim_requires_auditable_fields():
+    """B3: a durable+cognitive+healthy claim must expose the fields that would reveal a
+    Rokem & Silver-style confound (placebo also retained; baseline-normalised outcome)."""
+    from mammal_repurposing.validation.ledger_guard import validate_durability_claim
+    complete = {"compound": "x", "retention_interval": "5-15_months", "off_drug_at_readout": 1,
+                "paired_experience": 1, "replicated": 1}
+    assert [v for v in validate_durability_claim(complete) if v.severity == "error"] == []
+    for missing in ("retention_interval", "off_drug_at_readout", "paired_experience", "replicated"):
+        bad = dict(complete); bad[missing] = ""
+        errs = [v for v in validate_durability_claim(bad) if v.severity == "error"]
+        assert errs and errs[0].rule == "durability_claim_underspecified", missing
+
+
+def test_unreplicated_durability_claim_is_warned():
+    from mammal_repurposing.validation.ledger_guard import validate_durability_claim
+    row = {"compound": "rokem_silver_like", "retention_interval": "5-15_months",
+           "off_drug_at_readout": 1, "paired_experience": 1, "replicated": 0}
+    v = validate_durability_claim(row)
+    assert any(x.rule == "durability_claim_unreplicated" and x.severity == "warn" for x in v)
+    assert not [x for x in v if x.severity == "error"]

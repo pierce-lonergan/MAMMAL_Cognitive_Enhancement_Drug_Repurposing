@@ -136,6 +136,42 @@ def validate_ledger(df: pd.DataFrame) -> list[Violation]:
     return v
 
 
+# B3: fields that any DURABLE + COGNITIVE + HEALTHY claim must carry. The world precedent for this
+# cell is one n=8 study whose placebo arm ALSO retained its learning, whose absolute thresholds
+# CONVERGED, and whose surviving advantage lives only in a baseline-normalised quantity that a
+# baseline imbalance inflates. None of that is visible from an effect size and a PMID -- so a row
+# claiming this cell must expose the four facts that would let a reader catch the same confound.
+DURABILITY_REQUIRED_FIELDS = (
+    "retention_interval",       # how long after cessation was the retest?
+    "off_drug_at_readout",      # was the participant actually off drug when retested?
+    "paired_experience",        # was training/experience paired with the drug? (the real lever)
+    "replicated",               # has anyone reproduced it? (the precedent's answer is no)
+)
+
+
+def validate_durability_claim(row) -> list[Violation]:
+    """Check a single row that claims durable cognitive benefit in healthy adults.
+
+    Returns errors for any missing required field. This is deliberately strict: the failure mode it
+    guards against is a confounded single study entering a ledger as a 'verified positive' and
+    silently populating the one cell the whole programme is gated on.
+    """
+    c = str(row.get("compound", "<missing>"))
+    v: list[Violation] = []
+    for f in DURABILITY_REQUIRED_FIELDS:
+        val = row.get(f)
+        if val is None or (isinstance(val, float) and pd.isna(val)) or str(val).strip() == "":
+            v.append(Violation(c, "error", "durability_claim_underspecified",
+                               f"a durable+cognitive+healthy claim must record {f!r}; without it the "
+                               "row cannot be audited for the confounds that invalidate the one "
+                               "existing world precedent (see B1/B3 reports)"))
+    if str(row.get("replicated", "")).strip() in {"0", "0.0", "False", "false"}:
+        v.append(Violation(c, "warn", "durability_claim_unreplicated",
+                           "claim rests on unreplicated evidence; it must not be promoted to a "
+                           "DEMONSTRATED verdict on this basis alone"))
+    return v
+
+
 def assert_ledger_valid(df: pd.DataFrame) -> None:
     """Raise on any error-severity violation. Warnings are returned by validate_ledger, not raised."""
     errs = [x for x in validate_ledger(df) if x.severity == "error"]

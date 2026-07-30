@@ -60,6 +60,17 @@ STATUS_TIER: dict[str, str] = {
 EVIDENCE_RANK: dict[str, int] = {
     "delayed_start_rct": 7,            # ADAGIO template - gold standard
     "randomized_discontinuation": 6,  # randomized withdrawal / relapse
+    # B3: drug PAIRED WITH TRAINING, retested off-drug. Ranked 5 -- BELOW randomized
+    # discontinuation -- because the world literature of this design is (a) tiny, (b) mostly
+    # within-subject and therefore carryover-exposed, and (c) reports the retained gain normalised
+    # to each arm's own baseline rather than as an absolute level. The one existence proof
+    # (Rokem & Silver 2013, PMID 23755006, n=8) has a near-significant baseline imbalance that
+    # mechanically inflates that normalised quantity, AND its placebo arm also retained its
+    # learning with absolute thresholds converging. So this design can show that TRAINING produced
+    # durability while the drug scaled its normalised magnitude -- which is weaker than what a
+    # discontinuation design establishes. See reports/pipeline/paired_experience_contrast_v1.md,
+    # whose pre-registered contrast REVERSED SIGN once n>=25 was required.
+    "paired_training_washout_retest": 5,
     "longitudinal_followup": 5,       # cohort / open-label extension / RCT follow-up
     "washout_observation": 4,         # observational washout
     "preclinical_only": 3,            # animal / mechanistic
