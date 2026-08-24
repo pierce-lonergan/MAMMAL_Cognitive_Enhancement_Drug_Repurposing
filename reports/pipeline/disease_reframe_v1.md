@@ -8,7 +8,7 @@ Why this matters: the healthy-adult enhancement ceiling (Roberts 2020, g ≈ 0.2
 
 | Disease | Top mechanism class (disease prior g) | Within-disease class AUROC | Independent real-world validation |
 |---|---|---|---|
-| **AD** | AChE_inhibitor (+0.37) | 0.97 (p=0.003) | cholinesterase inhibitors (donepezil) are the AD standard of care |
+| **AD** | AChE_inhibitor (+0.37) | 0.95 (p=0.004) | cholinesterase inhibitors (donepezil) are the AD standard of care |
 | **CIAS** | M1_M4_agonist (+0.38) | n/a (ledger has no SUCCESS row) | muscarinic M1/M4 (xanomeline-KarXT) FDA-approved for schizophrenia 2024 after decades of α7/glutamate failures |
 | **FXS** | PDE4_inhibitor (+0.71) | n/a (ledger has no SUCCESS row) | PDE4D allosteric inhibitor zatolmilast (BPN14770) positive Phase II in FXS |
 
@@ -39,7 +39,7 @@ The same machinery, re-pointed at three diseases, recovers the cholinergic mecha
 
 Restricting the Gap-3 class-leave-one-COMPOUND-out predictor to **AD drugs only** (4 SUCCESS / 10 FAILURE): does mechanism class still predict outcome when the disease is held constant?
 
-- **Class track-record AUROC = 0.97** [90% CI 0.91–1.00], permutation p = 0.0032
+- **Class track-record AUROC = 0.95** [90% CI 0.82–1.00], permutation p = 0.0038
 - Target genetic-relevance AUROC = 0.82 (n=14) — the honest contrast (weaker than class)
 - Failure recall at g < 0.20: **100%** (10 flagged: ABT-126, idalopirdine, intepirdine, SUVN-502, CX-516, S47445, farampator, PF-04447943…)
 
@@ -246,7 +246,7 @@ Ceiling-passing, ranked by disease-conditioned predicted g, capped at 2 hypothes
 
 - The disease-conditioned prior is the **real meta-analytic effect size of validated modulators of each mechanism class in this disease**, scaled by how strongly each compound engages a cognition-relevant target. It is a mechanism-justified enrichment ranking, not a calibrated per-compound clinical prediction.
 - The within-disease AUROC is high for the same reason as Gap 3: mechanism classes are outcome-homogeneous *within a disease* (every AD cholinesterase inhibitor worked; every AD 5-HT6/AMPA/PDE9 drug failed). That homogeneity is the clinically-actionable finding, not a predictive miracle — the contrast against target relevance (≈ chance) is the scientific content.
-- The V6.A binding grid now covers **23 of 28 panel targets** (expanded from 13 via `scripts/77`, merging real cached MMAtt-DTA + MAMMAL DTI; peptides/biologics filtered as out-of-domain). The 5 still-missing (GRM2/3/5, GlyT1, HTR4) need a re-score pass; **M1/M4 muscarinic and 5-HT6 are not in the panel at all** — so the CIAS M1/M4 winner and the AD 5-HT6 failure class are priced in the prior table but cannot yet surface a compound. Adding those 3 targets is the next panel-expansion step.
+- The V6.A binding grid now covers **all 31 panel targets** (expanded from 13 via `scripts/77`; the 8 final targets — CHRM1/CHRM4 (M1/M4), HTR6 (5-HT6), GRM2/3/5, GlyT1, HTR4 — scored with the real MAMMAL DTI head on the RTX 5070 via `scripts/81`; peptides/biologics filtered as out-of-domain). The CIAS muscarinic winner (xanomeline class) and the AD 5-HT6 failure class are now both scorable: CIAS tops with M1/M4, and HTR6 is correctly demoted in AD at its FAILURE-class prior.
 - **Binding-percentile artifacts**: the non-anchor 'top compound' per class is whatever MAMMAL ranks highest, and MAMMAL is structurally blind to allosteric/transporter pharmacology — so noisy picks appear (e.g. a statin or a promiscuous kinase inhibitor topping a GPCR class). Known anchor drugs are placed correctly via the V7 override. This unreliability is precisely what the Gap-4 allosteric learn-to-rank head targets.
 - Disease buckets are assigned by indication/population string; a multi-indication drug contributes to every bucket it names.
 

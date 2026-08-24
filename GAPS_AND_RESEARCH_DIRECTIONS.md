@@ -86,14 +86,38 @@ V7 produces calibrated Bayesian inference within the Roberts ceiling but cannot
 tighten compound-level predictions below roughly 0.05 of the population mean given
 the current anchor density.
 
-### G3. Scale the allosteric learn-to-rank benchmark beyond n=21
+### G3. The allosteric learn-to-rank head's dominant feature reads its own label
 
-The Gap 4 allosteric learn-to-rank head lifts pooled within-target Spearman rho
-from +0.02 (MAMMAL alone) to +0.51 (fused) on a held-out 21-compound benchmark,
-which is a proof of concept on small n with only 6 of 21 compounds having Boltz
-coverage. To promote it from proof-of-concept to a production within-target
-ranker it needs a larger held-out benchmark and fuller Boltz affinity coverage.
-Report: `reports/pipeline/allosteric_ltr_v1.md`.
+**Rewritten 2026-08-24. Scale is no longer the binding constraint, and n was
+never the reason this benchmark could not be promoted.**
+
+On the held-out 21-compound benchmark the fused head reaches pooled within-target
+Spearman rho +0.514, against MAMMAL alone at **-0.244** and the strongest single
+feature (Tanimoto alone) at +0.302. Under leave-one-target-out on 297 ChEMBL
+pairs the fusion reaches +0.621 -- and **Tanimoto alone reaches +0.765, ahead of
+it**. Report: `reports/pipeline/allosteric_ltr_v1.md`.
+
+The reason is a leak, not a sample size. `tanimoto_score` is the maximum
+similarity to the target's ChEMBL actives at pChEMBL >= 8.0, and the query
+compound is itself in that set, so the feature can read the test row's own
+activity record: 143 of 289 leave-one-target-out rows carried it at exactly
+1.000. Recomputing it self-clean costs about 77% of the fusion's margin, against
+0.055 for separating scaffolds between train and test. No train/test split closes
+this, which is why the obvious critique of this benchmark was aimed at the wrong
+thing. Pre-registered at `docs/PREREG_ALLOSTERIC_ROBUSTNESS.md`, measured at
+`reports/pipeline/allosteric_robustness_v1.md`, verdict DEGRADES.
+
+**Resolution, in order.** (1) Make the production feature self-clean at source
+and re-measure -- until then a larger benchmark measures the same leak on more
+rows. (2) Then scale, and add Boltz coverage beyond the current 6 of 21. (3) The
+honest claim to test after that is equivalence, not superiority: the paired
+margin between Tanimoto alone and the fusion is -0.104, 95% CI [-0.218, +0.032],
+which crosses zero.
+
+The negative result the head was built to demonstrate is unaffected and in fact
+strengthened. MAMMAL is not merely uninformative within a target, it is close to
+constant: for HRH3 it returns the bit-identical score 6.779786110 to all three
+ligands across pChEMBL 8.10 to 8.40.
 
 ### G4. V7 PBPK receptor-occupancy is not fitted to the PET anchors
 
@@ -658,10 +682,13 @@ the named reports below, and the manuscript suite.
   is 0.00 (the honest extrapolation ceiling).
   `reports/pipeline/retrospective_clinical_validation_v1.md`.
 - **Gap 4. Allosteric learn-to-rank head**: quantifies MAMMAL's within-target
-  blindness (predicted-pKd std 0.01 to 0.05 across 3 log-units of affinity) and
-  fuses [MAMMAL pKd, Tanimoto, Boltz, physicochemistry] to lift held-out
-  within-target rho from +0.02 to +0.51. `reports/pipeline/allosteric_ltr_v1.md`.
-  Open follow-up: scale beyond n=21 (G3).
+  blindness (predicted-pKd std 0.01 to 0.05 across 3 log-units of affinity, and
+  bit-identical scores on one target) and fuses [MAMMAL pKd, Tanimoto, Boltz,
+  physicochemistry] to reach held-out within-target rho +0.514 against MAMMAL
+  alone at -0.244. `reports/pipeline/allosteric_ltr_v1.md`.
+  Open follow-up: the fusion's dominant feature reads the test row's own activity
+  record, and under leave-one-target-out that feature alone outranks the fusion
+  (+0.765 against +0.621). See G3, rewritten 2026-08-24.
 - **Gap 5. Clinician GRADE dossiers**: one-page per (compound, indication) card
   with predicted g + 90% CrI, Cochrane evidence rating, mechanism-class track
   record, off-target liability flags, and failure-mode caveats.

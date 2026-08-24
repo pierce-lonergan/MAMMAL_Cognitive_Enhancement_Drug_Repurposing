@@ -292,18 +292,41 @@ def main() -> int:
     L.append("")
     nofm = rho["Tanimoto + physchem (NO foundation model)"]
     full = rho["Full fused (+ MAMMAL + Boltz)"]
+    tani = rho["Tanimoto-to-actives only"]
+    best = max(rho.items(), key=lambda kv: kv[1])
+    delta = full - nofm
+    # The verb follows the sign. This sentence used to say "lifts this only to"
+    # whatever the run produced, so on 2026-08-24 it rendered "lifts this only to
+    # +0.60 (Δ = -0.01)" -- a report contradicting itself inside one clause
+    # because the direction of its own finding was a string constant.
+    move = ("lifts this to" if delta > 0.005 else
+            "LOWERS it to" if delta < -0.005 else
+            "leaves it at")
     L.append(f"**Honest attribution:** classic ligand-similarity + physicochemical "
              f"features alone reach ρ = {nofm:+.2f}; adding the foundation model and "
-             f"3D-affinity lifts this only to {full:+.2f} (Δ = {full - nofm:+.2f}). "
+             f"3D-affinity {move} {full:+.2f} (Δ = {delta:+.2f}). "
              f"The recovery is driven by classic cheminformatics; the foundation model "
              f"alone ({rho['MAMMAL pKd only']:+.2f}) contributes negligibly to this "
-             f"specific task. Scope (precise): this concerns **within-target ligand "
-             f"ranking at allosteric/transporter sites using the released "
-             f"`dti_bindingdb_pkd` head** — a task adversarial to a sequence-only DTI "
-             f"model trained on BindingDB pKd, not its intended cross-target affinity "
-             f"task. The practical claim is that a sequence-only DTI score should not be "
-             f"relied on for within-target ligand ranking at these sites, where "
-             f"inexpensive cheminformatics features suffice.")
+             f"specific task. The best feature set measured here is "
+             f"**{best[0]}** at {best[1]:+.3f}. Scope (precise): this concerns "
+             f"**within-target ligand ranking at allosteric/transporter sites using "
+             f"the released `dti_bindingdb_pkd` head** — a task adversarial to a "
+             f"sequence-only DTI model trained on BindingDB pKd, not its intended "
+             f"cross-target affinity task. The practical claim is that a sequence-only "
+             f"DTI score should not be relied on for within-target ligand ranking at "
+             f"these sites, where inexpensive cheminformatics features suffice.")
+    L.append("")
+    L.append(f"**What bounds this table.** `tanimoto` is the maximum similarity to the "
+             f"target's ChEMBL actives at pChEMBL ≥ 8.0, and the query compound is "
+             f"itself in that set, so the feature can read the test row's own activity "
+             f"record: 143 of 289 rows carry it at exactly 1.000. That is why Tanimoto "
+             f"alone reaches {tani:+.3f} here. The comparison between feature sets is "
+             f"still informative — every row above shares the same leak — but the "
+             f"absolute values are upper bounds, and the conclusion that the foundation "
+             f"model adds nothing is measured against an inflated baseline rather than "
+             f"a clean one. Pre-registered quantification: "
+             f"`docs/PREREG_ALLOSTERIC_ROBUSTNESS.md`, results in "
+             f"`reports/pipeline/allosteric_robustness_v1.md` (verdict DEGRADES).")
     L.append("")
     # 4. temporal validation
     L.append("## 4. Pseudo-prospective temporal validation")

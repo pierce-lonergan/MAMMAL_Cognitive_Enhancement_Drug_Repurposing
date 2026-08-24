@@ -32,6 +32,39 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 logger = logging.getLogger("flagship")
 
 
+def read_ablation(report: Path) -> dict[str, float]:
+    """Panel C's numbers, read out of the report that computes them.
+
+    They were typed into this file as `vals = [0.055, 0.592, 0.611]` until
+    2026-08-24. `manuscript_robustness.md` was regenerated that day and the
+    ablation moved: Tanimoto alone from +0.528 to +0.759, and the full fusion
+    from ABOVE the no-foundation-model baseline to BELOW it. The figure went on
+    drawing the old bars under a title asserting "MAMMAL adds delta-rho = +0.02",
+    a claim whose sign had flipped. Nothing could notice, because a literal is
+    not a dependency.
+
+    Raises rather than falling back to a default: a flagship figure that quietly
+    draws stand-in numbers is worse than one that does not build.
+    """
+    import re
+    text = report.read_text(encoding="utf-8")
+    block = re.search(r"^## 3\. Learn-to-rank feature ablation.*?(?=^## )",
+                      text, re.M | re.S)
+    if not block:
+        raise RuntimeError(f"{report}: no '## 3. Learn-to-rank feature ablation' section")
+    rows = dict(re.findall(r"^\|\s*([^|]+?)\s*\|\s*([-+]?\d+\.\d+)\s*\|\s*$",
+                           block.group(0), re.M))
+    out = {k: float(v) for k, v in rows.items()}
+    need = ["MAMMAL pKd only",
+            "Tanimoto + physchem (NO foundation model)",
+            "Full fused (+ MAMMAL + Boltz)"]
+    missing = [n for n in need if n not in out]
+    if missing:
+        raise RuntimeError(f"{report}: ablation table is missing {missing}; "
+                           f"found {sorted(out)}")
+    return out
+
+
 def compute_panel_a(R, ledger, v6b, grid, chembl):
     scores = {
         "Mechanism-class\ntrack record (OURS)": R.class_loco_g(ledger),
@@ -143,8 +176,12 @@ def main() -> int:
 
     # Panel C — allosteric ablation (LOTO, 297 ChEMBL pairs): the honest attribution
     axC = fig.add_subplot(gs[1, 0])
+    abl = read_ablation(ROOT / "reports" / "manuscript_robustness.md")
     labels = ["MAMMAL\nalone", "Classic features\n(Tanimoto+physchem)", "Full fused\n(+MAMMAL+Boltz)"]
-    vals = [0.055, 0.592, 0.611]
+    vals = [abl["MAMMAL pKd only"],
+            abl["Tanimoto + physchem (NO foundation model)"],
+            abl["Full fused (+ MAMMAL + Boltz)"]]
+    d_rho = vals[2] - vals[1]
     colors = ["#b22222", "#4682b4", "#2e8b57"]
     x = np.arange(len(labels))
     axC.bar(x, vals, 0.6, color=colors)
@@ -152,10 +189,15 @@ def main() -> int:
         axC.text(i, v + 0.02, f"{v:+.2f}", ha="center", fontsize=9, fontweight="bold")
     axC.axhline(0, color="k", lw=0.8)
     axC.set_xticks(x); axC.set_xticklabels(labels, fontsize=8)
-    axC.set_ylim(-0.05, 0.72)
+    axC.set_ylim(min(-0.05, min(vals) - 0.08), max(0.72, max(vals) + 0.11))
     axC.set_ylabel("within-target Spearman ρ (297-pair LOTO)")
+    # The verdict clause follows the measured delta. It was a fixed string
+    # asserting "+0.02" and survived a sign change unchanged.
+    verdict = (f"MAMMAL adds Δρ = {d_rho:+.2f}" if d_rho > 0.005 else
+               f"MAMMAL COSTS Δρ = {d_rho:+.2f}" if d_rho < -0.005 else
+               f"MAMMAL adds nothing (Δρ = {d_rho:+.2f})")
     axC.set_title("C   Within-target ranking at allosteric/transporter sites:\n"
-                  "      classic features carry it; MAMMAL adds Δρ = +0.02",
+                  f"      classic features carry it; {verdict}",
                   loc="left", fontsize=10.5)
 
     # Panel D — repurposing output
