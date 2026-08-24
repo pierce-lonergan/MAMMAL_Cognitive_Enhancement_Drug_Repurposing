@@ -1,0 +1,234 @@
+{
+  "_": "Reports whose numbers are published outside this repository, and the record of every report currently older than its generator. Written and read by scripts/128_report_freshness.py; see src/mammal_repurposing/provenance/report_freshness.py for why a crude rule and an evidence-only clearing path.",
+  "cited": [
+    "reports/cover_letter_journal.md",
+    "reports/osf_preregistration_class_prognostic.md",
+    "reports/pipeline/allosteric_ltr_v1.md",
+    "reports/pipeline/disease_reframe_v1.md",
+    "reports/pipeline/external_benchmark_v1.md",
+    "reports/pipeline/f2_catalogue_shortlist_v1.md",
+    "reports/pipeline/gate2_multi_modulator_v1.md",
+    "reports/pipeline/retrospective_clinical_validation_v1.md",
+    "reports/pipeline/v8_real_gate1_v1.md",
+    "reports/wet-lab/wet_lab_shortlist_v11.md"
+  ],
+  "cited_by": "thesupplementadvisor.org, via src/data/mammal.ts MAMMAL_SOURCES",
+  "attestations": {
+    "reports/pipeline/calibration_apply_v1.md::scripts/33_v3_apply_calibration.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/calibration_report.md::scripts/22_v3_calibration.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/calibration_report_v3pre.md::scripts/22_v3_calibration.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/calibrator_qc_v1.md::scripts/38_v5_calibrator_qc.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/chemcpa_real_lincs_scale_comparison.md::scripts/73_chemcpa_real_lincs_training.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/chemcpa_real_lincs_training_cognition.md::scripts/73_chemcpa_real_lincs_training.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/chemcpa_real_lincs_training_full.md::scripts/73_chemcpa_real_lincs_training.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/chemcpa_real_lincs_training_large.md::scripts/73_chemcpa_real_lincs_training.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/chemcpa_real_lincs_training_medium.md::scripts/73_chemcpa_real_lincs_training.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/cluster_d_foundation_v1.md::scripts/54_v6b_cluster_d_foundation.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/cluster_d_nuts_expanded_v1.md::scripts/62_v6b5_nuts_expanded.py": {
+      "outcome": "unverified",
+      "code_commit": "615bb1c6b0c7217fc38b43ad55d945c4791c77cd",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/cluster_d_nuts_expanded_v2_NO_mh8_baseline.md::scripts/62_v6b5_nuts_expanded.py": {
+      "outcome": "unverified",
+      "code_commit": "615bb1c6b0c7217fc38b43ad55d945c4791c77cd",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/cluster_d_nuts_expanded_v2_mh8.md::scripts/62_v6b5_nuts_expanded.py": {
+      "outcome": "unverified",
+      "code_commit": "615bb1c6b0c7217fc38b43ad55d945c4791c77cd",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/cluster_d_nuts_expanded_v2_mh8_ta98.md::scripts/62_v6b5_nuts_expanded.py": {
+      "outcome": "unverified",
+      "code_commit": "615bb1c6b0c7217fc38b43ad55d945c4791c77cd",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/cluster_d_nuts_expanded_v2_mh8_ta99.md::scripts/62_v6b5_nuts_expanded.py": {
+      "outcome": "unverified",
+      "code_commit": "615bb1c6b0c7217fc38b43ad55d945c4791c77cd",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/cluster_d_nuts_v1.md::scripts/55_v6b_cluster_d_nuts.py": {
+      "outcome": "unverified",
+      "code_commit": "615bb1c6b0c7217fc38b43ad55d945c4791c77cd",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/cpg0000_v8_etl_v1.md::scripts/70_cpg0000_etl_v8_calibration.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/diagnostics_v1.md::scripts/30_v3_diagnose_inverted.py": {
+      "outcome": "unverified",
+      "code_commit": "7ea4707cb96a07ea56b085b1476a781de3ba8f19",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. That is an operator decision, taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/disagreement_signal_v1.md::scripts/35_v3_disagreement_signal.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/external_benchmark_v1.md::src/mammal_repurposing/validation/retrospective.py": {
+      "outcome": "reproduced",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "verified_on": "2026-08-24",
+      "evidence": "scripts/79_external_benchmark.py --report <tmp> reproduced the committed report byte for byte"
+    },
+    "reports/pipeline/hypothesis_audit_v1.md::scripts/41_v5_hypothesis_audit.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/lincs_real_smoke_v1.md::scripts/72_lincs_real_data_smoke.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/mmatt_dta_activation_v1.md::scripts/52_v6_mmatt_activate.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/panel_expansion_v1.md::scripts/61_v6b5_panel_expand.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/pareto_ranking_v1.md::scripts/42_v5_pareto_shortlist.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/pocket_routed_calibration_v1.md::scripts/48_v5_pocket_routed_calibration.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/production_run_v1.md::scripts/68_production_runner.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/selectivity_v1.md::scripts/27_v3_selectivity_scoring.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/selectivity_v1_tanimoto.md::scripts/27_v3_selectivity_scoring.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/selectivity_v2_isotonic.md::scripts/27_v3_selectivity_scoring.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/selectivity_v3_isotonic_znorm.md::scripts/27_v3_selectivity_scoring.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/selectivity_v5_tanimoto.md::scripts/27_v3_selectivity_scoring.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/selectivity_v6_tanimoto_4metrics.md::scripts/27_v3_selectivity_scoring.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/v7_validation_v1.md::scripts/57_v7_validation_gates.py": {
+      "outcome": "unverified",
+      "code_commit": "7ea4707cb96a07ea56b085b1476a781de3ba8f19",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/v8_gate1_dryrun_v1.md::scripts/60_v8_gate1_dryrun.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/v8_hierarchical_cpg0000_calibration_v1.md::scripts/71_v8_hierarchical_cpg0000_calibration.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    }
+  }
+}
