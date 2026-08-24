@@ -156,7 +156,12 @@ def main() -> int:
 
     # Panel B — per-disease winning mechanism
     axB = fig.add_subplot(gs[0, 1])
-    disease_win = [("Alzheimer's", "cholinesterase\ninhibitors", 0.97),
+    # The AD number comes from the run above, not from a literal. It was typed as
+    # 0.97 while this same script computed and logged 0.95 two hundred lines
+    # further down -- the figure disagreeing with its own arithmetic, in the
+    # panel a reader looks at first. 0.97 predates the 2026-06-05 strict
+    # leave-one-out fix in validation/retrospective.py.
+    disease_win = [("Alzheimer's", "cholinesterase\ninhibitors", wd_ad.auroc_class),
                    ("Schizophrenia\n(CIAS)", "muscarinic\nM1/M4", None),
                    ("Fragile X", "PDE4", None)]
     yb = np.arange(len(disease_win))[::-1]
@@ -165,7 +170,12 @@ def main() -> int:
         axB.barh(yy, 1.0, color="#4682b4", alpha=0.18, height=0.6)
         axB.text(0.02, yy, f"{dis}", va="center", fontsize=9.5, fontweight="bold")
         axB.text(0.62, yy + 0.16, f"→ {mech}", va="center", fontsize=9, color="#1f3f6e")
-        tag = (f"within-disease AUROC {au:.2f}\n(all 10 AD failures flagged)"
+        # "all 10 AD failures flagged" was typed too, so it would have gone on
+        # saying 10 whatever the ledger held.
+        flagged = f"{len(wd_ad.flagged_failures)} of {wd_ad.n_fail}"
+        tag = (f"within-disease AUROC {au:.2f}"
+               f" [{wd_ad.auroc_class_ci[0]:.2f}, {wd_ad.auroc_class_ci[1]:.2f}]"
+               f"\n({flagged} AD failures flagged)"
                if au else "real-world: " + ("xanomeline-KarXT (FDA 2024)"
                                              if "CIAS" in dis else "zatolmilast Ph II"))
         axB.text(0.62, yy - 0.18, tag, va="center", fontsize=7.2, color="#555")
