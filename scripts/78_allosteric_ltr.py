@@ -49,6 +49,37 @@ def load_chembl_training(chembl_path: Path, dti_path: Path,
     return ch[["compound_name", "target_uniprot", "smiles", "pact"]].reset_index(drop=True)
 
 
+_PRETTY = {"mammal_only": "MAMMAL alone", "tanimoto_only": "Tanimoto alone",
+           "physchem_only": "physicochemistry alone", "fused_ltr": "the fusion"}
+
+
+def _verdict_sentence(pooled: dict[str, float]) -> str:
+    """State what the arm measured, ranked, without deciding in advance who won.
+
+    The sentences this replaces asserted that the fusion beat the sequence-only
+    model, and did so whatever the run returned. When a baseline outranks the
+    fusion that is the finding, and it has to survive into the headline.
+    """
+    fused = pooled.get("fused_ltr", float("nan"))
+    mam = pooled.get("mammal_only", float("nan"))
+    rivals = {k: v for k, v in pooled.items()
+              if k not in ("fused_ltr",) and np.isfinite(v)}
+    parts = [f"the fused head reaches ρ = {fused:+.3f} against MAMMAL-alone "
+             f"{mam:+.3f}"]
+    if not rivals:
+        return parts[0] + "."
+    top, top_rho = max(rivals.items(), key=lambda kv: kv[1])
+    if top == "mammal_only":
+        parts.append("no single-feature baseline outranks it")
+    elif top_rho > fused:
+        parts.append(f"but {_PRETTY.get(top, top)} outranks it at {top_rho:+.3f}, so "
+                     f"the fusion is not the best predictor measured here")
+    else:
+        parts.append(f"ahead of the strongest single feature "
+                     f"({_PRETTY.get(top, top)}, {top_rho:+.3f})")
+    return ", ".join(parts) + "."
+
+
 def render_report(res, bench: pd.DataFrame, report_path: Path, *, loto=None) -> None:
     L: list[str] = []
     L.append("# Allosteric Learn-to-Rank Head (Gap 4)")
@@ -92,12 +123,7 @@ def render_report(res, bench: pd.DataFrame, report_path: Path, *, loto=None) -> 
     for k in ("mammal_only", "tanimoto_only", "physchem_only", "fused_ltr"):
         L.append(f"| {labels[k]} | {res.pooled_rho.get(k, float('nan')):+.3f} |")
     L.append("")
-    best = max(res.pooled_rho.items(), key=lambda kv: (kv[1] if np.isfinite(kv[1]) else -9))
-    L.append(f"**Headline**: the fused head reaches ρ = "
-             f"{res.pooled_rho.get('fused_ltr', float('nan')):+.3f} vs MAMMAL-alone "
-             f"{res.pooled_rho.get('mammal_only', float('nan')):+.3f} — the fusion "
-             f"recovers a within-target ranking the sequence-only model cannot. "
-             f"(Best overall: {best[0]} at {best[1]:+.3f}.)")
+    L.append(f"**Headline**: {_verdict_sentence(res.pooled_rho)}")
     L.append("")
     L.append("### Per-target ρ (fused head)")
     L.append("")
@@ -108,7 +134,12 @@ def render_report(res, bench: pd.DataFrame, report_path: Path, *, loto=None) -> 
     for t in sorted(fused_pt):
         gene = bench[bench.target_uniprot == t]["target_gene"].iloc[0] \
             if (bench.target_uniprot == t).any() else t
-        L.append(f"| {gene} | {fused_pt[t]:+.3f} | {mam_pt.get(t, float('nan')):+.3f} |")
+        mam = mam_pt.get(t, float("nan"))
+        # Undefined, not missing: every MAMMAL score in the group is identical, so
+        # there is no ranking to correlate. Reporting a number here would be
+        # reporting whichever order the rows happened to arrive in.
+        mam_s = f"{mam:+.3f}" if np.isfinite(mam) else "undefined (scores tied)"
+        L.append(f"| {gene} | {fused_pt[t]:+.3f} | {mam_s} |")
     L.append("")
     L.append("### Feature importance (fused head)")
     L.append("")
@@ -134,20 +165,22 @@ def render_report(res, bench: pd.DataFrame, report_path: Path, *, loto=None) -> 
         L.append(f"| Tanimoto-to-actives alone | {loto.pooled_rho['tanimoto_only']:+.3f} |")
         L.append(f"| **Fused learn-to-rank** | **{loto.pooled_rho['fused_ltr']:+.3f}** |")
         L.append("")
-        L.append(f"The conclusion holds at scale: MAMMAL-alone within-target ranking is "
-                 f"near-flat ({loto.pooled_rho['mammal_only']:+.2f}), and the fusion "
-                 f"recovers a substantially better ranking "
-                 f"({loto.pooled_rho['fused_ltr']:+.2f}) across {int(loto.feature_importance.get('n_folds', 0))} "
-                 f"independent held-out targets.")
+        L.append(f"At scale, across "
+                 f"{int(loto.feature_importance.get('n_folds', 0))} independent held-out "
+                 f"targets: {_verdict_sentence(loto.pooled_rho)}")
         L.append("")
     L.append("## Honest scope")
     L.append("")
     L.append("- Two complementary benchmarks: the cited **n=21 binding-mode** set "
-             "(allosteric vs orthosteric labels, 5 targets) and the **n=297 "
-             "leave-one-target-out** real-ChEMBL affinity set (21 targets). The "
-             "conclusion is consistent and now at scale — MAMMAL within-target ranking "
-             "is at/below chance on both; the fusion recovers it. Still a ranking aid, "
-             "not a production absolute-affinity predictor.")
+             "(allosteric vs orthosteric labels, 5 targets) and the "
+             "**leave-one-target-out** real-ChEMBL affinity set. Each headline above "
+             "is computed from that arm's own numbers rather than asserted, so the two "
+             "may disagree; where they do, the disagreement is the result.")
+    L.append("- `tanimoto` is max similarity to the target's ChEMBL actives, and the "
+             "query compound is itself in that set, so the feature can read its own "
+             "activity record. `reports/pipeline/allosteric_robustness_v1.md` quantifies "
+             "this: recomputing it self-clean costs about 77% of the fusion's "
+             "leave-one-target-out margin. Treat every number here as an upper bound.")
     L.append("- Labels mix Ki/IC50/EC50 (within-target ranking tolerates this); the "
              "ChEMBL training labels are real pChEMBL with benchmark compounds removed.")
     L.append("- Boltz affinity covers only 6/21 benchmark pairs (imputed elsewhere with "

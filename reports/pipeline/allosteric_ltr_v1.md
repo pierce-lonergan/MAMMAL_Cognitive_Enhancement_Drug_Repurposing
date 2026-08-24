@@ -22,35 +22,35 @@ Trained on **289** ChEMBL-labelled pairs (benchmark compounds excluded), evaluat
 
 | Predictor | Pooled within-target Spearman ρ |
 |---|---|
-| MAMMAL pKd alone (sequence-only) | +0.022 |
-| Tanimoto-to-actives alone | +0.469 |
-| Physicochemical-only model | +0.048 |
+| MAMMAL pKd alone (sequence-only) | -0.244 |
+| Tanimoto-to-actives alone | +0.302 |
+| Physicochemical-only model | +0.191 |
 | **Fused learn-to-rank (MAMMAL⊕Tanimoto⊕Boltz⊕physchem)** | +0.514 |
 
-**Headline**: the fused head reaches ρ = +0.514 vs MAMMAL-alone +0.022 — the fusion recovers a within-target ranking the sequence-only model cannot. (Best overall: fused_ltr at +0.514.)
+**Headline**: the fused head reaches ρ = +0.514 against MAMMAL-alone -0.244, ahead of the strongest single feature (Tanimoto alone, +0.302).
 
 ### Per-target ρ (fused head)
 
 | Target | ρ (fused) | ρ (MAMMAL) |
 |---|---|---|
 | PDE9A | +1.000 | -1.000 |
-| CHRNA7 | -0.100 | +0.200 |
-| GRIA1 | +0.600 | +0.429 |
-| PDE4D | +0.800 | -0.400 |
-| HRH3 | +0.500 | +0.500 |
+| CHRNA7 | -0.100 | -0.224 |
+| GRIA1 | +0.600 | +0.377 |
+| PDE4D | +0.800 | -0.632 |
+| HRH3 | +0.500 | undefined (scores tied) |
 
 ### Feature importance (fused head)
 
 | Feature | Importance |
 |---|---|
-| tanimoto | 0.807 |
+| tanimoto | 0.806 |
 | mammal_pkd | 0.048 |
-| n_heavy | 0.025 |
 | mollogp | 0.024 |
-| tpsa | 0.021 |
+| n_heavy | 0.024 |
+| tpsa | 0.023 |
 | mw | 0.018 |
 | fraction_csp3 | 0.014 |
-| n_rotatable | 0.012 |
+| n_rotatable | 0.013 |
 
 ## Larger real-data benchmark: leave-one-TARGET-out CV (297 ChEMBL pairs)
 
@@ -58,15 +58,16 @@ To move past the 21-compound binding-mode set, the same fusion head is evaluated
 
 | Predictor | Pooled within-target Spearman ρ (LOTO) |
 |---|---|
-| MAMMAL pKd alone | -0.115 |
-| Tanimoto-to-actives alone | +0.533 |
-| **Fused learn-to-rank** | **+0.613** |
+| MAMMAL pKd alone | -0.108 |
+| Tanimoto-to-actives alone | +0.765 |
+| **Fused learn-to-rank** | **+0.621** |
 
-The conclusion holds at scale: MAMMAL-alone within-target ranking is near-flat (-0.12), and the fusion recovers a substantially better ranking (+0.61) across 21 independent held-out targets.
+At scale, across 21 independent held-out targets: the fused head reaches ρ = +0.621 against MAMMAL-alone -0.108, but Tanimoto alone outranks it at +0.765, so the fusion is not the best predictor measured here.
 
 ## Honest scope
 
-- The allosteric benchmark is small (n=21, 5 targets); this is a **proof-of-concept** that the fusion direction works + a quantified negative result on MAMMAL's within-target ranking, not a production affinity predictor.
+- Two complementary benchmarks: the cited **n=21 binding-mode** set (allosteric vs orthosteric labels, 5 targets) and the **leave-one-target-out** real-ChEMBL affinity set. Each headline above is computed from that arm's own numbers rather than asserted, so the two may disagree; where they do, the disagreement is the result.
+- `tanimoto` is max similarity to the target's ChEMBL actives, and the query compound is itself in that set, so the feature can read its own activity record. `reports/pipeline/allosteric_robustness_v1.md` quantifies this: recomputing it self-clean costs about 77% of the fusion's leave-one-target-out margin. Treat every number here as an upper bound.
 - Labels mix Ki/IC50/EC50 (within-target ranking tolerates this); the ChEMBL training labels are real pChEMBL with benchmark compounds removed.
 - Boltz affinity covers only 6/21 benchmark pairs (imputed elsewhere with a `has_boltz` indicator); fuller Boltz coverage is a documented follow-up.
 - The honest takeaway either way: MAMMAL's sequence-only score must NOT be used for within-target ligand ranking at allosteric/transporter sites — exactly the targets that dominate cognition pharmacology.
