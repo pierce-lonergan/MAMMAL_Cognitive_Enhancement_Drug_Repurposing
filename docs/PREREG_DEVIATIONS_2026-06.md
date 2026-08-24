@@ -20,6 +20,8 @@ Ground truth (from the recon over the repo):
 | **B1** | `scripts/43_v5_conformal_calibration.py:94` | SILENT | deviation from report's "held-out" claim; in-sample-vs-LOCO never specified | not affected (1.00 absent) | **CONSERVATIVE** (in-sample 1.00 -> honest LOCO < 1.00) | `reports/pipeline/conformal_calibration_v1.md` |
 | **B4** | `reporting/clinician_dossier.py:176` | SILENT | **DEVIATION** — V7 plan locks "90% CrI" (`v7_osf_preregistration.md:21,138,150`); code shipped a two-sided 80% z mislabeled 90% | not affected (CrI level absent) | **CONSERVATIVE** (widen 80% -> true 90%, z 1.2816 -> 1.6449) — RESTORES the registered 90% | `reports/pipeline/clinician_dossiers_v1.md` |
 | **B7** | `calibration/hierarchical_bayes.py:271` | SILENT | deviation from framework convention (manuscript Methods uses Spearman for the LTR rho); the shrinkage rho's statistic never registered | not affected (single-rho values absent) | neutral (Pearson -> Spearman, \|diff\| ~0.10 at n=7-10) | `reports/pipeline/hierarchical_bayes_v1.md` |
+| **B8** | `cluster_a/allosteric_ltr.py:build_feature_table` (fix `851e3cb`) | SILENT (V7GP5 is AUROC-only) | not a pre-reg deviation; the LTR Spearman was never registered | **AFFECTED — the first entry in this ledger that is** | **CONSERVATIVE, and it INVERTS a claim**: the fused head moves from ABOVE its no-foundation-model baseline to BELOW it (Δρ +0.02 → −0.01) | `reports/manuscript_robustness.md` REGENERATED 2026-08-24 |
+| **B9** | `validation/retrospective.py:class_loco_g` (fix `eeb27d5`) | SILENT on the per-disease reframe; the registered claim is the 31-drug class AUROC, not the within-AD one | not a pre-reg deviation, but it is AUROC territory and is recorded here for that reason | **AFFECTED** (abstract already carried 0.95; Fig. 1B did not) | **CONSERVATIVE** — within-AD AUROC 0.97 → 0.95, 90% CI [0.91, 1.00] → [0.82, 1.00], p 0.0032 → 0.0038 | `reports/pipeline/disease_reframe_v1.md` REGENERATED 2026-08-24 |
 
 ## Notes per item
 
@@ -76,3 +78,52 @@ is close to nothing at those targets. This is a conservative correction to an in
 it does not touch a manuscript claim, but it does further weaken the (already negative) case that
 per-target MAMMAL calibration carries usable signal. Caveat: P42262/P48058 have n=3, where Spearman
 can only take values in {−1, −0.5, 0, +0.5, +1}; their "+0.500" is that granularity, not precision.
+
+
+**B8 (code fix `851e3cb`, 2026-06-13; report REGENERATED 2026-08-24).** `build_feature_table`
+imputed missing fusion features on full-frame per-target means. Under leave-one-target-out that
+leaks the held-out target into its own imputation. The fix adds `impute=False` so `loto_evaluate`
+imputes per fold on training statistics only.
+
+This is the first manuscript-affecting entry in this ledger, and it does not merely move a number,
+it reverses the direction of a claim. The submitted text read "adding the 458M-parameter model and
+3D-affinity lifts within-target ρ by only Δρ = +0.02". On corrected code the fusion sits *below* its
+own no-foundation-model baseline: Δρ = −0.01. The paper's thesis is unchanged and slightly
+strengthened — the foundation model contributes nothing to within-target ranking — but a reader
+checking the supplementary table against the manuscript would have found the sign wrong.
+
+| feature set | as submitted | corrected |
+|---|---|---|
+| MAMMAL pKd only | +0.055 | +0.054 |
+| Physicochemical only | +0.329 | +0.312 |
+| Tanimoto-to-actives only | +0.528 | **+0.759** |
+| Tanimoto + physchem (NO foundation model) | +0.592 | +0.607 |
+| Full fused (+ MAMMAL + Boltz) | +0.611 | +0.601 |
+
+Tanimoto alone now outranks the full fusion, which changes the supportable claim from "the fusion
+recovers the ranking" to "the fusion is no better than structural similarity at recovering it".
+The manuscript text and Figure 1C were corrected accordingly, and both now also disclose that
+`tanimoto` is computed against a set containing the query compound (143 of 289 rows at exactly
+1.000), so every row of that table is an upper bound. Quantified in
+`reports/pipeline/allosteric_robustness_v1.md` against `docs/PREREG_ALLOSTERIC_ROBUSTNESS.md`,
+verdict DEGRADES.
+
+**B9 (code fix `eeb27d5`, 2026-06-05; report REGENERATED 2026-08-24).** `class_loco_g` shrank each
+held-out drug toward a global mean computed over the full ledger, the held-out drug included. The
+fix holds the drug out of every term. The registered pre-registration (V7GP5) locks the 31-drug
+class-prognostic AUROC, which is unaffected; the per-disease reframe is a separate analysis and is
+SILENT in the registration. It is recorded here anyway because it is an AUROC and therefore the
+kind of number a reader will assume was registered.
+
+Within-AD: AUROC 0.97 → 0.95, 90% CI [0.91, 1.00] → [0.82, 1.00], permutation p 0.0032 → 0.0038.
+The point estimate moves two hundredths and the interval's lower bound moves nine, which is the
+part that matters: [0.91, 1.00] reads as a tight result, [0.82, 1.00] reads as fourteen drugs.
+Failure recall is unchanged at 10 of 10.
+
+**Why neither was caught for ten weeks.** Both reports were regenerated only when a freshness gate
+began following imports. A "Generated by" trailer is hand-written: `manuscript_robustness.md`
+declared its script but not `cluster_a/allosteric_ltr.py`, and `disease_reframe_v1.md` declared
+`validation/disease_reframe.py` but not the `retrospective` module it does `from . import` and
+calls into. The fixes above were made by an author who knew the reports existed. The lesson this
+ledger should carry forward is that recording a deviation and regenerating the affected report are
+two separate acts, and only the first of them was reliably happening.
