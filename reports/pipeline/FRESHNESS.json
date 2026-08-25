@@ -14,6 +14,12 @@
   ],
   "cited_by": "thesupplementadvisor.org, via src/data/mammal.ts MAMMAL_SOURCES",
   "attestations": {
+    "reports/pipeline/allosteric_benchmark.md::src/mammal_repurposing/analysis/benchmark.py": {
+      "outcome": "unverified",
+      "code_commit": "6a0e12cc96220355b028134c045486a5d0119a3f",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
     "reports/pipeline/calibration_apply_v1.md::scripts/33_v3_apply_calibration.py": {
       "outcome": "unverified",
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
@@ -26,17 +32,35 @@
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
     },
+    "reports/pipeline/calibration_report.md::src/mammal_repurposing/fetchers/chembl_sqlite.py": {
+      "outcome": "unverified",
+      "code_commit": "d9339e83d37bfc43d464af3fe0ebd9c3d9ee0f7e",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
     "reports/pipeline/calibration_report_v3pre.md::scripts/22_v3_calibration.py": {
       "outcome": "unverified",
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
     },
+    "reports/pipeline/calibration_report_v3pre.md::src/mammal_repurposing/fetchers/chembl_sqlite.py": {
+      "outcome": "unverified",
+      "code_commit": "d9339e83d37bfc43d464af3fe0ebd9c3d9ee0f7e",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
     "reports/pipeline/calibrator_qc_v1.md::scripts/38_v5_calibrator_qc.py": {
       "outcome": "unverified",
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/calibrator_qc_v1.md::src/mammal_repurposing/fetchers/chembl_sqlite.py": {
+      "outcome": "unverified",
+      "code_commit": "d9339e83d37bfc43d464af3fe0ebd9c3d9ee0f7e",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
     },
     "reports/pipeline/chemcpa_real_lincs_scale_comparison.md::scripts/73_chemcpa_real_lincs_training.py": {
       "outcome": "unverified",
@@ -68,6 +92,18 @@
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
     },
+    "reports/pipeline/clinical_trials_v1.md::src/mammal_repurposing/fetchers/clinicaltrials.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/cluster_c_v1.md::src/mammal_repurposing/cluster_c/txgnn.py": {
+      "outcome": "unverified",
+      "code_commit": "b85be2c1e77062cbb8b9e5799da494763f284e2a",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
     "reports/pipeline/cluster_d_foundation_v1.md::scripts/54_v6b_cluster_d_foundation.py": {
       "outcome": "unverified",
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
@@ -80,11 +116,23 @@
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
     },
+    "reports/pipeline/cluster_d_nuts_expanded_v1.md::src/mammal_repurposing/cluster_d/bayesian_prior.py": {
+      "outcome": "unverified",
+      "code_commit": "c86177a997e3e751e6d27a78caea31760af9a6eb",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
     "reports/pipeline/cluster_d_nuts_expanded_v2_NO_mh8_baseline.md::scripts/62_v6b5_nuts_expanded.py": {
       "outcome": "unverified",
       "code_commit": "615bb1c6b0c7217fc38b43ad55d945c4791c77cd",
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/cluster_d_nuts_expanded_v2_NO_mh8_baseline.md::src/mammal_repurposing/cluster_d/bayesian_prior.py": {
+      "outcome": "unverified",
+      "code_commit": "c86177a997e3e751e6d27a78caea31760af9a6eb",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
     },
     "reports/pipeline/cluster_d_nuts_expanded_v2_mh8.md::scripts/62_v6b5_nuts_expanded.py": {
       "outcome": "unverified",
@@ -92,11 +140,23 @@
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
     },
+    "reports/pipeline/cluster_d_nuts_expanded_v2_mh8.md::src/mammal_repurposing/cluster_d/bayesian_prior.py": {
+      "outcome": "unverified",
+      "code_commit": "c86177a997e3e751e6d27a78caea31760af9a6eb",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
     "reports/pipeline/cluster_d_nuts_expanded_v2_mh8_ta98.md::scripts/62_v6b5_nuts_expanded.py": {
       "outcome": "unverified",
       "code_commit": "615bb1c6b0c7217fc38b43ad55d945c4791c77cd",
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/cluster_d_nuts_expanded_v2_mh8_ta98.md::src/mammal_repurposing/cluster_d/bayesian_prior.py": {
+      "outcome": "unverified",
+      "code_commit": "c86177a997e3e751e6d27a78caea31760af9a6eb",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
     },
     "reports/pipeline/cluster_d_nuts_expanded_v2_mh8_ta99.md::scripts/62_v6b5_nuts_expanded.py": {
       "outcome": "unverified",
@@ -104,11 +164,23 @@
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
     },
+    "reports/pipeline/cluster_d_nuts_expanded_v2_mh8_ta99.md::src/mammal_repurposing/cluster_d/bayesian_prior.py": {
+      "outcome": "unverified",
+      "code_commit": "c86177a997e3e751e6d27a78caea31760af9a6eb",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
     "reports/pipeline/cluster_d_nuts_v1.md::scripts/55_v6b_cluster_d_nuts.py": {
       "outcome": "unverified",
       "code_commit": "615bb1c6b0c7217fc38b43ad55d945c4791c77cd",
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/cluster_d_nuts_v1.md::src/mammal_repurposing/cluster_d/bayesian_prior.py": {
+      "outcome": "unverified",
+      "code_commit": "c86177a997e3e751e6d27a78caea31760af9a6eb",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
     },
     "reports/pipeline/cpg0000_v8_etl_v1.md::scripts/70_cpg0000_etl_v8_calibration.py": {
       "outcome": "unverified",
@@ -122,11 +194,47 @@
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. That is an operator decision, taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
     },
+    "reports/pipeline/diagnostics_v1.md::src/mammal_repurposing/cluster_a/tanimoto_ranker.py": {
+      "outcome": "unverified",
+      "code_commit": "fd348c76128677f987a6e5cb2b00c213de96273c",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/diagnostics_v1.md::src/mammal_repurposing/diagnostics/distribution_shift.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/diagnostics_v1.md::src/mammal_repurposing/diagnostics/scaffold_saturation.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/diagnostics_v1.md::src/mammal_repurposing/diagnostics/tanimoto_correlation.py": {
+      "outcome": "unverified",
+      "code_commit": "fd348c76128677f987a6e5cb2b00c213de96273c",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/diagnostics_v1.md::src/mammal_repurposing/fetchers/chembl_sqlite.py": {
+      "outcome": "unverified",
+      "code_commit": "d9339e83d37bfc43d464af3fe0ebd9c3d9ee0f7e",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
     "reports/pipeline/disagreement_signal_v1.md::scripts/35_v3_disagreement_signal.py": {
       "outcome": "unverified",
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/drugcomb_combinations_v1.md::src/mammal_repurposing/fetchers/drugcomb.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
     },
     "reports/pipeline/external_benchmark_v1.md::src/mammal_repurposing/validation/retrospective.py": {
       "outcome": "reproduced",
@@ -152,11 +260,29 @@
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
     },
+    "reports/pipeline/mmatt_dta_activation_v1.md::src/mammal_repurposing/cluster_a/mmatt_dta_adapter.py": {
+      "outcome": "unverified",
+      "code_commit": "7ea4707cb96a07ea56b085b1476a781de3ba8f19",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/nootropic_similarity_v1.md::src/mammal_repurposing/analysis/nootropic_similarity.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
     "reports/pipeline/panel_expansion_v1.md::scripts/61_v6b5_panel_expand.py": {
       "outcome": "unverified",
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/panel_expansion_v1.md::src/mammal_repurposing/cluster_d/panel_expansion.py": {
+      "outcome": "unverified",
+      "code_commit": "c83e1cad6e0212b8bd8aa90d71e98c82c0a7f973",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
     },
     "reports/pipeline/pareto_ranking_v1.md::scripts/42_v5_pareto_shortlist.py": {
       "outcome": "unverified",
@@ -164,17 +290,77 @@
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
     },
+    "reports/pipeline/pareto_ranking_v1.md::src/mammal_repurposing/fusion/pareto.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/pocket_database_v1.md::src/mammal_repurposing/pockets/pocket_classifier.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
     "reports/pipeline/pocket_routed_calibration_v1.md::scripts/48_v5_pocket_routed_calibration.py": {
       "outcome": "unverified",
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
     },
+    "reports/pipeline/pocket_routed_calibration_v1.md::src/mammal_repurposing/calibration/diagnostics.py": {
+      "outcome": "unverified",
+      "code_commit": "1bc0ec79cf7143cf0aa5efd2ea972eecbe89f8c7",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/pocket_routed_calibration_v1.md::src/mammal_repurposing/calibration/isotonic.py": {
+      "outcome": "unverified",
+      "code_commit": "208df0a64b4103e0c90100ccf946d77d38a35554",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/pocket_routed_calibration_v1.md::src/mammal_repurposing/calibration/pocket_routed.py": {
+      "outcome": "unverified",
+      "code_commit": "ea0467a592a6a85e9e6fe29f0d79f6a5b26e8f40",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/pocket_routed_calibration_v1.md::src/mammal_repurposing/fetchers/chembl_sqlite.py": {
+      "outcome": "unverified",
+      "code_commit": "d9339e83d37bfc43d464af3fe0ebd9c3d9ee0f7e",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/pocket_routed_calibration_v1.md::src/mammal_repurposing/validation/folding.py": {
+      "outcome": "unverified",
+      "code_commit": "ea0467a592a6a85e9e6fe29f0d79f6a5b26e8f40",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
     "reports/pipeline/production_run_v1.md::scripts/68_production_runner.py": {
       "outcome": "unverified",
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/repurposing_shortlist_v1.md::src/mammal_repurposing/reporting/clinician_dossier.py": {
+      "outcome": "unverified",
+      "code_commit": "d9339e83d37bfc43d464af3fe0ebd9c3d9ee0f7e",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/repurposing_shortlist_v1.md::src/mammal_repurposing/validation/retrospective.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/scaffold_aware_v1.md::src/mammal_repurposing/diagnostics/scaffold_aware_al.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
     },
     "reports/pipeline/selectivity_v1.md::scripts/27_v3_selectivity_scoring.py": {
       "outcome": "unverified",
@@ -188,11 +374,47 @@
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
     },
+    "reports/pipeline/selectivity_v1_tanimoto.md::src/mammal_repurposing/cluster_a/tanimoto_ranker.py": {
+      "outcome": "unverified",
+      "code_commit": "fd348c76128677f987a6e5cb2b00c213de96273c",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/selectivity_v1_tanimoto.md::src/mammal_repurposing/fetchers/chembl_sqlite.py": {
+      "outcome": "unverified",
+      "code_commit": "d9339e83d37bfc43d464af3fe0ebd9c3d9ee0f7e",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/selectivity_v1_tanimoto.md::src/mammal_repurposing/selectivity/categorize.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
     "reports/pipeline/selectivity_v2_isotonic.md::scripts/27_v3_selectivity_scoring.py": {
       "outcome": "unverified",
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/selectivity_v2_isotonic.md::src/mammal_repurposing/cluster_a/tanimoto_ranker.py": {
+      "outcome": "unverified",
+      "code_commit": "fd348c76128677f987a6e5cb2b00c213de96273c",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/selectivity_v2_isotonic.md::src/mammal_repurposing/fetchers/chembl_sqlite.py": {
+      "outcome": "unverified",
+      "code_commit": "d9339e83d37bfc43d464af3fe0ebd9c3d9ee0f7e",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/selectivity_v2_isotonic.md::src/mammal_repurposing/selectivity/categorize.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
     },
     "reports/pipeline/selectivity_v3_isotonic_znorm.md::scripts/27_v3_selectivity_scoring.py": {
       "outcome": "unverified",
@@ -200,11 +422,47 @@
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
     },
+    "reports/pipeline/selectivity_v3_isotonic_znorm.md::src/mammal_repurposing/cluster_a/tanimoto_ranker.py": {
+      "outcome": "unverified",
+      "code_commit": "fd348c76128677f987a6e5cb2b00c213de96273c",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/selectivity_v3_isotonic_znorm.md::src/mammal_repurposing/fetchers/chembl_sqlite.py": {
+      "outcome": "unverified",
+      "code_commit": "d9339e83d37bfc43d464af3fe0ebd9c3d9ee0f7e",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/selectivity_v3_isotonic_znorm.md::src/mammal_repurposing/selectivity/categorize.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
     "reports/pipeline/selectivity_v5_tanimoto.md::scripts/27_v3_selectivity_scoring.py": {
       "outcome": "unverified",
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/selectivity_v5_tanimoto.md::src/mammal_repurposing/cluster_a/tanimoto_ranker.py": {
+      "outcome": "unverified",
+      "code_commit": "fd348c76128677f987a6e5cb2b00c213de96273c",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/selectivity_v5_tanimoto.md::src/mammal_repurposing/fetchers/chembl_sqlite.py": {
+      "outcome": "unverified",
+      "code_commit": "d9339e83d37bfc43d464af3fe0ebd9c3d9ee0f7e",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/selectivity_v5_tanimoto.md::src/mammal_repurposing/selectivity/categorize.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
     },
     "reports/pipeline/selectivity_v6_tanimoto_4metrics.md::scripts/27_v3_selectivity_scoring.py": {
       "outcome": "unverified",
@@ -212,11 +470,131 @@
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
     },
+    "reports/pipeline/selectivity_v6_tanimoto_4metrics.md::src/mammal_repurposing/cluster_a/tanimoto_ranker.py": {
+      "outcome": "unverified",
+      "code_commit": "fd348c76128677f987a6e5cb2b00c213de96273c",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/selectivity_v6_tanimoto_4metrics.md::src/mammal_repurposing/fetchers/chembl_sqlite.py": {
+      "outcome": "unverified",
+      "code_commit": "d9339e83d37bfc43d464af3fe0ebd9c3d9ee0f7e",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/selectivity_v6_tanimoto_4metrics.md::src/mammal_repurposing/selectivity/categorize.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/v6b_validation_gates_v1.md::src/mammal_repurposing/cluster_d/validation_gates.py": {
+      "outcome": "unverified",
+      "code_commit": "208df0a64b4103e0c90100ccf946d77d38a35554",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/v7_nuts_production_v1.md::src/mammal_repurposing/cluster_d/validation_gates.py": {
+      "outcome": "unverified",
+      "code_commit": "208df0a64b4103e0c90100ccf946d77d38a35554",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/v7_nuts_production_v1.md::src/mammal_repurposing/translation/effect_size_model.py": {
+      "outcome": "unverified",
+      "code_commit": "b85be2c1e77062cbb8b9e5799da494763f284e2a",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/v7_nuts_production_v1.md::src/mammal_repurposing/translation/prisma_priors.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/v7_nuts_v1.md::src/mammal_repurposing/cluster_d/validation_gates.py": {
+      "outcome": "unverified",
+      "code_commit": "208df0a64b4103e0c90100ccf946d77d38a35554",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/v7_nuts_v1.md::src/mammal_repurposing/translation/effect_size_model.py": {
+      "outcome": "unverified",
+      "code_commit": "b85be2c1e77062cbb8b9e5799da494763f284e2a",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/v7_nuts_v1.md::src/mammal_repurposing/translation/prisma_priors.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/v7_nuts_v2_production_v1.md::src/mammal_repurposing/cluster_d/validation_gates.py": {
+      "outcome": "unverified",
+      "code_commit": "208df0a64b4103e0c90100ccf946d77d38a35554",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/v7_nuts_v2_production_v1.md::src/mammal_repurposing/translation/effect_size_model.py": {
+      "outcome": "unverified",
+      "code_commit": "b85be2c1e77062cbb8b9e5799da494763f284e2a",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/v7_nuts_v2_production_v1.md::src/mammal_repurposing/translation/prisma_priors.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/v7_nuts_v2_production_v2_v6b5wired.md::src/mammal_repurposing/cluster_d/validation_gates.py": {
+      "outcome": "unverified",
+      "code_commit": "208df0a64b4103e0c90100ccf946d77d38a35554",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/v7_nuts_v2_production_v2_v6b5wired.md::src/mammal_repurposing/translation/effect_size_model.py": {
+      "outcome": "unverified",
+      "code_commit": "b85be2c1e77062cbb8b9e5799da494763f284e2a",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/v7_nuts_v2_production_v2_v6b5wired.md::src/mammal_repurposing/translation/prisma_priors.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
     "reports/pipeline/v7_validation_v1.md::scripts/57_v7_validation_gates.py": {
       "outcome": "unverified",
       "code_commit": "7ea4707cb96a07ea56b085b1476a781de3ba8f19",
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/v7_validation_v1.md::src/mammal_repurposing/translation/effect_size_model.py": {
+      "outcome": "unverified",
+      "code_commit": "b85be2c1e77062cbb8b9e5799da494763f284e2a",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/v7_validation_v1.md::src/mammal_repurposing/translation/prisma_priors.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/v8_chemcpa_smoke_v1.md::src/mammal_repurposing/cluster_e/chemcpa_train.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/v8_chemcpa_smoke_v2.md::src/mammal_repurposing/cluster_e/chemcpa_train.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
     },
     "reports/pipeline/v8_gate1_dryrun_v1.md::scripts/60_v8_gate1_dryrun.py": {
       "outcome": "unverified",
@@ -229,6 +607,12 @@
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
+    },
+    "reports/pipeline/v8_hierarchical_cpg0000_calibration_v1.md::src/mammal_repurposing/cluster_e/v8_hierarchical.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-08-24",
+      "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
     }
   }
 }
