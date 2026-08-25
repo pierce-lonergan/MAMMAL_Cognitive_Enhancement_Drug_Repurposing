@@ -118,10 +118,28 @@ def test_fused_beats_mammal_on_benchmark():
     res = A.evaluate(tf, bf, label_col="pact", seed=0)
     # MAMMAL is flat within target (structural blindness)
     assert np.nanmean(list(res.flatness.values())) < 0.1
-    # MAMMAL-alone ranking is ~chance; the fusion recovers a real ranking
+    # No row may score against its own ChEMBL record. Until 2026-08-24 the
+    # `tanimoto` feature was a maximum over an actives set containing the query,
+    # and 143 of 289 rows here read exactly 1.000. This assertion comes first
+    # because it is the reason the thresholds below moved: if it fails again,
+    # every number under it is meaningless and the rest of this test is theatre.
+    # The allowance is for genuine homologues -- ECFP4 at radius 2 cannot resolve
+    # a one-CH2 difference in a long linker, so a few distinct ACHE compounds
+    # legitimately score 1.000 against each other.
+    self_match_rate = float((bf["tanimoto"] == 1.0).mean())
+    assert self_match_rate < 0.05, (
+        f"{self_match_rate:.1%} of benchmark rows score exactly 1.000; the "
+        f"self-match exclusion in tanimoto_ranker has regressed")
+
+    # MAMMAL-alone ranking is at or below chance and the fusion beats it by a
+    # wide margin. The floor here was 0.30, set while `tanimoto` was reading its
+    # own label and the fusion measured +0.514. On self-clean features it
+    # measures +0.248, so 0.30 was never a property of the method -- it was a
+    # property of the leak. What survives is the comparison, which is what the
+    # paper actually claims.
     assert res.pooled_rho["mammal_only"] < 0.15
-    assert res.pooled_rho["fused_ltr"] > 0.30
-    assert res.pooled_rho["fused_ltr"] > res.pooled_rho["mammal_only"]
+    assert res.pooled_rho["fused_ltr"] > 0.10
+    assert res.pooled_rho["fused_ltr"] - res.pooled_rho["mammal_only"] > 0.30
 
 
 @pytest.mark.skipif(not (CHEMBL.exists() and DTI.exists()),
@@ -143,6 +161,22 @@ def test_loto_scale_fused_beats_mammal():
     res = A.loto_evaluate(feat, label_col="pact", seed=0)
     assert res.n_eval >= 250
     assert int(res.feature_importance["n_folds"]) >= 15
+
+    # Same leak guard as the benchmark test, at scale. 143 of 289 rows read
+    # exactly 1.000 before 2026-08-24.
+    self_match_rate = float((feat["tanimoto"] == 1.0).mean())
+    assert self_match_rate < 0.05, (
+        f"{self_match_rate:.1%} of LOTO rows score exactly 1.000; the "
+        f"self-match exclusion in tanimoto_ranker has regressed")
+
     assert res.pooled_rho["mammal_only"] < 0.2          # MAMMAL ~chance at scale
-    assert res.pooled_rho["fused_ltr"] > 0.45           # fusion strong
+    # Floor was 0.45 against a leaked +0.621; self-clean it measures +0.461.
+    assert res.pooled_rho["fused_ltr"] > 0.35
     assert res.pooled_rho["fused_ltr"] > res.pooled_rho["mammal_only"]
+
+    # What this test must NOT assert: that the fusion beats Tanimoto alone. On
+    # self-clean features it does not, on either arm (+0.461 against +0.511
+    # here). That is a finding, recorded in the report and in
+    # reports/pipeline/allosteric_robustness_v1.md, not a regression -- and a
+    # test asserting the opposite would be the leak reinstated as a requirement.
+    assert res.pooled_rho["tanimoto_only"] > res.pooled_rho["mammal_only"]

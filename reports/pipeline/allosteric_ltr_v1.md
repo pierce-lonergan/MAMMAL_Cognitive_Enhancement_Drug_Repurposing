@@ -25,9 +25,9 @@ Trained on **289** ChEMBL-labelled pairs (benchmark compounds excluded), evaluat
 | MAMMAL pKd alone (sequence-only) | -0.244 |
 | Tanimoto-to-actives alone | +0.302 |
 | Physicochemical-only model | +0.191 |
-| **Fused learn-to-rank (MAMMAL⊕Tanimoto⊕Boltz⊕physchem)** | +0.514 |
+| **Fused learn-to-rank (MAMMAL⊕Tanimoto⊕Boltz⊕physchem)** | +0.248 |
 
-**Headline**: the fused head reaches ρ = +0.514 against MAMMAL-alone -0.244, ahead of the strongest single feature (Tanimoto alone, +0.302).
+**Headline**: the fused head reaches ρ = +0.248 against MAMMAL-alone -0.244, but Tanimoto alone outranks it at +0.302, so the fusion is not the best predictor measured here.
 
 ### Per-target ρ (fused head)
 
@@ -35,22 +35,22 @@ Trained on **289** ChEMBL-labelled pairs (benchmark compounds excluded), evaluat
 |---|---|---|
 | PDE9A | +1.000 | -1.000 |
 | CHRNA7 | -0.100 | -0.224 |
-| GRIA1 | +0.600 | +0.377 |
-| PDE4D | +0.800 | -0.632 |
+| GRIA1 | +0.200 | +0.377 |
+| PDE4D | +0.000 | -0.632 |
 | HRH3 | +0.500 | undefined (scores tied) |
 
 ### Feature importance (fused head)
 
 | Feature | Importance |
 |---|---|
-| tanimoto | 0.806 |
-| mammal_pkd | 0.048 |
-| mollogp | 0.024 |
-| n_heavy | 0.024 |
-| tpsa | 0.023 |
-| mw | 0.018 |
-| fraction_csp3 | 0.014 |
-| n_rotatable | 0.013 |
+| tanimoto | 0.584 |
+| mollogp | 0.079 |
+| tpsa | 0.056 |
+| mammal_pkd | 0.055 |
+| n_rotatable | 0.045 |
+| n_heavy | 0.043 |
+| n_aromatic_rings | 0.038 |
+| boltz_affinity | 0.033 |
 
 ## Larger real-data benchmark: leave-one-TARGET-out CV (297 ChEMBL pairs)
 
@@ -59,10 +59,10 @@ To move past the 21-compound binding-mode set, the same fusion head is evaluated
 | Predictor | Pooled within-target Spearman ρ (LOTO) |
 |---|---|
 | MAMMAL pKd alone | -0.108 |
-| Tanimoto-to-actives alone | +0.765 |
-| **Fused learn-to-rank** | **+0.621** |
+| Tanimoto-to-actives alone | +0.511 |
+| **Fused learn-to-rank** | **+0.461** |
 
-At scale, across 21 independent held-out targets: the fused head reaches ρ = +0.621 against MAMMAL-alone -0.108, but Tanimoto alone outranks it at +0.765, so the fusion is not the best predictor measured here.
+At scale, across 21 independent held-out targets: the fused head reaches ρ = +0.461 against MAMMAL-alone -0.108, but Tanimoto alone outranks it at +0.511, so the fusion is not the best predictor measured here.
 
 ## Honest scope
 

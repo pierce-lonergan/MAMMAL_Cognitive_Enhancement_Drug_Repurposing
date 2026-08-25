@@ -100,13 +100,13 @@ What actually recovers the within-target ranking?
 |---|---|
 | MAMMAL pKd only | +0.054 |
 | Physicochemical only | +0.312 |
-| Tanimoto-to-actives only | +0.759 |
-| Tanimoto + physchem (NO foundation model) | +0.607 |
-| Full fused (+ MAMMAL + Boltz) | +0.601 |
+| Tanimoto-to-actives only | +0.492 |
+| Tanimoto + physchem (NO foundation model) | +0.472 |
+| Full fused (+ MAMMAL + Boltz) | +0.481 |
 
-**Honest attribution:** classic ligand-similarity + physicochemical features alone reach ρ = +0.61; adding the foundation model and 3D-affinity LOWERS it to +0.60 (Δ = -0.01). The recovery is driven by classic cheminformatics; the foundation model alone (+0.05) contributes negligibly to this specific task. The best feature set measured here is **Tanimoto-to-actives only** at +0.759. Scope (precise): this concerns **within-target ligand ranking at allosteric/transporter sites using the released `dti_bindingdb_pkd` head** — a task adversarial to a sequence-only DTI model trained on BindingDB pKd, not its intended cross-target affinity task. The practical claim is that a sequence-only DTI score should not be relied on for within-target ligand ranking at these sites, where inexpensive cheminformatics features suffice.
+**Honest attribution:** classic ligand-similarity + physicochemical features alone reach ρ = +0.47; adding the foundation model and 3D-affinity lifts this to +0.48 (Δ = +0.01). The recovery is driven by classic cheminformatics; the foundation model alone (+0.05) contributes negligibly to this specific task. The best feature set measured here is **Tanimoto-to-actives only** at +0.492. Scope (precise): this concerns **within-target ligand ranking at allosteric/transporter sites using the released `dti_bindingdb_pkd` head** — a task adversarial to a sequence-only DTI model trained on BindingDB pKd, not its intended cross-target affinity task. The practical claim is that a sequence-only DTI score should not be relied on for within-target ligand ranking at these sites, where inexpensive cheminformatics features suffice.
 
-**What bounds this table.** `tanimoto` is the maximum similarity to the target's ChEMBL actives at pChEMBL ≥ 8.0, and the query compound is itself in that set, so the feature can read the test row's own activity record: 143 of 289 rows carry it at exactly 1.000. That is why Tanimoto alone reaches +0.759 here. The comparison between feature sets is still informative — every row above shares the same leak — but the absolute values are upper bounds, and the conclusion that the foundation model adds nothing is measured against an inflated baseline rather than a clean one. Pre-registered quantification: `docs/PREREG_ALLOSTERIC_ROBUSTNESS.md`, results in `reports/pipeline/allosteric_robustness_v1.md` (verdict DEGRADES).
+**What bounds this table.** `tanimoto` is the maximum similarity to the target's ChEMBL actives at pChEMBL ≥ 8.0. Until 2026-08-24 the query compound was itself a member of that set, so the feature read the test row's own activity record and 143 of 289 rows carried it at exactly 1.000; `cluster_a/tanimoto_ranker.py` now excludes the query by InChIKey skeleton block. On this run **0 of 299 rows (0.0%) sit at exactly 1.000**. Every value above is measured on the corrected feature; the published pre-2026-08-24 versions of this table are not comparable to it. Pre-registered quantification of what the leak was worth: `docs/PREREG_ALLOSTERIC_ROBUSTNESS.md`, results in `reports/pipeline/allosteric_robustness_v1.md` (verdict DEGRADES).
 
 ## 4. Pseudo-prospective temporal validation
 

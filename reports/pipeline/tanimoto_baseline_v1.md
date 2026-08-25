@@ -8,15 +8,15 @@ ECFP4 / Morgan radius 2 / 2048 bits. Active threshold: pchembl ≥ 8.0.
 
 | Target | Gene | n_joined | n_actives | ρ MAMMAL | ρ Tanimoto | Δρ (T-M) | Verdict |
 |---|---|---|---|---|---|---|---|
-| Q01959 | SLC6A3 | 23 | 476 | -0.70 | +0.90 | **+1.59** | `tanimoto_beats_mammal` |
-| P23975 | SLC6A2 | 21 | 611 | -0.60 | +0.91 | **+1.51** | `tanimoto_beats_mammal` |
-| Q12879 | GRIN2A | 7 | 4 | -0.40 | +0.76 | **+1.16** | `tanimoto_beats_mammal` |
-| Q13224 | GRIN2B | 13 | 227 | -0.30 | +0.82 | **+1.12** | `tanimoto_beats_mammal` |
-| P22303 | ACHE | 8 | 637 | +0.24 | +0.81 | **+0.57** | `tanimoto_beats_mammal` |
-| P21728 | DRD1 | 17 | 241 | +0.29 | +0.85 | **+0.56** | `tanimoto_beats_mammal` |
-| O43613 | HCRTR1 | 6 | 1014 | +0.37 | +0.78 | **+0.41** | `tanimoto_beats_mammal` |
+| Q01959 | SLC6A3 | 23 | 476 | -0.70 | +0.80 | **+1.50** | `tanimoto_beats_mammal` |
+| P23975 | SLC6A2 | 21 | 611 | -0.60 | +0.72 | **+1.32** | `tanimoto_beats_mammal` |
+| Q13224 | GRIN2B | 13 | 227 | -0.30 | +0.50 | **+0.80** | `tanimoto_beats_mammal` |
+| P21728 | DRD1 | 17 | 241 | +0.29 | +0.74 | **+0.46** | `tanimoto_beats_mammal` |
+| P22303 | ACHE | 8 | 637 | +0.24 | +0.62 | **+0.38** | `tanimoto_beats_mammal` |
+| O43613 | HCRTR1 | 6 | 1014 | +0.37 | +0.43 | **+0.06** | `tie_within_threshold` |
+| Q12879 | GRIN2A | 7 | 4 | -0.40 | -0.49 | **-0.09** | `tie_within_threshold` |
 
-**Score: Tanimoto wins 7 | tie 0 | MAMMAL wins 0** (Δρ threshold = ±0.10).
+**Score: Tanimoto wins 5 | tie 2 | MAMMAL wins 0** (Δρ threshold = ±0.10).
 
 ## Interpretation
 

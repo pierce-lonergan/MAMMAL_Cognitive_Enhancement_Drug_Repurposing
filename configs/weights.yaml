@@ -5,9 +5,17 @@ fusion:
   rrf_k: 60                       # Cormack et al. SIGIR 2009 default; insensitive in [30, 80]
   lambdamart_min_labels: 20       # gate the promotion from RRF -> LambdaMART
   # Per-ranker RRF weight (1.0 = equal). Sweep these once calibration data exists.
-  # Tanimoto baseline gets weight 1.5 because it empirically dominates MAMMAL
-  # at every audited cognition target (reports/tanimoto_baseline_v1.md):
-  # SLC6A3 ρ +0.90 vs -0.70; DRD1 ρ +0.85 vs +0.29; ACHE ρ +0.81 vs +0.24.
+  # Tanimoto baseline carries weight 1.5 because it outperformed MAMMAL at every
+  # audited cognition target. CAUTION (2026-08-24): the margins that justified
+  # this number were measured while the feature read each compound's own ChEMBL
+  # record. Self-clean, the audit is 5 wins / 2 ties rather than 7 / 0, and one
+  # target (GRIN2A, 4 actives) inverts from +0.76 to -0.49. See
+  # reports/pipeline/tanimoto_baseline_v1.md for the current table.
+  #
+  # The weight itself has NOT been re-swept against the corrected scores. It is
+  # left at 1.5 deliberately rather than adjusted by eye: guessing a new constant
+  # would be the same act as trusting the old one. Re-derive it when calibration
+  # data exists, per the note above.
   cluster_rrf_weights:
     cluster_a_mammal: 1.0
     cluster_a_boltzina: 1.0

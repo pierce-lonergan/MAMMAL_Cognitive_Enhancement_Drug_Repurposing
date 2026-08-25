@@ -178,7 +178,36 @@ def render_report(path: Path, *, counts, gates, surviving, dropped, n_eval_rows,
     rho_M = pooled.get((C_, "M_mammal"), float("nan"))
     rho_FmT = pooled.get((C_, "F_minus_T"), float("nan"))
 
-    L.append("# Scaffold-split robustness of the Gap-4 allosteric fusion ranker")
+    # Section 3.1 of the pre-registration requires the Tanimoto comparison in the
+    # TITLE and the first paragraph when the block rule fires, "not in a
+    # footnote". The first version of this report demoted it five paragraphs
+    # down under a more comfortable headline, which is exactly what that rule
+    # existed to prevent, so the title is now derived rather than written.
+    _blocked = np.isfinite(rho_T) and np.isfinite(rho_primary) and rho_T >= rho_primary
+    if _blocked:
+        L.append("# Structural similarity ranks within-target affinity as well as a "
+                 "fusion containing a 458M-parameter DTI foundation model")
+        L.append("")
+        L.append("*Scaffold-split robustness of the Gap-4 allosteric fusion ranker.*")
+    else:
+        L.append("# Scaffold-split robustness of the Gap-4 allosteric fusion ranker")
+    L.append("")
+
+    # Which regime is being measured. `tanimoto` read the query compound's own
+    # ChEMBL record until 2026-08-24; the decomposition below is only meaningful
+    # while that is true, so the report says which run it is.
+    _selfmatch = int(counts.get("n_tanimoto_selfmatch", 0) or 0)
+    if _selfmatch == 0:
+        L.append("")
+        L.append("> **This run measures the CORRECTED feature.** "
+                 "`cluster_a/tanimoto_ranker.py` now excludes the query compound "
+                 "from the actives set it maximises over, so no row scores against "
+                 "its own ChEMBL record. The deflation decomposition below "
+                 "therefore no longer separates a self-match channel from a "
+                 "scaffold channel -- there is only the scaffold channel left. The "
+                 "pre-fix measurement, which is what motivated the correction, is "
+                 "the committed version of this report and its numbers are not "
+                 "reproducible from current code by design.")
     L.append("")
     L.append("**Pre-registered** in `docs/PREREG_ALLOSTERIC_ROBUSTNESS.md` (LOCKED 2026-08-24, before any "
              "performance metric was computed). This is a NEW analysis alongside "
@@ -226,9 +255,13 @@ def render_report(path: Path, *, counts, gates, surviving, dropped, n_eval_rows,
                  f"modest, even though {counts['n_rows_on_multi_target_scaffold']} of {counts['n_rows']} "
                  f"rows sit on a scaffold that leave-one-target-out leaves in the training set.")
         L.append(f"- Recomputing the Tanimoto feature without its self-match (Arm B -> Arm C) costs a "
-                 f"further **{d_bc:+.3f}**: {_f(rho_B)} -> {_f(rho_primary)}.")
+                 f"further **{d_bc:+.3f}**: {_f(rho_B)} -> {_f(rho_primary)}."
+                 + ("" if _selfmatch else
+                    " On this run that step is a no-op: the production feature is "
+                    "already self-clean, so Arm C differs from Arm B only by the "
+                    "scaffold exclusion, and any movement here is noise."))
         L.append("")
-        if np.isfinite(share):
+        if np.isfinite(share) and _selfmatch:
             L.append(f"**About {share:.0f}% of the total deflation comes from the second channel — one "
                      f"feature reading the test row's own activity record — not from analogue-series "
                      f"leakage between targets.** That is the opposite of where a leave-one-target-out "
@@ -335,7 +368,7 @@ def render_report(path: Path, *, counts, gates, surviving, dropped, n_eval_rows,
              f"Leave-one-target-out leaves every one of them in training. Arm B drops them.")
     L.append(f"2. **Tanimoto self-match.** The published `tanimoto` feature is max-Tanimoto to the target's "
              f"ChEMBL actives at pChEMBL >= {S.ACTIVE_PCHEMBL}, and the query compound is itself in that "
-             f"actives set — so it reads exactly 1.000 on **{counts['n_tanimoto_selfmatch']} of "
+             f"actives set — so it read exactly 1.000 on **{counts['n_tanimoto_selfmatch']} of "
              f"{counts['n_tanimoto']}** joined rows. No train/test split can remove this, because the "
              f"feature is derived from the test row's own activity record.")
     if arm_c_ok:

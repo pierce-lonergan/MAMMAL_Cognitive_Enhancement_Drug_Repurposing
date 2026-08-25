@@ -2,13 +2,13 @@
 
 Falsifiable re-test of every pre-committed claim from V3/V4/V5 design docs against the live production artifacts. **Brutal honesty mode** — no claim is grandfathered.
 
-**Summary**: PASS=19 | DEGRADE=3 | FAIL=0 | INSUFFICIENT_DATA=0 (of 22 hypotheses)
+**Summary**: PASS=18 | DEGRADE=4 | FAIL=0 | INSUFFICIENT_DATA=0 (of 22 hypotheses)
 
 ## Verdicts
 
 | ID | Claim | Status | Measured | Expected |
 |---|---|---|---|---|
-| H1 | Tanimoto ρ beats MAMMAL ρ at every audited cognition target | **PASS** | 7 wins, 0 losses | ≥7 wins, 0 losses |
+| H1 | Tanimoto ρ beats MAMMAL ρ at every audited cognition target | **DEGRADE** | 6 wins, 1 losses | ≥7 wins, 0 losses |
 | H2 | SLC6A3 (DAT) isotonic post-cal ρ ∈ [+0.45, +0.65] (fit time) | **PASS** | ρ=+0.619 | [+0.45, +0.65] |
 | H3 | SLC6A2 (NET) isotonic post-cal ρ ∈ [+0.30, +0.55] (fit time) | **PASS** | ρ=+0.396 | [+0.30, +0.55] |
 | H4 | ≥5 of 7 positive controls in top-20% at expected target (via calibrated_pkd) | **DEGRADE** | 3 of 7 targets PASS | ≥5 / 7 |
@@ -16,7 +16,7 @@ Falsifiable re-test of every pre-committed claim from V3/V4/V5 design docs again
 | H6 | Top-25 PASS-only set spans ≥5 distinct mechanism classes | **PASS** | 15 classes: ['anti_epileptic', 'cardiac_beta_blocker', 'chem | ≥5 |
 | H7 | §8.0b-zn assigns expected status + tier-1 hits for 8 reference compounds | **PASS** | 8 of 8 correct | ≥7 of 8 |
 | H8 | §7.5 pocket DB validation: 13/13 gates pass | **PASS** | 13/13 | 13/13 |
-| H9 | §8.15 disagreement signal surfaces ≥1 novel_scaffold AND ≥1 activity_cliff | **PASS** | novel_scaffold=2067, activity_cliff=2113 | ≥1 each |
+| H9 | §8.15 disagreement signal surfaces ≥1 novel_scaffold AND ≥1 activity_cliff | **PASS** | novel_scaffold=2070, activity_cliff=2106 | ≥1 each |
 | H10 | CHRNA7 rescue: TC-5619 + encenicline in top-25 by Boltzina affinity | **PASS** | found={'tc-5619': 1, 'encenicline': 5}; in_top25=2/2 | 2/2 in top-25 |
 | H11 | SLC6A3 (Tier A) calibrator drift |Δρ| ≤ 0.20 between fit and audit | **DEGRADE** | Δρ = -0.190 | |Δρ| ≤ 0.10 (PASS) / ≤ 0.20 (DEGRADE) /  |
 | H12 | Adding §8.7 MoA ranker preserves v6 top-3 in v7 | **PASS** | v6=['d-amphetamine', 'methylphenidate', 'bupropion']; v7=['d | set equality |
@@ -24,7 +24,7 @@ Falsifiable re-test of every pre-committed claim from V3/V4/V5 design docs again
 | H14 | OT Genetics fetcher includes ≥4 canonical cognition GWAS | **PASS** | 5 studies registered | ≥4 cognition GWAS |
 | H15 | Cluster D PyMC stub path produces σ(θ) ∈ (0, 1) per target | **PASS** | w_pipeline={'P22303': 0.7721691574281991, 'Q01959': 0.372124 | all w ∈ (0, 1) |
 | H16 | TxGNN per-disease API: 5 anchors + availability + weighted mean | **PASS** | 5 anchors, avail=False, wmean=0.70 | None |
-| H17 | V7.1 PBPK PET anchors produce finite bounded residuals | **PASS** | residuals=[-0.191, -0.54, -0.65] | None |
+| H17 | V7.1 PBPK PET anchors produce finite bounded residuals | **PASS** | residuals=[0.753, 0.312, 0.32] | None |
 | H18 | V7.2 PRISMA: 12 classes, all peak_g ≤ Roberts ceiling 0.50 | **PASS** | n_classes=12, n_violations=0 | None |
 | H19 | V8.1 LINCS: 3 neural cell lines weighted 1.0; probe well-formed | **PASS** | NPC/NEU/SHSY5Y all weight=1.0 | None |
 | H20 | V8.1b JUMP-CP: 13 sources × 3 embedding types registered | **PASS** | sources=13, embeddings=3 | None |
@@ -33,12 +33,12 @@ Falsifiable re-test of every pre-committed claim from V3/V4/V5 design docs again
 
 ## Detail per hypothesis
 
-### H1 — PASS
+### H1 — DEGRADE
 
 **Claim**: Tanimoto ρ beats MAMMAL ρ at every audited cognition target
 
 **Expected**: ≥7 wins, 0 losses
-**Measured**: 7 wins, 0 losses
+**Measured**: 6 wins, 1 losses
 
 _Note_: Parsed from reports/pipeline/tanimoto_baseline_v1.md table
 
@@ -171,7 +171,7 @@ _Raw_:
 **Claim**: §8.15 disagreement signal surfaces ≥1 novel_scaffold AND ≥1 activity_cliff
 
 **Expected**: ≥1 each
-**Measured**: novel_scaffold=2067, activity_cliff=2113
+**Measured**: novel_scaffold=2070, activity_cliff=2106
 
 ### H10 — PASS
 
@@ -227,7 +227,7 @@ _Note_: Audit n=10 vs fit n=23
 
 **Claim**: V7.1 PBPK PET anchors produce finite bounded residuals
 
-**Measured**: residuals=[-0.191, -0.54, -0.65]
+**Measured**: residuals=[0.753, 0.312, 0.32]
 
 ### H18 — PASS
 

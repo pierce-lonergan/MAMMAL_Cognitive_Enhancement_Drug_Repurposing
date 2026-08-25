@@ -316,15 +316,27 @@ def main() -> int:
              f"DTI score should not be relied on for within-target ligand ranking at "
              f"these sites, where inexpensive cheminformatics features suffice.")
     L.append("")
+    # This paragraph is MEASURED, not asserted. Its first version was a static
+    # string saying "143 of 289 rows carry it at exactly 1.000", written while
+    # that was true. The feature was corrected the same day and the sentence
+    # became false in the very report it was there to caveat -- the exact defect
+    # this file's attribution sentence had, one paragraph up.
+    n_one = int((feat["tanimoto"] == 1.0).sum())
+    n_rows = int(feat["tanimoto"].notna().sum())
+    pct = (100.0 * n_one / n_rows) if n_rows else float("nan")
     L.append(f"**What bounds this table.** `tanimoto` is the maximum similarity to the "
-             f"target's ChEMBL actives at pChEMBL ≥ 8.0, and the query compound is "
-             f"itself in that set, so the feature can read the test row's own activity "
-             f"record: 143 of 289 rows carry it at exactly 1.000. That is why Tanimoto "
-             f"alone reaches {tani:+.3f} here. The comparison between feature sets is "
-             f"still informative — every row above shares the same leak — but the "
-             f"absolute values are upper bounds, and the conclusion that the foundation "
-             f"model adds nothing is measured against an inflated baseline rather than "
-             f"a clean one. Pre-registered quantification: "
+             f"target's ChEMBL actives at pChEMBL ≥ 8.0. Until 2026-08-24 the query "
+             f"compound was itself a member of that set, so the feature read the test "
+             f"row's own activity record and 143 of 289 rows carried it at exactly "
+             f"1.000; `cluster_a/tanimoto_ranker.py` now excludes the query by InChIKey "
+             f"skeleton block. On this run **{n_one} of {n_rows} rows ({pct:.1f}%) sit "
+             f"at exactly 1.000**"
+             + (", and those that do are genuine homologues ECFP4 at radius 2 cannot "
+                "resolve rather than compounds scoring against themselves"
+                if n_one else "")
+             + f". Every value above is measured on the corrected feature; the "
+             f"published pre-2026-08-24 versions of this table are not comparable to it. "
+             f"Pre-registered quantification of what the leak was worth: "
              f"`docs/PREREG_ALLOSTERIC_ROBUSTNESS.md`, results in "
              f"`reports/pipeline/allosteric_robustness_v1.md` (verdict DEGRADES).")
     L.append("")

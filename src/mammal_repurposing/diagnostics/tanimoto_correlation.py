@@ -60,19 +60,29 @@ def max_tanimoto_to_known_actives(
     radius: int = 2,
     n_bits: int = 2048,
 ) -> list[float]:
-    """For each library SMILES, return max Tanimoto over the known-actives set."""
-    lib_fps = [_morgan_fp(s, radius, n_bits) for s in library_smiles]
-    active_fps = [_morgan_fp(s, radius, n_bits) for s in known_active_smiles]
-    active_fps = [fp for fp in active_fps if fp is not None]
+    """For each library SMILES, max Tanimoto over the known-actives set.
 
-    max_sims = []
-    for lib_fp in lib_fps:
-        if lib_fp is None or not active_fps:
-            max_sims.append(0.0)
-            continue
-        sims = [_tanimoto(lib_fp, afp) for afp in active_fps]
-        max_sims.append(max(sims) if sims else 0.0)
-    return max_sims
+    DELEGATES to `cluster_a.tanimoto_ranker` rather than computing it again.
+    This was a second, independently written copy of the same kernel, and it
+    carried the same defect: the maximum was taken over an actives set
+    containing the query compound, so the score read the query's own ChEMBL
+    activity record. When the production ranker was corrected on 2026-08-24 this
+    copy would have gone on leaking, and `tanimoto_baseline_v1.md` -- the report
+    whose headline is "Tanimoto wins 7 | tie 0 | MAMMAL wins 0" -- is generated
+    from THIS one, not from the production ranker. Two implementations of one
+    quantity is exactly how a fix reaches one and not the other, so there is now
+    one implementation.
+
+    Behaviour change: a compound whose only actives were itself now returns NaN
+    rather than 0.0. Zero would assert maximal dissimilarity where the truth is
+    that no comparison remains. Both callers here already mask NaN out.
+    """
+    from ..cluster_a.tanimoto_ranker import (
+        TanimotoRankerConfig,
+        score_library_against_target,
+    )
+    cfg = TanimotoRankerConfig(fp_radius=radius, fp_bits=n_bits)
+    return score_library_against_target(library_smiles, known_active_smiles, cfg)
 
 
 def diagnose(

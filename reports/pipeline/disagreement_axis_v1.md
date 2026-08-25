@@ -13,21 +13,21 @@ Pairwise Kendall-τ rank correlations + per-compound disagreement entropy across
 | O43613 | +0.08 | -0.04 | +0.02 |
 | O43614 | +0.05 | -0.04 | -0.02 |
 | O60741 | — | -0.10 | — |
-| O76083 | +0.00 | -0.00 | -0.02 |
-| P08913 | +0.02 | -0.11 | +0.07 |
+| O76083 | -0.00 | -0.00 | -0.02 |
+| P08913 | +0.02 | -0.11 | +0.06 |
 | P21728 | +0.02 | -0.03 | +0.17 |
-| P22303 | -0.02 | -0.02 | +0.21 |
-| P23975 | +0.05 | -0.06 | +0.06 |
+| P22303 | -0.02 | -0.02 | +0.20 |
+| P23975 | +0.04 | -0.06 | +0.06 |
 | P36544 | +0.02 | -0.03 | -0.02 |
 | P42261 | +0.04 | +0.04 | -0.02 |
-| P42262 | -0.07 | -0.02 | -0.04 |
-| P42263 | +0.04 | -0.01 | -0.12 |
+| P42262 | -0.09 | -0.02 | -0.03 |
+| P42263 | +0.03 | -0.01 | -0.11 |
 | P48058 | +0.04 | +0.02 | -0.15 |
-| Q01959 | +0.01 | -0.06 | +0.05 |
+| Q01959 | +0.01 | -0.06 | +0.04 |
 | Q08499 | +0.02 | +0.03 | +0.05 |
-| Q12879 | +0.03 | +0.04 | +0.03 |
+| Q12879 | +0.04 | +0.04 | +0.00 |
 | Q13224 | -0.05 | -0.01 | +0.07 |
-| Q16620 | -0.05 | -0.04 | -0.01 |
+| Q16620 | -0.04 | -0.04 | -0.01 |
 | Q99720 | -0.02 | -0.05 | +0.11 |
 | Q9Y5N1 | +0.01 | +0.03 | +0.09 |
 
@@ -38,18 +38,18 @@ Pairwise Kendall-τ rank correlations + per-compound disagreement entropy across
 head_a      head_b                                                             
 MAMMAL_cal  MMAtt_DTA     19.0  0.019  0.083 -0.117 -0.045  0.009  0.095  0.161
             PrimeKG_PPR   22.0 -0.024  0.042 -0.106 -0.050 -0.026  0.003  0.045
-            Tanimoto      21.0  0.011  0.038 -0.069 -0.020  0.020  0.039  0.081
+            Tanimoto      21.0  0.010  0.040 -0.089 -0.016  0.019  0.039  0.081
 MMAtt_DTA   PrimeKG_PPR   19.0 -0.059  0.052 -0.148 -0.088 -0.056 -0.030  0.042
-            Tanimoto      19.0  0.122  0.119 -0.097  0.101  0.139  0.186  0.357
-PrimeKG_PPR Tanimoto      21.0  0.027  0.084 -0.152 -0.021  0.025  0.074  0.207
+            Tanimoto      19.0  0.120  0.121 -0.119  0.098  0.139  0.186  0.353
+PrimeKG_PPR Tanimoto      21.0  0.026  0.082 -0.152 -0.020  0.017  0.064  0.195
 ```
 
 ## Per-compound facet-tag distribution
 
 | Tag | Count | % |
 |---|---|---|
-| moderate_disagreement | 5240 | 79.9% |
-| agree | 713 | 10.9% |
+| moderate_disagreement | 5238 | 79.9% |
+| agree | 715 | 10.9% |
 | high_information_value | 603 | 9.2% |
 
 ## Top 30 high-information-value (compound, target) pairs
@@ -58,36 +58,36 @@ These are compounds where heads disagree maximally — exactly the wet-lab-prior
 
 | Compound | Target | Entropy | Rank Δ | N heads |
 |---|---|---|---|---|
-| xen-1101 | O43526 | 0.78 | 296 | 4 |
-| (s)-ampa | Q99720 | 0.88 | 295 | 4 |
+| xen-1101 | O43526 | 0.79 | 297 | 4 |
+| tc-5619 | P36544 | 0.80 | 296 | 4 |
 | (r,s)-ampa | Q99720 | 0.88 | 295 | 4 |
+| (s)-ampa | Q99720 | 0.88 | 295 | 4 |
 | allopurinol | O76083 | 0.81 | 294 | 3 |
 | alpha-gpc | P21728 | 0.85 | 294 | 4 |
-| pramiracetam | P22303 | 0.79 | 293 | 4 |
 | rivastigmine | P42261 | 0.78 | 293 | 4 |
+| pramiracetam | P22303 | 0.80 | 293 | 4 |
 | lithium carbonate | Q01959 | 0.90 | 293 | 4 |
-| rivastigmine | P22303 | 0.78 | 292 | 4 |
 | alpha-gpc | Q99720 | 0.76 | 292 | 4 |
-| sertraline | P42263 | 0.82 | 292 | 3 |
 | cetirizine | P36544 | 0.81 | 292 | 3 |
-| alpha-gpc | Q13224 | 0.84 | 291 | 4 |
+| rivastigmine | P22303 | 0.79 | 292 | 4 |
+| sertraline | P42263 | 0.82 | 291 | 3 |
 | alpha-gpc | O76083 | 0.80 | 291 | 4 |
-| allopurinol | Q13224 | 0.89 | 291 | 3 |
-| sertraline | O43613 | 0.74 | 291 | 4 |
 | chembl1256414 | P48058 | 0.75 | 291 | 4 |
+| allopurinol | Q13224 | 0.89 | 291 | 3 |
 | alpha-gpc | Q08499 | 0.77 | 291 | 4 |
-| semaglutide | O76083 | 0.89 | 290 | 4 |
+| alpha-gpc | Q13224 | 0.84 | 291 | 4 |
+| sertraline | O43613 | 0.74 | 291 | 4 |
 | methylphenidate | O43525 | 0.72 | 290 | 4 |
-| sertraline | P36544 | 0.73 | 290 | 4 |
 | pramiracetam | P42262 | 0.72 | 290 | 4 |
+| tulrampator | Q9Y5N1 | 0.71 | 290 | 4 |
+| semaglutide | O76083 | 0.89 | 290 | 4 |
+| rivastigmine | P36544 | 0.79 | 290 | 4 |
+| sertraline | P36544 | 0.73 | 290 | 4 |
 | alpha-gpc | Q16620 | 0.79 | 290 | 4 |
 | rivastigmine | P42262 | 0.91 | 290 | 4 |
-| tulrampator | Q9Y5N1 | 0.71 | 290 | 4 |
-| rivastigmine | P36544 | 0.79 | 290 | 4 |
 | chembl199454 | P48058 | 0.80 | 289 | 3 |
-| chembl4455677 | P48058 | 0.80 | 288 | 3 |
 | amitriptyline | P48058 | 0.79 | 288 | 4 |
-| memantine | Q01959 | 0.85 | 288 | 4 |
+| ropinirole | P22303 | 0.73 | 288 | 4 |
 
 ## When V6.A.1 activates (MMAtt-DTA + PSICHIC + BALM)
 
