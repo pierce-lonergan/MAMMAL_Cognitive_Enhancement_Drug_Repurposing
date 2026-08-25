@@ -92,9 +92,9 @@ the current anchor density.
 never the reason this benchmark could not be promoted.**
 
 On the held-out 21-compound benchmark the fused head reaches pooled within-target
-Spearman rho +0.514, against MAMMAL alone at **-0.244** and the strongest single
-feature (Tanimoto alone) at +0.302. Under leave-one-target-out on 297 ChEMBL
-pairs the fusion reaches +0.621 -- and **Tanimoto alone reaches +0.765, ahead of
+Spearman rho +0.248, against MAMMAL alone at **-0.244**. The strongest single
+feature, Tanimoto alone, reaches +0.302 and therefore beats it. Under leave-one-target-out on 297 ChEMBL
+pairs the fusion reaches +0.461 -- and **Tanimoto alone reaches +0.511, ahead of
 it**. Report: `reports/pipeline/allosteric_ltr_v1.md`.
 
 The reason is a leak, not a sample size. `tanimoto_score` is the maximum
@@ -673,7 +673,7 @@ the named reports below, and the manuscript suite.
   3,874 hypotheses is 0.39 < 0.50. `reports/wet-lab/wet_lab_shortlist_v11.md`.
 - **Gap 2. Disease-population reframe**: re-scores the v11 grid per disease using
   that disease's own pivotal-trial track record as the per-class prior. AD recovers
-  AChE-I (within-disease AUROC 0.97, 10/10 AD failures flagged), CIAS recovers
+  AChE-I (within-disease AUROC 0.95, 10/10 AD failures flagged), CIAS recovers
   muscarinic M1/M4, FXS recovers PDE4. `reports/pipeline/disease_reframe_v1.md`.
 - **Gap 3. Retrospective clinical validation**: leakage-audited ledger of 31
   cognition drugs. Mechanism-class track record (leave-one-compound-out) gives
@@ -684,11 +684,11 @@ the named reports below, and the manuscript suite.
 - **Gap 4. Allosteric learn-to-rank head**: quantifies MAMMAL's within-target
   blindness (predicted-pKd std 0.01 to 0.05 across 3 log-units of affinity, and
   bit-identical scores on one target) and fuses [MAMMAL pKd, Tanimoto, Boltz,
-  physicochemistry] to reach held-out within-target rho +0.514 against MAMMAL
+  physicochemistry] to reach held-out within-target rho +0.248 against MAMMAL
   alone at -0.244. `reports/pipeline/allosteric_ltr_v1.md`.
   Open follow-up: the fusion's dominant feature reads the test row's own activity
   record, and under leave-one-target-out that feature alone outranks the fusion
-  (+0.765 against +0.621). See G3, rewritten 2026-08-24.
+  (+0.511 against +0.461). See G3, rewritten 2026-08-24.
 - **Gap 5. Clinician GRADE dossiers**: one-page per (compound, indication) card
   with predicted g + 90% CrI, Cochrane evidence rating, mechanism-class track
   record, off-target liability flags, and failure-mode caveats.

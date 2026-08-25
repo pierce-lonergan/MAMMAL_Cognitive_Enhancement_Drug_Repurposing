@@ -297,8 +297,33 @@ class TestProjectStatus:
     def test_project_status_reports_headline_metrics(self):
         path = ROOT / "PROJECT_STATUS.md"
         body = path.read_text(encoding="utf-8")
-        # Pytest pass rate (503 non-slow after Gaps 1-7 + panel→31 + review-2/3/4 hardening + CT.gov pull)
-        assert "503" in body
+        # The claimed pytest pass rate, checked against the repository rather
+        # than against a literal. This was `assert "503" in body`, which pins the
+        # document to a number that goes stale every time a test is added, and
+        # then fails for the person who updates the document honestly -- which is
+        # precisely backwards. It broke on 2026-08-24 when the figure was
+        # corrected from 503 to 749.
+        #
+        # This is a STALENESS DETECTOR, not an exact count, and the difference is
+        # the whole design. The document reports non-slow passes; `def test_`
+        # counts every test function including slow-marked and deselected ones,
+        # and undercounts parametrised cases that expand at collection. The two
+        # numbers are not equal and should not be asserted equal -- an exact
+        # check would be a literal again, wearing a computation as a disguise.
+        #
+        # A stale figure is off by a lot: 503 against 756 functions is 0.67. A
+        # current one tracks closely: 749 against 756 is 0.99. The band catches
+        # the first without pretending to predict the second.
+        import re as _re
+        n_defs = sum(
+            len(_re.findall(r"^\s*def test_", p.read_text(encoding="utf-8"), _re.M))
+            for p in sorted((ROOT / "tests").glob("test_*.py"))
+        )
+        claimed = [int(m) for m in _re.findall(r"\*\*(\d{3,4})\*\* pass", body)]
+        assert claimed, "PROJECT_STATUS no longer states a pytest pass count"
+        assert max(claimed) >= 0.9 * n_defs, (
+            f"PROJECT_STATUS claims {max(claimed)} passing tests against "
+            f"{n_defs} test functions on disk; the figure looks stale")
         # Hypothesis audit
         assert "22" in body
         # R̂ = 1.000

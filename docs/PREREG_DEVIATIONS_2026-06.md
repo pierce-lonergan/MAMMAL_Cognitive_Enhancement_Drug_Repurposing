@@ -22,6 +22,7 @@ Ground truth (from the recon over the repo):
 | **B7** | `calibration/hierarchical_bayes.py:271` | SILENT | deviation from framework convention (manuscript Methods uses Spearman for the LTR rho); the shrinkage rho's statistic never registered | not affected (single-rho values absent) | neutral (Pearson -> Spearman, \|diff\| ~0.10 at n=7-10) | `reports/pipeline/hierarchical_bayes_v1.md` |
 | **B8** | `cluster_a/allosteric_ltr.py:build_feature_table` (fix `851e3cb`) | SILENT (V7GP5 is AUROC-only) | not a pre-reg deviation; the LTR Spearman was never registered | **AFFECTED — the first entry in this ledger that is** | **CONSERVATIVE, and it INVERTS a claim**: the fused head moves from ABOVE its no-foundation-model baseline to BELOW it (Δρ +0.02 → −0.01) | `reports/manuscript_robustness.md` REGENERATED 2026-08-24 |
 | **B9** | `validation/retrospective.py:class_loco_g` (fix `eeb27d5`) | SILENT on the per-disease reframe; the registered claim is the 31-drug class AUROC, not the within-AD one | not a pre-reg deviation, but it is AUROC territory and is recorded here for that reason | **AFFECTED** (abstract already carried 0.95; Fig. 1B did not) | **CONSERVATIVE** — within-AD AUROC 0.97 → 0.95, 90% CI [0.91, 1.00] → [0.82, 1.00], p 0.0032 → 0.0038 | `reports/pipeline/disease_reframe_v1.md` REGENERATED 2026-08-24 |
+| **B10** | `cluster_a/tanimoto_ranker.py:score_library_against_target` (fix `fd348c7`) | SILENT (V7GP5 is AUROC-only) | not a pre-reg deviation; the LTR Spearman was never registered | **AFFECTED** (the ablation, again, and the fused headline) | **CONSERVATIVE, and large**: the fused head falls +0.514 -> +0.248 on the binding-mode benchmark and +0.621 -> +0.461 under LOTO; the Tanimoto-vs-MAMMAL audit falls from 7 wins / 0 ties to 5 / 2, with one target inverting +0.76 -> -0.49 | 8 reports REGENERATED 2026-08-24 |
 
 ## Notes per item
 
@@ -127,3 +128,49 @@ declared its script but not `cluster_a/allosteric_ltr.py`, and `disease_reframe_
 calls into. The fixes above were made by an author who knew the reports existed. The lesson this
 ledger should carry forward is that recording a deviation and regenerating the affected report are
 two separate acts, and only the first of them was reliably happening.
+
+**B10 (code fix `fd348c7`, 2026-08-24; eight reports regenerated the same day).**
+`tanimoto_score` is the maximum Tanimoto similarity to the target's ChEMBL actives at
+pChEMBL >= 8.0. The query compound is a member of that set whenever its own affinity clears
+the threshold, so the maximum was routinely taken over a set containing the query and the
+feature read the test row's own activity record. 143 of 289 rows in the Gap-4 evaluation set
+scored exactly 1.000, and InChIKey membership predicted that 1.000 with no errors in either
+direction.
+
+B8 corrected the numbers this feature produced. B10 corrects the feature. The distinction
+matters: B8's table was measured on a leaking feature and is therefore not comparable to the
+one now published, which is why both entries exist rather than one superseding the other.
+
+| quantity | as published | after B8 (imputation fix) | after B10 (feature fix) |
+|---|---|---|---|
+| n=21 benchmark, fused | +0.514 | +0.514 | **+0.248** |
+| LOTO, Tanimoto alone | +0.533 | +0.759 | **+0.511** |
+| LOTO, fused | +0.613 | +0.601 | **+0.461** |
+| `tanimoto` feature importance | 0.807 | 0.806 | **0.584** |
+| Tanimoto-vs-MAMMAL audit | 7 wins / 0 ties | 7 / 0 | **5 wins / 2 ties** |
+| GRIN2A per-target rho (4 actives) | +0.76 | +0.76 | **-0.49** |
+
+**Direction: conservative, and it does not rescue the fusion.** Tanimoto alone still outranks
+the full fusion on BOTH arms after the fix, so the equivalence claim recorded under B8 stands
+on clean features rather than on leaked ones. The paper's negative result -- MAMMAL cannot
+rank within target -- is untouched, because that arm never used this feature.
+
+**The exclusion key is evidence, not preference.** ECFP4 is built here without `useChirality`,
+so enantiomers score exactly 1.000 and an exact-structure exclusion would leave the self-read
+in place; a sodium salt and its free base score 0.96, so a fingerprint-equality exclusion would
+miss the salt form of the query's own record. The InChIKey skeleton block of the largest
+fragment is the granularity at which this feature cannot tell two entries apart, and it catches
+both. After the fix, 4 of 6258 grid cells still read exactly 1.000; all four were checked by
+hand and are tacrine-indole homologues differing by one CH2 in the linker, which ECFP4 at
+radius 2 genuinely cannot resolve.
+
+**Not regenerated, deliberately.** `reports/pipeline/allosteric_robustness_v1.md` is the
+pre-registered measurement OF this defect. Re-running it post-fix replaces the evidence that
+justified the correction with a corrected feature compared against itself, and emits sentences
+like "the self-match pins 0 of 288 rows at exactly 1.000". It is frozen; its generator was
+made regime-aware so a future v2 is coherent.
+
+**Not edited, deliberately.** `reports/osf_preregistration_class_prognostic.md` still records
+the pre-fix within-disease AUROC of 0.97 (see B9). An OSF registration is immutable and
+editing the local copy to match a later result is the precise thing pre-registration exists to
+prevent. The deviation is recorded here instead, which is what this ledger is for.
