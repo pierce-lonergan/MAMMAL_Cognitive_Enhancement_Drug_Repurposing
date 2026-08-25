@@ -51,6 +51,71 @@ def _stale_pairs_for(report: str):
     return [s for s in scan(ROOT)[0] if s.report == report]
 
 
+def _tracked_dirty() -> set[str]:
+    out = subprocess.run(["git", "status", "--porcelain", "-z"], cwd=ROOT,
+                         capture_output=True, text=True, check=False)
+    paths = set()
+    for e in out.stdout.split(chr(0)):
+        if len(e) < 4 or e[:2] == "??":
+            continue
+        paths.add(e[3:].replace("\\", "/"))
+    return paths
+
+
+def _restore_tree(before: set[str], report: str, script: str) -> None:
+    """Undo every tracked file this reproduce attempt dirtied, except the report.
+
+    Collateral is REPORTED rather than quietly cleaned: a generator that rewrites
+    fourteen other committed artifacts on its way to producing one report is not
+    reproducible in isolation, and that is a fact about the pipeline worth
+    knowing rather than a mess worth hiding.
+    """
+    collateral = sorted(_tracked_dirty() - before - {report})
+    if not collateral:
+        return
+    subprocess.run(["git", "checkout", "--", *collateral],
+                   cwd=ROOT, capture_output=True, check=False)
+    still = sorted(_tracked_dirty() - before - {report})
+    print(f"    note: `{script}` also rewrote {len(collateral)} other tracked "
+          f"file(s), so it is not reproducible in isolation; restored"
+          + ("" if not still else f", EXCEPT {still} -- restore by hand"))
+
+
+def _reproduce_in_place(script: str, args: list[str], report: str,
+                        timeout: float, first) -> tuple[bool, bool]:
+    """Run a generator that will only write to its own fixed path.
+
+    Returns (ran, matched). This restores the REPORT; everything else the
+    generator touched is `cmd_reproduce`'s problem, via `_restore_tree`, because
+    the redirected attempt that runs first can dirty the tree just as thoroughly.
+    """
+    target = ROOT / report
+    keep = Path(tempfile.mkdtemp(prefix="freshness-keep-")) / Path(report).name
+    shutil.copy2(target, keep)
+    try:
+        try:
+            proc = subprocess.run([sys.executable, script, *args],
+                                  cwd=ROOT, capture_output=True, text=True,
+                                  timeout=timeout)
+        except subprocess.TimeoutExpired:
+            print(f"{report}: `{script}` exceeded {timeout}s")
+            return (False, False)
+        if proc.returncode != 0:
+            tail = (proc.stderr or proc.stdout or "").strip().splitlines()[-4:]
+            print(f"{report}: neither `{script} --report` (exit "
+                  f"{first.returncode}) nor `{script}` (exit {proc.returncode}) "
+                  f"produced a report")
+            for line in tail:
+                print(f"    {line}")
+            print("    use --record --outcome unverified --why '...' instead")
+            return (False, False)
+        matched = target.read_bytes() == keep.read_bytes()
+        return (True, matched)
+    finally:
+        shutil.copy2(keep, target)
+        shutil.rmtree(keep.parent, ignore_errors=True)
+
+
 def cmd_reproduce(report: str, timeout: float = 900.0) -> int:
     pairs = _stale_pairs_for(report)
     if not pairs:
@@ -61,32 +126,49 @@ def cmd_reproduce(report: str, timeout: float = 900.0) -> int:
         print(f"{report}: no runnable generator in its trailer; cannot re-run")
         return 2
 
+    args = generator_args(ROOT, report)
+    # Snapshot BEFORE the first attempt, not before the fallback. Some of these
+    # generators are pipeline orchestrators: `68_production_runner.py --report
+    # <tmp>` runs fifteen stages, ignores the flag, and rewrites six committed
+    # figures and eight unrelated reports on its way to failing. The guard lived
+    # inside the in-place fallback at first, which meant it captured a baseline
+    # that already contained all fourteen and dutifully restored nothing. A tool
+    # for checking that reports have not silently changed must not silently
+    # change reports, so the snapshot covers every attempt.
+    tree_before = _tracked_dirty()
     tmpdir = Path(tempfile.mkdtemp(prefix="freshness-"))
     try:
         out = tmpdir / Path(report).name
         try:
             proc = subprocess.run(
-                [sys.executable, script, *generator_args(ROOT, report),
-                 "--report", str(out)],
+                [sys.executable, script, *args, "--report", str(out)],
                 cwd=ROOT, capture_output=True, text=True, timeout=timeout)
         except subprocess.TimeoutExpired:
             print(f"{report}: `{script}` exceeded {timeout}s")
             print("    use --record --outcome unverified --why '...' instead")
             return 2
-        if proc.returncode != 0 or not out.exists():
-            tail = (proc.stderr or proc.stdout or "").strip().splitlines()[-4:]
-            print(f"{report}: `{script} --report` did not produce a report "
-                  f"(exit {proc.returncode})")
-            for line in tail:
-                print(f"    {line}")
-            print("    use --record --outcome unverified --why '...' instead")
-            return 2
 
-        published = (ROOT / report).read_bytes()
-        fresh = out.read_bytes()
-        matched = published == fresh
+        if proc.returncode == 0 and out.exists():
+            published = (ROOT / report).read_bytes()
+            matched = published == out.read_bytes()
+        else:
+            # Not every generator can be redirected. Roughly a third of them
+            # write their report to a fixed path and take no --report, so the
+            # call above dies in argparse with exit 2 and the report gets
+            # recorded as "cannot-run" -- a verdict about this tool, not about
+            # the report, and one that quietly excused seven reports from ever
+            # being checked.
+            #
+            # So: keep a copy, let the generator write where it insists on
+            # writing, compare, and put the copy back. The restore is in a
+            # `finally` because a generator that dies halfway through must not
+            # leave a half-written report behind.
+            ok, matched = _reproduce_in_place(script, args, report, timeout, proc)
+            if not ok:
+                return 2
     finally:
         shutil.rmtree(tmpdir, ignore_errors=True)
+        _restore_tree(tree_before, report, script)
 
     if not matched:
         print(f"{report}: RE-RUN DIFFERS from the committed report.")

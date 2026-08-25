@@ -265,7 +265,26 @@ class TestSprintIntegrationArtifacts:
         path = ROOT / "data" / "results" / "v2" / "cluster_d_posterior_v1.parquet"
         assert path.exists(), "V6.B.3 NUTS posterior parquet missing"
         df = pd.read_parquet(path)
-        assert len(df) == 22
+
+        # Was `assert len(df) == 22`: the size of the V6.B core panel before it
+        # was expanded to 28 and then 31. The artifact is derived and gitignored,
+        # so the literal outlived the expansion by the artifact simply never
+        # being regenerated. Re-running scripts/55_v6b_cluster_d_nuts.py on
+        # 2026-08-24 produced 31 rows, and this assertion is what noticed -- a
+        # stale number in a test, pinning a stale artifact, agreeing with each
+        # other.
+        #
+        # The panel size is not a constant of the method, so it is read rather
+        # than typed again. One row per panel target, no duplicates, is the
+        # property that actually matters, and it cannot go stale.
+        panel = ROOT / "data" / "results" / "v2" / "v6b_panel_targets.parquet"
+        if panel.exists():
+            expected = pd.read_parquet(panel)["target_uniprot"].nunique()
+            assert len(df) == expected, (
+                f"posterior has {len(df)} rows against {expected} panel targets")
+        else:
+            assert len(df) >= 22, "posterior smaller than the original core panel"
+        assert df["target_uniprot"].is_unique, "a target appears twice"
         for col in ("target_uniprot", "gene", "theta_mean",
                      "theta_2p5", "theta_97p5", "w_pipeline"):
             assert col in df.columns
