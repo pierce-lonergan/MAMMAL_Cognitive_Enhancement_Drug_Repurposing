@@ -27,7 +27,7 @@ The v3 → v4 transition was driven by **four research deep-dives** (`research/4
 | `Diagnosing MAMMAL DTI Anti-Correlation.md` | v3 Phase A.7 found ρ ≤ -0.30 at 4 targets | `diagnostics/` package + Tanimoto baseline | Identified MAMMAL prior-collapse is **panel-wide** (19/22 SEVERE); a Tanimoto-on-Morgan-FP baseline beats MAMMAL at **every** audited target (SLC6A3 +0.90 vs -0.70; DRD1 +0.85 vs +0.29) |
 | `Graczyk-Selectivity-Faceted-Shortlist.md` | v3 had HRH3 dominating 23/25 top compounds | `selectivity/` + `fusion/faceted_shortlist.py` | Lock-in **dissolved**; top-5 per mechanism class with cross-facet provenance |
 | `Cognition-44Target-Liability-Panel.md` | ADMET-AI missing 5-HT2B / HRH1+M1 anticholinergic combos | `gates/liability_panel.py` + 44-target seed | Stage 1 complete; queued for ~1hr MAMMAL re-run when GPU frees |
-| `Isotonic-PerTarget-Calibration.md` | v3 had awkward `weight=0.30` hack at INVERTED targets | `calibration/` package | SLC6A3 +0.62 (predicted [+0.45, +0.65]), SLC6A2 +0.40 (predicted +0.40); both Tier A/B |
+| `Isotonic-PerTarget-Calibration.md` | v3 had awkward `weight=0.30` hack at INVERTED targets | `calibration/` package | SLC6A3 +0.62 (predicted [+0.45, +0.65]), SLC6A2 +0.40 (predicted +0.40); Tier A and Tier C respectively |
 | `Pocket-Conditioned-Boltz2.md` | v3 had no orthosteric/allosteric provenance | `pockets/` package + curated DB | 13/13 validation gates pass; PDE4D BPN14770 (allosteric, UCR2) correctly distinguished from rolipram (catalytic) |
 
 **Component status matrix** (delta from v3 in **bold**):
@@ -43,7 +43,7 @@ The v3 → v4 transition was driven by **four research deep-dives** (`research/4
 | Cluster C — PrimeKG + TxGNN | 🟡 CODE LIVE, NOT RUN | `txgnn_env` venv ready; blocked on overnight Boltz sweep |
 | ChEMBL 36 SQLite mirror | ✅ live | A.5 PASS (19/20); 99-min full backstop |
 | Phase A.7 calibration linchpin | ✅ shipped | `reports/pipeline/calibration_report.md`; per-target Spearman ρ |
-| **§7.11 isotonic per-target calibration** | **✅ NEW (v4)** | SLC6A3 +0.62 Tier A, SLC6A2 +0.40 Tier B |
+| **§7.11 isotonic per-target calibration** | **✅ NEW (v4)** | SLC6A3 +0.62 Tier A, SLC6A2 +0.40 Tier C |
 | **§7.5 pocket-conditioned classifier (MVP)** | **✅ NEW (v4)** | 7 priority targets, 13 pockets, 13/13 gates pass |
 | **Selectivity layer (Graczyk Gini + S(10×))** | **✅ NEW (v4)** | `selectivity/` package; ships with Tanimoto vector |
 | **Multi-class faceted shortlist** | **✅ NEW (v4)** | 8 mechanism + 9 targeted-pair facets, cross-facet provenance |
@@ -133,7 +133,7 @@ This section is the v4 equivalent of v3's "what the calibration linchpin exposed
 | Target | n | Raw ρ | Post-cal ρ | Δρ | CI | Tier |
 |---|---|---|---|---|---|---|
 | **SLC6A3 (DAT)** | 23 | -0.70 | **+0.62** | +1.32 | [+0.71, +0.80] | **A** |
-| **SLC6A2 (NET)** | 21 | -0.60 | **+0.40** | +0.99 | [+0.60, +0.72] | **B** |
+| **SLC6A2 (NET)** | 21 | -0.60 | **+0.40** | +0.99 | [-0.08, +0.95] | **C** |
 | GRIN2B | 13 | -0.30 | -0.17 | +0.13 | (CI spans 0) | C |
 | GRIN2A | 7 | -0.40 | +0.11 | +0.50 | (n too small) | C |
 
@@ -180,7 +180,7 @@ SLC6A3 landed at the **high end** of the predicted range; SLC6A2 hit the predict
 | §7.6 LoRA fine-tune MAMMAL | ❌ **falsified** | Tanimoto already beats it; deferred / cancelled |
 | §7.7 cross-DTI ensemble (MMAtt-DTA) | ⏳ next sprint | MMAtt-DTA reports ρ > 0.72 on transporters — needs to beat Tanimoto +0.90 |
 | §7.10 LLM-agent prioritisation overlay | ⏳ Tier 4 (defer) | |
-| §7.11 isotonic per-target calibration | ✅ shipped | SLC6A3 +0.62 Tier A, SLC6A2 +0.40 Tier B |
+| §7.11 isotonic per-target calibration | ✅ shipped | SLC6A3 +0.62 Tier A, SLC6A2 +0.40 Tier C |
 | §7.12 conformal prediction per-target | ⏳ Tier 3 | superseded in priority by isotonic |
 | §7.13 scaffold-aware active learning | ⏳ Tier 3 | now informed by Tanimoto-baseline scaffold limits |
 | §7.14 residual-correction XGBoost meta-ranker | ⏳ Tier 3 | optional alternative to isotonic; not urgent |

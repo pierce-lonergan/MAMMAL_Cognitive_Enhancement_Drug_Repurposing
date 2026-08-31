@@ -62,6 +62,56 @@ def _tracked_dirty() -> set[str]:
     return paths
 
 
+#: Where generators write their derived artifacts. Small enough to stat in full
+#: (about 220 files); the rest of `data/` is 32 GB of inputs nothing writes to.
+_ARTIFACT_DIRS = ("data/results", "data/interim", "data/calibration", "figures")
+
+
+def _artifact_stamps() -> dict[str, float]:
+    out: dict[str, float] = {}
+    for d in _ARTIFACT_DIRS:
+        root = ROOT / d
+        if not root.is_dir():
+            continue
+        for f in root.rglob("*"):
+            if f.is_file():
+                try:
+                    out[f.relative_to(ROOT).as_posix()] = f.stat().st_mtime
+                except OSError:
+                    pass
+    return out
+
+
+def _report_untracked_writes(before: dict[str, float], script: str) -> None:
+    """Say which GITIGNORED artifacts a run rewrote. They cannot be restored.
+
+    `_restore_tree` puts tracked files back. Derived parquets are gitignored, so
+    git never reports them, `git status` stays clean, and nothing is put back --
+    there is nothing to put back from.
+
+    This was not theoretical. A measurement pass over fourteen reports rewrote
+    nine of these, including `cluster_d_posterior_v1.parquet`, which went from
+    the 22-target panel to the 31-target one and is cited by path in eight
+    documents; and `clinical_trials_v1.parquet`, which is a live ClinicalTrials
+    .gov snapshot with no cache, so the previous snapshot is simply gone. The run
+    reported a clean tree throughout.
+
+    Reported, not prevented. A tool that refused to run any generator touching an
+    ignored file could not run most of them. What it can do is stop the loss
+    being silent.
+    """
+    now = _artifact_stamps()
+    changed = sorted(p for p, t in now.items() if before.get(p) != t)
+    if not changed:
+        return
+    print(f"    note: `{script}` rewrote {len(changed)} DERIVED artifact(s) that git "
+          f"does not track, so they are not restored and not recoverable:")
+    for p in changed[:8]:
+        print(f"      {p}")
+    if len(changed) > 8:
+        print(f"      ... and {len(changed) - 8} more")
+
+
 def _restore_tree(before: set[str], report: str, script: str) -> None:
     """Undo every tracked file this reproduce attempt dirtied, except the report.
 
@@ -136,6 +186,7 @@ def cmd_reproduce(report: str, timeout: float = 900.0) -> int:
     # for checking that reports have not silently changed must not silently
     # change reports, so the snapshot covers every attempt.
     tree_before = _tracked_dirty()
+    artifacts_before = _artifact_stamps()
     tmpdir = Path(tempfile.mkdtemp(prefix="freshness-"))
     try:
         out = tmpdir / Path(report).name
@@ -169,6 +220,7 @@ def cmd_reproduce(report: str, timeout: float = 900.0) -> int:
     finally:
         shutil.rmtree(tmpdir, ignore_errors=True)
         _restore_tree(tree_before, report, script)
+        _report_untracked_writes(artifacts_before, script)
 
     if not matched:
         print(f"{report}: RE-RUN DIFFERS from the committed report.")

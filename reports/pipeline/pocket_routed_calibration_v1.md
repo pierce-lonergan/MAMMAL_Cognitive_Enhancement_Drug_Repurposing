@@ -8,7 +8,7 @@ Demo of per-pocket-class isotonic calibration. **Pocket labels in this report ar
 
 | Metric | Global isotonic | Pocket-routed | Lift |
 |---|---|---|---|
-| SSR (sum sq residuals) | 2.144 | 1.113 | +48.06% |
+| SSR (sum sq residuals) | 4.685 | 4.685 | +0.00% |
 
 ## n by synthetic pocket class
 

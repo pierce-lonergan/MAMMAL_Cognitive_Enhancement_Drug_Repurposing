@@ -20,7 +20,7 @@
 | P08913 | ADRA2A | C | 21.0 | -0.72 | 10 | -0.11 | +0.61 | `REFIT_NEEDED` |
 | P21728 | DRD1 | C | 17.0 | +0.00 | 9 | -0.14 | -0.14 | `REFIT_NEEDED` |
 | P22303 | ACHE | nan | nan | — | 2 | — | +nan | `INSUFFICIENT_OVERLAP` |
-| P23975 | SLC6A2 | B | 21.0 | +0.40 | 7 | +0.31 | -0.09 | `WARN` |
+| P23975 | SLC6A2 | C | 21.0 | +0.40 | 7 | +0.31 | -0.09 | `WARN` |
 | P36544 | CHRNA7 | C | 9.0 | -0.62 | 8 | -0.05 | +0.56 | `REFIT_NEEDED` |
 | P42261 | GRIA1 | C | 22.0 | -0.33 | 12 | +0.13 | +0.46 | `REFIT_NEEDED` |
 | P42262 | GRIA2 | nan | nan | — | 3 | — | +nan | `INSUFFICIENT_OVERLAP` |

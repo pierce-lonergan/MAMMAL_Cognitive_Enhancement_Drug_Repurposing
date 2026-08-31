@@ -11,7 +11,6 @@ Calibrators loaded: **18** isotonic.
 | Target | Gene | n | Calibrator | Dir | Tier | raw mean | raw range | cal mean | cal range |
 |---|---|---|---|---|---|---|---|---|---|
 | Q01959 | SLC6A3 | 298 | `isotonic` | decreasing | **A** | 6.44 | 0.64 | 6.57 | 5.14 |
-| P23975 | SLC6A2 | 298 | `isotonic` | decreasing | **B** | 6.40 | 0.69 | 7.29 | 4.19 |
 | P36544 | CHRNA7 | 298 | `isotonic` | increasing | **C** | 6.62 | 0.29 | 8.08 | 4.42 |
 | Q16620 | NTRK2 | 298 | `isotonic` | decreasing | **C** | 5.65 | 0.91 | 9.57 | 0.91 |
 | Q13224 | GRIN2B | 298 | `isotonic` | decreasing | **C** | 6.42 | 0.57 | 7.85 | 2.59 |
@@ -22,6 +21,7 @@ Calibrators loaded: **18** isotonic.
 | P42262 | GRIA2 | 298 | `isotonic` | increasing | **C** | 5.97 | 0.97 | 7.72 | 1.31 |
 | P42261 | GRIA1 | 298 | `isotonic` | increasing | **C** | 6.22 | 0.77 | 8.98 | 2.70 |
 | Q9Y5N1 | HRH3 | 298 | `isotonic` | decreasing | **C** | 6.67 | 0.75 | 8.34 | 3.14 |
+| P23975 | SLC6A2 | 298 | `isotonic` | decreasing | **C** | 6.40 | 0.69 | 7.29 | 4.19 |
 | P22303 | ACHE | 298 | `isotonic` | increasing | **C** | 5.01 | 1.56 | 7.52 | 4.25 |
 | P21728 | DRD1 | 298 | `isotonic` | increasing | **C** | 6.48 | 0.72 | 8.28 | 2.57 |
 | P08913 | ADRA2A | 298 | `isotonic` | decreasing | **C** | 6.28 | 0.62 | 8.68 | 2.49 |
@@ -37,11 +37,7 @@ Calibrators loaded: **18** isotonic.
 
 - **SLC6A3 (Q01959)**: isotonic-decreasing, n=298 pairs calibrated. Raw range 0.64 → calibrated range 5.14.
 
-## Tier B (ship + add §7.7 cross-DTI secondary)
-
-- **SLC6A2 (P23975)**: isotonic ships, but recommend adding MMAtt-DTA / PSICHIC as second ranker.
-
-## Tier C — escalate (19 targets)
+## Tier C — escalate (20 targets)
 
 Calibration alone insufficient. Recommended action:
   - SLC6 transporters → MMAtt-DTA (Schulman 2024 Bioinformatics)

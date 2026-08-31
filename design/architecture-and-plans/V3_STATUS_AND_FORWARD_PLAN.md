@@ -34,7 +34,9 @@
 > naturally absorbs sign inversion at MAMMAL_ONLY_INVERTED targets,
 > replacing the awkward `weight=0.30` hack. **Headline**: SLC6A3 raw ρ=-0.70 →
 > post-cal ρ=**+0.62** (Δρ=+1.32, CI=[+0.71, +0.80], Tier A); SLC6A2 -0.60 →
-> +0.40 (Tier B). The research doc predicted [+0.45, +0.65] for SLC6A3; we
+> +0.40 (Tier C as of 2026-08-31; recorded as Tier B here until the interval
+> was recomputed out-of-fold and came back [-0.08, +0.95]). The research doc
+> predicted [+0.45, +0.65] for SLC6A3; we
 > landed at the high end. GRIN2A/2B confirmed as Scenario 3 (structural
 > blindness at ifenprodil dimer-interface) — calibration can't fix it; they
 > escalate to §7.7 cross-DTI ensemble. Decision router (`calibration/router.py`)

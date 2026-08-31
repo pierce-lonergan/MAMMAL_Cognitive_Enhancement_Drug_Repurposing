@@ -86,3 +86,6 @@ logs/
 # Kp,uu acquisition: do NOT commit the NoDerivatives Heliyon SI source file
 data/raw/_heliyon_mmc1.docx
 data/raw/kpuu_anchors_cache.csv
+
+# Cygwin/MSYS crash dumps from tools invoked by scripts.
+*.stackdump

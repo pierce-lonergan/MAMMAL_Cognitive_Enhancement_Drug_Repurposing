@@ -1,7 +1,7 @@
 {
   "target_uniprot": "P23975",
   "target_gene": "SLC6A2",
-  "calibrator_tier": "B",
+  "calibrator_tier": "C",
   "calibrator_n_reported": 21,
   "reported_post_cal_rho": 0.3957115845102547,
   "audit_release": "36",

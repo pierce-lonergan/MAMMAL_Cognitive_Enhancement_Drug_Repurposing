@@ -71,7 +71,8 @@ Total V4 cold start (no Boltz re-run): ~2.5 h. Warm rerun: ~10 min.
 2. **§7.11 isotonic per-target post-hoc calibration**. Sklearn
    `IsotonicRegression(increasing='auto')` per target. SLC6A3 rescued from
    ρ=-0.70 (raw) to ρ=+0.62 (post-cal, Tier A). SLC6A2 from -0.60 → +0.40
-   (Tier B). 18 calibrators shipped; pickled to
+   (Tier C: the point estimate is unchanged, but its interval is [-0.08, +0.95]
+   and does not exclude zero). 18 calibrators shipped; pickled to
    `data/calibration/isotonic/<uniprot>.pkl`. Out-of-range clip via
    `out_of_bounds='clip', y_min=2.0, y_max=11.0` to absorb extrapolation.
 3. **§4.8 / §7.18 within-target Z-normalisation**. After isotonic the

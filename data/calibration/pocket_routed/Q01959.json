@@ -1,14 +1,15 @@
 {
   "target": "Q01959",
   "lift": {
-    "global_ssr": 2.143533333333333,
-    "routed_ssr": 1.1132666666666649,
-    "lift_pct": 48.06394426647599,
+    "global_ssr": 4.684680335289059,
+    "routed_ssr": 4.684680335289059,
+    "lift_pct": 0.0,
     "n_total": 10,
     "n_by_pocket": {
       "S1_orthosteric": 5,
       "S2_vestibule": 5
-    }
+    },
+    "scoring": "out-of-fold 5-fold CV (OOB SSR, not in-sample)"
   },
   "n_by_pocket": {
     "S1_orthosteric": 5,
