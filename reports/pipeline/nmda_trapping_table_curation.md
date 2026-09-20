@@ -331,3 +331,5 @@ channel-state kinetics (trapping / resting-block), which a structure or sequence
 derive. A WINDOW verdict means "opens a plasticity window," never "demonstrated durable" -- even
 ketamine's single-dose human effect wanes within ~1 week and maintenance requires re-dosing
 (PMID 31166571).
+
+Written by hand; this report has no generator. Declared so that the freshness gate can tell a narrative document from a generated one that forgot to say so.

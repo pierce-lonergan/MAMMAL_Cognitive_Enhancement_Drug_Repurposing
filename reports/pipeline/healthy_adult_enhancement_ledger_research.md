@@ -270,3 +270,5 @@ Caveats carried forward (UNVERIFIED numbers, do not fabricate to fill):
 - Omega-3 domain-specific SMDs.
 - Panax ginseng healthy-only SMD.
 - Camfield 2014 exact combo CIs.
+
+Written by hand; this report has no generator. Declared so that the freshness gate can tell a narrative document from a generated one that forgot to say so.

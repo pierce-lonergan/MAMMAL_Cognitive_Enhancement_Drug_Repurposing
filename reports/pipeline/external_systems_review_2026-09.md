@@ -174,3 +174,5 @@ The adversarial lane's argument deserves recording as well: the base rate for AI
 measured in the wrong place. Jayatunga et al. (PMID 38692505) report Phase-1 success of 80 to 90% for
 AI-discovered candidates, which is not where drugs fail, and reading that as evidence of method
 quality is the error the number invites.
+
+Written by hand; this report has no generator. Declared so that the freshness gate can tell a narrative document from a generated one that forgot to say so.

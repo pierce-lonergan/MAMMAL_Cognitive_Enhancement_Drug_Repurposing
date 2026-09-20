@@ -428,3 +428,5 @@ tolerance/beta-arrestin mechanism mis-cited to a paper that invokes lipophilicit
 biomarker/clinical disconnect is stronger with the correct tiny number); (6) a BDNF->TrkB
 "bistable switch = formal definition of persistence" overstated (the cited model is self-
 limiting, not bistable). All corrected; none load-bearing claims were left fabricated.
+
+Written by hand; this report has no generator. Declared so that the freshness gate can tell a narrative document from a generated one that forgot to say so.

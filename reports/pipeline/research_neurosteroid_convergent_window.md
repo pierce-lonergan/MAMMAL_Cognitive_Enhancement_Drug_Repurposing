@@ -454,3 +454,5 @@ D. **Ledger hygiene:** the existing positive ledger (`persistence_positive_ledge
 - Nothing in this lane should be read as a positive durable-cognition repurposing hit. The
   high-value output is a rigorous NEGATIVE (no cross-class structural signature) plus an honest
   re-tagging of two ledger rows that were over-credited as durable.
+
+Written by hand; this report has no generator. Declared so that the freshness gate can tell a narrative document from a generated one that forgot to say so.

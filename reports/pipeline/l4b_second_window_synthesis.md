@@ -103,3 +103,5 @@ honest headline is the negative): (1) an abstain-with-reason mechanism-class rou
 instead of a silent miss, plus the pre-registered structural-ablation negative (memantine vs
 ketamine) as a regression test; (2) the small curated NMDA trapping-kinetics table with PMIDs. Both
 reuse the `psychoplastogen.py` pattern and keep abstain-by-default.
+
+Written by hand; this report has no generator. Declared so that the freshness gate can tell a narrative document from a generated one that forgot to say so.

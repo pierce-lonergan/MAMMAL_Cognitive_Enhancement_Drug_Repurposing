@@ -432,3 +432,5 @@ were taken from indexer metadata and secondary sources and should be spot-checke
 formal citation. The HNK replication-failure specifics (exact models, exact effect sizes) are
 reported as "contested" rather than with invented numbers. No trial outcome, effect size, or
 citation in this document was fabricated; where I was unsure of a number I said so.
+
+Written by hand; this report has no generator. Declared so that the freshness gate can tell a narrative document from a generated one that forgot to say so.

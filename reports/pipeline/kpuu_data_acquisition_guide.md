@@ -153,3 +153,5 @@ S2405844024003359); Friden 2009 (J Med Chem 52:6233-6243); Biogen ADME-Fang (pol
 datasets/biogen/adme-fang-v1; Fang 2023); ACS permissions (pubs.acs.org/page/copyright/
 permissions.html); Pharmaron DMPK binding/partitioning service; Schrodinger Kp,uu (DOI 10.1021/
 acs.jcim.3c00150).
+
+Written by hand; this report has no generator. Declared so that the freshness gate can tell a narrative document from a generated one that forgot to say so.

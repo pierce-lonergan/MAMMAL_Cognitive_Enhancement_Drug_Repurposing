@@ -99,3 +99,9 @@ The integration paper's "why we need 5 layers" argument now has concrete empiric
 - Loader: `scripts/68_load_modulator_anchors.py`
 
 *Sprint 2.2 generated this report. Will be cited from V6.B paper Results + integration umbrella paper.*
+
+No generator is present in this repository. This report is not hand-written: it publishes figures
+computed from `data/results/v2/*.parquet` (R-hat, ESS, divergence counts), but the script that
+produced it does not exist here and is not recoverable from git history, which first sees the file
+already complete at the Phase-C reorganisation (7a6c808). It is declared here so the freshness gate
+records an unattributable published report rather than silently skipping one.

@@ -20,6 +20,18 @@
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
     },
+    "reports/pipeline/allosteric_robustness_v1.md::scripts/127_allosteric_scaffold_robustness.py": {
+      "outcome": "unverified",
+      "code_commit": "fd348c76128677f987a6e5cb2b00c213de96273c",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/ampa_pnn_channels_v1.md::src/mammal_repurposing/engine/persistence_dti.py": {
+      "outcome": "unverified",
+      "code_commit": "457552a993918641af0849ffa4011d1daf57f295",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
     "reports/pipeline/calibration_apply_v1.md::scripts/33_v3_apply_calibration.py": {
       "outcome": "unverified",
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
@@ -61,6 +73,12 @@
       "code_commit": "d9339e83d37bfc43d464af3fe0ebd9c3d9ee0f7e",
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/chembl_target_id_audit_sqlite.md::src/mammal_repurposing/fetchers/chembl_sqlite.py": {
+      "outcome": "unverified",
+      "code_commit": "d9339e83d37bfc43d464af3fe0ebd9c3d9ee0f7e",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
     },
     "reports/pipeline/chemcpa_real_lincs_scale_comparison.md::scripts/73_chemcpa_real_lincs_training.py": {
       "outcome": "unverified",
@@ -182,6 +200,12 @@
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
     },
+    "reports/pipeline/cns_exposure_kpuu_v1.md::src/mammal_repurposing/engine/free_exposure.py": {
+      "outcome": "unverified",
+      "code_commit": "02c6cbc40f8a5e439a7efbb612c5f0c70e2a82dd",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
     "reports/pipeline/cpg0000_v8_etl_v1.md::scripts/70_cpg0000_etl_v8_calibration.py": {
       "outcome": "unverified",
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
@@ -248,6 +272,30 @@
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
     },
+    "reports/pipeline/kpuu_anchor_validation_v1.md::src/mammal_repurposing/fetchers/pubchem.py": {
+      "outcome": "unverified",
+      "code_commit": "208df0a64b4103e0c90100ccf946d77d38a35554",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/l4_window_precision_v1.md::scripts/117_window_decoy_scan.py": {
+      "outcome": "unverified",
+      "code_commit": "be21a207c13f47d5118d5995913bac3c5c89c1b8",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/l4_window_precision_v1.md::src/mammal_repurposing/engine/psychoplastogen.py": {
+      "outcome": "unverified",
+      "code_commit": "be21a207c13f47d5118d5995913bac3c5c89c1b8",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/l4_window_precision_v1.md::src/mammal_repurposing/fetchers/pubchem.py": {
+      "outcome": "unverified",
+      "code_commit": "208df0a64b4103e0c90100ccf946d77d38a35554",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
     "reports/pipeline/lincs_real_smoke_v1.md::scripts/72_lincs_real_data_smoke.py": {
       "outcome": "reproduced",
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
@@ -272,6 +320,12 @@
       "verified_on": "2026-08-24",
       "evidence": "scripts/37_v5_nootropic_similarity.py --report <tmp> reproduced the committed report byte for byte"
     },
+    "reports/pipeline/novel_compound_onboarding_v1.md::src/mammal_repurposing/validation/novel_compound.py": {
+      "outcome": "unverified",
+      "code_commit": "182677b181c8cfa6dfc13ba2e3deb4ff197d2f58",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
     "reports/pipeline/panel_expansion_v1.md::scripts/61_v6b5_panel_expand.py": {
       "outcome": "unverified",
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
@@ -295,6 +349,264 @@
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/perseus_eval_groundtruth_v1.md::src/mammal_repurposing/engine/cns_exposure.py": {
+      "outcome": "unverified",
+      "code_commit": "f59db8c34252412defc1049829cd69c4fc3041eb",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_eval_groundtruth_v1.md::src/mammal_repurposing/engine/free_exposure.py": {
+      "outcome": "unverified",
+      "code_commit": "02c6cbc40f8a5e439a7efbb612c5f0c70e2a82dd",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_eval_groundtruth_v1.md::src/mammal_repurposing/engine/mechanism_router.py": {
+      "outcome": "unverified",
+      "code_commit": "21c63274a9d2e7739fad0314a44b9f6bdfeecaad",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_eval_groundtruth_v1.md::src/mammal_repurposing/engine/perseus.py": {
+      "outcome": "unverified",
+      "code_commit": "be21a207c13f47d5118d5995913bac3c5c89c1b8",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_eval_groundtruth_v1.md::src/mammal_repurposing/engine/psychoplastogen.py": {
+      "outcome": "unverified",
+      "code_commit": "be21a207c13f47d5118d5995913bac3c5c89c1b8",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_eval_groundtruth_v1.md::src/mammal_repurposing/engine/reversibility.py": {
+      "outcome": "unverified",
+      "code_commit": "7a7505174f0946da95e7538f48867094ac4be1da",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_eval_groundtruth_v1.md::src/mammal_repurposing/validation/persistence.py": {
+      "outcome": "unverified",
+      "code_commit": "70b27aca2adb5198173aac6d90186e2f8c607a30",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_eval_groundtruth_v1.md::src/mammal_repurposing/validation/persistence_eval.py": {
+      "outcome": "unverified",
+      "code_commit": "28b8d6f98bb14ccef4bc69d1666d62eabc4dc1f7",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_eval_v1.md::src/mammal_repurposing/engine/cns_exposure.py": {
+      "outcome": "unverified",
+      "code_commit": "f59db8c34252412defc1049829cd69c4fc3041eb",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_eval_v1.md::src/mammal_repurposing/engine/free_exposure.py": {
+      "outcome": "unverified",
+      "code_commit": "02c6cbc40f8a5e439a7efbb612c5f0c70e2a82dd",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_eval_v1.md::src/mammal_repurposing/engine/mechanism_router.py": {
+      "outcome": "unverified",
+      "code_commit": "21c63274a9d2e7739fad0314a44b9f6bdfeecaad",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_eval_v1.md::src/mammal_repurposing/engine/perseus.py": {
+      "outcome": "unverified",
+      "code_commit": "be21a207c13f47d5118d5995913bac3c5c89c1b8",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_eval_v1.md::src/mammal_repurposing/engine/psychoplastogen.py": {
+      "outcome": "unverified",
+      "code_commit": "be21a207c13f47d5118d5995913bac3c5c89c1b8",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_eval_v1.md::src/mammal_repurposing/engine/reversibility.py": {
+      "outcome": "unverified",
+      "code_commit": "7a7505174f0946da95e7538f48867094ac4be1da",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_eval_v1.md::src/mammal_repurposing/validation/persistence.py": {
+      "outcome": "unverified",
+      "code_commit": "70b27aca2adb5198173aac6d90186e2f8c607a30",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_lomo_transport_v1.md::src/mammal_repurposing/engine/cns_exposure.py": {
+      "outcome": "unverified",
+      "code_commit": "f59db8c34252412defc1049829cd69c4fc3041eb",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_lomo_transport_v1.md::src/mammal_repurposing/engine/free_exposure.py": {
+      "outcome": "unverified",
+      "code_commit": "02c6cbc40f8a5e439a7efbb612c5f0c70e2a82dd",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_lomo_transport_v1.md::src/mammal_repurposing/engine/mechanism_router.py": {
+      "outcome": "unverified",
+      "code_commit": "21c63274a9d2e7739fad0314a44b9f6bdfeecaad",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_lomo_transport_v1.md::src/mammal_repurposing/engine/perseus.py": {
+      "outcome": "unverified",
+      "code_commit": "be21a207c13f47d5118d5995913bac3c5c89c1b8",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_lomo_transport_v1.md::src/mammal_repurposing/engine/psychoplastogen.py": {
+      "outcome": "unverified",
+      "code_commit": "be21a207c13f47d5118d5995913bac3c5c89c1b8",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_lomo_transport_v1.md::src/mammal_repurposing/validation/persistence.py": {
+      "outcome": "unverified",
+      "code_commit": "70b27aca2adb5198173aac6d90186e2f8c607a30",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_pu_eval_v1.md::src/mammal_repurposing/engine/cns_exposure.py": {
+      "outcome": "unverified",
+      "code_commit": "f59db8c34252412defc1049829cd69c4fc3041eb",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_pu_eval_v1.md::src/mammal_repurposing/engine/free_exposure.py": {
+      "outcome": "unverified",
+      "code_commit": "02c6cbc40f8a5e439a7efbb612c5f0c70e2a82dd",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_pu_eval_v1.md::src/mammal_repurposing/engine/mechanism_router.py": {
+      "outcome": "unverified",
+      "code_commit": "21c63274a9d2e7739fad0314a44b9f6bdfeecaad",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_pu_eval_v1.md::src/mammal_repurposing/engine/perseus.py": {
+      "outcome": "unverified",
+      "code_commit": "be21a207c13f47d5118d5995913bac3c5c89c1b8",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_pu_eval_v1.md::src/mammal_repurposing/engine/psychoplastogen.py": {
+      "outcome": "unverified",
+      "code_commit": "be21a207c13f47d5118d5995913bac3c5c89c1b8",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_pu_eval_v1.md::src/mammal_repurposing/validation/persistence.py": {
+      "outcome": "unverified",
+      "code_commit": "70b27aca2adb5198173aac6d90186e2f8c607a30",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_sensitivity_v1.md::src/mammal_repurposing/engine/mechanism_router.py": {
+      "outcome": "unverified",
+      "code_commit": "21c63274a9d2e7739fad0314a44b9f6bdfeecaad",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_sensitivity_v1.md::src/mammal_repurposing/engine/perseus.py": {
+      "outcome": "unverified",
+      "code_commit": "be21a207c13f47d5118d5995913bac3c5c89c1b8",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_sensitivity_v1.md::src/mammal_repurposing/engine/psychoplastogen.py": {
+      "outcome": "unverified",
+      "code_commit": "be21a207c13f47d5118d5995913bac3c5c89c1b8",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_sensitivity_v1.md::src/mammal_repurposing/fetchers/pubchem.py": {
+      "outcome": "unverified",
+      "code_commit": "208df0a64b4103e0c90100ccf946d77d38a35554",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_sensitivity_v1.md::src/mammal_repurposing/validation/persistence.py": {
+      "outcome": "unverified",
+      "code_commit": "70b27aca2adb5198173aac6d90186e2f8c607a30",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_v1.md::src/mammal_repurposing/engine/cns_exposure.py": {
+      "outcome": "unverified",
+      "code_commit": "f59db8c34252412defc1049829cd69c4fc3041eb",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_v1.md::src/mammal_repurposing/engine/free_exposure.py": {
+      "outcome": "unverified",
+      "code_commit": "02c6cbc40f8a5e439a7efbb612c5f0c70e2a82dd",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_v1.md::src/mammal_repurposing/engine/mechanism_router.py": {
+      "outcome": "unverified",
+      "code_commit": "21c63274a9d2e7739fad0314a44b9f6bdfeecaad",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_v1.md::src/mammal_repurposing/engine/perseus.py": {
+      "outcome": "unverified",
+      "code_commit": "be21a207c13f47d5118d5995913bac3c5c89c1b8",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_v1.md::src/mammal_repurposing/engine/psychoplastogen.py": {
+      "outcome": "unverified",
+      "code_commit": "be21a207c13f47d5118d5995913bac3c5c89c1b8",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_v1.md::src/mammal_repurposing/engine/reversibility.py": {
+      "outcome": "unverified",
+      "code_commit": "7a7505174f0946da95e7538f48867094ac4be1da",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/perseus_v1.md::src/mammal_repurposing/validation/persistence.py": {
+      "outcome": "unverified",
+      "code_commit": "70b27aca2adb5198173aac6d90186e2f8c607a30",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/persistence_axis_v1.md::src/mammal_repurposing/validation/persistence.py": {
+      "outcome": "unverified",
+      "code_commit": "70b27aca2adb5198173aac6d90186e2f8c607a30",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/persistence_dti_calibration.md::src/mammal_repurposing/engine/persistence_dti.py": {
+      "outcome": "unverified",
+      "code_commit": "457552a993918641af0849ffa4011d1daf57f295",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/persistence_dti_demo.md::src/mammal_repurposing/engine/persistence_dti.py": {
+      "outcome": "unverified",
+      "code_commit": "457552a993918641af0849ffa4011d1daf57f295",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/persistence_dti_mwresidual.md::src/mammal_repurposing/engine/persistence_dti.py": {
+      "outcome": "unverified",
+      "code_commit": "457552a993918641af0849ffa4011d1daf57f295",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
     },
     "reports/pipeline/pocket_database_v1.md::src/mammal_repurposing/pockets/pocket_classifier.py": {
       "outcome": "unverified",
@@ -488,6 +800,48 @@
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
     },
+    "reports/pipeline/sqlite_vs_rest_smoke.md::scripts/_v3_sqlite_vs_rest_smoke.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/sqlite_vs_rest_smoke.md::src/mammal_repurposing/fetchers/chembl_groundtruth.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/sqlite_vs_rest_smoke.md::src/mammal_repurposing/fetchers/chembl_sqlite.py": {
+      "outcome": "unverified",
+      "code_commit": "d9339e83d37bfc43d464af3fe0ebd9c3d9ee0f7e",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/trial_watch_v1.md::scripts/91_trial_watch.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/trial_watch_v1.md::src/mammal_repurposing/reporting/trial_watch.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/trial_watch_v1.md::src/mammal_repurposing/validation/retrospective.py": {
+      "outcome": "unverified",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
+    "reports/pipeline/trkb_tmd_sitesplit_v1.md::src/mammal_repurposing/engine/persistence_dti.py": {
+      "outcome": "unverified",
+      "code_commit": "457552a993918641af0849ffa4011d1daf57f295",
+      "recorded_on": "2026-09-20",
+      "why": "Newly VISIBLE on 2026-09-20, not newly stale. These reports carried no Generated-by trailer, and the gate skipped any report lacking one, so omission was a free permanent exemption: no attestation, no named code, surviving every future commit to the generator. 31 of 115 reports were using it. Declaring them added 61 failing pairs across 21 reports the gate had been reporting as clean. Recorded unverified so the debt is countable and the next commit to each generator fails it again. The six PERSEUS reports here are additionally invalidated in substance by the L4 demotion at be21a20."
+    },
     "reports/pipeline/v6b_validation_gates_v1.md::src/mammal_repurposing/cluster_d/validation_gates.py": {
       "outcome": "unverified",
       "code_commit": "208df0a64b4103e0c90100ccf946d77d38a35554",
@@ -613,6 +967,18 @@
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/v8_real_gate1_v1.md::scripts/92_v8_real_gate1.py": {
+      "outcome": "reproduced",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "verified_on": "2026-09-20",
+      "evidence": "scripts/92_v8_real_gate1.py --report <tmp> reproduced the committed report byte for byte"
+    },
+    "reports/pipeline/v8_real_gate1_v1.md::src/mammal_repurposing/cluster_e/gate1.py": {
+      "outcome": "reproduced",
+      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "verified_on": "2026-09-20",
+      "evidence": "scripts/92_v8_real_gate1.py --report <tmp> reproduced the committed report byte for byte"
     }
   }
 }
