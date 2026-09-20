@@ -44,7 +44,16 @@ def test_primary_set_excludes_impairment_exposures():
     assert (p["candidate_enhancer"] != 0).all()
     for impairer in ["alcohol_acute", "dehydration", "melatonin", "psilocybin"]:
         assert impairer not in set(p["compound"]), f"{impairer} must not enter the primary set"
-    assert len(p) >= 19, "the 2026-07 expansion must not silently shrink the primary set"
+    # The guard is on SILENT shrinkage. The set went 19 -> 18 on 2026-09-20 when interval recovery
+    # found that omega_3's source pools cognitively normal older adults TOGETHER WITH MCI
+    # participants, which fails this ledger's own clean-healthy rule. That row was never eligible,
+    # so removing it is a correction rather than a loss, and it is recorded in
+    # data/raw/provenance/interval_recovery_2026-09.json and in PREREG_DEVIATIONS_2026-06.md.
+    assert len(p) == 18, (
+        f"primary set is {len(p)}, expected 18. Any further change must be justified in the "
+        "deviations ledger before this number is edited.")
+    assert "omega_3" not in set(p["compound"]), (
+        "omega_3 pools MCI participants and cannot be tiered clean_MA")
 
 
 def test_power_confound_does_not_survive_the_larger_sample():
@@ -56,13 +65,31 @@ def test_power_confound_does_not_survive_the_larger_sample():
     assert r1["p_stim"] < 0.05, "the stimulant gate remains nominally significant"
 
 
-def test_headline_now_survives_the_stated_rule_but_is_weakened():
-    """R2 REVERSED (partially). The gate now retains significance under the l-theanine re-labelling
-    (p was 0.176 at n=11), but the AUROC still DROPS, so the sensitivity remains worth reporting."""
+def test_the_headline_does_not_survive_its_own_sensitivity_analysis():
+    """R2, REVERSED TWICE, and the second reversal is the one that matters.
+
+    At n = 11 the stimulant gate did NOT survive re-labelling l-theanine per the ledger's stated CI
+    rule (p = 0.176). At n = 19 it DID (p = 0.0456), and this test asserted that. On 2026-09-20 the
+    set became n = 18, because interval recovery found that omega_3's source pools cognitively
+    normal older adults together with MCI participants and it was never eligible for the clean-MA
+    tier. Removing that single mis-tiered row moves the sensitivity p from 0.0456 to 0.0562, and the
+    headline stops surviving.
+
+    The conclusion is not that the gate is dead. It is that a headline whose survival turns on the
+    tiering of one row out of nineteen is not robust, which is the same thing
+    ledger_resolving_power_v1.md says from the other direction: at this n, a chance ranker scores
+    AUROC 0.18 to 0.80.
+
+    This test now pins the REVERSAL, so that a future change which restores significance has to be
+    deliberate and has to say why.
+    """
     _, sens = _mod().r2_label_rule_consistency(_primary())
-    assert sens["p_shipped"] < 0.05
-    assert sens["p_rule"] < 0.05, "at n=19 the headline survives the sensitivity analysis"
-    assert sens["au_rule"] < sens["au_shipped"], "but it is still weakened by the re-labelling"
+    assert sens["p_shipped"] < 0.05, "as shipped, the gate is still nominally significant"
+    assert sens["p_rule"] > 0.05, (
+        f"the headline must be reported as NOT surviving its own stated-rule sensitivity "
+        f"(p_rule = {sens['p_rule']:.4f}). If this starts passing again, the deviations ledger "
+        "needs a new entry explaining what changed.")
+    assert sens["au_rule"] < sens["au_shipped"], "and the AUROC still drops under the re-labelling"
 
 
 def test_l_theanine_remains_the_unique_label_rule_conflict():

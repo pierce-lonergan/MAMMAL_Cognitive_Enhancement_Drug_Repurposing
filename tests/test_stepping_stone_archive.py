@@ -161,18 +161,34 @@ def test_every_keystone_in_the_shipped_archive_parses_to_a_real_predicate():
 
 
 @pytest.mark.skipif(not ARCHIVE.exists(), reason="archive not built")
-def test_the_ledger_asserts_more_refutations_than_it_has_evidence_for():
-    """The archive's first finding, pinned so a future ledger edit cannot erase it silently.
+def test_every_null_in_the_ledger_is_now_classifiable():
+    """The resolving-power gain, pinned.
 
-    This is not a test of the archive; it is a test of the claim the archive makes about the
-    healthy-adult ledger. If curation later records the missing intervals, this test SHOULD fail and
-    be updated with the new counts.
+    ON 2026-09-20 MORNING the derived null set was 14 entries: 7 measured_null/harm, 3
+    under-powered, and 4 `unknown_precision` -- rows carrying a point estimate and NO interval, where
+    a true null cannot be distinguished from an undetected effect. The ledger asserted fourteen
+    refutations and had evidence for seven.
+
+    That afternoon the intervals were recovered from primary sources, and the recovery exposed two
+    extraction defects rather than merely filling blanks. bacopa_monnieri's recorded g = 0.00 was
+    read from the wrong cell of a network meta-analysis league table (BME vs anthocyanin, not BME vs
+    placebo); the real estimate is 0.17 with an interval that ADMITS a target-sized effect. omega_3
+    pooled cognitively normal older adults together with MCI participants, which fails this ledger's
+    own clean-healthy rule, so it left the primary set entirely.
+
+    The headline is `unknown_precision == 0`: every remaining null is now either genuinely refuted
+    or honestly open. If future curation adds a row without an interval this fails, which is the
+    point.
     """
     df = pd.read_csv(ARCHIVE)
     nulls = df[df["hypothesis_id"].str.startswith("H-null-")]
     modes = dict(nulls["failure_mode"].value_counts())
+    assert modes.get("unknown_precision", 0) == 0, (
+        "a null with no interval is an unclassifiable assertion; recover the interval or re-tier "
+        f"the row. Classification now: {modes}")
     closed = modes.get("measured_null", 0) + modes.get("measured_harm", 0)
-    assert len(nulls) == 14, f"expected 14 non-enhancing compounds, got {len(nulls)}"
-    assert closed == 7, f"expected 7 genuinely closed, got {closed}: {modes}"
-    assert modes.get("unknown_precision", 0) == 4, "4 compounds still carry no interval"
-    assert modes.get("underpowered", 0) == 3, "3 intervals still admit a target-sized effect"
+    assert closed + modes.get("underpowered", 0) == len(nulls),         f"every null must be classified as closed or open: {modes}"
+    # the two defects the recovery exposed, pinned so a silent revert is visible
+    assert not nulls["hypothesis_id"].eq("H-null-omega_3").any(),         "omega_3 pools MCI participants and must not be in the clean healthy-adult null set"
+    bac = nulls[nulls["hypothesis_id"] == "H-null-bacopa_monnieri"]
+    assert len(bac) == 1 and bac["failure_mode"].iloc[0] == "underpowered",         "bacopa_monnieri's interval admits a target-sized effect; it is open, not refuted"

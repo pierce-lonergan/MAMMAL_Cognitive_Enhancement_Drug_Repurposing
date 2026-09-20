@@ -1,0 +1,120 @@
+{
+  "date": "2026-09-20",
+  "source": "adversarially verified interval-recovery sweep; 16 of 18 verifications CONFIRMED",
+  "purpose": "raise the ledger's resolving power: 7 rows carried a point estimate with no interval, so a true null could not be distinguished from an undetected effect",
+  "recovered": 5,
+  "not_recoverable": 2,
+  "changes": [
+    {
+      "compound": "caffeine",
+      "changes": {
+        "ci_lo": {
+          "from": null,
+          "to": 0.21
+        },
+        "ci_hi": {
+          "from": null,
+          "to": 0.36
+        }
+      }
+    },
+    {
+      "compound": "guarana",
+      "changes": {
+        "ci_lo": {
+          "from": null,
+          "to": -0.025
+        },
+        "ci_hi": {
+          "from": null,
+          "to": 0.176
+        }
+      }
+    },
+    {
+      "compound": "ginkgo_biloba",
+      "changes": {
+        "ci_lo": {
+          "from": null,
+          "to": -0.17
+        },
+        "ci_hi": {
+          "from": null,
+          "to": 0.07
+        }
+      }
+    },
+    {
+      "compound": "bacopa_monnieri",
+      "changes": {
+        "representative_g": {
+          "from": 0.0,
+          "to": 0.17
+        },
+        "ci_lo": {
+          "from": null,
+          "to": -0.52
+        },
+        "ci_hi": {
+          "from": null,
+          "to": 0.86
+        },
+        "robustness": {
+          "from": "network MA ~placebo (SUCRA 50.7) for memory",
+          "to": "CORRECTED 2026-09-20: the previous g = 0.00 (CI -0.80, 0.80) was the BME-vs-ANTHOCYANIN cell of a network meta-analysis league table, not BME vs placebo. BME vs placebo (memory) is SMD 0.17 (-0.52, 0.86). The interval ADMITS a target-sized effect, so this row is under-powered rather than refuted."
+        }
+      }
+    },
+    {
+      "compound": "omega_3",
+      "changes": {
+        "representative_g": {
+          "from": 0.0,
+          "to": 0.0411
+        },
+        "ci_lo": {
+          "from": null,
+          "to": -0.1078
+        },
+        "ci_hi": {
+          "from": null,
+          "to": 0.1899
+        },
+        "n_studies": {
+          "from": 11.0,
+          "to": 16
+        },
+        "evidence_tier": {
+          "from": "clean_MA",
+          "to": "mixed_pop"
+        },
+        "population": {
+          "from": "healthy_unimpaired",
+          "to": "mixed_healthy_and_MCI_older_adults"
+        },
+        "robustness": {
+          "from": "global cognition null in cognitively-unimpaired",
+          "to": "RE-TIERED 2026-09-20: the source pools cognitively normal older adults TOGETHER WITH MCI participants, which fails this ledger's clean-healthy inclusion rule, so clean_MA was wrong. Recorded g (0.0) and n_studies (11) also did not match the source (0.0411; 16 forest-plot rows); no domain in that paper pools 11 studies, so the original row may have come from a different analysis entirely."
+        }
+      }
+    },
+    {
+      "compound": "vitamin_d",
+      "changes": {
+        "robustness": {
+          "from": "WEAKEST ROW IN THIS BATCH - two explicit caveats. (1) POPULATION IS MIXED, not strictly healthy: the pooled estimate combines community/healthy adults with 'vulnerable populations' (subgroup Hedges' g = 0.414) and participants with baseline vitamin D deficiency (g = 0.480), plus a no-biological-flaws subgroup at g = 0.549. Because the effect concentrates in deficient/vulnerable strata, the true effect in replete healthy adults is almost certainly SMALLER than 0.128 - this row should be filtered out of any healthy-adults-only analysis. (2) NO CI CAPTURED: the 95% CI for the pooled g = 0.128 is not reported in the abstract and the Neuropsychology Review full text is paywalled; only p = .008 is available. CI left null deliberately rather than back-computed from p - do NOT impute it. Effect was confined to global cognition; no significant effect in any specific cognitive domain (memory, executive, attention, processing speed). Preregistered PROSPERO CRD42021249908. In a strictly cognitively-healthy population Cochrane (Rutjes 2018, PMID:30556597) found no effect of vitamin D3 + calcium (1 trial, 4143 participants, MD -0.1 MMSE points, 95% CI -0.81 to 0.61) over a mean 7.8 y. Sign already oriented so positive = pro-cognitive; no sign flip applied.",
+          "to": "INTERVAL NOT RECOVERABLE 2026-09-20: source is fully closed access and reports no interval in its abstract (only Hedges g = 0.128, p = .008). Not in PMC, not in Europe PMC (isOpenAccess=false), no preprint. Population is also not clean-healthy (mean age 65.2, 78.5% women, non-demented but not screened healthy-young)."
+        }
+      }
+    },
+    {
+      "compound": "glucose",
+      "changes": {
+        "robustness": {
+          "from": "WEAKEST ROW IN THIS BATCH \u2014 include only with the following caveats. (1) NO CONFIDENCE INTERVAL is reported in the abstract; ci_reported=false and bounds left null rather than estimated. (2) The number of pooled STUDIES (k) is not stated; the abstract reports 104 individual effect sizes, which is an effect-size count not a study count, so n_studies is null rather than guessed. (3) The AUTHORS THEMSELVES DISOWN the pooled estimate: the abstract states this effect size 'was not representative of the 104 individual effect sizes reported' \u2014 i.e. severe heterogeneity, so d=0.56 should not be treated as a stable population estimate. (4) Vintage 2004, pre-PRISMA, Hedges & Olkin 1985 procedures, no risk-of-bias or publication-bias assessment mentioned. (5) No PMID exists (journal not PubMed-indexed at the time); DOI supplied and verified against the Cambridge University Press record. (6) Population health status not explicitly stated. Sign already pro-cognitive-positive, no flip. Secondary finding: larger effects for memory than non-memory tasks; unexpectedly NO greater benefit in older vs younger adults.",
+          "to": "INTERVAL NOT RECOVERABLE 2026-09-20: Brain Impairment 2004, never indexed in PubMed/PMC, Unpaywall oa_status=closed with no OA location anywhere, publisher serves abstract only. The d = 0.56 is the overall effect reported in the abstract; the source states the effect held only for a verbal immediate-word-recall test."
+        }
+      }
+    }
+  ]
+}

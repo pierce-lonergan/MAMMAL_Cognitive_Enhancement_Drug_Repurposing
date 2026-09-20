@@ -174,3 +174,75 @@ made regime-aware so a future v2 is coherent.
 the pre-fix within-disease AUROC of 0.97 (see B9). An OSF registration is immutable and
 editing the local copy to match a later result is the precise thing pre-registration exists to
 prevent. The deviation is recorded here instead, which is what this ledger is for.
+---
+
+## 2026-09-20 — interval recovery moved the headline, and it no longer survives its own sensitivity analysis
+
+**Why this is here.** This is a MEASURED movement in a number the project has been reporting, caused
+by correcting the data rather than by changing any method. It is recorded before anything downstream
+is re-blessed.
+
+### What was done
+
+Seven rows in `healthy_adult_cognition_ledger.csv` carried a point estimate and NO confidence
+interval, which means a true null could not be distinguished from an undetected effect. An
+adversarially verified sweep recovered five of them from primary sources; 16 of 18 verifications
+returned CONFIRMED. Two intervals are genuinely unobtainable and are now recorded as such with the
+reason (vitamin_d: closed access, no interval in the abstract, never deposited in PMC; glucose:
+Brain Impairment 2004, never indexed, no open location anywhere).
+
+### Two extraction defects the recovery exposed
+
+These are not missing data. They are wrong data.
+
+**bacopa_monnieri: the recorded point estimate was read from the wrong cell.** The source is a
+network meta-analysis league table. The recorded `g = 0.00 (CI -0.80, 0.80)` is in the BME row, but
+that cell is **BME versus anthocyanin**, not BME versus placebo. BME versus placebo (memory) is
+**SMD 0.17 (-0.52, 0.86)**. The verifier confirmed the row and column mapping programmatically
+against two anchors printed in the Results narrative (CG SMD 0.87 [0.29, 1.45] and 50 mg MP SMD 0.91
+[0.07, 1.76] are cells 1 and 2 of the Placebo row), so this is a confirmed misalignment and not a
+disagreement about which estimate to prefer. The corrected interval ADMITS a target-sized effect, so
+the row moves from apparently refuted to honestly under-powered.
+
+**omega_3 was never eligible for the clean-MA tier.** The source pools "cognitively normal older
+adults and those with MCI". That is a mixed clinical sample and it fails this ledger's own stated
+inclusion rule. The recorded `g = 0.0` and `n_studies = 11` also do not match the source (0.0411;
+16 forest-plot rows), and no domain in that paper pools 11 studies, so the original row may have been
+populated from a different analysis entirely. Re-tiered to `mixed_pop`.
+
+### The movement
+
+| quantity | before | after |
+| --- | ---: | ---: |
+| primary analysis set | n = 19 (5 enhance / 14 null) | **n = 18** (5 / 13) |
+| stimulant gate AUROC (as shipped) | 0.83, p = 0.0181 | 0.82, p = 0.0213 |
+| **stated-rule sensitivity (l-theanine re-labelled)** | 0.76, **p = 0.0456** | 0.75, **p = 0.0562** |
+| nulls that cannot be classified at all | 4 | **0** |
+| nulls genuinely refuted | 7 | 9 |
+| chance-ranker 95% AUROC interval | [0.20, 0.80] | [0.18, 0.80] |
+
+**The headline stops surviving its own sensitivity analysis.** Removing one mis-tiered row takes
+p_rule from 0.0456 to 0.0562. The stimulant gate remains nominally significant as shipped
+(p = 0.0213), but the pre-specified sensitivity that it previously passed, it now fails.
+
+### How this should be read
+
+Not as "the gate is dead". As "a headline whose survival turns on the tiering of one row out of
+nineteen was never robust". That is the same fact `ledger_resolving_power_v1.md` states from the
+other direction: at this n a chance ranker scores AUROC 0.18 to 0.80, so almost nothing measured on
+this set is distinguishable from chance.
+
+The compensating gain is real and is the point of the exercise: **every null in the ledger is now
+classifiable.** Before, four compounds carried a label of 0 with no interval, so the ledger asserted
+refutations it could not support. Now guarana ([-0.03, +0.18]) and ginkgo_biloba ([-0.17, +0.07])
+are genuinely REFUTED, bacopa_monnieri is honestly INCONCLUSIVE, and nothing is unclassified.
+
+### Status
+
+- `healthy_adult_robustness_v1.md` regenerated. Tests updated to pin the REVERSAL rather than to
+  restore the previous assertion; `test_the_headline_does_not_survive_its_own_sensitivity_analysis`
+  will fail if significance ever returns, which forces a new entry here.
+- `stepping_stone_archive.csv` rebuilt: `unknown_precision` 4 -> 0.
+- Provenance for every changed cell: `data/raw/provenance/interval_recovery_2026-09.json`.
+- **Not yet re-blessed:** any downstream artefact quoting the n = 19 primary set or the p = 0.0456
+  sensitivity. Those need an author decision, not a re-run.
