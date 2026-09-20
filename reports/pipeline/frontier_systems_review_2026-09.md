@@ -193,9 +193,38 @@ allosteric rows to convict or credit any model. ChEMBL's curated `action_type` f
 returns about 7,500 positive and 2,500 negative allosteric modulator activity records, roughly 500
 times the rows the current verdict rests on, at zero cost.
 
-Verdict: **REJECT** the lane, **TRIAL** the label-layer expansion as a measurement fix. Note that a
-properly powered test may simply confirm the head is blind, which is a real result and not an
-improvement.
+**VERIFIED HERE, AND IT REFUTES THE RECOMMENDATION.** The lane flagged a risk it had not checked:
+that the allosteric labels might be GPCR-concentrated. Queried against this machine's local ChEMBL 36
+mirror on 2026-09-20:
+
+```sql
+SELECT td.pref_name, a.action_type, COUNT(*)
+FROM activities a
+JOIN assays ay ON ay.assay_id = a.assay_id
+JOIN target_dictionary td ON td.tid = ay.tid
+WHERE a.action_type IN ('POSITIVE ALLOSTERIC MODULATOR','NEGATIVE ALLOSTERIC MODULATOR')
+GROUP BY td.pref_name, a.action_type ORDER BY 3 DESC;
+```
+
+Totals: **6,863 PAM and 1,986 NAM rows, 8,849 directional allosteric activities.** So the aggregate
+claim is substantially right (the lane reported 7,509 and 2,500 from a live API, presumably a
+different release).
+
+But the target breakdown kills the proposed use. The top targets are muscarinic M4 (691), adenosine
+A3 (613), GLP-1 (297), FFA4 (294) and alpha-7 nAChR (278): overwhelmingly GPCRs. Ionotropic
+glutamate receptors together account for **396 rows of 8,849**. And at AMPA specifically, the target
+whose AUROC 0.26 the entire G2 verdict rests on, there are **75 PAM rows and ZERO NAM rows**.
+
+A PAM-versus-NAM classifier cannot be trained or tested at a target with 75 positives and no
+negatives. The label layer would therefore build a **cross-target, GPCR-dominated** allosteric
+benchmark, which is a different question from the one it was proposed to answer, and transfer from
+GPCR allostery to ionotropic channel gating is precisely the assumption this project should not make
+for free.
+
+Verdict: **REJECT** the lane, and **REJECT** the label-layer expansion as a fix for the AMPA verdict.
+It remains available as a cross-target benchmark if that question is ever the one being asked, and
+that should be stated as a different question rather than as a repair. G2 at AMPA stays unmeasurable,
+and the honest next step there is more AMPA-specific labelled data, which this does not supply.
 
 ## Sequencing
 
