@@ -320,6 +320,61 @@ def _cluster_d_v2g() -> tuple[bool, str]:
         "keystone depends on this.")
 
 
+@predicate("chembl_allosteric_negatives_at", 2)
+def _chembl_neg_at(target_substring: str, min_n: str) -> tuple[bool, str]:
+    """Are there enough NEGATIVE allosteric modulator rows at a target to train a direction model?
+
+    The keystone for the rejected G2 label-layer proposal. An external survey recommended expanding
+    the ChEMBL allosteric labels to make G2 measurable, calling it a ~500x bigger test set. Queried
+    against the local ChEMBL 36 mirror on 2026-09-20: 8,849 directional rows exist in aggregate, but
+    they are GPCR-concentrated, all ionotropic glutamate receptors together are 396, and AMPA
+    specifically has 75 PAM rows and ZERO NAM rows. A PAM-versus-NAM classifier cannot be tested at
+    a target with no negatives, so the proposal answers a different question than the one it was
+    offered for.
+
+    Raises rather than returning False when the mirror is absent: a missing database is an
+    unanswered question, not a negative answer.
+    """
+    import os
+    import sqlite3
+    want = int(min_n)
+    db = Path(os.path.expanduser("~/.data/chembl/36/chembl_36.db"))
+    if not db.exists():
+        raise UnknownPredicate(
+            f"chembl_allosteric_negatives_at({target_substring}, {min_n}): the local ChEMBL 36 "
+            f"mirror is not present at {db}. A missing database cannot answer the question, and "
+            "reporting False would assert a count nobody made.")
+    con = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
+    try:
+        n = con.execute(
+            "SELECT COUNT(*) FROM activities a JOIN assays ay ON ay.assay_id = a.assay_id "
+            "JOIN target_dictionary td ON td.tid = ay.tid "
+            "WHERE a.action_type = 'NEGATIVE ALLOSTERIC MODULATOR' AND td.pref_name LIKE ?",
+            (f"%{target_substring}%",)).fetchone()[0]
+    finally:
+        con.close()
+    return n >= want, (f"ChEMBL 36 has {n} NEGATIVE allosteric modulator activity row(s) at targets "
+                       f"matching {target_substring!r} vs required {want}")
+
+
+@predicate("ontology_names_the_outcome", 0)
+def _ontology_names() -> tuple[bool, str]:
+    """Can any disease ontology this pipeline could query actually NAME healthy cognitive enhancement?
+
+    Deliberately UNRESOLVABLE offline. The finding it guards was measured live: an OLS4 query of
+    MONDO for "cognitive enhancement" returned numFound = 0, and Open Targets lists 1,945 targets for
+    EFO_0008354 with zero drug or clinical candidates. Every knowledge-graph repurposing platform is
+    keyed to one of those vocabularies, so none of them can express this project's outcome. Checking
+    it needs a network call, and a predicate that silently returns False offline would read as
+    "checked, still dead" on every sweep.
+    """
+    raise UnknownPredicate(
+        "ontology_names_the_outcome() needs a live OLS4/Open Targets query and has no offline "
+        "source. Measured 2026-09-20: MONDO numFound = 0 for 'cognitive enhancement'; Open Targets "
+        "EFO_0008354 has 1,945 targets and 0 drug candidates. Re-check before re-opening the "
+        "knowledge-graph lane.")
+
+
 @predicate("allosteric_head_beats", 2)
 def _allosteric_beats(metric: str, threshold: str) -> tuple[bool, str]:
     """Has the DTI head stopped being blind at allosteric sites?

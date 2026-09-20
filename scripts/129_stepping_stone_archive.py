@@ -383,6 +383,111 @@ CURATED = [
                      "acute positives to anchor a washout design.",
         status="DEAD",
     ),
+    # --- 2026-09-20: recommendations from the frontier-systems survey, checked and killed.
+    # These exist so the next survey cannot re-propose them blind. The survey that produced them
+    # re-proposed Rokem & Silver 2013 as a novel finding precisely because this project's reasoning
+    # about it was not machine-findable. Full working: reports/pipeline/frontier_systems_review_2026-09.md
+    dict(
+        hypothesis_id="H-chembl-allosteric-g2",
+        claim="Expanding the ChEMBL directional-allosteric label layer makes G2 measurable, giving a "
+              "roughly 500x bigger labelled test set than the handful of AMPA rows the AUROC 0.26 "
+              "verdict rests on.",
+        domain="external systems / G2",
+        verdict="REFUTED", died_on="2026-09-20",
+        killed_by="direct query of the local ChEMBL 36 mirror; "
+                  "reports/pipeline/frontier_systems_review_2026-09.md",
+        evidence="The aggregate claim holds: 6,863 PAM + 1,986 NAM = 8,849 directional allosteric "
+                 "activity rows. The breakdown refutes the use. Top targets are muscarinic M4 (691), "
+                 "adenosine A3 (613), GLP-1 (297), FFA4 (294), alpha-7 nAChR (278), overwhelmingly "
+                 "GPCRs. ALL ionotropic glutamate receptors together are 396 rows of 8,849. At AMPA, "
+                 "the target whose AUROC 0.26 the G2 verdict rests on: 75 PAM rows and ZERO NAM "
+                 "rows. A PAM-versus-NAM classifier cannot be tested at a target with no negatives.",
+        failure_mode="instrument_blind",
+        keystone="The corpus does not index the thing. ChEMBL records no AMPA negative allosteric "
+                 "modulators at all, so the label layer can only build a cross-target, "
+                 "GPCR-dominated benchmark. That is a different question, and transfer from GPCR "
+                 "allostery to ionotropic channel gating is the assumption this project should not "
+                 "make for free.",
+        keystone_predicate="chembl_allosteric_negatives_at(AMPA, 40)",
+        revival_test="If ChEMBL ever indexes 40 or more AMPA NAM rows, re-run the G2 permutation "
+                     "test on an AMPA-specific PAM-vs-NAM set. Until then the honest next step is "
+                     "AMPA-specific labelled data, which this proposal does not supply.",
+        status="DEAD",
+    ),
+    dict(
+        hypothesis_id="H-knowledge-graph-repurposing",
+        claim="A knowledge-graph repurposing platform (TxGNN, PrimeKG, Open Targets, Every Cure "
+              "MATRIX) can extend or beat this project's healthy-adult cognition ledger.",
+        domain="external systems / G1",
+        verdict="REFUTED", died_on="2026-09-20",
+        killed_by="reports/pipeline/frontier_systems_review_2026-09.md (live API checks)",
+        evidence="Structural, not a performance question. Every platform is keyed to a disease "
+                 "vocabulary, MONDO or EFO. An OLS4 query of MONDO for 'cognitive enhancement' "
+                 "returns numFound = 0; every cognition-adjacent MONDO term is a DEFICIT. Open "
+                 "Targets EFO_0008354 'cognitive function measurement' has 1,945 associated targets "
+                 "and drugAndClinicalCandidates = 0. The parent term 'cognition' has 4,040 targets "
+                 "and 11 drug candidates in total, of which only caffeine and creatine are "
+                 "plausible enhancers and lorazepam is an impairer. Roughly two usable positive "
+                 "edges, against six labelled enhancers the ledger already has.",
+        failure_mode="instrument_blind",
+        keystone="The outcome is not nameable in the vocabulary these systems are built on. Healthy "
+                 "cognitive enhancement is not a disease, and a disease ontology has no node for "
+                 "it, so the platforms cannot reproduce the existing ledger let alone extend it.",
+        keystone_predicate="ontology_names_the_outcome()",
+        revival_test="Re-check only if MONDO or EFO gains a non-deficit cognitive-enhancement term "
+                     "with drug edges attached.",
+        status="DEAD",
+    ),
+    dict(
+        hypothesis_id="H-cohort-prescription-emulation",
+        claim="A prescription-exposure analysis or target-trial emulation in a population cohort "
+              "(UK Biobank and similar) can supply durable healthy-adult cognitive rows.",
+        domain="external systems / G1",
+        verdict="REFUTED", died_on="2026-09-20",
+        killed_by="reports/pipeline/frontier_systems_review_2026-09.md",
+        evidence="UK Biobank has baseline cognitive data on 480,416 participants and CANNOT support "
+                 "the analysis: its prescription records stop in 2016-2017 while the later "
+                 "cognitive wave is 2021, so no exposure-then-cognition contrast can be formed. No "
+                 "cohort in the lane measures cognition after a documented discontinuation. "
+                 "Reliability compounds it: UK Biobank cognitive tests have 4-week retest r = "
+                 "0.41-0.61 and longitudinal ICC 0.16-0.65 (PMID 32310977, PMID 27110937), "
+                 "overlapping the ICC 0.16-0.53 for which this project already demoted cTBS.",
+        failure_mode="wrong_endpoint",
+        keystone="The cohorts can only manufacture NULLS, and nulls are the row type worth least: "
+                 "measured here, +100 nulls buys +0.11% power per row against +4.60% for a "
+                 "positive. A route that supplies only the cheap row type does not relieve a "
+                 "constraint set by the expensive one.",
+        keystone_predicate="durable_healthy_rows(1)",
+        revival_test="Re-assess only if a cohort links prescription or exposure records to a "
+                     "post-discontinuation cognitive wave.",
+        status="DEAD",
+    ),
+    dict(
+        hypothesis_id="H-cloudlab-experimental-arm",
+        claim="This project can acquire an experimental arm by buying assays from a self-driving or "
+              "cloud lab, without building a laboratory.",
+        domain="external systems",
+        verdict="REFUTED", died_on="2026-09-20",
+        killed_by="reports/pipeline/frontier_systems_review_2026-09.md",
+        evidence="No cloud lab sells the assay. Emerald Cloud Lab advertises over 200 instrument "
+                 "models and names HPLC, MS, NMR, PCR, ELISA, SPR and flow cytometry, but lists no "
+                 "multielectrode arrays, no patch clamp, no high-content spine imaging and no "
+                 "primary or iPSC neuron culture. Arctoris runs biochemistry, biophysics, cell "
+                 "biology and structural biology with no electrophysiology. Where prices are "
+                 "published they are high and stale: ECL ~$25k/month on a one-year minimum, ~$300k "
+                 "entry; Strateos ~$130k entry for a single automated method (DOI "
+                 "10.33552/OJRAT.2022.01.000511). Neither publishes a current rate card, so a real "
+                 "quote is NOT FOUND.",
+        failure_mode="wrong_endpoint",
+        keystone="Even if the assay were purchasable it would add in-vitro rows, and G1 is a "
+                 "HUMAN-cognition constraint. At n = 21 with a 0.73 critical AUROC, no assay "
+                 "purchase changes what the ledger can credit. The one free item in the lane that "
+                 "touches a measured gap is NIMH PDSP screening, which is recorded separately as "
+                 "open rather than killed.",
+        keystone_predicate="durable_healthy_rows(1)",
+        revival_test="Only relevant once the ledger can adjudicate predictions at all.",
+        status="DEAD",
+    ),
 ]
 
 
