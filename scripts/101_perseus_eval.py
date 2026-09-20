@@ -29,7 +29,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
+from mammal_repurposing.provenance.trailer import stamp  # noqa: E402
 from mammal_repurposing.engine.perseus import (
     P_CANDIDATE, P_DEMONSTRATED, P_DISEASE_MOD, PerseusEngine, score_frame,
 )

@@ -24,7 +24,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
+from mammal_repurposing.provenance.trailer import stamp  # noqa: E402
 from mammal_repurposing.engine.persistence_dti import calibrate_target, load_panel
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")

@@ -18,7 +18,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
+from mammal_repurposing.provenance.trailer import stamp  # noqa: E402
 from mammal_repurposing.validation.persistence import (
     EVIDENCE_RANK, STATUS_TIER, annotate, load_persistence,
 )

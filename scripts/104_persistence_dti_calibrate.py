@@ -25,7 +25,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
+from mammal_repurposing.provenance.trailer import stamp  # noqa: E402
 from mammal_repurposing.engine.persistence_dti import (
     DEFAULT_MIN_AUROC, DEFAULT_MIN_POS, DEFAULT_PERM_P, calibrate_target, load_panel,
 )

@@ -23,7 +23,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
+from mammal_repurposing.provenance.trailer import stamp  # noqa: E402
 from mammal_repurposing.engine.free_exposure import (
     FreeExposureModel, PENETRATION_LOGBB, featurize, mondrian_quantiles, scaffold_split,
 )

@@ -402,3 +402,31 @@ def test_a_trailer_commit_does_not_certify_a_stale_report():
     mixed = trailer_only + substantive
     assert not _declaration_only(mixed), (
         "adding a trailer alongside a real edit must not make the real edit invisible")
+
+
+def test_the_trailer_module_stays_in_sync_with_the_gate():
+    """`trailer.stamp` deliberately duplicates the gate's trailer regex. This keeps them honest.
+
+    Generators call `stamp` at the write, which puts its module into every generator's transitive
+    import closure, and the gate computes staleness FROM that closure. Keeping `stamp` inside
+    `report_freshness` therefore made all 31 generated reports stale on every edit to the gate's own
+    logic, which is permanent noise that would train people to ignore the gate. So `stamp` lives in
+    `provenance.trailer`, which has exactly one reason to change.
+
+    The cost is a duplicated pattern. This test is the price of that, and it is cheap.
+    """
+    from mammal_repurposing.provenance.report_freshness import _TRAILER
+    from mammal_repurposing.provenance.trailer import _TRAILER_RE, stamp
+
+    assert _TRAILER.pattern == _TRAILER_RE.pattern, (
+        "provenance.trailer._TRAILER_RE has drifted from report_freshness._TRAILER. A report "
+        "stamped by one and read by the other would go invisible to the gate.")
+
+    # what stamp writes must be what the gate reads
+    out = stamp("# R\nbody", "scripts/x.py")
+    m = _TRAILER.search(out)
+    assert m and m.group(1) == "scripts/x.py"
+    out2 = stamp("# R\nbody", "scripts/x.py", "cluster_a/y.py")
+    m2 = _TRAILER.search(out2)
+    assert m2 and m2.group(1) == "scripts/x.py" and m2.group(2) == "cluster_a/y.py"
+    assert stamp(out, "scripts/other.py") == out, "stamp must be idempotent"

@@ -24,7 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
-from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
+from mammal_repurposing.provenance.trailer import stamp  # noqa: E402
 from mammal_repurposing.validation.ledger_scaling import (  # noqa: E402
     load_all_ledgers, scaling_trajectory, per_domain_separation,
     within_class_power_roadmap, research_sensitivity,

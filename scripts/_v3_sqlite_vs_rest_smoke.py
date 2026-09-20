@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
-from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
+from mammal_repurposing.provenance.trailer import stamp  # noqa: E402
 from mammal_repurposing.config import DTI_SCORES_PARQUET  # noqa: E402
 from mammal_repurposing.fetchers.chembl_groundtruth import lookup_pair  # noqa: E402
 from mammal_repurposing.fetchers.chembl_sqlite import lookup_pair_evidence  # noqa: E402

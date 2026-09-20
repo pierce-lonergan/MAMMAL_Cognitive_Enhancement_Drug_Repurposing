@@ -22,7 +22,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
+from mammal_repurposing.provenance.trailer import stamp  # noqa: E402
 from mammal_repurposing.reporting.trial_watch import load_combined_ledger
 from mammal_repurposing.validation.novel_compound import (
     MIN_CLASS_N, TAU_HIGH, TAU_MARGIN, TAU_OOD,

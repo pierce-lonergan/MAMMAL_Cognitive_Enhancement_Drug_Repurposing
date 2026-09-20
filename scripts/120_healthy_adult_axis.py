@@ -25,7 +25,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
+from mammal_repurposing.provenance.trailer import stamp  # noqa: E402
 from mammal_repurposing.validation.retrospective import auroc, permutation_p
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")

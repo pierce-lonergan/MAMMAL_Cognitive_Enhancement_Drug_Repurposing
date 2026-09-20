@@ -24,7 +24,7 @@ import logging
 import math
 from pathlib import Path
 
-from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
+from mammal_repurposing.provenance.trailer import stamp  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 L = logging.getLogger("kpuu_anchor_validation")

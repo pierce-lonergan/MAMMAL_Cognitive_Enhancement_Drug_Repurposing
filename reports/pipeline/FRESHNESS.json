@@ -266,6 +266,18 @@
       "verified_on": "2026-08-24",
       "evidence": "scripts/79_external_benchmark.py --report <tmp> reproduced the committed report byte for byte"
     },
+    "reports/pipeline/f2_catalogue_shortlist_v1.md::scripts/98_f2_catalogue_screen.py": {
+      "outcome": "reproduced",
+      "code_commit": "",
+      "verified_on": "2026-09-20",
+      "evidence": "scripts/98_f2_catalogue_screen.py --report <tmp> reproduced the committed report byte for byte"
+    },
+    "reports/pipeline/f2_catalogue_shortlist_v1.md::src/mammal_repurposing/provenance/trailer.py": {
+      "outcome": "reproduced",
+      "code_commit": "",
+      "verified_on": "2026-09-20",
+      "evidence": "scripts/98_f2_catalogue_screen.py --report <tmp> reproduced the committed report byte for byte"
+    },
     "reports/pipeline/hypothesis_audit_v1.md::scripts/41_v5_hypothesis_audit.py": {
       "outcome": "unverified",
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",

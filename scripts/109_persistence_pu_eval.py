@@ -16,7 +16,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
+from mammal_repurposing.provenance.trailer import stamp  # noqa: E402
 from mammal_repurposing.engine.perseus import PerseusEngine, score_frame
 from mammal_repurposing.validation.persistence_eval import VERDICT_DURABILITY
 from mammal_repurposing.validation.persistence_pu_eval import evaluate

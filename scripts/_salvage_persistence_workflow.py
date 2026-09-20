@@ -18,7 +18,7 @@ import re
 import sys
 from pathlib import Path
 
-from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
+from mammal_repurposing.provenance.trailer import stamp  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_JOURNAL = (Path.home() / ".claude" / "projects"

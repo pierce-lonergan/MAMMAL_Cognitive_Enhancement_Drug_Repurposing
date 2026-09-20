@@ -31,7 +31,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
-from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
+from mammal_repurposing.provenance.trailer import stamp  # noqa: E402
 from mammal_repurposing.validation.retrospective import load_clinical_ledger  # noqa: E402
 from mammal_repurposing.validation.within_class import (  # noqa: E402
     variance_decomposition, within_class_spearman, loco_within_class_mae,
