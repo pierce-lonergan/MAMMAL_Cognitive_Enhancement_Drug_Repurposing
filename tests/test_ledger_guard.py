@@ -144,3 +144,38 @@ def test_a_zero_label_is_not_automatically_a_refutation():
 
     # and these are WARNINGS: the ledger stays shippable while the overstatement is visible
     assert not any(x.severity == "error" for x in under + silent)
+
+
+def test_an_impairer_is_never_an_enhancer_however_tight_its_interval():
+    """2026-09-20. A near-miss, caught by a hunt that went looking for enhancers and found impairers.
+
+    The stated rule said "confidence interval excludes 0" and the variable was named
+    `excludes_zero`, while the code tested `ci_lo > 0`, which is "entirely ABOVE zero". The code was
+    right and both descriptions were wrong, which is the shape of defect someone later "fixes" into
+    a real bug.
+
+    It matters because the impairer rows are the ones actually available. A targeted seven-lane hunt
+    for new enhancers returned almost none, and returned instead scopolamine (g = -0.86, CI [-1.08,
+    -0.64], PMID 40197394), propranolol, both antihistamine generations, acute alcohol and alcohol
+    hangover. Every one of those intervals excludes zero. Under the literal old wording, scopolamine,
+    the canonical amnestic agent, would have entered as a labelled cognitive ENHANCER.
+    """
+    from mammal_repurposing.validation.ledger_guard import LEDGER_RULE_DOC
+
+    # scopolamine's real numbers: interval excludes zero, entirely BELOW it
+    impairer_as_null = validate_ledger(_base_row(
+        representative_g=-0.86, ci_lo=-1.08, ci_hi=-0.64, enhances_healthy_young=0,
+        robustness="impairment exposure; interval lies entirely below zero"))
+    assert not any(x.rule == "label_rule_conflict" for x in impairer_as_null), \
+        "an impairer labelled 0 is CORRECT and must not be flagged"
+
+    impairer_as_enhancer = validate_ledger(_base_row(
+        representative_g=-0.86, ci_lo=-1.08, ci_hi=-0.64, enhances_healthy_young=1))
+    conflicts = [x for x in impairer_as_enhancer if x.rule == "label_rule_conflict"]
+    assert conflicts and conflicts[0].severity == "error", (
+        "labelling an impairer as an enhancer must be an ERROR; an interval below zero is not "
+        "an enhancement however far it sits from zero")
+
+    # and the stated rule must say what the code does
+    assert "ENTIRELY ABOVE 0" in LEDGER_RULE_DOC and "ci_lo > 0" in LEDGER_RULE_DOC, \
+        "the documented rule must not read as 'excludes 0', which admits impairers"

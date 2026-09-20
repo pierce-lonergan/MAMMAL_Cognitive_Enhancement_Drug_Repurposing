@@ -488,6 +488,58 @@ CURATED = [
         revival_test="Only relevant once the ledger can adjudicate predictions at all.",
         status="DEAD",
     ),
+    dict(
+        hypothesis_id="H-grow-the-positives",
+        claim="The ledger's binding constraint can be relieved by curation: a targeted search will "
+              "find enough additional healthy-adult ENHANCERS to raise the primary set from 6 "
+              "positives toward the ~11 that would make a good ranker detectable.",
+        domain="G1 / curation strategy",
+        verdict="REFUTED", died_on="2026-09-20",
+        killed_by="seven-lane targeted positive hunt; "
+                  "data/raw/provenance/positive_hunt_2026-09.json",
+        evidence="ZERO verified new enhancers. Seven mechanism classes not already covered were "
+                 "searched with the explicit goal of finding positives: cholinesterase inhibitors, "
+                 "noradrenergic, histaminergic/orexinergic, hormonal/metabolic, "
+                 "glutamatergic/GABAergic, micronutrient/diet, and peptides. Four lanes returned "
+                 "'ZERO enhancer positives' explicitly; two more were 'barren'. Of 20 candidates "
+                 "and 12 completed adversarial verifications, 9 were CONFIRMED and EVERY ONE was "
+                 "an IMPAIRMENT exposure: scopolamine (g = -0.86), propranolol, both antihistamine "
+                 "generations, acute alcohol, alcohol hangover. Propranolol returned "
+                 "REJECT_MISDESCRIBED specifically because proposing it as a positive inverts its "
+                 "direction. Most striking single absence: NO clean healthy-adult meta-analysis "
+                 "with a positive pooled cognitive effect exists for donepezil, galantamine, "
+                 "rivastigmine, physostigmine or huperzine, despite donepezil being the basis of "
+                 "this project's entire assay-dependence finding.",
+        failure_mode="measured_null",
+        keystone="", keystone_predicate="", revival_test="",
+        status="PERMANENTLY_CLOSED",
+    ),
+    dict(
+        hypothesis_id="H-positives-exist-below-MA-level",
+        claim="Healthy-adult cognitive ENHANCERS exist that the meta-analytic literature has not "
+              "yet pooled, and are reachable by curating primary trials rather than reviews.",
+        domain="G1 / curation strategy",
+        verdict="ABSTAINED", died_on="2026-09-20",
+        killed_by="not tested; opened by the failure of H-grow-the-positives",
+        evidence="NOT TESTED, and it is the live successor question. The hunt that failed searched "
+                 "at the META-ANALYSIS level, because that is what the ledger's inclusion rule "
+                 "names. Its failure therefore establishes that the POOLED literature is close to "
+                 "exhausted for this outcome, not that no enhancer exists. Whether primary-trial "
+                 "curation could find positives the reviews have not pooled is open, and it is the "
+                 "only remaining route to relieving G1 by curation. Measured context: a positive is "
+                 "worth about 4.6% power per row against 0.11% for a null, so this question is "
+                 "worth more than any amount of null-gathering.",
+        failure_mode="underpowered",
+        keystone="Nobody has searched primary trials under this ledger's inclusion rule. Doing so "
+                 "requires a pre-registered rubric written BEFORE the rows are read, because this "
+                 "week one mis-tiered row moved the headline from p = 0.0456 to p = 0.0562 and the "
+                 "ledger is demonstrably one-row-sensitive.",
+        keystone_predicate="ledger_rows_at_least(healthy_adult_cognition_ledger.csv, 70)",
+        revival_test="Pre-register the two-tier rubric (acute on-drug versus durable post-washout), "
+                     "then curate primary healthy-adult trials and re-run scripts/131. The test is "
+                     "whether the POSITIVE count moves, not the row count.",
+        status="DEAD",
+    ),
 ]
 
 

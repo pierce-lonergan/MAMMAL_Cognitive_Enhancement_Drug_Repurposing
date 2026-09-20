@@ -1,0 +1,26 @@
+{
+  "date": "2026-09-20",
+  "purpose": "targeted hunt for POSITIVES across seven mechanism classes not yet covered, motivated by the measured finding that a positive is worth about 4x a null",
+  "result": "ZERO verified new enhancers. Every CONFIRMED candidate was an impairment exposure.",
+  "lanes_and_verdicts": {
+    "cholinesterase_inhibitors": "ZERO qualifying enhancer positives. No clean healthy-adult meta-analysis with a positive pooled cognitive effect exists for donepezil, galantamine, rivastigmine, physostigmine or huperzine. The absence is the finding.",
+    "noradrenergic": "one qualifying meta-analysis, and it is an impairer (propranolol). The verifier returned REJECT_MISDESCRIBED on proposing it as a positive.",
+    "histaminergic_orexinergic": "ZERO enhancer positives; the one qualifying pooled estimate runs in the impairment direction.",
+    "hormonal_metabolic": "close to barren across DHEA, GH/IGF-1, thyroid, glucocorticoids, EPO, metformin, statins, GLP-1 agonists, NR/NMN.",
+    "glutamatergic_gabaergic": "ZERO enhancers. Every readable pooled estimate points to impairment, which is mechanistically expected for NMDA antagonists, GABA-A PAMs and ethanol.",
+    "micronutrient_and_diet": "mostly barren; the single-micronutrient story is a wall of nulls.",
+    "peptides_and_misc": "no qualifying clean-healthy positive survived verification."
+  },
+  "added": [
+    "scopolamine"
+  ],
+  "skipped_already_present": [],
+  "rejected": {
+    "propranolol": "REJECT_MISDESCRIBED: proposing it as a POSITIVE inverts its direction",
+    "major_dietary_patterns": "REJECT_MISDESCRIBED",
+    "soy_isoflavones": "UNCERTAIN on both attempts; population never stated in a readable source",
+    "carotenoids/mediterranean_diet/probiotics/iron": "unverified; verification budget exhausted",
+    "second_generation_antihistamines": "CONFIRMED but omitted: same WMD-not-SMD metric problem as the first-generation row, and a second near-null impairer adds nothing measurable",
+    "first_generation_antihistamines": "CONFIRMED by verification, but REMOVED after adding: the source reports a weighted mean difference in raw test units, not a standardised effect size, so representative_g had to be left null. ledger_guard then raised missing_effect_size, correctly: a row claiming clean_MA evidence must carry an effect size. Converting WMD to SMD without the source's own pooled SD would have manufactured the number. The guard was obeyed rather than weakened; the row is worth about +0.11% power per row in any case."
+  }
+}

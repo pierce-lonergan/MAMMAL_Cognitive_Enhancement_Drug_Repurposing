@@ -22,7 +22,8 @@ import pandas as pd
 
 LEDGER_RULE_DOC = (
     "enhances_healthy_young = 1 iff a CLEAN healthy-adult meta-analysis reports a pooled effect "
-    "whose confidence interval excludes 0 in a cognitive domain. Any row whose label departs from "
+    "whose confidence interval lies ENTIRELY ABOVE 0 in a cognitive domain, that is ci_lo > 0. Any "
+    "row whose label departs from "
     "this rule MUST carry an explicit justification in `robustness` (e.g. only one sub-domain "
     "significant), so the departure is a recorded judgement rather than an invisible one."
 )
@@ -169,13 +170,25 @@ def validate_ledger(df: pd.DataFrame) -> list[Violation]:
 
         # --- THE inclusion rule ----------------------------------------------------------------
         if tier == "clean_MA" and _has_ci(r) and pd.notna(r.get("enhances_healthy_young")):
-            excludes_zero = bool(r["ci_lo"] > 0)
+            # NOT "excludes zero". ENTIRELY ABOVE zero. The distinction is the whole rule, and the
+            # earlier name `excludes_zero` described the wrong test while the code did the right
+            # one, which is the shape of defect that gets "fixed" into a real bug later.
+            #
+            # A targeted hunt on 2026-09-20 made the risk concrete. Every mechanism lane it searched
+            # for new ENHANCERS came back with impairers instead: scopolamine at Hedges g = -0.86,
+            # CI [-1.08, -0.64] (PMID 40197394), propranolol, first- and second-generation
+            # antihistamines, acute alcohol and alcohol hangover. Every one of those intervals
+            # EXCLUDES zero. Under a literal reading of the old wording, scopolamine, the canonical
+            # amnestic agent, would enter this ledger as a labelled cognitive ENHANCER and invert
+            # the training signal.
+            entirely_above_zero = bool(r["ci_lo"] > 0)
             label = bool(r["enhances_healthy_young"] == 1)
-            if excludes_zero != label:
+            if entirely_above_zero != label:
                 justified = len(str(r.get("robustness") or "").strip()) >= 20
                 v.append(Violation(
                     c, "warn" if justified else "error", "label_rule_conflict",
-                    f"CI [{r['ci_lo']:+.2f}, {r['ci_hi']:+.2f}] excludes_zero={excludes_zero} but "
+                    f"CI [{r['ci_lo']:+.2f}, {r['ci_hi']:+.2f}] entirely_above_zero="
+                    f"{entirely_above_zero} but "
                     f"label={int(label)}. {LEDGER_RULE_DOC} "
                     + ("A justification IS recorded in `robustness`, so this is a recorded judgement "
                        "-- but the headline's sensitivity to it must be reported (see scripts/121)."
