@@ -24,7 +24,7 @@ The positive persistence class is near-empty, so the honest first deliverable is
 | donepezil | reversible_enhancer | PASS | NULL_SYMPTOMATIC | transient | AChE inhibitor; symptomatic, lost on discontinuation |
 | galantamine | reversible_enhancer | PASS | NULL_SYMPTOMATIC | transient | AChE inhibitor / nicotinic PAM; symptomatic |
 | rivastigmine | reversible_enhancer | PASS | NULL_SYMPTOMATIC | transient | AChE/BuChE inhibitor; symptomatic |
-| memantine | reversible_enhancer | PASS | NULL_SYMPTOMATIC | transient | NMDA modulator; symptomatic |
+| memantine | reversible_enhancer | PASS | TESTED_NEGATIVE | transient | NMDA modulator; symptomatic |
 | caffeine | reversible_enhancer | ABSTAIN | ABSTAIN | transient | adenosine antagonist; reversible alertness |
 
 ## Interpretation

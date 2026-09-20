@@ -21,6 +21,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.engine.perseus import PerseusEngine, score_frame
 from mammal_repurposing.validation.persistence_eval import sensitivity
 
@@ -142,7 +143,8 @@ def main() -> int:
            "honest off-axis limitation. Recall here is sensitivity on the serotonergic "
            "psychoplastogen class; the rigorous Jeffreys CI + PPV-vs-prior is in "
            "scripts/109_persistence_pu_eval.py.", ""]
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls),
+                            "scripts/107_perseus_sensitivity.py"), encoding="utf-8")
     L.info("Wrote %s", REPORT)
     L.info("SENSITIVITY: %d/%d = %.2f flagged; by domain %s",
            s["n_flagged"], s["n"], s["sensitivity"] if s["n"] else float("nan"), s["by_domain"])

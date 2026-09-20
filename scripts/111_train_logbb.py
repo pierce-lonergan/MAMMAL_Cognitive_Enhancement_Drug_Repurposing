@@ -23,6 +23,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.engine.free_exposure import (
     FreeExposureModel, PENETRATION_LOGBB, featurize, mondrian_quantiles, scaffold_split,
 )
@@ -288,7 +289,7 @@ def write_report(fem_r, cov_r, pcov_r, conf_r, cats_r,
            "applicability domain or the band straddles the threshold. Wired into "
            "`engine/cns_exposure.py` as an efflux-aware refinement of the passive-penetration "
            "verdict.", ""]
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls), "scripts/111_train_logbb.py"), encoding="utf-8")
     L.info("Wrote %s", REPORT)
 
 

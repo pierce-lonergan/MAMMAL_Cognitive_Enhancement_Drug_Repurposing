@@ -2,7 +2,7 @@
 
 Scored the cited persistence ground-truth ledger (`data/raw/persistence_ground_truth.csv`) - compounds with a real persistence-DESIGN readout - through PERSEUS and compared each verdict to the trial-design label. Reproduced by `scripts/102_persistence_groundtruth_eval.py`.
 
-Scoreable ground-truth compounds: **14** (+2 non-structure mAbs recorded but not scored; 0 missing SMILES).
+Scoreable ground-truth compounds: **14** (+2 non-structure mAbs recorded but not scored; 4 missing SMILES).
 
 ## Over-claim rate: **0 / 14** (the directional error - asserting more durability than the label supports)
 

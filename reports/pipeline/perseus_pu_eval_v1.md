@@ -2,7 +2,7 @@
 
 Bidirectional small-sample metrics on the verified positive ledger + negative-control panel, using Jeffreys intervals (not Wald) and a PPV-vs-prior curve. Reproduced by `scripts/109_persistence_pu_eval.py`.
 
-## Sensitivity (recall): **0.50** (Jeffreys 95% CI 0.27-0.73), 8/16 verified positives flagged (durability verdict >= 1).
+## Sensitivity (recall): **0.06** (Jeffreys 95% CI 0.01-0.26), 1/16 verified positives flagged (durability verdict >= 1).
 
 ## FPR (negative controls): **0.00** (Jeffreys 95% CI 0.00-0.15), 0/15.
 
@@ -10,10 +10,10 @@ Bidirectional small-sample metrics on the verified positive ledger + negative-co
 
 | prior pi | PPV @ point FPR | PPV @ Jeffreys-upper FPR |
 |---|---|---|
-| 0.005 | 1.00 | 0.02 |
-| 0.010 | 1.00 | 0.03 |
-| 0.020 | 1.00 | 0.06 |
-| 0.030 | 1.00 | 0.09 |
+| 0.005 | 1.00 | 0.00 |
+| 0.010 | 1.00 | 0.00 |
+| 0.020 | 1.00 | 0.01 |
+| 0.030 | 1.00 | 0.01 |
 
 ## Caveats (load-bearing)
 

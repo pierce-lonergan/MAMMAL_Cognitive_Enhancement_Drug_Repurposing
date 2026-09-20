@@ -25,6 +25,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.engine.persistence_dti import (
     calibrate_target, load_panel, mw_baseline, mw_residualize,
 )
@@ -122,7 +123,7 @@ def write_report(rows, rescued, survived) -> None:
                   "the size line beyond the non-engager weight range (treat with caution; the "
                   "BH3-mimetics are far larger than the negatives).")
     Ls.append("")
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls), "scripts/106_persistence_dti_mwresidual.py"), encoding="utf-8")
     L.info("Wrote %s", REPORT)
 
 

@@ -13,6 +13,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.engine.perseus import PerseusEngine, score_frame
 from mammal_repurposing.validation.persistence_eval import VERDICT_DURABILITY
 from mammal_repurposing.validation.persistence_pu_eval import (
@@ -83,7 +84,7 @@ def main() -> int:
            "prior-reweighted confusion. The honest headline: even at the engine's measured FPR, "
            "a ~1% deployment base rate caps PPV (the rare-event trap), so PERSEUS's value is "
            "abstention + specificity + mechanism-resolved recall, not a high deployment PPV.", ""]
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls), "scripts/113_persistence_lomo_transport.py"), encoding="utf-8")
     L.info("Wrote %s", REPORT)
     L.info("LOMO+transport: recall %.2f (%d/%d); covered=%s; FPR %.2f(upper %.2f)",
            rec["recall"], n_flagged, len(recs), g["covered_mechanisms"], fpr["fpr"], fpr["hi"])

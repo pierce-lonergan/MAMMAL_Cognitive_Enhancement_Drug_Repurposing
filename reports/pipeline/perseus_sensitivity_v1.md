@@ -2,32 +2,32 @@
 
 First recall measurement for PERSEUS, enabled by a non-empty verified-positive ledger (`data/raw/persistence_positive_ledger.csv`; psychedelics / dissociatives / psychoplastogens / neurotrophics with cited durable post-cessation effects). A positive is FLAGGED if PERSEUS asserts any durability (not null/abstain/excluded). Reproduced by `scripts/107_perseus_sensitivity.py`.
 
-## Recall: **10 / 16** = 0.62   (+1 verified positives had no resolvable SMILES)
+## Recall: **1 / 16** = 0.06   (+1 verified positives had no resolvable SMILES)
 
 Per domain:
 
-- cognition: 1/2 flagged
-- mood: 3/8 flagged
-- neuroplasticity: 6/6 flagged
+- cognition: 0/2 flagged
+- mood: 1/8 flagged
+- neuroplasticity: 0/6 flagged
 
 | compound | class | domain | PERSEUS verdict | flagged? |
 |---|---|---|---|---|
+| Ibogaine (with magnesium; noribogaine active metabolite) | ? | cognition | ABSTAIN | no |
+| Mescaline (3,4,5-trimethoxyphenethylamine) | ? | mood | ABSTAIN | no |
 | NSI-189 (NSI-189 phosphate) | ? | mood | ABSTAIN | no |
 | Nitrous oxide (N2O) | ? | mood | ABSTAIN | no |
 | Scopolamine | ? | mood | ABSTAIN | no |
+| Zalsupindole (AAZ-A-154 / DLX-001) | ? | mood | ABSTAIN | no |
 | Zuranolone (SAGE-217); claim also names allopregnanolone/brexanolone but the cited trial is zuranolone-specific | ? | mood | ABSTAIN | no |
+| 5-MeO-DMT (5-methoxy-N,N-dimethyltryptamine) | ? | neuroplasticity | ABSTAIN | no |
+| DOI (2,5-dimethoxy-4-iodoamphetamine) | ? | neuroplasticity | ABSTAIN | no |
+| LSD (lysergic acid diethylamide) | ? | neuroplasticity | ABSTAIN | no |
+| N,N-DMT (N,N-dimethyltryptamine) | ? | neuroplasticity | ABSTAIN | no |
+| Psilocybin (psilocin) | ? | neuroplasticity | ABSTAIN | no |
+| Tabernanthalog (TBG) | ? | neuroplasticity | ABSTAIN | no |
 | MDMA | ? | mood | ABSTAIN | no |
 | 7,8-dihydroxyflavone (7,8-DHF) | ? | cognition | ABSTAIN | no |
-| Ibogaine (with magnesium; noribogaine active metabolite) | ? | cognition | WINDOW_CONDITIONAL | yes |
-| Mescaline (3,4,5-trimethoxyphenethylamine) | ? | mood | WINDOW_CONDITIONAL | yes |
 | R-ketamine (arketamine) | ? | mood | WINDOW_CONDITIONAL | yes |
-| Zalsupindole (AAZ-A-154 / DLX-001) | ? | mood | WINDOW_CONDITIONAL | yes |
-| 5-MeO-DMT (5-methoxy-N,N-dimethyltryptamine) | ? | neuroplasticity | WINDOW_CONDITIONAL | yes |
-| DOI (2,5-dimethoxy-4-iodoamphetamine) | ? | neuroplasticity | WINDOW_CONDITIONAL | yes |
-| LSD (lysergic acid diethylamide) | ? | neuroplasticity | WINDOW_CONDITIONAL | yes |
-| N,N-DMT (N,N-dimethyltryptamine) | ? | neuroplasticity | WINDOW_CONDITIONAL | yes |
-| Psilocybin (psilocin) | ? | neuroplasticity | WINDOW_CONDITIONAL | yes |
-| Tabernanthalog (TBG) | ? | neuroplasticity | WINDOW_CONDITIONAL | yes |
 
 ## Reading
 

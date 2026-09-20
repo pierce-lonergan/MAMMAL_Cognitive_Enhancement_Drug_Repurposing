@@ -18,6 +18,8 @@ import re
 import sys
 from pathlib import Path
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_JOURNAL = (Path.home() / ".claude" / "projects"
                    / "C--Users-Pierce-Lonergan--claude-worktrees-momentum-x-fervent-ellis"
@@ -121,7 +123,8 @@ def main() -> int:
             _clean(v.get("persistence_design"))[:32], _clean(v.get("durability"))[:24],
             v.get("confidence", "?"), _clean(v.get("pmid_or_doi"))[:24],
             _clean(v.get("persistence_finding"))[:90]]) + " |")
-    RAW_MD.write_text("\n".join(Ls), encoding="utf-8")
+    RAW_MD.write_text(stamp("\n".join(Ls),
+                            "scripts/_salvage_persistence_workflow.py"), encoding="utf-8")
     print(f"Wrote {RAW_MD}")
 
     # --- gap reports ---
@@ -135,7 +138,8 @@ def main() -> int:
               f"**ROI:** {_clean(g.get('roi_rationale'))}", "",
               "**Datasets/methods:** " + "; ".join(_clean(x) for x in g.get("datasets_or_methods", [])), "",
               "**Citations:** " + "; ".join(_clean(x) for x in g.get("citations", [])), "", "---", ""]
-    GAPS_MD.write_text("\n".join(G), encoding="utf-8")
+    GAPS_MD.write_text(stamp("\n".join(G),
+                             "scripts/_salvage_persistence_workflow.py"), encoding="utf-8")
     print(f"Wrote {GAPS_MD} ({len(gaps)} gap reports)")
     return 0
 

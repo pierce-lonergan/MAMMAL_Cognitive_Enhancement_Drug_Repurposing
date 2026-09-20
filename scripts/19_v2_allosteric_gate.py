@@ -33,6 +33,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.config import RESULTS_DIR, ensure_dirs  # noqa: E402
 
 logging.basicConfig(level=logging.INFO,
@@ -204,7 +205,7 @@ def main() -> int:
     # --- Summary ---
     lines.insert(2, f"**Allosteric targets passing gate**: {n_targets_pass}/{n_targets_checked}\n")
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text("\n".join(lines), encoding="utf-8")
+    args.out.write_text(stamp("\n".join(lines), "scripts/19_v2_allosteric_gate.py"), encoding="utf-8")
     logger.info("Wrote %s. Allosteric pass: %d/%d. Pos-ctrl fails: %d",
                 args.out, n_targets_pass, n_targets_checked, len(pos_fail))
 

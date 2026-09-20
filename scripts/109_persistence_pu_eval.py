@@ -16,6 +16,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.engine.perseus import PerseusEngine, score_frame
 from mammal_repurposing.validation.persistence_eval import VERDICT_DURABILITY
 from mammal_repurposing.validation.persistence_pu_eval import evaluate
@@ -82,7 +83,7 @@ def main() -> int:
            "- 'Flagged' counts WINDOW_CONDITIONAL (a permissive plasticity window) as durability "
            ">= 1; recall is therefore recall on the SEROTONERGIC-psychoplastogen sub-class the L4 "
            "window covers, not on every durable mechanism (NMDA/TrkB-TMD/GABA-A are off-channel).", ""]
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls), "scripts/109_persistence_pu_eval.py"), encoding="utf-8")
     L.info("Wrote %s", REPORT)
     L.info("PU-eval: recall %.2f (%.2f-%.2f) %d/%d | FPR %.2f (%.2f-%.2f) %d/%d",
            rec["recall"], rec["lo"], rec["hi"], n_flagged, n_pos,

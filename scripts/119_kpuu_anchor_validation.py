@@ -24,6 +24,8 @@ import logging
 import math
 from pathlib import Path
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
+
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 L = logging.getLogger("kpuu_anchor_validation")
 ROOT = Path(__file__).resolve().parents[1]
@@ -101,7 +103,7 @@ def write_report(rows, rho, rho_log, agree, n) -> None:
     Ls += ["", "Source of measured Kp,uu: Wu et al. 2024, Heliyon e24304 (PMC10828645), SI Tables "
            "S4/S5; values are facts of public marketed drugs, cited, not a redistribution of the "
            "CC-BY-NC-ND compiled table. SMILES independently from PubChem.", ""]
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls), "scripts/119_kpuu_anchor_validation.py"), encoding="utf-8")
     L.info("Wrote %s", REPORT)
 
 

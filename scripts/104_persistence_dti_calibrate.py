@@ -25,6 +25,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.engine.persistence_dti import (
     DEFAULT_MIN_AUROC, DEFAULT_MIN_POS, DEFAULT_PERM_P, calibrate_target, load_panel,
 )
@@ -181,7 +182,7 @@ def write_report(panel, per_target, summary) -> None:
                   "so an un-calibrated channel is ignored at inference, not trusted.")
     Ls += ["", "Calibration is consumed by `engine/persistence_dti.py:substrate_hypothesis` "
            "(`data/results/persistence_dti_calibration.json`).", ""]
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls), "scripts/104_persistence_dti_calibrate.py"), encoding="utf-8")
     L.info("Wrote %s", REPORT)
 
 

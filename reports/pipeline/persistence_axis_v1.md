@@ -16,6 +16,7 @@ The F2 shortlist scores only the SYMPTOMATIC class prior: predicted g = +0.40 / 
 
 - 7. `delayed_start_rct`
 - 6. `randomized_discontinuation`
+- 5. `paired_training_washout_retest`
 - 5. `longitudinal_followup`
 - 4. `washout_observation`
 - 3. `preclinical_only`

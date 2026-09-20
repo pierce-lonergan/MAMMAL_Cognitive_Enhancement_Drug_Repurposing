@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.analysis.allosteric_audit import audit, render_markdown  # noqa: E402
 from mammal_repurposing.config import DTI_SCORES_PARQUET, ensure_dirs  # noqa: E402
 
@@ -47,7 +48,7 @@ def main() -> int:
     rows = audit(scores)
     md = render_markdown(rows)
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(md, encoding="utf-8")
+    args.out.write_text(stamp(md, "scripts/11_allosteric_audit.py"), encoding="utf-8")
     logger.info("Wrote allosteric audit to %s. %d target-rows; %d pass.",
                 args.out, len(rows), sum(1 for r in rows if r.allosteric_passes))
     return 0

@@ -24,6 +24,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.engine.persistence_dti import calibrate_target, load_panel
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
@@ -109,7 +110,7 @@ def write_report(df, per_site, n_neg) -> None:
            "lipid bilayer (Casarotto 2021; Cordeiro 2024), which a single-chain apo prediction "
            "cannot represent. The TrkB-TMD durability channel is therefore a documented "
            "off-axis limit, not a buildable DTI head.", ""]
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls), "scripts/112_trkb_tmd_sitesplit.py"), encoding="utf-8")
     L.info("Wrote %s", REPORT)
 
 

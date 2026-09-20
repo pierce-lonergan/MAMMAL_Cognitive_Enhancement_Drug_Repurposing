@@ -17,6 +17,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.engine.perseus import PerseusEngine, score_frame
 from mammal_repurposing.validation.persistence import EVIDENCE_RANK
 from mammal_repurposing.validation.persistence_eval import (
@@ -101,7 +102,7 @@ def main() -> int:
               "and PPV are not yet identifiable - this budget is the honest deliverable, not a "
               "hidden gap.")
     Ls.append("")
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls), "scripts/102_persistence_groundtruth_eval.py"), encoding="utf-8")
     L.info("Wrote %s", REPORT)
     L.info("ground-truth eval: %d/%d over-claims; %d scoreable; label budget ~%d positives",
            ev["n_over_claims"], ev["n"], len(scored), budget)

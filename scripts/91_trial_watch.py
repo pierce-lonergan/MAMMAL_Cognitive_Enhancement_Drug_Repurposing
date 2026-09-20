@@ -24,6 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.reporting.trial_watch import (  # noqa: E402
     load_combined_ledger, class_success_table, build_registry, score_registry,
 )
@@ -152,7 +153,7 @@ def main() -> int:
 
     out = ROOT / "reports" / "pipeline" / "trial_watch_v1.md"
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text("\n".join(L), encoding="utf-8")
+    out.write_text(stamp("\n".join(L), "scripts/91_trial_watch.py"), encoding="utf-8")
     logger.info("wrote report: %s", out)
 
     # console summary

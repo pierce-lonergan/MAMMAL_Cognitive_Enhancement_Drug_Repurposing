@@ -19,6 +19,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.engine.perseus import PerseusEngine, score_frame
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
@@ -190,7 +191,7 @@ def main() -> int:
               "mechanistic persistence hypotheses. Every non-null call carries its "
               "mechanism substrate and evidence tier, and the engine abstains by default.")
     Ls.append("")
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls), "scripts/100_perseus.py"), encoding="utf-8")
     L.info("Wrote %s and %s", REPORT, OUT_CSV)
     L.info("PERSEUS: control panel %d/%d ok; shortlist persistence verdicts %s",
            n_ok, len(ctrl_scored), pv)

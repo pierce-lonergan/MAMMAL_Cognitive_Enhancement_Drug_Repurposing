@@ -18,6 +18,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.validation.persistence import (
     EVIDENCE_RANK, STATUS_TIER, annotate, load_persistence,
 )
@@ -171,7 +172,7 @@ def main() -> int:
               "agent. Enriched shortlist: `reports/pipeline/f2_catalogue_shortlist_persistence.csv`.")
     Ls.append("")
 
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls), "scripts/99_persistence_axis.py"), encoding="utf-8")
     L.info("Wrote %s and %s", REPORT, OUT_CSV)
     L.info("persistence: %d shortlist -> tiers %s", len(ann), tier_counts)
     return 0

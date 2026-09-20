@@ -25,6 +25,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.validation.retrospective import auroc, permutation_p
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
@@ -198,7 +199,7 @@ def write_report(prim, n, n_enh, enh, ceiling, best_domain, au_stim, p_stim, au_
            "healthy-adult meta-analysis is itself load-bearing ground truth. n is small (the field's "
            "real clean evidence base is small); results are descriptive contrasts, not a fitted "
            "model.", ""]
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls), "scripts/120_healthy_adult_axis.py"), encoding="utf-8")
     L.info("Wrote %s", REPORT)
 
 

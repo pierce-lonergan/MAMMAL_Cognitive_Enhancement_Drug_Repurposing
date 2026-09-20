@@ -29,6 +29,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.engine.perseus import (
     P_CANDIDATE, P_DEMONSTRATED, P_DISEASE_MOD, PerseusEngine, score_frame,
 )
@@ -132,7 +133,7 @@ def main() -> int:
               "until then PERSEUS is a calibrated guardrail with demonstrated specificity, "
               "not a validated bidirectional predictor.")
     Ls.append("")
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls), "scripts/101_perseus_eval.py"), encoding="utf-8")
     L.info("Wrote %s and %s", REPORT, NEG_CSV)
     L.info("PERSEUS eval: %d/%d persistence false positives (specificity %.3f) over %d negatives",
            fp, n, 1 - fp / n, n)

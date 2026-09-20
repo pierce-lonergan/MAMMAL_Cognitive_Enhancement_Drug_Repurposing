@@ -26,6 +26,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.reporting.trial_watch import _norm_drug, load_combined_ledger
 from mammal_repurposing.validation.novel_compound import (
     MIN_CLASS_N, build_class_priors, build_exemplars, score_catalogue,
@@ -147,7 +148,7 @@ def main() -> int:
               "structure-grounded surface for triage.")
     Ls.append("")
 
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls), "scripts/98_f2_catalogue_screen.py"), encoding="utf-8")
     L.info("Wrote %s and %s", REPORT, SHORTLIST)
     L.info("F2 capstone: %d screened -> %d routed -> %d shortlist hypotheses across %d classes",
            len(cat_novel), n_routed, len(short), len(by_class))

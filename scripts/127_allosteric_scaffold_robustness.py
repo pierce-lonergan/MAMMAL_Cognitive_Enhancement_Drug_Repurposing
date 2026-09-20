@@ -35,6 +35,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
@@ -688,7 +690,7 @@ def render_report(path: Path, *, counts, gates, surviving, dropped, n_eval_rows,
              "Nothing generated or synthesised.")
     L.append("")
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("\n".join(L), encoding="utf-8")
+    path.write_text(stamp("\n".join(L), "scripts/127_allosteric_scaffold_robustness.py"), encoding="utf-8")
 
 
 def main() -> int:

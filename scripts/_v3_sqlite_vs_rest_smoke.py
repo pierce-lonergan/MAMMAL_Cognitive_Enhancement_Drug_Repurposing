@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.config import DTI_SCORES_PARQUET  # noqa: E402
 from mammal_repurposing.fetchers.chembl_groundtruth import lookup_pair  # noqa: E402
 from mammal_repurposing.fetchers.chembl_sqlite import lookup_pair_evidence  # noqa: E402
@@ -140,7 +141,8 @@ def main() -> int:
     md.append("")
     md.append(f"**Result: {'PASS' if n_agree == n_total - n_err else 'FAIL'}** "
               f"(n_agree={n_agree}, n_total={n_total}, n_err={n_err})")
-    (report_dir / "sqlite_vs_rest_smoke.md").write_text("\n".join(md), encoding="utf-8")
+    (report_dir / "sqlite_vs_rest_smoke.md").write_text(
+        stamp("\n".join(md), "scripts/_v3_sqlite_vs_rest_smoke.py"), encoding="utf-8")
     logger.info("Wrote %s", report_dir / "sqlite_vs_rest_smoke.md")
 
     return 0 if n_agree == n_total - n_err else 2

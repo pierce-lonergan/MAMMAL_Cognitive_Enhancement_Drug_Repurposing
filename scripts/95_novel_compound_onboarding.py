@@ -22,6 +22,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.reporting.trial_watch import load_combined_ledger
 from mammal_repurposing.validation.novel_compound import (
     MIN_CLASS_N, TAU_HIGH, TAU_MARGIN, TAU_OOD,
@@ -181,7 +182,7 @@ def main() -> int:
     Ls.append("")
 
     REPORT.parent.mkdir(parents=True, exist_ok=True)
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls), "scripts/95_novel_compound_onboarding.py"), encoding="utf-8")
     L.info("Wrote %s", REPORT)
     if len(scored):
         L.info("Wrote %s", SCORED)

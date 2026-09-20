@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.analysis.benchmark import analyze_benchmark, render_markdown  # noqa: E402
 from mammal_repurposing.config import (  # noqa: E402
     RAW_DIR,
@@ -102,7 +103,7 @@ def main() -> int:
     rows_ana = analyze_benchmark(out)
     md = render_markdown(rows_ana)
     args.report_out.parent.mkdir(parents=True, exist_ok=True)
-    args.report_out.write_text(md, encoding="utf-8")
+    args.report_out.write_text(stamp(md, "scripts/12_allosteric_benchmark.py"), encoding="utf-8")
     logger.info("Wrote benchmark report to %s.", args.report_out)
     return 0
 

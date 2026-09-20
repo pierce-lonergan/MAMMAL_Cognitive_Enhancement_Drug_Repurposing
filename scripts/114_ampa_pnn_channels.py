@@ -21,6 +21,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.engine.persistence_dti import calibrate_target
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
@@ -111,7 +112,7 @@ def write_report(df, results) -> None:
            "remodeling are confirmed OFF the sequence-DTI axis, consistent with routing "
            "plasticity through the L4 permeability window and reserving these tiers for a "
            "structure/allosteric-aware second opinion.", ""]
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls), "scripts/114_ampa_pnn_channels.py"), encoding="utf-8")
     L.info("Wrote %s", REPORT)
 
 

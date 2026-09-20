@@ -17,6 +17,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
+
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 L = logging.getLogger("l4_decoy_scan")
 ROOT = Path(__file__).resolve().parents[1]
@@ -156,7 +158,7 @@ def write_report(df, dec, pos, fps, fns, fpr, recall) -> None:
            "deliberately blind to NON-serotonergic durable-plasticity classes (NMDA/dissociative, "
            "GABA-A neurosteroid, muscarinic) - that is a scope boundary, not a precision failure, "
            "and is the subject of the separate L4b research lane.", ""]
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls), "scripts/117_window_decoy_scan.py"), encoding="utf-8")
     L.info("Wrote %s and %s", OUT_CSV, REPORT)
 
 

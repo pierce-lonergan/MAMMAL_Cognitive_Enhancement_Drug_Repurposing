@@ -23,6 +23,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.engine.persistence_dti import (
     load_calibration, load_panel, score_compound_against_panel, substrate_hypothesis,
 )
@@ -111,7 +112,7 @@ def write_report(out, durable, ablative_hits, flav_false, nonpersist_false) -> N
            "(the `abstained` column) - the engine refuses to trust a channel MAMMAL cannot "
            "route. This is the structure-computable persistence prior the design doc deferred, "
            "now gated on measured per-target calibration.", ""]
-    REPORT.write_text("\n".join(Ls), encoding="utf-8")
+    REPORT.write_text(stamp("\n".join(Ls), "scripts/105_persistence_dti_demo.py"), encoding="utf-8")
     L.info("Wrote %s", REPORT)
 
 

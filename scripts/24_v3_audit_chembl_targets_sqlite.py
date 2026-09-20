@@ -27,6 +27,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
+from mammal_repurposing.provenance.report_freshness import stamp  # noqa: E402
 from mammal_repurposing.config import (  # noqa: E402
     COMPOUNDS_PARQUET,
     HTTP_TIMEOUT_SEC,
@@ -172,7 +173,7 @@ def main() -> int:
     header.append("")
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text("\n".join(header + sections), encoding="utf-8")
+    args.out.write_text(stamp("\n".join(header + sections), "scripts/24_v3_audit_chembl_targets_sqlite.py"), encoding="utf-8")
     logger.info("Wrote %s. Status counts: %s",
                 args.out, sdf["status"].value_counts().to_dict())
     return 0
