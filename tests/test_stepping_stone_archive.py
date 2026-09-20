@@ -232,3 +232,54 @@ def test_the_meaningfulness_threshold_is_defined_exactly_once():
                  and "=" in ln and "import" not in ln]
     assert not offenders, (
         "scripts/121 has redeclared the threshold instead of importing it: " + str(offenders))
+
+
+def test_the_known_enhancers_share_no_chemotype():
+    """Pins the novelty ceiling, which is what closes structure-based de novo design here.
+
+    Measured 2026-09-20 (scripts/132_novelty_ceiling.py): the structurally resolved healthy-adult
+    compounds have a maximum pairwise Tanimoto of 0.250, below the onboarding engine's 0.35
+    abstention threshold. Every one of them, held out and presented as novel, would be abstained on
+    against the healthy-adult evidence base. Cognitive enhancement in healthy adults has no
+    chemotype, and a similarity-gated screen cannot find what has no shared structure.
+
+    If this ever starts failing it means new rows have changed the structural picture, which is
+    exactly when the de novo question should be reopened. It is not brittle to PubChem: the SMILES
+    come from the committed ledger file.
+    """
+    from rdkit import Chem, DataStructs, RDLogger
+    from rdkit.Chem import AllChem
+
+    RDLogger.DisableLog("rdApp.*")
+    root = Path(__file__).resolve().parents[1]
+    led = pd.read_csv(root / "data" / "raw" / "healthy_adult_cognition_ledger.csv")
+    smi = pd.read_csv(root / "data" / "raw" / "ledger_compound_smiles.csv")
+
+    cand = led.get("candidate_enhancer", pd.Series([1] * len(led)))
+    dep = led.get("depends_on", pd.Series([""] * len(led))).fillna("").astype(str).str.strip()
+    prim = led[(led["evidence_tier"] == "clean_MA") & (cand == 1) & (dep == "")]
+
+    lookup = {str(a).lower(): b for a, b in zip(smi["compound"], smi["smiles"])
+              if isinstance(b, str) and b}
+    fps = {}
+    for c in prim["compound"].astype(str):
+        s = lookup.get(c.lower())
+        if not s:
+            continue
+        mol = Chem.MolFromSmiles(s)
+        if mol is not None:
+            fps[c] = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=2048)
+
+    assert len(fps) >= 4, f"expected at least 4 resolvable primary-set structures, got {len(fps)}"
+
+    names = sorted(fps)
+    best = 0.0
+    for i, a in enumerate(names):
+        for b in names[i + 1:]:
+            best = max(best, float(DataStructs.TanimotoSimilarity(fps[a], fps[b])))
+
+    ABSTAIN_BELOW = 0.35
+    assert best < ABSTAIN_BELOW, (
+        f"maximum pairwise Tanimoto among the healthy-adult compounds is {best:.3f}, which now "
+        f"clears the {ABSTAIN_BELOW} abstention threshold. The structural picture has changed and "
+        "H-structure-de-novo-design should be re-examined rather than this assertion relaxed.")

@@ -540,6 +540,73 @@ CURATED = [
                      "whether the POSITIVE count moves, not the row count.",
         status="DEAD",
     ),
+    dict(
+        hypothesis_id="H-structure-de-novo-design",
+        claim="Novel cognitive enhancers can be predicted by structure: condition a generative or "
+              "similarity-based model on the known healthy-adult enhancers and it will propose new "
+              "molecules worth testing.",
+        domain="de novo design",
+        verdict="REFUTED", died_on="2026-09-20",
+        killed_by="scripts/132_novelty_ceiling.py -> novelty_ceiling_v1.md",
+        evidence="Two measurements, both from data already in the repository. FIRST, the evidence "
+                 "base is mostly not designable: of the 21-compound primary set, 12 are not a "
+                 "single small molecule (mixtures, botanical extracts, a nine-residue peptide, a "
+                 "51-residue protein, an ion in food, a compound class). Of SIX labelled enhancers, "
+                 "FOUR are designable molecules: methylphenidate, modafinil, caffeine, nicotine. "
+                 "SECOND, the novelty ceiling: holding each known compound out and presenting it as "
+                 "novel, 6 of 9 are ABSTAINED on against the full 110-compound exemplar base, and "
+                 "of the 3 that route, modafinil matches armodafinil at Tanimoto 1.000 (its own "
+                 "enantiomer) and dextroamphetamine matches lisdexamfetamine at 0.400 (its own "
+                 "prodrug). ONE non-trivial route exists in the whole set (l-theanine to D-serine, "
+                 "0.379) and it barely clears. Against the healthy-adult evidence base alone, 9 of "
+                 "9 abstain including 4 of 4 designable enhancers, with maximum pairwise Tanimoto "
+                 "0.250 against a 0.35 threshold.",
+        failure_mode="mechanism_contradicted",
+        keystone="", keystone_predicate="", revival_test="",
+        status="PERMANENTLY_CLOSED",
+    ),
+    dict(
+        hypothesis_id="H-cognition-has-a-chemotype",
+        claim="Compounds that enhance cognition in healthy adults share structural features a "
+              "similarity or fingerprint model can learn.",
+        domain="de novo design",
+        verdict="REFUTED", died_on="2026-09-20",
+        killed_by="scripts/132_novelty_ceiling.py",
+        evidence="Maximum pairwise Tanimoto (ECFP4, 2048 bits) among the structurally resolved "
+                 "healthy-adult compounds is 0.250, and every one of the 9 falls below the "
+                 "abstention threshold of 0.35 when compared against the others. The four "
+                 "designable enhancers span three mechanism classes (catecholaminergic, "
+                 "adenosinergic, cholinergic nAChR) and share no scaffold. The things that work in "
+                 "healthy adults are pharmacologically diverse and structurally unrelated.",
+        failure_mode="mechanism_contradicted",
+        keystone="", keystone_predicate="", revival_test="",
+        status="PERMANENTLY_CLOSED",
+    ),
+    dict(
+        hypothesis_id="H-target-directed-de-novo",
+        claim="Novel cognitive enhancers can be designed against a TARGET rather than against a "
+              "structure, sidestepping the finding that the actives share no chemotype.",
+        domain="de novo design",
+        verdict="ABSTAINED", died_on="2026-09-20",
+        killed_by="not tested; opened by the failure of H-structure-de-novo-design",
+        evidence="NOT TESTED, and it is the live successor. Structure-based design is refuted here "
+                 "because the actives share no chemotype; target-directed design does not need one. "
+                 "But it inherits G2: the DTI head scores AMPA-PAM at AUROC 0.26 with permutation "
+                 "p > 0.7, and that blindness is not currently measurable either, because ChEMBL "
+                 "holds 75 AMPA PAM rows and ZERO AMPA NAM rows. A design campaign against a target "
+                 "the scoring function cannot rank is a generator optimising a number nobody can "
+                 "check.",
+        failure_mode="instrument_blind",
+        keystone="The scoring function must be shown to rank known actives at the intended target "
+                 "before it is used to propose unknown ones. That is a measurement this project "
+                 "cannot currently make at AMPA for want of negatives, and the honest order is "
+                 "measurement first, generation second.",
+        keystone_predicate="chembl_allosteric_negatives_at(AMPA, 40)",
+        revival_test="Once a target exists where the scoring function demonstrably beats a "
+                     "permutation gate on held-out actives, generation against THAT target becomes "
+                     "a falsifiable proposal. Until then it is not.",
+        status="DEAD",
+    ),
 ]
 
 

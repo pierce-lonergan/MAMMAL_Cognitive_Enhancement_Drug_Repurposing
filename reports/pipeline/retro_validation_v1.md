@@ -1,6 +1,6 @@
 # Retro-validation sweep
 
-**1 of 37 archived hypotheses have a keystone that is now satisfied.**
+**1 of 40 archived hypotheses have a keystone that is now satisfied.**
 
 Every revivable entry in the stepping-stone archive names the specific condition whose absence killed it. This sweep evaluates those conditions against the repository as it stands and reports which have been met. It revives nothing: a revival is a scientific claim, and this script makes appointments rather than claims.
 
@@ -18,9 +18,9 @@ The first returns True: a verdict resting on that dependency is stale, and the e
 ## Sweep
 
 - satisfied (flag for re-adjudication): **1**
-- unsatisfied (still dead, with the gap named): **20**
+- unsatisfied (still dead, with the gap named): **21**
 - unresolvable (the engine cannot check this): **2**
-- permanently closed (never swept): **14**
+- permanently closed (never swept): **16**
 
 ### Satisfied now
 
@@ -61,6 +61,7 @@ A keystone the engine cannot evaluate reports as 'still dead' on every future sw
 | H-null-menopausal_hormone_therapy | underpowered | `interval_excludes_target(menopausal_hormone_therapy)` | menopausal_hormone_therapy: CI [-0.666, 0.344] vs target g=0.2 -> underpowered |
 | H-positives-exist-below-MA-level | underpowered | `ledger_rows_at_least(healthy_adult_cognition_ledger.csv, 70)` | healthy_adult_cognition_ledger.csv has 48 row(s) vs required 70 |
 | H-roflumilast-durability | wrong_endpoint | `durable_healthy_rows(1)` | 0 row(s) meeting the full durability standard vs required 1. 5 row(s) are off-drug and healthy at all; 1 carry an unqualified positive direction; rejected on the standard: ['donepezil(unreplicated)'] |
+| H-target-directed-de-novo | instrument_blind | `chembl_allosteric_negatives_at(AMPA, 40)` | ChEMBL 36 has 0 NEGATIVE allosteric modulator activity row(s) at targets matching 'AMPA' vs required 40 |
 
 ## What the graveyard is made of
 
@@ -70,16 +71,16 @@ The discrimination decision is the whole value of the archive: a kill that natur
 | --- | ---: | :---: |
 | underpowered | 10 | yes |
 | measured_null | 9 | no |
+| mechanism_contradicted | 6 | no |
+| instrument_blind | 5 | yes |
 | wrong_endpoint | 5 | yes |
-| instrument_blind | 4 | yes |
-| mechanism_contradicted | 4 | no |
 | unknown_precision | 1 | yes |
 | provenance_failed | 1 | yes |
 | wrong_population | 1 | yes |
 | measured_harm | 1 | no |
 | confounded | 1 | yes |
 
-**23 of 37 entries are revivable.** That is not a claim that 23 hypotheses are alive. It is a claim that for 23 of them the recorded evidence cannot distinguish 'no effect' from 'not measurable by the test that was run', which is a different statement and a much weaker one than the ledgers currently make.
+**24 of 40 entries are revivable.** That is not a claim that 24 hypotheses are alive. It is a claim that for 24 of them the recorded evidence cannot distinguish 'no effect' from 'not measurable by the test that was run', which is a different statement and a much weaker one than the ledgers currently make.
 
 The clearest case is in the primary healthy-adult ledger. Fourteen compounds carry `enhances_healthy_young = 0`. Seven have an interval whose upper bound excludes a target-sized effect and are properly closed. Three have intervals that admit one (dextroamphetamine reaches +0.47, against a target of 0.25). Four carry no interval at all. The ledger asserts fourteen refutations and has evidence for seven.
 
