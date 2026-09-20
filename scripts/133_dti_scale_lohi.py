@@ -13,12 +13,23 @@ STAGE 1, CAN IT RANK AT ALL. Twelve cognition-relevant human targets, up to N_PE
 at OTHER panel targets with no recorded activity at this one. Hard negatives, not random chemistry:
 every negative is a real drug-like bioactive. Per-target AUROC plus a permutation test.
 
-STAGE 2, THE Lo-Hi SPLIT. For every target that clears stage 1, split its actives by maximum ECFP4
-Tanimoto to that target's ten REFERENCE ligands, defined as the ten earliest-published actives,
-which is the subset most likely to sit in any pretraining corpus and the subset a chemist would
-name unprompted. Hi band is >= 0.4, Lo band is < 0.4, the boundary the Lo-Hi benchmark uses for the
-hard regime. Both bands are scored against the identical negative pool, so the only thing that
-changes between them is distance from the familiar.
+STAGE 2, THE Lo-Hi SPLIT. Split each target's actives by ECFP4 Tanimoto, Hi at or above 0.4 and Lo
+below, which is the boundary the Lo-Hi benchmark uses for the hard regime. Both bands are scored
+against the identical negative pool, so the only thing that changes between them is distance from
+the familiar. Two axes are reported:
+
+  AXIS A, "reference", PRE-REGISTERED: maximum Tanimoto to the target's ten earliest-published
+    actives, the subset most likely to sit in any pretraining corpus.
+  AXIS B, "neighbourhood", A DECLARED DEVIATION: maximum Tanimoto to any OTHER known active at the
+    same target across all of ChEMBL. This asks whether the head only works on compounds sitting
+    inside a dense SAR series, which is the same near-neighbour question by a better-populated
+    route.
+
+Axis B was added because axis A turned out to be underpowered as specified: only 93 of 1,440
+actives land in its Hi band, and eleven of twelve per-target Hi bands fall below the
+pre-registered MIN_BAND of 15. That was visible from the built rows BEFORE the model had scored
+anything, so the change cannot be outcome-driven; there were no outcomes yet. Axis A is kept and
+reported anyway rather than quietly replaced. See docs/PREREG_DEVIATIONS_2026-06.md.
 
 PRE-REGISTERED PREDICTIONS, written before running:
   P1. Stage 1 passes on at least some targets. A head that scored at chance everywhere would not
@@ -34,6 +45,14 @@ symmetric: if P2 holds, the de novo door closes on evidence rather than on n = 3
 the head generalises, then G2 is overstated and the allosteric finding needs re-examination at
 honest n, which is a results-changing correction that must be declared.
 
+RUN IT IN THREE STAGES, because per docs/MAMMAL_SETUP.md the DTI environment is deliberately
+isolated and its pinned nightly-cu128 torch must not be perturbed. Only the middle stage needs it;
+the outer two need rdkit and sqlite, which live in the main interpreter.
+
+    python scripts/133_dti_scale_lohi.py build
+    .venv-mammal/Scripts/python.exe scripts/133_dti_scale_lohi.py score
+    python scripts/133_dti_scale_lohi.py analyse
+
 Writes reports/pipeline/dti_scale_lohi_v1.md.
 """
 from __future__ import annotations
@@ -41,20 +60,19 @@ from __future__ import annotations
 import json
 import logging
 import sqlite3
+import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
-
-from mammal_repurposing.engine.persistence_dti import calibrate_target
-from mammal_repurposing.provenance.trailer import stamp
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 L = logging.getLogger("dti_lohi")
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "reports" / "pipeline" / "dti_scale_lohi_v1.md"
-RAWOUT = ROOT / "data" / "interim" / "dti_scale_lohi_scores.csv"
+ROWS = ROOT / "data" / "interim" / "dti_scale_lohi_rows.csv"
+SCORED = ROOT / "data" / "interim" / "dti_scale_lohi_scores.csv"
 CHEMBL = Path.home() / ".data" / "chembl" / "36" / "chembl_36.db"
 
 # Pre-registered panel. Chosen for relevance to this project's mechanism classes and for having
@@ -78,6 +96,8 @@ MIN_BAND = 15         # a band below this is reported but not interpreted
 PASS_AUROC = 0.70     # the project's existing channel gate
 SEED = 0
 
+
+# --------------------------------------------------------------------------- build
 
 def fetch(con: sqlite3.Connection) -> tuple[pd.DataFrame, dict[str, str]]:
     """Pull actives + sequences for the panel. One row per (gene, molecule)."""
@@ -117,23 +137,28 @@ def fetch(con: sqlite3.Connection) -> tuple[pd.DataFrame, dict[str, str]]:
     return acts, seqs
 
 
-def any_activity(con: sqlite3.Connection, gene: str) -> set[int]:
-    """Every molregno with ANY recorded activity at this gene, at any potency.
+def all_activity(con: sqlite3.Connection) -> dict[str, set[int]]:
+    """Every molregno with ANY recorded activity at each panel gene, at any potency.
 
-    Used to keep the negative pool clean: a compound that is merely weak at the target is not a
-    negative, it is a weak active, and scoring it as a negative would understate the head.
+    One pass rather than one query per gene. Used to keep the negative pool clean: a compound that
+    is merely weak at the target is not a negative, it is a weak active, and scoring it as a
+    negative would understate the head.
     """
-    q = """
-    SELECT DISTINCT act.molregno
+    marks = ",".join("?" * len(PANEL))
+    q = f"""
+    SELECT DISTINCT cs.component_synonym AS gene, act.molregno
     FROM component_synonyms cs
     JOIN target_components tc ON tc.component_id = cs.component_id
     JOIN target_dictionary td ON td.tid = tc.tid
     JOIN assays a ON a.tid = td.tid
     JOIN activities act ON act.assay_id = a.assay_id
-    WHERE cs.syn_type='GENE_SYMBOL' AND cs.component_synonym = ?
+    WHERE cs.syn_type='GENE_SYMBOL' AND cs.component_synonym IN ({marks})
       AND td.organism='Homo sapiens' AND td.target_type='SINGLE PROTEIN'
     """
-    return {r[0] for r in con.execute(q, (gene,))}
+    out: dict[str, set[int]] = {g: set() for g in PANEL}
+    for gene, mol in con.execute(q, PANEL):
+        out[gene].add(mol)
+    return out
 
 
 def fingerprints(smiles: list[str]):
@@ -149,6 +174,7 @@ def fingerprints(smiles: list[str]):
 
 
 def max_sim_to(fps, ref_fps) -> list[float]:
+    """Max Tanimoto of each fingerprint against the reference set. NaN if unparseable."""
     from rdkit import DataStructs
     ref = [f for f in ref_fps if f is not None]
     out = []
@@ -160,14 +186,21 @@ def max_sim_to(fps, ref_fps) -> list[float]:
     return out
 
 
-def build_rows(con: sqlite3.Connection) -> pd.DataFrame:
+def build() -> int:
+    """Stage 1: assemble (target, compound) rows and precompute the Lo-Hi similarity axis."""
+    if not CHEMBL.exists():
+        L.error("ChEMBL not found at %s", CHEMBL)
+        return 2
+    con = sqlite3.connect(f"file:{CHEMBL}?mode=ro", uri=True)
     rng = np.random.default_rng(SEED)
     acts, seqs = fetch(con)
     L.info("ChEMBL returned %d (gene, molecule) actives across %d genes",
            len(acts), acts["gene"].nunique())
+    known = all_activity(con)
+    L.info("activity index: %s", ", ".join(f"{g}={len(v)}" for g, v in known.items()))
+    con.close()
 
-    known = {g: any_activity(con, g) for g in PANEL}
-    rows = []
+    frames = []
     for gene in PANEL:
         if gene not in seqs:
             L.warning("%s: no sequence, skipped", gene)
@@ -175,19 +208,20 @@ def build_rows(con: sqlite3.Connection) -> pd.DataFrame:
         sub = acts[acts["gene"] == gene]
         if len(sub) < MIN_ACTIVES:
             L.warning("%s: only %d actives", gene, len(sub))
-        # Deterministic sample, but keep the earliest-published ones so references are available.
+        # Deterministic: earliest-published become references, the rest are sampled.
         sub = sub.sort_values(["first_year", "molregno"], na_position="last")
         refs = sub.head(N_REFERENCE)
         rest = sub.iloc[N_REFERENCE:]
         take = min(N_PER, len(rest))
         pick = rest.iloc[rng.permutation(len(rest))[:take]] if take else rest
+
+        rows = []
         for _, r in pick.iterrows():
             rows.append(dict(gene=gene, role="active", molregno=int(r.molregno),
                              smiles=r.smiles, pchembl=float(r.pchembl), seq=seqs[gene]))
         for _, r in refs.iterrows():
             rows.append(dict(gene=gene, role="reference", molregno=int(r.molregno),
                              smiles=r.smiles, pchembl=float(r.pchembl), seq=seqs[gene]))
-
         # Hard negatives: actives at OTHER panel targets, with no activity at all here.
         pool = acts[(acts["gene"] != gene) & (~acts["molregno"].isin(known[gene]))]
         pool = pool.drop_duplicates("molregno")
@@ -196,29 +230,71 @@ def build_rows(con: sqlite3.Connection) -> pd.DataFrame:
         for _, r in negp.iterrows():
             rows.append(dict(gene=gene, role="negative", molregno=int(r.molregno),
                              smiles=r.smiles, pchembl=float("nan"), seq=seqs[gene]))
-        L.info("%s: %d actives + %d references + %d hard negatives",
-               gene, take, len(refs), n_neg)
-    return pd.DataFrame(rows)
+
+        g = pd.DataFrame(rows)
+        # Lo-Hi axis A, PRE-REGISTERED: distance from this target's ten earliest-published
+        # ligands. Kept and reported even though it turned out to be underpowered; see
+        # docs/PREREG_DEVIATIONS_2026-06.md.
+        g_fps = fingerprints(g["smiles"].tolist())
+        ref_fps = fingerprints(g[g.role == "reference"]["smiles"].tolist())
+        g["max_sim_ref"] = max_sim_to(g_fps, ref_fps)
+
+        # Lo-Hi axis B, DEVIATION: neighbourhood density. For each compound, the maximum Tanimoto
+        # to any OTHER known active at this target across ALL of ChEMBL, not just the sample.
+        # This is the standard reading of the near-neighbour question (does the head only work on
+        # compounds sitting inside a dense SAR series?) and unlike axis A it populates both bands.
+        pool_smiles = sub["smiles"].tolist()
+        pool_mol = sub["molregno"].tolist()
+        pool_fps = fingerprints(pool_smiles)
+        by_mol = dict(zip(pool_mol, pool_fps, strict=True))
+        dens = []
+        for _, r in g.iterrows():
+            f = by_mol.get(int(r.molregno))
+            others = [x for m, x in by_mol.items() if x is not None and m != int(r.molregno)]
+            if r.role == "negative" or f is None or not others:
+                dens.append(float("nan"))   # negatives have no neighbourhood at this target
+            else:
+                dens.append(max_sim_to([f], others)[0])
+        g["max_sim_pool"] = dens
+        frames.append(g)
+        L.info("%s: %d actives + %d references + %d hard negatives", gene, take, len(refs), n_neg)
+
+    df = pd.concat(frames, ignore_index=True)
+    ROWS.parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(ROWS, index=False)
+    L.info("wrote %s (%d rows)", ROWS.name, len(df))
+    return 0
 
 
-def score(df: pd.DataFrame) -> pd.DataFrame:
+# --------------------------------------------------------------------------- score
+
+def score() -> int:
+    """Stage 2: the only stage that needs the isolated DTI environment."""
     from mammal_repurposing.scoring.dti import score_batch_safe
     from mammal_repurposing.scoring.model_loader import load_dti_model
+
+    df = pd.read_csv(ROWS)
+    L.info("scoring %d (target, compound) pairs", len(df))
     model, tok = load_dti_model()
-    pkds: list[float] = []
     pairs = list(zip(df["seq"], df["smiles"], strict=True))
     ids = [f"{g}|{m}" for g, m in zip(df["gene"], df["molregno"], strict=True)]
+    pkds: list[float] = []
     step = 8
     for i in range(0, len(pairs), step):
         pkds.extend(score_batch_safe(model, tok, pairs[i:i + step], sample_ids=ids[i:i + step]))
         if (i // step) % 25 == 0:
             L.info("  scored %d / %d", min(i + step, len(pairs)), len(pairs))
-    df = df.copy()
     df["predicted_pkd"] = pkds
-    return df
+    df.drop(columns=["seq"]).to_csv(SCORED, index=False)
+    L.info("wrote %s", SCORED.name)
+    return 0
 
 
-def analyse(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+# --------------------------------------------------------------------------- analyse
+
+def analyse_frame(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    from mammal_repurposing.engine.persistence_dti import calibrate_target
+
     stage1, stage2 = [], []
     for gene, g in df.groupby("gene"):
         neg = g[g.role == "negative"]["predicted_pkd"].dropna().tolist()
@@ -230,26 +306,68 @@ def analyse(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
                            auroc=c["auroc"], perm_p=c["perm_p"],
                            ranks=bool(c["auroc"] >= PASS_AUROC and c["perm_p"] < 0.05)))
 
-        act = g[g.role == "active"].dropna(subset=["predicted_pkd"])
-        ref = g[g.role == "reference"]
-        fps_a = fingerprints(act["smiles"].tolist())
-        fps_r = fingerprints(ref["smiles"].tolist())
-        sims = max_sim_to(fps_a, fps_r)
-        act = act.assign(max_sim_ref=sims)
-        for band, mask in (("Hi", act.max_sim_ref >= LOHI_BOUNDARY),
-                           ("Lo", act.max_sim_ref < LOHI_BOUNDARY)):
-            p = act[mask]["predicted_pkd"].tolist()
-            if len(p) < 3:
-                stage2.append(dict(gene=gene, band=band, n=len(p), auroc=float("nan"),
-                                   perm_p=float("nan"), interpretable=False))
+        for axis, col in (("reference", "max_sim_ref"), ("neighbourhood", "max_sim_pool")):
+            if col not in g.columns:
                 continue
-            cb = calibrate_target(p, neg, min_pos=3, min_auroc=PASS_AUROC)
-            stage2.append(dict(gene=gene, band=band, n=len(p), auroc=cb["auroc"],
-                               perm_p=cb["perm_p"], interpretable=len(p) >= MIN_BAND))
-    return pd.DataFrame(stage1), pd.DataFrame(stage2)
+            act = g[g.role == "active"].dropna(subset=["predicted_pkd", col])
+            for band, mask in (("Hi", act[col] >= LOHI_BOUNDARY),
+                               ("Lo", act[col] < LOHI_BOUNDARY)):
+                p = act[mask]["predicted_pkd"].tolist()
+                if len(p) < 3:
+                    stage2.append(dict(gene=gene, axis=axis, band=band, n=len(p),
+                                       auroc=float("nan"), perm_p=float("nan"),
+                                       interpretable=False))
+                    continue
+                cb = calibrate_target(p, neg, min_pos=3, min_auroc=PASS_AUROC)
+                stage2.append(dict(gene=gene, axis=axis, band=band, n=len(p), auroc=cb["auroc"],
+                                   perm_p=cb["perm_p"], interpretable=len(p) >= MIN_BAND))
+    return pd.DataFrame(stage1), pd.DataFrame(stage2), gradient_frame(df)
 
 
-def write_report(s1: pd.DataFrame, s2: pd.DataFrame, df: pd.DataFrame) -> None:
+def gradient_frame(df: pd.DataFrame) -> pd.DataFrame:
+    """Stage 2b: AUROC as a GRADIENT in similarity, rather than a binary cut.
+
+    The pre-registered 0.4 cut turned out to be unusable on both axes and for opposite reasons:
+    on the reference axis almost nothing is near the ten earliest ligands, and on the
+    neighbourhood axis almost everything has a close cousin, because ChEMBL's per-target active
+    sets are dense SAR series. Quartiles sidestep the choice of boundary entirely. Each target's
+    actives are split into four equal similarity bins and each bin is scored against that same
+    target's negatives, so AUROC stays within-target and comparable. If the head is a
+    near-neighbour lookup, AUROC should climb monotonically from Q1 to Q4.
+    """
+    from mammal_repurposing.engine.persistence_dti import calibrate_target
+
+    out = []
+    for gene, g in df.groupby("gene"):
+        neg = g[g.role == "negative"]["predicted_pkd"].dropna().tolist()
+        if len(neg) < 3:
+            continue
+        for axis, col in (("reference", "max_sim_ref"), ("neighbourhood", "max_sim_pool")):
+            if col not in g.columns:
+                continue
+            act = g[g.role == "active"].dropna(subset=["predicted_pkd", col])
+            if len(act) < 4 * MIN_BAND:
+                continue
+            try:
+                bins = pd.qcut(act[col], 4, labels=["Q1", "Q2", "Q3", "Q4"], duplicates="drop")
+            except ValueError:
+                continue
+            for q, idx in act.groupby(bins, observed=True).groups.items():
+                p = act.loc[idx, "predicted_pkd"].tolist()
+                if len(p) < 3:
+                    continue
+                c = calibrate_target(p, neg, min_pos=3, min_auroc=PASS_AUROC)
+                out.append(dict(gene=gene, axis=axis, quartile=str(q), n=len(p),
+                                sim_lo=float(act.loc[idx, col].min()),
+                                sim_hi=float(act.loc[idx, col].max()),
+                                auroc=c["auroc"], perm_p=c["perm_p"]))
+    return pd.DataFrame(out)
+
+
+def write_report(s1: pd.DataFrame, s2: pd.DataFrame, s3: pd.DataFrame,
+                 df: pd.DataFrame) -> None:
+    from mammal_repurposing.provenance.trailer import stamp
+
     lines = [
         "# Does the DTI head rank anything, and does it rank anything new?",
         "",
@@ -257,8 +375,8 @@ def write_report(s1: pd.DataFrame, s2: pd.DataFrame, df: pd.DataFrame) -> None:
         "measurement in this repository used three to five anchor compounds; this uses up to",
         f"{N_PER} actives per target against an equal number of hard negatives, where a hard",
         "negative is a compound that is a confirmed active at a different panel target and has no",
-        "recorded activity at this one. Predictions P1 to P3 were written before the model loaded;",
-        "see the docstring of `scripts/133_dti_scale_lohi.py`.",
+        "recorded activity at this one at any potency. Predictions P1 to P3 were written before the",
+        "model loaded; see the docstring of `scripts/133_dti_scale_lohi.py`, committed first.",
         "",
         "## Stage 1: can it rank at all?",
         "",
@@ -281,56 +399,97 @@ def write_report(s1: pd.DataFrame, s2: pd.DataFrame, df: pd.DataFrame) -> None:
         "identical negative pool, so the only variable is distance from the familiar region. A band",
         f"under n = {MIN_BAND} is shown but not interpreted.",
         "",
-        "| gene | band | n | AUROC | perm-p |",
-        "|---|---|---:|---:|---:|",
     ]
-    for _, r in s2.sort_values(["gene", "band"]).iterrows():
-        au = "n/a" if pd.isna(r.auroc) else f"{r.auroc:.2f}"
-        pp = "n/a" if pd.isna(r.perm_p) else f"{r.perm_p:.3f}"
-        flag = "" if r.interpretable else " *"
-        lines.append(f"| {r.gene} | {r.band}{flag} | {r.n} | {au} | {pp} |")
+    for axis, label in (("reference", "Axis A, reference ligands (pre-registered)"),
+                        ("neighbourhood", "Axis B, neighbourhood density (declared deviation)")):
+        sub = s2[s2.axis == axis]
+        if sub.empty:
+            continue
+        lines += ["", f"### {label}", "",
+                  "| gene | band | n | AUROC | perm-p |", "|---|---|---:|---:|---:|"]
+        for _, r in sub.sort_values(["gene", "band"]).iterrows():
+            au = "n/a" if pd.isna(r.auroc) else f"{r.auroc:.2f}"
+            pp = "n/a" if pd.isna(r.perm_p) else f"{r.perm_p:.3f}"
+            flag = "" if r.interpretable else " *"
+            lines.append(f"| {r.gene} | {r.band}{flag} | {r.n} | {au} | {pp} |")
+        piv = sub[sub.interpretable].pivot_table(index="gene", columns="band", values="auroc")
+        if {"Hi", "Lo"}.issubset(piv.columns):
+            paired = piv.dropna()
+            if len(paired):
+                delta = (paired["Hi"] - paired["Lo"]).mean()
+                lines += ["",
+                          f"Across the {len(paired)} targets where both bands are interpretable, "
+                          f"mean AUROC in the Hi band exceeds the Lo band by {delta:+.3f}."]
+        else:
+            lines += ["", "Not enough interpretable bands on this axis to pair Hi against Lo."]
     lines += ["", "`*` band too small to interpret.", ""]
 
-    piv = s2[s2.interpretable].pivot_table(index="gene", columns="band", values="auroc")
-    if {"Hi", "Lo"}.issubset(piv.columns):
-        paired = piv.dropna()
-        if len(paired):
-            delta = (paired["Hi"] - paired["Lo"]).mean()
-            lines += [
-                f"Across the {len(paired)} targets where both bands are interpretable, mean AUROC "
-                f"in the Hi band exceeds the Lo band by {delta:+.3f}.",
-                "",
-            ]
+    if not s3.empty:
+        lines += [
+            "## Stage 2b: the similarity gradient",
+            "",
+            "The pre-registered 0.4 cut is unusable on both axes and for opposite reasons, so this",
+            "drops the boundary entirely. Each target's actives are split into four equal-size",
+            "similarity bins and every bin is scored against that same target's negatives, keeping",
+            "AUROC within-target and comparable. If the head is a near-neighbour lookup, AUROC",
+            "should climb monotonically from Q1 (least similar) to Q4 (most similar).",
+            "",
+        ]
+        for axis, label in (("reference", "Axis A, distance from the ten earliest ligands"),
+                            ("neighbourhood", "Axis B, distance from any other active")):
+            sub = s3[s3.axis == axis]
+            if sub.empty:
+                continue
+            piv = sub.pivot_table(index="gene", columns="quartile", values="auroc")
+            cols = [c for c in ["Q1", "Q2", "Q3", "Q4"] if c in piv.columns]
+            lines += ["", f"### {label}", "",
+                      "| gene | " + " | ".join(cols) + " | Q4 - Q1 |",
+                      "|---|" + "---:|" * (len(cols) + 1)]
+            for gene, r in piv.iterrows():
+                d = (r.get("Q4", float("nan")) - r.get("Q1", float("nan")))
+                cells = " | ".join("n/a" if pd.isna(r[c]) else f"{r[c]:.2f}" for c in cols)
+                lines.append(f"| {gene} | {cells} | "
+                             f"{'n/a' if pd.isna(d) else format(d, '+.2f')} |")
+            means = piv[cols].mean()
+            lines += ["| **mean** | " + " | ".join(f"**{means[c]:.2f}**" for c in cols)
+                      + f" | **{means.get('Q4', float('nan')) - means.get('Q1', float('nan')):+.2f}** |"]
+            mono = bool(all(means[cols[i]] <= means[cols[i + 1]] for i in range(len(cols) - 1)))
+            lines += ["",
+                      f"Mean AUROC is {'monotonically increasing' if mono else 'NOT monotonic'} "
+                      f"across the four bins."]
+        lines += [""]
     lines += [
         "## Reading",
         "",
-        "Fill this in by hand after reading the tables. Do not let the script assert a conclusion.",
+        "<!-- Written by hand after reading the tables. The script does not assert a conclusion. -->",
         "",
-        f"Scored {len(df)} (target, compound) pairs. Raw scores in "
-        "`data/interim/dti_scale_lohi_scores.csv`.",
+        f"Scored {len(df)} (target, compound) pairs. Raw scores in `{SCORED.relative_to(ROOT)}`.",
         "",
     ]
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(stamp("\n".join(lines), "scripts/133_dti_scale_lohi.py"), encoding="utf-8")
 
 
-def main() -> int:
-    if not CHEMBL.exists():
-        L.error("ChEMBL not found at %s", CHEMBL)
-        return 2
-    con = sqlite3.connect(f"file:{CHEMBL}?mode=ro", uri=True)
-    df = build_rows(con)
-    con.close()
-    L.info("Scoring %d (target, compound) pairs", len(df))
-    df = score(df)
-    RAWOUT.parent.mkdir(parents=True, exist_ok=True)
-    df.drop(columns=["seq"]).to_csv(RAWOUT, index=False)
-    s1, s2 = analyse(df)
-    write_report(s1, s2, df)
-    print(json.dumps({"stage1": s1.to_dict("records"), "stage2": s2.to_dict("records")},
-                     indent=1, default=float))
+def analyse() -> int:
+    df = pd.read_csv(SCORED)
+    s1, s2, s3 = analyse_frame(df)
+    write_report(s1, s2, s3, df)
+    print(json.dumps({"stage1": s1.to_dict("records"),
+                      "stage2": s2.to_dict("records"),
+                      "gradient": s3.to_dict("records")}, indent=1, default=float))
     return 0
 
 
+STAGES = {"build": build, "score": score, "analyse": analyse}
+
+
+def main(argv: list[str]) -> int:
+    stage = argv[1] if len(argv) > 1 else ""
+    if stage not in STAGES:
+        L.error("usage: %s {%s}", Path(argv[0]).name, "|".join(STAGES))
+        return 2
+    return STAGES[stage]()
+
+
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(main(sys.argv))

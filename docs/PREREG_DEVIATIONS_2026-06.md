@@ -418,3 +418,46 @@ that resolves to `null` on terminal error, wrapped by a `.then()` into a truthy 
 `filter(Boolean)`) reported 16 verifications that were empty shells. The G3 correction above was
 therefore verified separately and specifically, against primary sources, before any of it was
 written into the repository. Nothing else from that sweep has been adopted.
+
+---
+
+## 2026-09-20 — scripts/133, the Lo-Hi split boundary
+
+**Registered.** `scripts/133_dti_scale_lohi.py` was committed as a pre-registration at `5ef9334`,
+before the DTI model was loaded. Its stage 2 specified a single binary split of each target's
+actives at ECFP4 Tanimoto 0.40 against ten REFERENCE ligands, defined as that target's ten
+earliest-published ChEMBL actives, with a floor of n = 15 for a band to be interpretable.
+
+**Deviation.** Two further similarity treatments were added: a second axis (maximum Tanimoto to any
+OTHER known active at the same target, across all of ChEMBL) and a quartile GRADIENT that abandons
+the binary boundary altogether. The pre-registered binary split is retained and still reported on
+both axes; nothing was removed.
+
+**Why, and the numbers that forced it.** The registered split does not have the resolution its own
+floor requires. Measured on the built rows:
+
+| axis | Hi (>= 0.40) | Lo (< 0.40) | per-target Hi bands at or above n = 15 |
+|---|---:|---:|---:|
+| A, ten earliest ligands (registered) | 93 / 1440 | 1347 / 1440 | 1 of 12 |
+| B, any other active at the target | 1416 / 1440 | 24 / 1440 | n/a, the Lo side collapses |
+
+The two axes fail for opposite reasons, and together they say something real about the corpus
+rather than about the model: the ten earliest ligands at a target are not representative of what
+came after, while a target's full active set is so dense that essentially no active is a structural
+singleton relative to it. No single Tanimoto boundary separates familiar from unfamiliar in ChEMBL.
+The quartile gradient answers the same question without choosing a boundary, and is well populated
+by construction at 30 actives per bin per target.
+
+**Why this is not outcome-driven, which is the only thing that would make it a problem.** The
+tables above come from `build`, which reads ChEMBL and computes fingerprints. The model had not
+been loaded and not one `predicted_pkd` existed at the time the change was made. There was no
+result available to steer towards, so the split could not have been chosen to favour one. The
+ordering is visible in git: the pre-registration is `5ef9334`, and the scored data postdates the
+deviation.
+
+**Direction.** NEUTRAL as to the hypothesis. The gradient can equally show a rising Q1-to-Q4 trend
+(supporting P2, the head is a near-neighbour lookup) or a flat one (refuting it). It is pinned in
+`tests/test_dti_scale_lohi.py` against both a planted similarity effect and a null input, so it
+cannot manufacture a trend that is not in the data.
+
+**Unaffected.** Stage 1 is untouched. P1, P2 and P3 stand exactly as registered.

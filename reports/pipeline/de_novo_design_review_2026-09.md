@@ -119,10 +119,25 @@ credit.
 
 ## One item failed verification
 
-The time-split and scaffold-split recommendation came back REJECT_MISDESCRIBED. All five of its
-identifiers resolved correctly and its characterisation of Sheridan 2013 was exact; the rejection was
-on a sub-claim rather than the core, and the split methodology itself stands. Recorded here so the
-rejection is not read as discrediting split-based validation, which remains correct practice.
+The time-split and scaffold-split recommendation came back REJECT_MISDESCRIBED.
+
+CORRECTION, same day. An earlier version of this section stated that all five of that item's
+identifiers resolved correctly, that its characterisation of Sheridan 2013 was exact, and that the
+rejection fell on a sub-claim rather than the core. Those specifics were written from a workflow
+summary that is no longer retrievable, and I could not reproduce the verifier's verdict text from
+the session record when I went back to check. They are withdrawn rather than left standing on a
+source I cannot produce.
+
+What IS on the record, recovered verbatim from the session log, is the item's own text, and it is
+accurate on every point I can check independently: Sheridan 2013 (J Chem Inf Model 53(4):783-790,
+DOI 10.1021/ci400084k, PMID 23521722) is correctly described as a retrospective comparison against
+Merck's actual prospective predictions rather than a wet-lab test; MoleculeNet (DOI
+10.1039/C7SC02664A, PMID 29629118), Bemis-Murcko (DOI 10.1021/jm9602928), SIMPD (DOI
+10.1186/s13321-023-00787-9) and LIT-PCBA (DOI 10.1021/acs.jcim.0c00155) are correctly attributed.
+
+So the split methodology stands on its own sources and remains correct practice. What I cannot tell
+you is which part of that item the verifier objected to. Treat the item as unverified rather than as
+either confirmed or discredited.
 
 Written by hand; this report has no generator. It summarises a research sweep whose structured
 output is not committed.
