@@ -1,0 +1,21 @@
+{
+  "date": "2026-09-20",
+  "source": "adversarially verified candidate sweep; every added row CONFIRMED by an independent verifier instructed to refute it",
+  "added": [
+    "insulin_intranasal",
+    "oxytocin_intranasal",
+    "fruit_derived_polyphenols",
+    "theanine_plus_caffeine",
+    "caffeine_plus_taurine"
+  ],
+  "skipped_already_present": [],
+  "schema_change": "new column `depends_on`: names a compound already in the ledger whose effect this row is not independent of. The ledger previously had no way to express this, so pooling a caffeine combination alongside caffeine would have counted one effect more than once.",
+  "rejected": {
+    "melatonin": "already present as an impairment exposure with identical values",
+    "l_theanine": "already present; the sweep's -0.35 is the reaction-time sign convention of the same +0.35 finding, not a new result",
+    "cocoa_flavanols": "verifier returned REJECT_MISDESCRIBED; effect was in raw units",
+    "anthocyanins": "verifier returned UNCERTAIN; already present as mixed_pop",
+    "taurine/carnosine/ashwagandha/soy_isoflavones": "population not clean healthy adults",
+    "computerised_cognitive_training/aerobic_physical_activity/sleep_deprivation": "non-pharmacological; this ledger is keyed on compounds and adding them would break that semantics. Worth a separate reference table as calibration anchors."
+  }
+}

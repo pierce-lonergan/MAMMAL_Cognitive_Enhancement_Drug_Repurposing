@@ -49,11 +49,20 @@ def test_primary_set_excludes_impairment_exposures():
     # participants, which fails this ledger's own clean-healthy rule. That row was never eligible,
     # so removing it is a correction rather than a loss, and it is recorded in
     # data/raw/provenance/interval_recovery_2026-09.json and in PREREG_DEVIATIONS_2026-06.md.
-    assert len(p) == 18, (
-        f"primary set is {len(p)}, expected 18. Any further change must be justified in the "
+    # The guard is on SILENT change, not on change. Every move of this number is recorded in
+    # docs/PREREG_DEVIATIONS_2026-06.md: 19 -> 18 when omega_3 was found to pool MCI participants,
+    # then 18 -> 21 when three independently-verified healthy-adult rows were curated in.
+    assert len(p) == 21, (
+        f"primary set is {len(p)}, expected 21. Any further change must be justified in the "
         "deviations ledger before this number is edited.")
     assert "omega_3" not in set(p["compound"]), (
         "omega_3 pools MCI participants and cannot be tiered clean_MA")
+    # non-independence: caffeine combinations must never be pooled alongside caffeine itself
+    for combo in ["theanine_plus_caffeine", "caffeine_plus_taurine"]:
+        assert combo not in set(p["compound"]), (
+            f"{combo} contains caffeine, which is already a labelled enhancer here; pooling both "
+            "counts one effect twice and inflates every AUROC")
+    assert "caffeine" in set(p["compound"]), "the independent caffeine row itself must remain"
 
 
 def test_power_confound_does_not_survive_the_larger_sample():

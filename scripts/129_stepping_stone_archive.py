@@ -391,7 +391,12 @@ def derive_compound_entries() -> list[dict]:
     """
     df = pd.read_csv(LEDGER)
     cand = df.get("candidate_enhancer", pd.Series([1] * len(df)))
-    sel = df[(df["evidence_tier"] == "clean_MA") & (cand == 1) & (df["enhances_healthy_young"] == 0)]
+    # Mirror the primary-set rule in scripts/121 and 131: a row whose effect is not independent of
+    # another already here (a caffeine combination alongside caffeine) is never pooled. No such row
+    # is currently a NULL, but the filter belongs here so a future one cannot leak in unnoticed.
+    dep = df.get("depends_on", pd.Series([""] * len(df))).fillna("").astype(str).str.strip()
+    sel = df[(df["evidence_tier"] == "clean_MA") & (cand == 1) & (dep == "")
+             & (df["enhances_healthy_young"] == 0)]
     rows = []
     for _, r in sel.iterrows():
         c = str(r["compound"])

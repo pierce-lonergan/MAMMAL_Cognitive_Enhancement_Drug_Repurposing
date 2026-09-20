@@ -2,7 +2,7 @@
 
 Adversarial re-analysis of the headline in `healthy_adult_axis_v1.md` ("the only separator is a coarse acute-CNS-stimulant gate, AUROC 0.86, p = 0.046"). No datum was added, altered, or re-curated: this re-analyses the same verified ledger. Reproduced by `scripts/121_healthy_adult_robustness.py`.
 
-Primary set: **n = 18** clean-MA compounds (5 enhance / 13 null).
+Primary set: **n = 21** clean-MA compounds (6 enhance / 15 null).
 
 ## R1 — the label is confounded with statistical POWER
 
@@ -10,11 +10,11 @@ The binary label is "a clean MA whose CI excludes 0". CI width scales as 1/sqrt(
 
 | predictor | what it encodes | AUROC | perm p |
 |---|---|---|---|
-| acute CNS stimulant gate | biology | 0.82 | 0.0213 |
-| **n_studies** | **pure statistical power, zero biology** | **0.59** | **0.2931** |
-| representative_g | effect magnitude | 0.82 | 0.0191 |
+| acute CNS stimulant gate | biology | 0.77 | 0.0320 |
+| **n_studies** | **pure statistical power, zero biology** | **0.66** | **0.1452** |
+| representative_g | effect magnitude | 0.82 | 0.0105 |
 
-**The power proxy WINS** (0.59 vs 0.82). Median studies pooled: **14** for labelled enhancers vs **nan** for labelled nulls. So the gate cannot be claimed as evidence that stimulant pharmacology predicts enhancement: a model that knows only how heavily a compound was studied does at least as well. `enhances_healthy_young` is a **detection** label, not an **efficacy** label.
+**The power proxy WINS** (0.66 vs 0.77). Median studies pooled: **18** for labelled enhancers vs **nan** for labelled nulls. So the gate cannot be claimed as evidence that stimulant pharmacology predicts enhancement: a model that knows only how heavily a compound was studied does at least as well. `enhances_healthy_young` is a **detection** label, not an **efficacy** label.
 
 ## R2 — the headline hinges on ONE label decision
 
@@ -40,13 +40,16 @@ The ledger's stated inclusion rule is "CI excluding 0". Agreement between `ci_lo
 | cannabidiol | -0.05 | [-0.12, +0.03] | 16 | False | 0 | yes |
 | psilocybin_lsd_microdosing | -0.34 | [-0.62, -0.06] | 14 | False | 0 | yes |
 | dietary_nitrate | +0.06 | [-0.06, +0.18] | 13 | False | 0 | yes |
+| insulin_intranasal | +0.02 | [-0.05, +0.09] | 11 | False | 0 | yes |
+| oxytocin_intranasal | +0.13 | [+0.02, +0.24] | 23 | True | 1 | yes |
+| fruit_derived_polyphenols | +0.12 | [-0.29, +0.54] | 6 | False | 0 | yes |
 
 **Conflict: l_theanine.** Re-labelling strictly per the ledger's own stated rule moves the headline:
 
 | labelling | stimulant-gate AUROC | perm p | non-stimulant enhancers |
 |---|---|---|---|
-| as shipped | 0.82 | 0.0213 | none |
-| per the stated CI rule | 0.75 | **0.0562** | l_theanine, multivitamin_mineral |
+| as shipped | 0.77 | 0.0320 | none |
+| per the stated CI rule | 0.71 | **0.0670** | l_theanine, multivitamin_mineral, oxytocin_intranasal |
 
 So the one statistically significant result in the healthy-adult axis **does not survive a single defensible re-reading of one compound**, and under that reading the "enhancers are exclusively acute CNS stimulants" claim is falsified by a non-stimulant. The curator's note gives a real reason for the shipped call (only one RT sub-domain significant, k = 4) — the point is not that the shipped label is wrong, it is that the headline is **not robust** to it. Note the asymmetry it sits against: modafinil is labelled an enhancer at g = +0.12 while its own robustness note records it as TOST-equivalent-to-zero.
 
@@ -69,8 +72,10 @@ A null whose CI still admits g >= 0.2 has not been ruled out. Splitting the labe
 | cannabidiol | -0.05 | [-0.12, +0.03] | 16 | **REFUTED** | CI excludes a meaningful g=0.2 |
 | psilocybin_lsd_microdosing | -0.34 | [-0.62, -0.06] | 14 | **REFUTED** | CI excludes a meaningful g=0.2 |
 | dietary_nitrate | +0.06 | [-0.06, +0.18] | 13 | **REFUTED** | CI excludes a meaningful g=0.2 |
+| insulin_intranasal | +0.02 | [-0.05, +0.09] | 11 | **REFUTED** | CI excludes a meaningful g=0.2 |
+| fruit_derived_polyphenols | +0.12 | [-0.29, +0.54] | 6 | **INCONCLUSIVE** | CI still admits g>=0.2 (under-powered) |
 
-**8 genuinely refuted, 5 inconclusive, 0 with no CI recorded.** Plus **6 compounds with NO healthy-adult meta-analysis at all** (tyrosine, rhodiola_rosea, citicoline, piracetam, phosphatidylserine, vinpocetine). The field's evidence base is therefore far thinner than a flat "7 nulls" implies.
+**9 genuinely refuted, 6 inconclusive, 0 with no CI recorded.** Plus **6 compounds with NO healthy-adult meta-analysis at all** (tyrosine, rhodiola_rosea, citicoline, piracetam, phosphatidylserine, vinpocetine). The field's evidence base is therefore far thinner than a flat "7 nulls" implies.
 
 ## What this changes
 

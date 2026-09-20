@@ -246,3 +246,88 @@ are genuinely REFUTED, bacopa_monnieri is honestly INCONCLUSIVE, and nothing is 
 - Provenance for every changed cell: `data/raw/provenance/interval_recovery_2026-09.json`.
 - **Not yet re-blessed:** any downstream artefact quoting the n = 19 primary set or the p = 0.0456
   sensitivity. Those need an author decision, not a re-run.
+
+---
+
+## 2026-09-20 (second entry) — the ledger grew, the instrument improved, and the headline weakened again
+
+Three independently verified healthy-adult rows were curated in, and two caffeine combinations were
+added but deliberately kept OUT of the primary set. The primary set goes 18 to 21.
+
+### The instrument got better
+
+| | n = 18 | **n = 21** |
+| --- | ---: | ---: |
+| chance-ranker 95% AUROC interval | [0.18, 0.80] | **[0.22, 0.78]** |
+| one-sided 5% critical value | 0.76 | **0.73** |
+| power to detect a true AUROC of 0.80 | 66% | **75%** |
+| power to detect a true AUROC of 0.85 | 80% | **89%** |
+
+This is the first measured improvement in the project's binding constraint. It is still a long way
+from comfortable, but a ranker at a true AUROC of 0.85 is now detectable at 89% power rather than
+80%, and the threshold a claim has to clear fell from 0.76 to 0.73.
+
+### The headline weakened, for the third time in a row
+
+| stage | primary n | stimulant gate | stated-rule sensitivity |
+| --- | ---: | --- | --- |
+| as published | 19 | AUROC 0.83, p = 0.0181 | p = **0.0456** (survives) |
+| after the omega_3 correction | 18 | AUROC 0.82, p = 0.0213 | p = **0.0562** (fails) |
+| after curating three verified rows | 21 | AUROC 0.77, p = **0.0320** | p = **0.0670** (fails) |
+
+Every time the ledger has become more correct or more complete, the stimulant gate has weakened.
+That monotone trend across three independent changes is the signature of a finding that was partly a
+small-sample artifact, and it is a stronger statement than any single p-value here. The gate remains
+nominally significant as shipped; it has now failed its own pre-specified sensitivity twice.
+
+### What was added, and one row that matters more than the others
+
+Independent, entering the primary set:
+
+- **insulin_intranasal** SMD 0.02 [-0.05, 0.09], k = 11, N = 400 healthy subgroup (PMID 37379265).
+  REFUTED at the target: the upper bound is far below g = 0.25.
+- **fruit_derived_polyphenols** SMD 0.12 [-0.29, 0.54], k = 6 (PMID 34959825). UNDETECTED, not
+  refuted: the upper bound comfortably admits the target.
+- **oxytocin_intranasal** ES 0.13 [0.02, 0.24], k = 23 healthy subgroup (PMID 28467893).
+
+**Oxytocin is the most informative row in the ledger.** Its interval EXCLUDES 0, so the stated
+inclusion rule labels it an enhancer. Its interval ALSO EXCLUDES g = 0.25, so it is refuted at the
+effect size the project is looking for. The authors themselves call the effect negligible. The label
+rule and the target effect point in opposite directions on the same row, which means **a label of 1
+does not imply a useful effect**. Nothing in the pipeline currently represents that third state.
+It also sits in social cognition rather than the memory/attention/executive domains the rest of the
+ledger covers, which is flagged in `red_flags`.
+
+### A schema change: the ledger can now say a row is not independent
+
+New column `depends_on`. It names a compound already in the ledger whose effect a row is not
+independent of. Two rows use it:
+
+- **theanine_plus_caffeine** SMD 0.33 [0.13, 0.54] (PMID 40314930). Not independent twice over: a
+  caffeine combination when caffeine is already a labelled enhancer, and drawn from the SAME PAPER
+  as the existing l-theanine row.
+- **caffeine_plus_taurine** g 0.53 [0.03, 1.07] (PMID 41032459). A caffeine combination, and a type
+  mismatch besides: that interval is a 95% CREDIBLE interval from a Bayesian network meta-analysis,
+  not the frequentist confidence interval the inclusion rule names. Its prediction interval
+  [-0.78, 1.78] crosses zero comfortably.
+
+`candidate_enhancer == 0` could not be reused for this: it already means "impairment exposure"
+(alcohol, dehydration, daytime melatonin, acute psilocybin), and overloading it would have corrupted
+an existing meaning. Pooling three caffeine-driven rows would have counted one effect three times
+and inflated every AUROC on the easiest possible case.
+
+`clean_ma()` in scripts/121, `primary_labels()` in scripts/131 and the archive seeder in scripts/129
+all apply the rule. A test asserts the combinations stay out and that the independent caffeine row
+stays in.
+
+### Rejected, and why
+
+melatonin and l-theanine were rediscovered rather than new (l-theanine's -0.35 is the reaction-time
+sign convention of the same +0.35 finding). cocoa_flavanols returned REJECT_MISDESCRIBED from the
+verifier and its effect was in raw units. anthocyanins returned UNCERTAIN. taurine, carnosine,
+ashwagandha and soy_isoflavones all failed the clean-healthy population rule. Computerised cognitive
+training, aerobic exercise and sleep deprivation are non-pharmacological; they would be valuable
+calibration anchors but adding them to a compound-keyed ledger would break its semantics, so they
+belong in a separate reference table.
+
+Full provenance: `data/raw/provenance/ledger_expansion_2026-09.json`.

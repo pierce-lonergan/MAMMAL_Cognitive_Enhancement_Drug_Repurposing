@@ -55,6 +55,15 @@ def clean_ma(ledger: pd.DataFrame) -> pd.DataFrame:
     d = ledger[ledger["evidence_tier"] == "clean_MA"]
     if "candidate_enhancer" in d.columns:
         d = d[d["candidate_enhancer"] != 0]
+    if "depends_on" in d.columns:
+        # NON-INDEPENDENCE, added 2026-09-20. `depends_on` names a compound already in the ledger
+        # whose effect this row is not independent of. Two caffeine-containing combinations were
+        # curated in (theanine+caffeine, caffeine+taurine) while caffeine itself is already a
+        # labelled enhancer here. Pooling all three would count one effect three times and inflate
+        # every AUROC on the easiest possible case. They stay in the ledger and are analysed
+        # separately; they never enter the primary set.
+        dep = d["depends_on"].fillna("").astype(str).str.strip()
+        d = d[dep == ""]
     return d.reset_index(drop=True)
 
 
