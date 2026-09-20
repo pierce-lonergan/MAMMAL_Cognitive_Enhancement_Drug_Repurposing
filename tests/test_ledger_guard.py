@@ -115,3 +115,32 @@ def test_unreplicated_durability_claim_is_warned():
     v = validate_durability_claim(row)
     assert any(x.rule == "durability_claim_unreplicated" and x.severity == "warn" for x in v)
     assert not [x for x in v if x.severity == "error"]
+
+
+def test_a_zero_label_is_not_automatically_a_refutation():
+    """2026-09-20: binary labels cannot hold the difference between refuted and undetected.
+
+    Fails on pre-archive code (the rules did not exist). The defect: `enhances_healthy_young = 0`
+    was read downstream as a refutation for all 14 compounds carrying it, while only seven have an
+    interval that excludes a target-sized effect. Section R3 of healthy_adult_robustness_v1.md said
+    so and nothing changed, because it was said in a report rather than in the guard.
+    """
+    # interval ADMITS a target-sized effect -> the label overstates the evidence
+    under = validate_ledger(_base_row(representative_g=0.21, ci_lo=-0.06, ci_hi=0.47,
+                                      enhances_healthy_young=0,
+                                      robustness="wide interval; power-limited meta-analysis"))
+    assert any(x.rule == "null_not_refuted" and x.severity == "warn" for x in under)
+
+    # no interval at all -> a null cannot be distinguished from silence
+    silent = validate_ledger(_base_row(representative_g=0.0, ci_lo=None, ci_hi=None,
+                                       enhances_healthy_young=0))
+    assert any(x.rule == "null_precision_unknown" and x.severity == "warn" for x in silent)
+
+    # interval EXCLUDES a target-sized effect -> a real refutation, no complaint
+    closed = validate_ledger(_base_row(representative_g=0.0, ci_lo=-0.05, ci_hi=0.06,
+                                       enhances_healthy_young=0,
+                                       robustness="tight interval excludes a useful effect"))
+    assert not any(x.rule.startswith("null_") for x in closed)
+
+    # and these are WARNINGS: the ledger stays shippable while the overstatement is visible
+    assert not any(x.severity == "error" for x in under + silent)

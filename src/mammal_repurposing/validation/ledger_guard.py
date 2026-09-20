@@ -115,6 +115,35 @@ def validate_ledger(df: pd.DataFrame) -> list[Violation]:
                                    f"population={pop!r} matches clinical marker {hit!r} and names no "
                                    "healthy component; this ledger is healthy-adult ground truth and "
                                    "cannot carry a purely clinical sample."))
+        # --- IS A LABEL OF 0 ACTUALLY A REFUTATION? --------------------------------------------
+        # `enhances_healthy_young` is binary, and binary cannot hold the difference between "the
+        # interval excludes an effect worth having" and "the study could not have found one". The
+        # R3 section of healthy_adult_robustness_v1.md established that difference and nothing
+        # downstream changed, because a finding written into a report changes no data structure.
+        # This is that finding, moved to the place the label is read.
+        #
+        # Measured at the time of writing: of 14 compounds carrying a 0, seven have an interval
+        # whose upper bound excludes the project's own target effect (g = 0.25, scripts/126) and
+        # are properly refuted. Three admit one (dextroamphetamine reaches +0.47). Four carry no
+        # interval at all. The ledger asserts fourteen refutations and has evidence for seven.
+        if tier == "clean_MA" and str(r.get("enhances_healthy_young")) in {"0", "0.0"}:
+            from mammal_repurposing.archive.stepping_stone import TARGET_EFFECT_G, classify_null
+            klass = classify_null(r.get("ci_lo"), r.get("ci_hi"))
+            if klass == "underpowered":
+                v.append(Violation(
+                    c, "warn", "null_not_refuted",
+                    f"labelled non-enhancing, but the interval upper bound {r['ci_hi']:+.3f} "
+                    f"REACHES PAST the target effect g = {TARGET_EFFECT_G}. The data admit an "
+                    "effect of the size this project is looking for, so this is an absence of "
+                    "evidence and the label reads as evidence of absence. Downstream consumers "
+                    "treating it as a refutation are overstating it."))
+            elif klass == "unknown_precision":
+                v.append(Violation(
+                    c, "warn", "null_precision_unknown",
+                    "labelled non-enhancing with NO interval recorded, so a true null cannot be "
+                    "distinguished from an under-powered one. See stepping_stone_archive.csv: "
+                    "this compound is a revivable entry, not a closed question."))
+
         if not _has_ci(r):
             v.append(Violation(c, "warn", "missing_ci",
                                "no CI recorded: this row cannot distinguish a true null from an "
