@@ -970,7 +970,7 @@
     },
     "reports/pipeline/v8_real_gate1_v1.md::scripts/92_v8_real_gate1.py": {
       "outcome": "reproduced",
-      "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
+      "code_commit": "a5ac5a427cfd83da2ab82dcc3f885d7044617004",
       "verified_on": "2026-09-20",
       "evidence": "scripts/92_v8_real_gate1.py --report <tmp> reproduced the committed report byte for byte"
     },
