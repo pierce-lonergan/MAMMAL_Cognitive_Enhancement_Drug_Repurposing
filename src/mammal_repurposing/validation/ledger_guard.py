@@ -144,6 +144,24 @@ def validate_ledger(df: pd.DataFrame) -> list[Violation]:
                     "distinguished from an under-powered one. See stepping_stone_archive.csv: "
                     "this compound is a revivable entry, not a closed question."))
 
+        # --- AND THE MIRROR CASE: is a label of 1 a USEFUL effect? -----------------------------
+        # The inclusion rule is "the interval excludes 0". That is a statement about detectability,
+        # not about magnitude, and the two can disagree. Intranasal oxytocin (PMID 28467893) is the
+        # clearest instance in this ledger: ES 0.13 [0.02, 0.24] EXCLUDES 0, so the rule labels it an
+        # enhancer, and it also EXCLUDES g = 0.25, so it is refuted at the effect size this project
+        # is looking for. The authors call the effect negligible. A label of 1 does not imply a
+        # useful effect, and anything ranking compounds on that label is inheriting the confusion.
+        if tier == "clean_MA" and str(r.get("enhances_healthy_young")) in {"1", "1.0"} and _has_ci(r):
+            from mammal_repurposing.archive.stepping_stone import TARGET_EFFECT_G
+            if pd.notna(r.get("ci_hi")) and float(r["ci_hi"]) < TARGET_EFFECT_G:
+                v.append(Violation(
+                    c, "warn", "label_below_target",
+                    f"labelled an ENHANCER because the interval [{r['ci_lo']:+.3f}, "
+                    f"{r['ci_hi']:+.3f}] excludes 0, but its UPPER bound is below the project's "
+                    f"target effect g = {TARGET_EFFECT_G}. The effect is detectable and too small "
+                    "to be what the project is looking for. Do not read this label as a useful "
+                    "effect, and do not let a ranker treat it as equivalent to a large one."))
+
         if not _has_ci(r):
             v.append(Violation(c, "warn", "missing_ci",
                                "no CI recorded: this row cannot distinguish a true null from an "

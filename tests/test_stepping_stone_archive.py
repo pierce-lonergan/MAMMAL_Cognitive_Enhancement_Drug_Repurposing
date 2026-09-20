@@ -192,3 +192,43 @@ def test_every_null_in_the_ledger_is_now_classifiable():
     assert not nulls["hypothesis_id"].eq("H-null-omega_3").any(),         "omega_3 pools MCI participants and must not be in the clean healthy-adult null set"
     bac = nulls[nulls["hypothesis_id"] == "H-null-bacopa_monnieri"]
     assert len(bac) == 1 and bac["failure_mode"].iloc[0] == "underpowered",         "bacopa_monnieri's interval admits a target-sized effect; it is open, not refuted"
+
+
+def test_the_meaningfulness_threshold_is_defined_exactly_once():
+    """Two constants for one concept is how a ledger ends up disagreeing with itself.
+
+    Found 2026-09-20. `archive/stepping_stone.TARGET_EFFECT_G` was introduced as 0.25 and described
+    as "the project's replication-power target", citing scripts/126. Both halves were wrong.
+    scripts/126 defines 0.25 as META_AUGMENTATION_CEILING, the d-cycloserine IPD meta-analytic PEAK
+    across 21 RCTs, which is an empirical upper bound on what drug augmentation achieves rather than
+    a target anyone chose. Meanwhile scripts/121 had carried its own MEANINGFUL_G = 0.20 for the
+    same concept since well before this module existed.
+
+    The consequence was that the robustness report and the stepping-stone archive classified the
+    same rows differently, silently. There is now one definition, here, imported by scripts/121.
+    """
+    import importlib.util
+    from mammal_repurposing.archive.stepping_stone import TARGET_EFFECT_G
+
+    root = Path(__file__).resolve().parents[1]
+    spec = importlib.util.spec_from_file_location(
+        "_rob", root / "scripts" / "121_healthy_adult_robustness.py")
+    rob = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(rob)
+
+    assert rob.MEANINGFUL_G == TARGET_EFFECT_G, (
+        f"scripts/121 uses {rob.MEANINGFUL_G} while the archive uses {TARGET_EFFECT_G}. One "
+        "concept, one constant: import it rather than redeclaring it.")
+    assert TARGET_EFFECT_G == 0.20, (
+        "the meaningfulness floor is 0.20 (scripts/121, predating the archive). 0.25 is the "
+        "d-cycloserine augmentation CEILING in scripts/126 and is a different quantity.")
+
+    # scripts/121 must not have re-introduced a local definition. Checked on CODE lines only:
+    # the comment recording this history mentions the old declaration, and the first version of
+    # this test matched its own explanation.
+    src = (root / "scripts" / "121_healthy_adult_robustness.py").read_text(encoding="utf-8")
+    code = [ln for ln in src.split("\n") if not ln.lstrip().startswith("#")]
+    offenders = [ln for ln in code if ln.lstrip().startswith("MEANINGFUL_G")
+                 and "=" in ln and "import" not in ln]
+    assert not offenders, (
+        "scripts/121 has redeclared the threshold instead of importing it: " + str(offenders))

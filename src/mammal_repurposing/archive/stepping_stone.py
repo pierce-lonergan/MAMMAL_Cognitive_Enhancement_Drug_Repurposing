@@ -233,9 +233,20 @@ def assert_archive_valid(df: pd.DataFrame) -> None:
 # The discrimination helper that produced this archive's first finding.
 # -------------------------------------------------------------------------------------------------
 
-#: The project's own replication-power target (scripts/126_replication_power.py). A "null" whose
-#: interval reaches past this has not excluded the effect the project is looking for.
-TARGET_EFFECT_G = 0.25
+#: The smallest effect this project treats as practically meaningful. A "null" whose interval
+#: reaches past this has NOT excluded the effect being looked for.
+#:
+#: CORRECTED 2026-09-20. This was introduced as 0.25 and described as "the project's replication-
+#: power target", citing scripts/126. That was wrong on both counts. scripts/126 defines 0.25 as
+#: META_AUGMENTATION_CEILING, the d-cycloserine IPD meta-analytic PEAK across 21 RCTs (n = 1047),
+#: which is an empirical upper bound on what drug augmentation achieves, not a target anyone set.
+#: The project's actual meaningfulness floor is MEANINGFUL_G = 0.20 in scripts/121, which predates
+#: this module. Two constants for one concept is how a ledger ends up disagreeing with itself, so
+#: there is now one, defined here and imported by scripts/121.
+#:
+#: The direction of the correction is worth stating: LOWERING the bar means FEWER nulls count as
+#: refuted, because excluding a smaller effect is a harder thing for an interval to do.
+TARGET_EFFECT_G = 0.20
 
 
 def classify_null(ci_lo, ci_hi, target: float = TARGET_EFFECT_G) -> str:

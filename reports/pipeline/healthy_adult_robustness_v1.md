@@ -53,6 +53,26 @@ The ledger's stated inclusion rule is "CI excluding 0". Agreement between `ci_lo
 
 So the one statistically significant result in the healthy-adult axis **does not survive a single defensible re-reading of one compound**, and under that reading the "enhancers are exclusively acute CNS stimulants" claim is falsified by a non-stimulant. The curator's note gives a real reason for the shipped call (only one RT sub-domain significant, k = 4) — the point is not that the shipped label is wrong, it is that the headline is **not robust** to it. Note the asymmetry it sits against: modafinil is labelled an enhancer at g = +0.12 while its own robustness note records it as TOST-equivalent-to-zero.
 
+## R4 — is a label of 1 a USEFUL effect? (1 of 6 are entirely below the target, 4 more straddle it)
+
+R3 asks whether a label of 0 is a refutation. This asks the mirror question, which nobody had asked. The inclusion rule is "the interval excludes 0", a statement about DETECTABILITY. The project's target is g = 0.20, a statement about MAGNITUDE. They can disagree.
+
+| compound | g | CI | k | verdict | why |
+|---|---|---|---|---|---|
+| methylphenidate | +0.21 | [+0.09, +0.32] | 24 | **SPANS TARGET** | interval straddles g=0.2; magnitude unsettled |
+| modafinil | +0.12 | [+0.02, +0.21] | 14 | **SPANS TARGET** | interval straddles g=0.2; magnitude unsettled |
+| caffeine | +0.28 | [+0.21, +0.36] | 31 | **AT OR ABOVE TARGET** | entire interval is at or above g=0.2 |
+| nicotine | +0.34 | [+0.18, +0.50] | 9 | **SPANS TARGET** | interval straddles g=0.2; magnitude unsettled |
+| multivitamin_mineral | +0.07 | [+0.03, +0.11] | 3 | **BELOW TARGET** | interval excludes 0 AND excludes g=0.2: detectable but too small to be what is sought |
+| oxytocin_intranasal | +0.13 | [+0.02, +0.24] | 23 | **SPANS TARGET** | interval straddles g=0.2; magnitude unsettled |
+
+**1 of 6 labelled enhancers (multivitamin_mineral) have intervals that exclude 0 AND exclude g = 0.2.** They are real, replicated, and smaller than the effect this project is looking for. That is not a criticism of the compounds; it is a statement about what the label means. A ranker trained or evaluated on `enhances_healthy_young` is being asked to separate detectable-from-undetectable, not useful-from-useless, which is precisely the concern R1 raises about study volume.
+
+
+A further **4** (methylphenidate, modafinil, nicotine, oxytocin_intranasal) have intervals that STRADDLE the target, so their magnitude is unsettled: the data are compatible both with a useful effect and with one too small to want. Only compounds whose entire interval sits at or above the target can be said to clear it, and there is 1 of those.
+
+Taken together: of the labelled enhancers, only a minority have a magnitude this project could call established. That is not a criticism of the compounds and not a claim that the gate is wrong. It is a statement about what `enhances_healthy_young` encodes, and it is the same concern R1 raises from the direction of study volume: the label separates detectable from undetectable, which is not the same axis as useful from useless.
+
 ## R3 — most "nulls" are NOT refuted, only under-powered
 
 A null whose CI still admits g >= 0.2 has not been ruled out. Splitting the labelled nulls:

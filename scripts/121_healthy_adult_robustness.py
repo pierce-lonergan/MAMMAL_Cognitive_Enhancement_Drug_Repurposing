@@ -40,7 +40,11 @@ ROOT = Path(__file__).resolve().parents[1]
 LEDGER = ROOT / "data" / "raw" / "healthy_adult_cognition_ledger.csv"
 REPORT = ROOT / "reports" / "pipeline" / "healthy_adult_robustness_v1.md"
 N_PERM = 20000
-MEANINGFUL_G = 0.20      # the smallest effect this project treats as practically meaningful
+# ONE definition, imported. This file used to define its own MEANINGFUL_G = 0.20 while
+# archive/stepping_stone.py carried TARGET_EFFECT_G = 0.25 for the same concept, so the
+# robustness report and the stepping-stone archive classified the same rows differently.
+from mammal_repurposing.archive.stepping_stone import (  # noqa: E402
+    TARGET_EFFECT_G as MEANINGFUL_G)
 
 
 def clean_ma(ledger: pd.DataFrame) -> pd.DataFrame:
@@ -126,12 +130,43 @@ def r3_evidence_of_absence(p: pd.DataFrame) -> list[dict]:
     return out
 
 
+def r4_enhancers_below_target(p: pd.DataFrame) -> list[dict]:
+    """The mirror of R3. Is a label of 1 a USEFUL effect, or merely a detectable one?
+
+    R3 asks whether a label of 0 is really a refutation. This asks the question nobody had asked in
+    the other direction. The inclusion rule is "the interval excludes 0", which is a statement about
+    DETECTABILITY. The project's target effect is g = 0.25, which is a statement about MAGNITUDE.
+    They can disagree, and on this ledger they disagree on half the positive class.
+
+    A compound whose interval excludes 0 AND excludes 0.25 is real and too small: detectable,
+    replicated, and beneath the size the project is looking for. Treating it as equivalent to a
+    large effect is what turns `enhances_healthy_young` into the detection label that R1 warned it
+    already was.
+    """
+    out = []
+    for _, r in p[p["enhances_healthy_young"] == 1].iterrows():
+        lo, hi = r["ci_lo"], r["ci_hi"]
+        if pd.isna(lo) or pd.isna(hi):
+            verdict, why = "NO CI RECORDED", "magnitude cannot be assessed"
+        elif hi < MEANINGFUL_G:
+            verdict, why = "BELOW TARGET", (f"interval excludes 0 AND excludes g={MEANINGFUL_G}: "
+                                            "detectable but too small to be what is sought")
+        elif lo >= MEANINGFUL_G:
+            verdict, why = "AT OR ABOVE TARGET", f"entire interval is at or above g={MEANINGFUL_G}"
+        else:
+            verdict, why = "SPANS TARGET", f"interval straddles g={MEANINGFUL_G}; magnitude unsettled"
+        out.append({"compound": r["compound"], "g": r["representative_g"], "ci_lo": lo,
+                    "ci_hi": hi, "k": r["n_studies"], "verdict": verdict, "why": why})
+    return out
+
+
 def main() -> int:
     ledger = pd.read_csv(LEDGER)
     p = clean_ma(ledger)
     r1 = r1_power_confound(p)
     rule_rows, sens = r2_label_rule_consistency(p)
     r3 = r3_evidence_of_absence(p)
+    r4 = r4_enhancers_below_target(p)
     absent = ledger[ledger["evidence_tier"] == "absent"]["compound"].tolist()
 
     L.info("R1 stimulant AUROC=%.2f (p=%.4f) vs n_studies AUROC=%.2f (p=%.4f)",
@@ -140,14 +175,17 @@ def main() -> int:
     if sens["conflicts"]:
         L.info("R2 headline under stated rule: AUROC %.2f -> %.2f (p %.4f -> %.4f)",
                sens["au_shipped"], sens["au_rule"], sens["p_shipped"], sens["p_rule"])
+    n_below = sum(1 for x in r4 if x["verdict"] == "BELOW TARGET")
+    L.info("R4 %d/%d labelled ENHANCERS have intervals entirely BELOW the target effect",
+           n_below, len(r4))
     L.info("R3 %d/%d nulls are INCONCLUSIVE rather than refuted",
            sum(1 for r in r3 if r["verdict"] == "INCONCLUSIVE"), len(r3))
 
-    write_report(p, r1, rule_rows, sens, r3, absent)
+    write_report(p, r1, rule_rows, sens, r3, r4, absent)
     return 0
 
 
-def write_report(p, r1, rule_rows, sens, r3, absent) -> None:
+def write_report(p, r1, rule_rows, sens, r3, r4, absent) -> None:
     n_enh = int(p["enhances_healthy_young"].sum())
     Ls: list[str] = []
     A = Ls.append
@@ -213,6 +251,48 @@ def write_report(p, r1, rule_rows, sens, r3, absent) -> None:
     else:
         A("No rule/label conflicts found.")
     A("")
+
+    _below = [r["compound"] for r in r4 if r["verdict"] == "BELOW TARGET"]
+    _span = [r["compound"] for r in r4 if r["verdict"] == "SPANS TARGET"]
+    A(f"## R4 — is a label of 1 a USEFUL effect? ({len(_below)} of {len(r4)} are "
+      f"entirely below the target, {len(_span)} more straddle it)")
+    A("")
+    A("R3 asks whether a label of 0 is a refutation. This asks the mirror question, which nobody "
+      "had asked. The inclusion rule is \"the interval excludes 0\", a statement about "
+      "DETECTABILITY. The project's target is g = %.2f, a statement about MAGNITUDE. They can "
+      "disagree." % MEANINGFUL_G)
+    A("")
+    A("| compound | g | CI | k | verdict | why |")
+    A("|---|---|---|---|---|---|")
+    for r in r4:
+        ci = ("not recorded" if pd.isna(r["ci_lo"]) or pd.isna(r["ci_hi"])
+              else f"[{r['ci_lo']:+.2f}, {r['ci_hi']:+.2f}]")
+        k = "n/a" if pd.isna(r["k"]) else f"{r['k']:.0f}"
+        A(f"| {r['compound']} | {r['g']:+.2f} | {ci} | {k} | **{r['verdict']}** | {r['why']} |")
+    A("")
+    if _below:
+        A(f"**{len(_below)} of {len(r4)} labelled enhancers ({', '.join(_below)}) have intervals "
+          f"that exclude 0 AND exclude g = {MEANINGFUL_G}.** They are real, replicated, and smaller "
+          "than the effect this project is looking for. That is not a criticism of the compounds; "
+          "it is a statement about what the label means. A ranker trained or evaluated on "
+          "`enhances_healthy_young` is being asked to separate detectable-from-undetectable, not "
+          "useful-from-useless, which is precisely the concern R1 raises about study volume.")
+        A("")
+        A("")
+    if _span:
+        A(f"A further **{len(_span)}** ({', '.join(_span)}) have intervals that STRADDLE the "
+          "target, so their magnitude is unsettled: the data are compatible both with a useful "
+          "effect and with one too small to want. Only compounds whose entire interval sits at or "
+          "above the target can be said to clear it, and there "
+          + (f"{'is' if len(r4) - len(_below) - len(_span) == 1 else 'are'} "
+             f"{len(r4) - len(_below) - len(_span)} of those.") )
+        A("")
+        A("Taken together: of the labelled enhancers, only a minority have a magnitude this project "
+          "could call established. That is not a criticism of the compounds and not a claim that "
+          "the gate is wrong. It is a statement about what `enhances_healthy_young` encodes, and it "
+          "is the same concern R1 raises from the direction of study volume: the label separates "
+          "detectable from undetectable, which is not the same axis as useful from useless.")
+        A("")
 
     A("## R3 — most \"nulls\" are NOT refuted, only under-powered")
     A("")
