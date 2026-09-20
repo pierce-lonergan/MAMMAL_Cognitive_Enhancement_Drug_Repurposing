@@ -248,6 +248,137 @@ CURATED = [
                      "binding constraint WITHIN Cluster D.",
         status="DEAD",
     ),
+    # --- 2026-09-20: compounds supplied as "overlooked" candidates, fact-checked before entry.
+    # Working in reports/pipeline/trash_can_candidates_2026-09.md: 40 of 73 claims did not survive.
+    dict(
+        hypothesis_id="H-dihexa-healthy",
+        claim="Dihexa enhances cognition in healthy adults via HGF/c-Met-driven synaptogenesis, at "
+              "far lower concentrations than BDNF.",
+        domain="trash-can candidate",
+        verdict="REFUTED", died_on="2026-09-20",
+        killed_by="reports/pipeline/trash_can_candidates_2026-09.md",
+        evidence="The mechanism does not operate on an undamaged substrate. ADDF Cognitive "
+                 "Vitality, verbatim: Dihexa did not improve cognitive functions in rats with "
+                 "normal cognition, and the HGF/c-Met system is not engaged during normal learning "
+                 "under healthy conditions. Separately the founding mechanism paper (Benoist 2014, "
+                 "PMID 25187433) was RETRACTED 2025-04-29 after a Washington State University "
+                 "investigation found image manipulation, and four papers from that lab carry "
+                 "Expressions of Concern (JPET 2021;378(3):311-314). The seven-orders-of-magnitude "
+                 "potency figure comes from a 2012 press release; the two were never directly "
+                 "compared. Zero human data exist. The mechanism WAS tested at scale via the "
+                 "successor fosgonimeton: 5 registered trials, about 1,090 participants.",
+        failure_mode="mechanism_contradicted",
+        keystone="", keystone_predicate="", revival_test="",
+        status="PERMANENTLY_CLOSED",
+    ),
+    dict(
+        hypothesis_id="H-4mu-durability",
+        claim="4-methylumbelliferone produces DURABLE cognitive gain by thinning perineuronal nets.",
+        domain="trash-can candidate",
+        verdict="REFUTED", died_on="2026-09-20",
+        killed_by="reports/pipeline/trash_can_candidates_2026-09.md; source Dubisova 2022",
+        evidence="Dubisova 2022 (PMID 35066096) is the only study that measured the washout, and it "
+                 "dissociates the biomarker from the behaviour: the memory-enhancing effect did not "
+                 "persist 1 month after treatment ended and the SOR score returned to pre-treatment "
+                 "values, WHILE THE PNN REDUCTION DID PERSIST. That is this project's binding "
+                 "constraint failing on the mechanism's own home assay. Regimen was 5 percent w/w "
+                 "chow, about 6.7 mg/g/day, for six months in mice. The mechanism is also "
+                 "misdescribed as PNN degradation: 4-MU inhibits hyaluronan SYNTHESIS. No study "
+                 "measures 4-MU in brain or CSF, and no registered hymecromone trial carries a "
+                 "cognitive or CNS endpoint.",
+        failure_mode="unknown_precision",
+        keystone="The washout result is a point comparison with no interval reported, so it cannot "
+                 "formally exclude a smaller durable effect. Recorded as imprecise rather than as a "
+                 "refutation, which is the conservative reading. The dissociation it shows is the "
+                 "load-bearing part and does not depend on the interval.",
+        keystone_predicate="durable_healthy_rows(1)",
+        revival_test="Only if a verified durable healthy-adult row appears anywhere, at which point "
+                     "re-examine whether an ECM mechanism is implicated.",
+        status="DEAD",
+    ),
+    dict(
+        hypothesis_id="H-tak071-ampa",
+        claim="TAK-071 is a low-impact AMPA receptor positive allosteric modulator, and evidence "
+              "that the AMPA-PAM class avoids first-generation ampakine liabilities.",
+        domain="trash-can candidate",
+        verdict="REFUTED", died_on="2026-09-20",
+        killed_by="reports/pipeline/trash_can_candidates_2026-09.md",
+        evidence="TAK-071 is a muscarinic M1 receptor positive allosteric modulator with no AMPA "
+                 "mechanism at all (PMID 34240455 first-in-human, 177 healthy volunteers, "
+                 "safety/PK/qEEG only, no cognitive endpoints; PMID 39761063 Phase 2 in Parkinson "
+                 "disease). The low-impact-versus-first-generation framing is additionally a "
+                 "category error: CX516 is both the first ampakine into human trials (PMID 9270067) "
+                 "and the prototypical low-impact compound.",
+        failure_mode="mechanism_contradicted",
+        keystone="", keystone_predicate="", revival_test="",
+        status="PERMANENTLY_CLOSED",
+    ),
+    dict(
+        hypothesis_id="H-nsi189-healthy",
+        claim="NSI-189 improves objective cognition, and the improvement persists after washout.",
+        domain="trash-can candidate",
+        verdict="REFUTED", died_on="2026-09-20",
+        killed_by="reports/pipeline/trash_can_candidates_2026-09.md",
+        evidence="The Phase 2 signal is SELF-REPORT only and dose-discordant: at 40 mg, SDQ -8.2 "
+                 "(p = 0.04) and MGH-CPFQ -1.9 (p = 0.035); at 80 mg all null. The objective "
+                 "Cogstate battery showed NO significant difference at either dose (PMID 30626911). "
+                 "The trial had no washout or follow-up period, so the persistence claim asserts "
+                 "something never measured. The molecule is now ALTO-100 / amdiglurax, and Alto's "
+                 "Phase 2b (NCT05712187, n = 301) enriched for a memory-linked biomarker and still "
+                 "missed its primary endpoint in October 2024. The one healthy-volunteer study "
+                 "(NCT01310881) administered no cognitive battery.",
+        failure_mode="wrong_population",
+        keystone="Every cognitive datum is in depressed patients and is subjective. No healthy adult "
+                 "has been given NSI-189 and tested. The claim is untested in the population it is "
+                 "about, rather than refuted in it.",
+        keystone_predicate="ci_recorded(nsi_189)",
+        revival_test="Re-adjudicate if a healthy-adult NSI-189 cognitive row with an interval is "
+                     "ever curated into the healthy-adult ledger.",
+        status="DEAD",
+    ),
+    dict(
+        hypothesis_id="H-klotho-glun2b",
+        claim="Peripherally administered klotho enhances cognition by driving GluN2B-containing "
+              "NMDA receptors into the postsynaptic density.",
+        domain="trash-can candidate",
+        verdict="REFUTED", died_on="2026-09-20",
+        killed_by="reports/pipeline/trash_can_candidates_2026-09.md",
+        evidence="The GluN2B result belongs to LIFELONG TRANSGENIC OVEREXPRESSION (Dubal 2014, PMID "
+                 "24813892) and is explicitly contradicted in the acute peripheral-protein paradigm "
+                 "that the macaque protocol actually models: Leon 2017 (PMID 28793260) reports that "
+                 "synaptic GluN2B did NOT differ between vehicle and drug despite cognitive "
+                 "enhancement. The cognitive effect is real; this explanation of it is not.",
+        failure_mode="mechanism_contradicted",
+        keystone="", keystone_predicate="", revival_test="",
+        status="PERMANENTLY_CLOSED",
+    ),
+    dict(
+        hypothesis_id="H-roflumilast-durability",
+        claim="Low-dose roflumilast (100 ug) produces durable cognitive gain in healthy adults.",
+        domain="trash-can candidate",
+        verdict="ABSTAINED", died_on="2026-09-20",
+        killed_by="reports/pipeline/trash_can_candidates_2026-09.md",
+        evidence="NOT TESTED, rather than failed. Roflumilast 100 ug is the only compound in the "
+                 "supplied list with genuine healthy-adult cognitive evidence: PMID 29241652 "
+                 "(healthy young, immediate recall up 2-3 words on a 30-word verbal learning task, "
+                 "enhanced P600) and PMID 30776650 (healthy 60-80, n = 20, delayed recall d = 0.69). "
+                 "EVERY such study is a single acute dose about 1 h before testing, so durability "
+                 "has never been measured. Caveats on the acute claim: the two studies disagree "
+                 "about which endpoint moves (immediate in the young, delayed in the old, spatial "
+                 "in neither, which is G3 assay-dependence inside one drug and one group); both "
+                 "come from the same group with industry co-authors; NCT02051335 (n = 27) found "
+                 "monotherapy did NOT improve verbal recall; and ROSTMEMA (PMID 42032844, n = 100) "
+                 "missed its pre-specified primary analysis.",
+        failure_mode="wrong_endpoint",
+        keystone="Nobody has dosed a healthy adult with roflumilast and retested off drug. This is "
+                 "the most testable durability question the supplied list produced, and it is a "
+                 "curation and study-design task rather than a modelling one.",
+        keystone_predicate="durable_healthy_rows(1)",
+        revival_test="If any verified durable healthy-adult row appears, roflumilast is the cheapest "
+                     "replication target in the list: approved, oral, sub-emetic at 100 ug, with two "
+                     "acute positives to anchor a washout design.",
+        status="DEAD",
+    ),
 ]
 
 
