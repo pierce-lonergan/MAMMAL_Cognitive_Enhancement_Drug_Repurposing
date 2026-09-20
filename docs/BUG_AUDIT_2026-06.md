@@ -612,3 +612,10 @@ visible rather than silent. Suite: 754 passed, 1 skipped.
 **Honest scope.** The KILL rests on one testable family with 6 scored compounds. It is a real
 failure on the rule's home turf, and it is a small n. The right reading is that L4 has not EARNED a
 verdict, not that it has been proven worthless.
+
+> **CORRECTION 2026-09-20.** The sentence above attributing BOTH readouts to PMID 30766471 and to
+> the same participants is WRONG. PMID 30766471 reports ocular dominance ONLY and contains no
+> learning task. The perceptual-learning half is Rokem & Silver 2010 (PMID 20850321), a different
+> laboratory and different participants, and the contrast is partly confounded with dose regimen.
+> The L4 demotion is unaffected: it rested on the permutation gate, not on this citation. Full
+> accounting in docs/PREREG_DEVIATIONS_2026-06.md, third entry of 2026-09-20.

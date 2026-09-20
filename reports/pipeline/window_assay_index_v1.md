@@ -2,7 +2,9 @@
 
 **Verdict: KILL - demote L4 to a per-assay annotation**
 
-The L4 psychoplastogen window scores COMPOUNDS. That presumes window-opening is a property a compound has. Sheynin 2019 (PMID 30766471) gave donepezil to healthy adults and measured two plasticity readouts in the same people: perceptual learning improved, the ocular-dominance shift shrank (t(11) = -4.9, p < 0.001). This is the test of whether that is an outlier or the rule.
+The L4 psychoplastogen window scores COMPOUNDS. That presumes window-opening is a property a compound has. Donepezil is the reason to doubt it: in healthy adults it AUGMENTS motion-direction perceptual learning (Rokem & Silver 2010, PMID 20850321, n = 12, 8-day steady-state dosing) and REDUCES the ocular-dominance shift after monocular deprivation (Sheynin 2019, PMID 30766471, t(11) = -4.9, p < 0.001). It is NULL for letter identification (Levi 2020, PMID 32347910, no placebo arm) and NULL for texture discrimination (Byrne 2020, PMID 32511666, placebo-controlled, single dose).
+
+Two qualifications, both material. No two of those studies share participants except Rokem & Silver 2010 and 2013, and Sheynin is a different laboratory; an earlier version of this report wrongly said all readouts came from the same people. And the contrast is partly confounded with DOSING, since both positives used 8-day steady-state dosing while the ocular-dominance reduction and the texture null used a single dose. What strengthens it is that one author (Silver) is on the positive and on both nulls, so the assay contrast is partly within-laboratory.
 
 ## Coverage
 

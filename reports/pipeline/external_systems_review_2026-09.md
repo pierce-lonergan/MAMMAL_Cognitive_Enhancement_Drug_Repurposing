@@ -14,7 +14,7 @@ new. That ordering is the finding.
 | --- | --- | --- |
 | G1 | durable-cognition ground truth | ZERO verified examples of post-washout cognitive gain in healthy adults. Acute ledger 42 rows, 19 in the primary analysis set. The pre-registered drug-by-training test FAILED: contrast reversed sign once n >= 25 was required. |
 | G2 | allosteric blindness | The DTI head is a BindingDB-pKd model. AMPA-PAM AUROC 0.26, AMPA orthosteric 0.09, MMP9 0.42, all permutation p > 0.7. MAMMAL-alone within-target rho = -0.244. |
-| G3 | assay-dependence of the window label | Donepezil raises perceptual learning and lowers the ocular-dominance shift in the same healthy adults (PMID 30766471). Measured this session: L4 agreement 0.50 at permutation p = 1.000 on its home assay family. |
+| G3 | assay-dependence of the window label | Donepezil AUGMENTS motion-direction perceptual learning (PMID 20850321) and REDUCES the ocular-dominance shift (PMID 30766471, t(11) = -4.9, p < 0.001), while being null for letter identification (PMID 32347910) and texture discrimination (PMID 32511666). Corrected 2026-09-20: these are four studies from two labs, not one study in the same people, and the contrast is partly confounded with dose regimen. Measured this session: L4 agreement 0.50 at permutation p = 1.000 on its home assay family. |
 | G4 | no human window biomarker | cTBS ICC 0.16 to 0.53, 39 to 45% responders. Sensory-LTP meta null. BDNF Val66Met null in about three quarters of the data. |
 
 ## Headline: AlphaGenome addresses none of them

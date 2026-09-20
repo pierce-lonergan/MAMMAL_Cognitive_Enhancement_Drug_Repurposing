@@ -331,3 +331,90 @@ calibration anchors but adding them to a compound-keyed ledger would break its s
 belong in a separate reference table.
 
 Full provenance: `data/raw/provenance/ledger_expansion_2026-09.json`.
+
+---
+
+## 2026-09-20 (third entry) — the G3 premise was mis-cited, and the correction makes it narrower and better evidenced
+
+**What was wrong.** This project wrote, in code comments, generated reports and the B2 stanza above,
+that "Sheynin 2019 (PMID 30766471) gave donepezil to healthy adults and measured two plasticity
+readouts in the same people: perceptual learning improved, the ocular-dominance shift shrank."
+
+Verified against primary sources on 2026-09-20: **PMID 30766471 contains no perceptual-learning
+measure at all.** Its sole dependent variable across all three of its experiments is the ocular
+dominance index, measured by binocular phase combination or binocular rivalry. There is no learning
+task, no training, and no pre/post learning curve. "Perceptual learning" appears in that paper only
+in the Introduction and Discussion, citing other people's work.
+
+The sentence conflated four studies from two laboratories, and the phrase "in the same people" was
+false for every pair except one.
+
+**The accurate version.**
+
+| assay | effect | citation | n | dosing |
+| --- | --- | --- | ---: | --- |
+| perceptual learning, motion-direction discrimination | **augmented** | Rokem & Silver 2010, PMID 20850321 | 12 | 8-day steady state |
+| the same, retested at 5 to 15 months | enhanced in change scores only | Rokem & Silver 2013, PMID 23755006 | 8 of those same 12 | none at retest |
+| perceptual learning, letter identification and uncrowding | **null** | Levi et al. 2020, PMID 32347910 | 19 | multi-day |
+| perceptual learning, texture discrimination | **null** | Byrne et al. 2020, PMID 32511666 | 22 analysed | single dose |
+| ocular-dominance shift after monocular deprivation | **reduced** | Sheynin et al. 2019, PMID 30766471 | 12 in that experiment | single dose |
+
+Only Rokem & Silver 2010 and 2013 share participants. Sheynin is a different laboratory, a different
+country and a different cohort from all the Silver-lab work.
+
+**Two qualifications that cut in opposite directions, and both belong in the record.**
+
+Against the claim: the contrast is **partly confounded with dose regimen**. Both positive results
+used 8-day steady-state dosing; the ocular-dominance reduction and the texture-discrimination null
+both used a single dose. Sheynin states this explicitly, noting that the perceptual-learning studies
+"provided multiple days of cholinergic enhancement while the present study only provided a single
+dose." A pure assay dissociation cannot be claimed. Two further caveats: the letter-identification
+null had **no placebo arm** and rests on a historical between-study comparison, which is a weaker
+null than it reads as; and Rokem & Silver 2010 itself reports donepezil having an overall
+**deleterious** effect on raw thresholds, F(1,9) = 12.76, p < 0.05.
+
+For the claim: the assay contrast is **partly within-laboratory**. Michael Silver is an author on
+the positive result and on both nulls. Same drug, same lab, opposite outcomes across assays.
+
+**Net effect on G3: it survives, narrower and better evidenced.** The corrected statement is that
+donepezil's effect on plasticity readouts in healthy adults is positive for dorsal-stream motion
+perceptual learning, null for ventral-stream letter and texture learning, and negative for
+ocular-dominance consolidation, across four studies and two laboratories, with dose regimen as an
+uncontrolled covariate. That is three distinct answers rather than two, which is a stronger
+statement about assay dependence than the version that was wrong.
+
+**Does this reverse the L4 demotion? No, and it is worth being precise about why.** The demotion
+that took PERSEUS recall from 0.50 to 0.06 was NOT based on Sheynin. Sheynin motivated the question;
+the kill came from the measured permutation gate, agreement 0.50 at permutation p = 1.000 on
+`dendritic_spine`, the one assay family the rule was derived from and the only statistically
+testable one, against a family base rate where a constant "always opener" scores 0.83. The B2 report
+says this explicitly: "The KILL fired, but not by the route expected... The kill came from the
+permutation gate." The pre-registered sign-flip criterion measured 25%, below its own 30% threshold,
+and was reported as underpowered rather than as a pass. Correcting the motivating citation does not
+touch the evidence that did the killing.
+
+**One correction to the project's own prior belief, in the other direction.** `ledger_guard`
+recorded that the Rokem & Silver 2013 durability advantage "lives only in a baseline-normalised
+quantity". Verified: correct in substance, too narrow in wording. The paper reports a second,
+non-normalised measure (the raw pre-post threshold difference, signed-rank p = 0.036), but both
+measures are baseline-REFERENCED and so both inherit the same pre-training imbalance, which the
+paper itself reports at p = 0.05, driven by a single outlier (excluding that subject, p = 0.1). The
+other two elements of the project's reading are confirmed and are stronger than recorded: the
+placebo arm also retained its learning ("no evidence for decay of learning"), and absolute follow-up
+thresholds converged so completely that placebo (7.3 degrees) is numerically better than donepezil
+(7.4 degrees), with no significant effect of condition. The wording in `ledger_guard` is corrected.
+
+**How this was found.** A frontier-systems research sweep flagged it while arguing that the project
+should re-open its donepezil rows. The same sweep also proposed Rokem & Silver 2013 as an
+unrecognised existence proof for durable post-washout gain. That half is not new: the study is
+already in `paired_experience_ledger.csv`, was already adjudicated, and the `durable_healthy_rows`
+predicate was tightened on 2026-09-20 specifically to reject it as unreplicated. The sweep mistook a
+recorded rejection for ignorance, which is a reasonable mistake to make about a project whose
+reasoning lived in prose until this week.
+
+**Verification status of the sweep that produced this.** The workflow's adversarial verification
+phase never ran: it died on a session limit, and a defect in the workflow script (an `agent()` call
+that resolves to `null` on terminal error, wrapped by a `.then()` into a truthy object that survived
+`filter(Boolean)`) reported 16 verifications that were empty shells. The G3 correction above was
+therefore verified separately and specifically, against primary sources, before any of it was
+written into the repository. Nothing else from that sweep has been adopted.

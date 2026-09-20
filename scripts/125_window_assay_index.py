@@ -1,10 +1,18 @@
 """B2 - is "opens a plasticity window" a property of a COMPOUND, or of a (compound, assay) pair?
 
 The L4 window (engine/psychoplastogen.py) scores compounds. Scoring compounds presumes the window
-is a compound-level property. Sheynin 2019 (PMID 30766471) is the reason to doubt that: healthy
-adults on donepezil showed FASTER perceptual learning and a SMALLER ocular-dominance shift
-(t(11) = -4.9, p < 0.001) - two plasticity readouts, same people, same drug, opposite signs.
-Sheynin is either an outlier or the rule, and the entire compound-level screen hinges on which.
+is a compound-level property. Donepezil is the reason to doubt that: in healthy adults it
+AUGMENTS motion-direction perceptual learning (Rokem & Silver 2010, PMID 20850321) and REDUCES the
+ocular-dominance shift after monocular deprivation (Sheynin 2019, PMID 30766471, t(11) = -4.9,
+p < 0.001). One drug, opposite signs by readout.
+
+CORRECTED 2026-09-20. This file previously attributed BOTH readouts to PMID 30766471 and said they
+were measured "in the same people". Verified against the primary source: PMID 30766471 reports ONLY
+ocular dominance and contains no learning task. The four donepezil studies come from two
+laboratories, and the only pair sharing participants is Rokem & Silver 2010 <-> 2013 (8 of the
+original 12). The contrast is also partly confounded with DOSING: both positives used 8-day
+steady-state dosing, while the ocular-dominance reduction and the texture-discrimination null both
+used a single dose, which Sheynin notes explicitly. See docs/PREREG_DEVIATIONS_2026-06.md.
 
 This script measures it against `data/raw/plasticity_window_assays.csv`, a citation-verified index
 of (compound, assay-family, direction) outcomes. Two pre-registered criteria, both decided here:
@@ -221,10 +229,19 @@ def write_report(df, verified, cons, rate, agree, calls, testable, n_in2, n_mult
         "# B2 - the plasticity window is measured, not owned", "",
         f"**Verdict: {verdict}**", "",
         "The L4 psychoplastogen window scores COMPOUNDS. That presumes window-opening is a property "
-        "a compound has. Sheynin 2019 (PMID 30766471) gave donepezil to healthy adults and measured "
-        "two plasticity readouts in the same people: perceptual learning improved, the "
-        "ocular-dominance shift shrank (t(11) = -4.9, p < 0.001). This is the test of whether that "
-        "is an outlier or the rule.", "",
+        "a compound has. Donepezil is the reason to doubt it: in healthy adults it AUGMENTS "
+        "motion-direction perceptual learning (Rokem & Silver 2010, PMID 20850321, n = 12, 8-day "
+        "steady-state dosing) and REDUCES the ocular-dominance shift after monocular deprivation "
+        "(Sheynin 2019, PMID 30766471, t(11) = -4.9, p < 0.001). It is NULL for letter "
+        "identification (Levi 2020, PMID 32347910, no placebo arm) and NULL for texture "
+        "discrimination (Byrne 2020, PMID 32511666, placebo-controlled, single dose).", "",
+        "Two qualifications, both material. No two of those studies share participants except "
+        "Rokem & Silver 2010 and 2013, and Sheynin is a different laboratory; an earlier version of "
+        "this report wrongly said all readouts came from the same people. And the contrast is "
+        "partly confounded with DOSING, since both positives used 8-day steady-state dosing while "
+        "the ocular-dominance reduction and the texture null used a single dose. What strengthens "
+        "it is that one author (Silver) is on the positive and on both nulls, so the assay contrast "
+        "is partly within-laboratory.", "",
         "## Coverage", "",
         f"- rows: **{len(df)}** (pre-registered success bar {MIN_ROWS})",
         f"- assay families: **{fams}** (bar {MIN_FAMILIES})",
@@ -254,8 +271,10 @@ def write_report(df, verified, cons, rate, agree, calls, testable, n_in2, n_mult
     else:
         out.append("No compound has a directional result in two or more assay families. The "
                    "cross-assay question is therefore **not answerable from the published "
-                   "literature as indexed here** - which is itself the finding: the field does not "
-                   "routinely measure two plasticity readouts in the same subjects.")
+                   "literature as indexed here** - which is itself the finding: the field almost "
+                   "never measures two plasticity readouts in the same subjects, so nearly every "
+                   "apparent sign flip is a between-study comparison carrying between-study "
+                   "confounds, dose regimen chief among them.")
     out += ["", "## Does the L4 structural window predict the empirical direction?", "",
             "Truth = the compound opened the window in at least one study of that family. "
             "Prediction = the structural call scoped to that family. The permutation gate shuffles "

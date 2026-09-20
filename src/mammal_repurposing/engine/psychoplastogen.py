@@ -55,11 +55,17 @@ _AROM_HALO = "[c][F,Cl,Br,I]"                          # aromatic halogen (DOI/D
 #
 # Everything above computes ONE structural verdict per compound. Reading that verdict as "this
 # compound opens a plasticity window" is a claim about an organism, and the organism answers
-# differently depending on what you measure. Sheynin 2019 (PMID 30766471) gave donepezil to healthy
-# adults and measured two plasticity readouts in the same people: perceptual learning went UP, and
-# the ocular-dominance shift went DOWN (t(11) = -4.9, p < 0.001). One drug, one dose, two assays,
-# opposite signs. A compound-level window flag has no truth value unless it says which assay it is
-# a claim about.
+# differently depending on what you measure. Donepezil in healthy adults AUGMENTS motion-direction
+# perceptual learning (Rokem & Silver 2010, PMID 20850321) and REDUCES the ocular-dominance shift
+# after monocular deprivation (Sheynin 2019, PMID 30766471, t(11) = -4.9, p < 0.001), while being
+# NULL for letter identification (PMID 32347910) and texture discrimination (PMID 32511666). A
+# compound-level window flag has no truth value unless it says which assay it is a claim about.
+#
+# CORRECTED 2026-09-20: this comment previously attributed both readouts to PMID 30766471 and to the
+# same participants. PMID 30766471 reports ocular dominance ONLY. The studies span two laboratories
+# and share participants only between Rokem & Silver 2010 and 2013. The contrast is additionally
+# confounded with dose regimen: the positives used 8-day steady-state dosing, the ocular-dominance
+# reduction and the texture null used a single dose.
 #
 # So `assay` is REQUIRED and keyword-only. There is no default, deliberately: a default would let
 # every existing call site keep asserting the unscoped claim while looking like it had been fixed.
@@ -178,8 +184,8 @@ def psychoplastogen_window(smiles: str, *, assay: str) -> PsychoplastogenCall:
     argument exists. What the assay changes is the STANDING of the verdict: outside
     L4_VALIDATED_ASSAY the rule has never been checked against that family's empirical outcomes,
     and a caller that wants to use it there should have to say so in writing. Donepezil moves
-    perceptual learning and ocular dominance in OPPOSITE directions in the same participants
-    (Sheynin 2019, PMID 30766471), so "opens a plasticity window" is not a property a compound has.
+    perceptual learning and ocular dominance in OPPOSITE directions across studies
+    (PMID 20850321 vs PMID 30766471), so "opens a plasticity window" is not a property a compound has.
 
     Raises ValueError on an unknown assay family, rather than silently accepting a typo as a scope.
     """
@@ -217,7 +223,8 @@ def psychoplastogen_window(smiles: str, *, assay: str) -> PsychoplastogenCall:
         call.reasons.append(
             f"SCOPE: this verdict is EXTRAPOLATED to assay={assay!r}. The structural rule was "
             f"derived and checked on {L4_VALIDATED_ASSAY!r} only; window direction is known to "
-            "flip between assay families in the same participants (Sheynin 2019, PMID 30766471).")
+            "flip between assay families for the same compound (donepezil: PMID 20850321 positive "
+            "for motion perceptual learning, PMID 30766471 negative for ocular dominance).")
     return call
 
 

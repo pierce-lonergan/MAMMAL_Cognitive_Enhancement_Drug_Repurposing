@@ -120,15 +120,19 @@ CURATED = [
         domain="PERSEUS/L4",
         verdict="ABSTAINED", died_on="2026-09-15",
         killed_by="scripts/125_window_assay_index.py -> window_assay_index_v1.md",
-        evidence="Measured 25% (1 of 4). Donepezil does flip (ocular_dominance negative, "
-                 "perceptual_learning positive; Sheynin 2019 PMID 30766471, t(11) = -4.9, "
-                 "p < 0.001), so the phenomenon is real. But only 4 compounds carry a SIGNED "
+        evidence="Measured 25% (1 of 4). Donepezil does flip (perceptual_learning positive, "
+                 "Rokem & Silver 2010 PMID 20850321; ocular_dominance negative, Sheynin 2019 "
+                 "PMID 30766471, t(11) = -4.9, p < 0.001), so the phenomenon is real - though the "
+                 "two results come from DIFFERENT laboratories and different participants, and "
+                 "differ in dose regimen (8-day steady state vs single dose), so it is a "
+                 "between-study contrast. But only 4 compounds carry a SIGNED "
                  "direction in two or more families, so the RATE is not estimable. The L4 kill came "
                  "from the permutation gate instead, not from this test.",
         failure_mode="underpowered",
-        keystone="The field rarely measures two plasticity readouts in the same subjects, so the "
-                 "cross-assay question is mostly unanswerable from the published literature as "
-                 "indexed. Four compounds is not a rate.",
+        keystone="The field almost never measures two plasticity readouts in the same subjects, "
+                 "so the cross-assay question is mostly unanswerable from the published literature "
+                 "as indexed, and nearly every apparent flip is a between-study comparison carrying "
+                 "between-study confounds. Four compounds is not a rate.",
         keystone_predicate="assay_family_signed_compounds(12)",
         revival_test="Re-run the sign-consistency arm of scripts/125 at 12 or more signed "
                      "multi-family compounds and report the rate with an interval.",

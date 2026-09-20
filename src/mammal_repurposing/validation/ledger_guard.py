@@ -184,9 +184,13 @@ def validate_ledger(df: pd.DataFrame) -> list[Violation]:
 
 
 # B3: fields that any DURABLE + COGNITIVE + HEALTHY claim must carry. The world precedent for this
-# cell is one n=8 study whose placebo arm ALSO retained its learning, whose absolute thresholds
-# CONVERGED, and whose surviving advantage lives only in a baseline-normalised quantity that a
-# baseline imbalance inflates. None of that is visible from an effect size and a PMID -- so a row
+# cell is one n=8 study (Rokem & Silver 2013, PMID 23755006) whose placebo arm ALSO retained its
+# learning, whose absolute follow-up thresholds CONVERGED (placebo 7.3 deg, donepezil 7.4 deg, no
+# significant effect of condition), and whose surviving advantage appears only in baseline-REFERENCED
+# change measures -- both the percent-learning figure and the raw pre-post difference, which is why
+# the earlier wording "a baseline-normalised quantity" was too narrow. Both inherit a pre-training
+# baseline imbalance the paper itself reports at p = 0.05, driven by one outlier (excluding it,
+# p = 0.1). Verified against the primary source 2026-09-20. None of that is visible from an effect size and a PMID -- so a row
 # claiming this cell must expose the four facts that would let a reader catch the same confound.
 DURABILITY_REQUIRED_FIELDS = (
     "retention_interval",       # how long after cessation was the retest?
