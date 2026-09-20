@@ -89,3 +89,6 @@ data/raw/kpuu_anchors_cache.csv
 
 # Cygwin/MSYS crash dumps from tools invoked by scripts.
 *.stackdump
+
+# scraped pages left behind by research subagents (a curl redirect at repo root)
+/*.html
