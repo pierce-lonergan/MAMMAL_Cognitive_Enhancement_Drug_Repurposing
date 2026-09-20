@@ -535,3 +535,80 @@ ledger. Hypothesis still PASSES.
   OUTSTANDING.
 - **B5 / B6 / C1** — OUTSTANDING: re-run `scripts/15` (fusion) + `23` (cluster C) + `26` (shortlist)
   + `32` (Tier decisions) to refresh the admet/units/Tier-gate artefacts.
+
+---
+
+## B2 (PERSEUS roadmap, not the wave-2 bug-sweep B2) — the L4 plasticity window was scoring compounds for a property compounds do not have
+
+**Naming.** This is the PERSEUS-roadmap item B2 (plasticity-window assay indexing). It is unrelated
+to the wave-2 bug-sweep **B2** above (`cluster_d/panel_expansion.py` gene-symbol resolution), which
+remains OUTSTANDING on its own line in the regeneration checklist. Two different B2s; neither
+supersedes the other.
+
+**The defect.** `engine/psychoplastogen.py` computed one structural verdict per compound and
+`engine/perseus.py:253` promoted it straight to `P_WINDOW`. That presumes "opens a plasticity window"
+is a property a compound HAS. Sheynin 2019 (PMID 30766471) is the reason to doubt it: healthy adults
+on donepezil showed faster perceptual learning and a SMALLER ocular-dominance shift, t(11) = -4.9,
+p < 0.001. Same people, same drug, two plasticity readouts, opposite signs.
+
+**What was built.** `data/raw/plasticity_window_assays.csv`: 48 (compound, assay-family, direction)
+rows, 27 compounds, 7 families, every row carrying a real PMID/DOI. 10 rows adversarially
+re-verified against primary sources; all 10 CONFIRMED. Construction audit in
+`data/raw/provenance/plasticity_window_assays_dedup_2026-09.txt` (independent curation lanes
+converged on the same papers, so 54 raw rows deduplicated to 48; one DOI conflict on PMID 20850321
+resolved by verification; compound-name aliases merged).
+
+`scripts/125_window_assay_index.py` measures the two pre-registered criteria.
+`psychoplastogen_window(smiles, *, assay=...)` now takes a REQUIRED keyword-only assay family, with
+no default, so an unscoped call is not expressible; unknown families raise rather than silently
+scope. `WINDOW_ASSAY_FAMILIES` / `L4_VALIDATED_ASSAY` record that only `dendritic_spine` carries the
+evidence the rule was derived from; every other family is marked `extrapolated` in the call and
+carries the Sheynin caveat in `reasons`.
+
+**The measurement (`reports/pipeline/window_assay_index_v1.md`).** Size bar MET: 48 rows (bar 40),
+7 families (bar 3), 8 compounds in >= 2 families (bar 8). The KILL fired, but not by the route
+expected:
+
+- **Sign inconsistency 25%** (1 of 4), BELOW the 30% kill threshold. Donepezil does flip
+  (ocular_dominance negative, perceptual_learning positive), so the Sheynin phenomenon is real. But
+  only 4 compounds carry a SIGNED direction in two or more families, so the flip RATE is
+  unestimable at this n. Reported as underpowered rather than as a pass.
+- **L4 fails the permutation gate in every testable family.** On `dendritic_spine`, its home family
+  and the only statistically testable one, agreement 0.50 at permutation p = **1.000**. The family's
+  base rate is 5 openers of 6, so "always say opener" scores 0.83. The screen does worse than the
+  constant.
+- In `ocular_dominance`, `perceptual_learning` and `tms_ltp` the screen predicts a CONSTANT (zero
+  positives). That is not a tie; it is a serotonergic screen having no opinion about the
+  cholinergic, SSRI, GABAergic and ECM-degrading compounds the plasticity field actually studies.
+
+**A correction made mid-analysis, recorded because it changed the conclusion.** The first run scored
+L4 on PubChem parent SMILES and reported psilocybin as a false negative (phosphate ester, TPSA 86,
+fails the permeability gate). That was a strawman: PERSEUS resolves `PRODRUG_TO_ACTIVE` before
+calling L4, and psilocybin is in that map. The harness now scores THROUGH the map, psilocybin is a
+HIT, and agreement rose 0.33 -> 0.50. The verdict did not change (p = 1.000 either way), but the
+published diagnosis would have been wrong. What survives is narrower and true: the map is three
+entries long and hand-written, ibogaine is not in it, and Ly 2018 measured NO structural effect for
+ibogaine while noribogaine is the active species, so L4 calls a measured null positive.
+
+**The action taken (the KILL's stated remedy).** L4 is DEMOTED from a verdict to an annotation.
+`perseus.py` no longer returns `P_WINDOW` on the structural call alone; the window is still computed,
+still flagged, and still explained in `reasons`, and control falls through to the evidence layer.
+
+**Blast radius, MEASURED, not regenerated.** Of 110 compounds in the main clinical ledger, **0**
+carry the L4 annotation, so the main pipeline is untouched. On the persistence positive ledger,
+**9 of 16** compounds carried it and all 9 now return ABSTAIN. This reverts the scripts/107 claim
+that the L4 head recovered a class that previously abstained 0/13. Per the standing rule, the
+affected reports (`perseus_sensitivity_v1.md`, `perseus_pu_eval_v1.md`,
+`perseus_lomo_transport_v1.md`) are FLAGGED STALE for re-run and author re-bless; they were NOT
+regenerated in this pass. The freshness gate (8f4676d) will fail them on the next run, which is the
+intended mechanism.
+
+**Regression tests.** Five new tests in `tests/test_psychoplastogen.py` that fail on pre-B2 code
+(where `assay` did not exist) and pass after. `tests/test_perseus.py` gained
+`test_psychoplastogen_window_is_an_annotation_not_a_verdict`, which asserts the OPPOSITE of what the
+test it replaces asserted; the replaced assertion is quoted in its docstring so the reversal is
+visible rather than silent. Suite: 754 passed, 1 skipped.
+
+**Honest scope.** The KILL rests on one testable family with 6 scored compounds. It is a real
+failure on the rule's home turf, and it is a small n. The right reading is that L4 has not EARNED a
+verdict, not that it has been proven worthless.

@@ -50,6 +50,37 @@ _AROM_OME = "[c][OX2][CH3]"                            # aromatic methoxy (psych
 _AROM_HALO = "[c][F,Cl,Br,I]"                          # aromatic halogen (DOI/DOB/2C-x)
 
 
+# ---------------------------------------------------------------------------------------------
+# B2 - THE ASSAY KEY.
+#
+# Everything above computes ONE structural verdict per compound. Reading that verdict as "this
+# compound opens a plasticity window" is a claim about an organism, and the organism answers
+# differently depending on what you measure. Sheynin 2019 (PMID 30766471) gave donepezil to healthy
+# adults and measured two plasticity readouts in the same people: perceptual learning went UP, and
+# the ocular-dominance shift went DOWN (t(11) = -4.9, p < 0.001). One drug, one dose, two assays,
+# opposite signs. A compound-level window flag has no truth value unless it says which assay it is
+# a claim about.
+#
+# So `assay` is REQUIRED and keyword-only. There is no default, deliberately: a default would let
+# every existing call site keep asserting the unscoped claim while looking like it had been fixed.
+#
+# ASSAY_EVIDENCE records, per family, whether the STRUCTURAL rule has ever been checked against
+# that family's empirical outcomes. Only `dendritic_spine` carries the evidence the rule was built
+# from (Vargas 2023, Science 379:700 - intracellular 5-HT2A drives structural plasticity, and
+# permeability is the serotonin-vs-DMT discriminator). Every other family is EXTRAPOLATION until
+# scripts/125_window_assay_index.py says otherwise, and the call says so in `reasons`.
+WINDOW_ASSAY_FAMILIES: dict[str, str] = {
+    "dendritic_spine": "cortical spine density / neurite outgrowth (mostly rodent, in vitro + in vivo)",
+    "ocular_dominance": "adult visual-cortex critical-period reopening (monocular deprivation)",
+    "perceptual_learning": "psychophysical learning rate on a trained discrimination",
+    "tms_ltp": "TMS/EEG LTP-like plasticity (PAS, cTBS/iTBS, sensory tetanisation)",
+    "pnn_ecm": "perineuronal-net / extracellular-matrix remodelling",
+    "fear_extinction": "extinction learning and reconsolidation",
+}
+#: The one family the structural rule was derived from and validated against.
+L4_VALIDATED_ASSAY = "dendritic_spine"
+
+
 @dataclass
 class PsychoplastogenCall:
     window: bool                       # plasticity-window-positive?
@@ -58,6 +89,11 @@ class PsychoplastogenCall:
     tpsa: float = float("nan")
     hbd: int = -1
     intracellular_access: bool = False
+    #: B2: which assay family this verdict is a claim ABOUT. Never None - the caller must declare it.
+    assay: str = ""
+    #: "validated" when the structural rule has been checked against this family's empirical
+    #: outcomes; "extrapolated" otherwise. See WINDOW_ASSAY_FAMILIES.
+    assay_evidence: str = "extrapolated"
     reasons: list[str] = field(default_factory=list)
     caveat: str = ("plasticity_window is direction-NEUTRAL and durable ONLY if paired with "
                    "experience (permissive, not instructive); never auto-durable")
@@ -129,20 +165,41 @@ def serotonergic_scaffold(smiles: str) -> str | None:
     return None
 
 
-def psychoplastogen_window(smiles: str) -> PsychoplastogenCall:
-    """Structure-derivable plasticity-window verdict. Fires only when a serotonergic-agonist
-    scaffold co-occurs with intracellular access (lipophilic enough to reach the intracellular
-    5-HT2A pool). Encodes Vargas 2023: affinity is necessary-not-sufficient; PERMEABILITY is the
-    discriminator that separates plastogenic psychedelics from non-plastogenic serotonin."""
+def psychoplastogen_window(smiles: str, *, assay: str) -> PsychoplastogenCall:
+    """Structure-derivable plasticity-window verdict FOR A NAMED ASSAY FAMILY.
+
+    Fires only when a serotonergic-agonist scaffold co-occurs with intracellular access (lipophilic
+    enough to reach the intracellular 5-HT2A pool). Encodes Vargas 2023: affinity is
+    necessary-not-sufficient; PERMEABILITY is the discriminator that separates plastogenic
+    psychedelics from non-plastogenic serotonin.
+
+    `assay` is required and keyword-only. The structural computation does not depend on it - the
+    same scaffold and the same TPSA come back whatever you pass - and that is exactly why the
+    argument exists. What the assay changes is the STANDING of the verdict: outside
+    L4_VALIDATED_ASSAY the rule has never been checked against that family's empirical outcomes,
+    and a caller that wants to use it there should have to say so in writing. Donepezil moves
+    perceptual learning and ocular dominance in OPPOSITE directions in the same participants
+    (Sheynin 2019, PMID 30766471), so "opens a plasticity window" is not a property a compound has.
+
+    Raises ValueError on an unknown assay family, rather than silently accepting a typo as a scope.
+    """
+    if assay not in WINDOW_ASSAY_FAMILIES:
+        raise ValueError(
+            f"unknown assay family {assay!r}; the window verdict is only meaningful relative to a "
+            f"named readout. Known families: {sorted(WINDOW_ASSAY_FAMILIES)}")
+    evidence = "validated" if assay == L4_VALIDATED_ASSAY else "extrapolated"
+
     from mammal_repurposing.engine.cns_exposure import cns_mpo_like
     mpo = cns_mpo_like(smiles)
     if mpo is None:
-        return PsychoplastogenCall(False, reasons=["unparseable SMILES"])
+        return PsychoplastogenCall(False, assay=assay, assay_evidence=evidence,
+                                   reasons=["unparseable SMILES"])
     scaf = serotonergic_scaffold(smiles)
     clogp, tpsa, hbd = mpo["clogp"], mpo["tpsa"], mpo["hbd"]
     access = clogp >= ACCESS_CLOGP_MIN and tpsa <= ACCESS_TPSA_MAX and hbd <= ACCESS_HBD_MAX
     call = PsychoplastogenCall(False, scaffold=scaf, clogp=round(clogp, 2),
-                               tpsa=round(tpsa, 1), hbd=int(hbd), intracellular_access=access)
+                               tpsa=round(tpsa, 1), hbd=int(hbd), intracellular_access=access,
+                               assay=assay, assay_evidence=evidence)
     if scaf is None:
         call.reasons.append("no serotonergic/monoaminergic-agonist scaffold")
         return call
@@ -156,6 +213,11 @@ def psychoplastogen_window(smiles: str) -> PsychoplastogenCall:
     call.reasons.append(
         f"{scaf} + intracellular access (TPSA {tpsa:.0f}, HBD {hbd}, clogP {clogp:.2f}) -> "
         "plasticity window (permissive; durable only if paired with experience)")
+    if evidence == "extrapolated":
+        call.reasons.append(
+            f"SCOPE: this verdict is EXTRAPOLATED to assay={assay!r}. The structural rule was "
+            f"derived and checked on {L4_VALIDATED_ASSAY!r} only; window direction is known to "
+            "flip between assay families in the same participants (Sheynin 2019, PMID 30766471).")
     return call
 
 

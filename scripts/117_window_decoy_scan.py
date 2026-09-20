@@ -80,7 +80,8 @@ def _smiles(name: str) -> str | None:
 
 
 def main() -> int:
-    from mammal_repurposing.engine.psychoplastogen import psychoplastogen_window
+    from mammal_repurposing.engine.psychoplastogen import (
+        L4_VALIDATED_ASSAY, psychoplastogen_window)
     seen, rows = set(), []
     for name, fam, klass in DECOYS:
         if name in seen:
@@ -89,7 +90,7 @@ def main() -> int:
         smi = _smiles(name)
         if not smi:
             L.warning("no SMILES for %s", name); continue
-        c = psychoplastogen_window(smi)
+        c = psychoplastogen_window(smi, assay=L4_VALIDATED_ASSAY)
         rows.append(dict(name=name, role="decoy", family=fam, klass=klass, smiles=smi,
                          scaffold=c.scaffold, window=bool(c.window), clogp=c.clogp,
                          tpsa=c.tpsa, hbd=c.hbd, expected=False))
@@ -97,7 +98,7 @@ def main() -> int:
         smi = _smiles(name)
         if not smi:
             L.warning("no SMILES for positive %s", name); continue
-        c = psychoplastogen_window(smi)
+        c = psychoplastogen_window(smi, assay=L4_VALIDATED_ASSAY)
         rows.append(dict(name=name, role="positive", family="psychedelic", klass="psychoplastogen",
                          smiles=smi, scaffold=c.scaffold, window=bool(c.window), clogp=c.clogp,
                          tpsa=c.tpsa, hbd=c.hbd, expected=True))

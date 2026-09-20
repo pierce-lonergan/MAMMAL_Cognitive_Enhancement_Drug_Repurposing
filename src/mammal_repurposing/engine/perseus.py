@@ -27,7 +27,7 @@ import logging
 from dataclasses import asdict, dataclass, field
 
 from mammal_repurposing.engine.cns_exposure import FAIL, PASS, cns_exposure_gate
-from mammal_repurposing.engine.psychoplastogen import psychoplastogen_window
+from mammal_repurposing.engine.psychoplastogen import L4_VALIDATED_ASSAY, psychoplastogen_window
 from mammal_repurposing.engine.mechanism_router import muscarinic_router, nmda_router
 from mammal_repurposing.engine.reversibility import reversibility_call
 from mammal_repurposing.reporting.trial_watch import _norm_drug, load_combined_ledger
@@ -130,9 +130,12 @@ class PerseusEngine:
         # a membrane-permeant serotonergic agonist reaches the intracellular 5-HT2A pool that
         # drives durable structural plasticity (Vargas 2023); serotonin is window-negative on
         # permeability alone despite isoaffine 5-HT2A binding.
-        psy = psychoplastogen_window(active_smiles)
+        # B2: the flag is now scoped to the assay family it was actually derived from (rodent
+        # cortical spine outgrowth). It is NOT a claim about human cognition, and the flag name
+        # carries the assay so a downstream reader cannot mistake it for one.
+        psy = psychoplastogen_window(active_smiles, assay=L4_VALIDATED_ASSAY)
         if psy.window:
-            flags.append(f"psychoplastogen_window:{psy.scaffold}")
+            flags.append(f"psychoplastogen_window[{psy.assay}]:{psy.scaffold}")
 
         # L4b NMDA trapping-kinetics router (curated PD; off BOTH the affinity AND the structure
         # axes - ketamine and memantine are descriptor-identical, separated only by the table).
@@ -244,13 +247,34 @@ class PerseusEngine:
                            "engagement is reversible and self-maintenance after washout is "
                            "unproven -> abstain on durable cognition")
             return P_ABSTAIN
-        # L4 psychoplastogen window (structure-derived, off the DTI axis): a CNS-penetrant,
-        # membrane-permeant serotonergic agonist opens a plasticity window. Permissive, not
-        # instructive - durable ONLY if paired with experience; never auto-durable.
+        # L4 psychoplastogen window - DEMOTED TO AN ANNOTATION, 2026-09-15 (B2).
+        #
+        # This branch used to `return P_WINDOW`, i.e. the structural call alone promoted a compound
+        # to a plasticity-window verdict. B2 measured whether it has earned that. On
+        # `dendritic_spine`, the one assay family the rule was derived from and the only one
+        # statistically testable in the index, agreement was 0.33 against a permutation p of 1.000:
+        # it does worse than shuffling the labels, on its home turf
+        # (reports/pipeline/window_assay_index_v1.md).
+        #
+        # The two in-scope errors share one cause, and it is not a threshold. L4 scores the molecule
+        # that was ADMINISTERED, while the plasticity is produced by the metabolite: psilocybin is a
+        # phosphate-ester prodrug that fails the permeability gate although psilocin passes it
+        # (false negative), and ibogaine passes the gate although Ly 2018 measured no structural
+        # effect for ibogaine itself, noribogaine being the active species (false positive). Errors
+        # in both directions off one cause cannot be tuned away.
+        #
+        # So the window is still COMPUTED and still REPORTED - it is a real, citable structural
+        # observation and it stays in `flags` and in `reasons` - but it no longer decides a verdict
+        # on its own. Control falls through to the evidence layer, which is where a durability claim
+        # belonged in the first place.
         if psy is not None and psy.window and cns.verdict == PASS:
-            reasons.append("psychoplastogen plasticity window (off-DTI-axis, permeability-gated): "
-                           + (psy.reasons[0] if psy.reasons else ""))
-            return P_WINDOW
+            reasons.append(
+                f"psychoplastogen plasticity window [assay={psy.assay}, {psy.assay_evidence}] "
+                "(off-DTI-axis, permeability-gated): "
+                + (psy.reasons[0] if psy.reasons else "")
+                + " -- ANNOTATION ONLY: this structural call does not carry a verdict. It scored "
+                  "0.33 agreement (permutation p = 1.000) against measured dendritic-spine outcomes "
+                  "and it scores the parent compound rather than the active metabolite.")
         # L4b scaffold-only NMDA-channel blocker (matches an arylcyclohexylamine / aminoadamantane
         # scaffold but is NOT in the curated table): ABSTAIN-with-reason rather than be silently
         # missed - durability is trapping kinetics, not structure, so route to the evidence layer.

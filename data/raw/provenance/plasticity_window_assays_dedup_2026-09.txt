@@ -1,0 +1,19 @@
+B2 index construction audit
+============================================================
+raw curated rows: 54
+after dedup/normalisation: 50
+
+PMID 20850321: DOI spellings ['10.1016/j.cub.2010.08.010', '10.1016/j.cub.2010.08.027'] -> kept 10.1016/j.cub.2010.08.027 (independent verification resolved it)
+PMID 24348349: two lanes assigned different families ['other', 'perceptual_learning'] -> overridden to perceptual_learning
+DUPLICATE dropped: donepezil / perceptual_learning / PMID 20850321 (found independently by lanes assay-ocular-dominance and assay-perceptual-learning-tms)
+DUPLICATE dropped: donepezil / ocular_dominance / PMID 30766471 (found independently by lanes assay-ocular-dominance and assay-perceptual-learning-tms)
+DUPLICATE dropped: fluoxetine / perceptual_learning / PMID 27807412 (found independently by lanes assay-ocular-dominance and assay-perceptual-learning-tms)
+DUPLICATE dropped: chondroitinase_abc / ocular_dominance / PMID 12424383 (found independently by lanes assay-ocular-dominance and assay-spine-pnn)
+
+compound-name aliases applied (same drug, different curator spelling):
+  valproate -> valproic_acid
+  valproate_and_sodium_butyrate -> valproic_acid
+  ketamine_and_2r6r_hydroxynorketamine -> ketamine
+rows 50 -> 48 after alias merge
+NOT normalised: lsd_dmt_doi, psilocybin_and_lsd - these are multi-agent rows whose sources
+do not separate the agents, so splitting them would invent per-compound detail.

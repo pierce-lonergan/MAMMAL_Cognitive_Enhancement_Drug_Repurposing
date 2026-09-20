@@ -114,15 +114,22 @@ def test_two_heads_and_gates(engine):
 
 
 @pytest.mark.skipif(not _HAVE, reason="engine data not present")
-def test_psychoplastogen_window_fires_for_permeant_psychedelic(engine):
+def test_psychoplastogen_window_is_an_annotation_not_a_verdict(engine):
+    """B2, 2026-09-15. This test previously asserted the OPPOSITE: that the L4 structural call
+    alone promoted psilocybin to P_WINDOW. It measured 0.50 agreement at permutation p = 1.000
+    against real dendritic-spine outcomes - worse than that family's base rate, on the one family
+    the rule was derived from (reports/pipeline/window_assay_index_v1.md). So the call is still
+    computed, still flagged and still explained in `reasons`, but it no longer decides a verdict.
+    """
     from mammal_repurposing.engine.perseus import P_WINDOW
-    # psilocybin (phosphate prodrug) -> psilocin (active) -> serotonergic + permeant ->
-    # plasticity WINDOW (off-DTI-axis, permeability-gated). The uncurated psychedelic that the
-    # pre-L4 engine ABSTAINed on is now correctly a (permissive, not durable) window.
+    # psilocybin (phosphate prodrug) -> psilocin (active) -> serotonergic + permeant.
     r = engine.score("psilocybin", "CN(C)CCc1c[nH]c2ccc(OP(=O)(O)O)cc12")
-    assert r.persistence_verdict == P_WINDOW and r.persistence_live
-    assert any("psychoplastogen_window" in f for f in r.flags)
-    # impermeant serotonergic agonist (serotonin) must NOT get the window (permeability gate)
+    assert any("psychoplastogen_window" in f for f in r.flags), "the annotation must survive"
+    assert any("prodrug->active:psilocin" in f for f in r.flags), "prodrug map must still resolve"
+    assert r.persistence_verdict != P_WINDOW, (
+        "L4 alone must no longer promote to a window verdict; it failed its own permutation gate")
+    assert any("ANNOTATION ONLY" in x for x in r.abstain_reasons),         "the demotion must be stated in the reasons, not just in the code"
+    # impermeant serotonergic agonist (serotonin) must NOT even get the annotation (permeability)
     r2 = engine.score("serotonin", "NCCc1c[nH]c2ccc(O)cc12")
     assert r2.persistence_verdict != P_WINDOW
     assert not any("psychoplastogen_window" in f for f in r2.flags)
