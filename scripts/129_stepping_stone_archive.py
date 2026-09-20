@@ -585,26 +585,56 @@ CURATED = [
     dict(
         hypothesis_id="H-target-directed-de-novo",
         claim="Novel cognitive enhancers can be designed against a TARGET rather than against a "
-              "structure, sidestepping the finding that the actives share no chemotype.",
+              "structure, sidestepping the finding that the actives share no chemotype, USING THIS "
+              "PROJECT'S DTI HEAD as the objective.",
+        domain="de novo design",
+        verdict="REFUTED", died_on="2026-09-20",
+        killed_by="scripts/133_dti_scale_lohi.py -> dti_scale_lohi_v1.md",
+        evidence="MEASURED, and it fails. This entry was opened the same day as ABSTAINED, on the "
+                 "grounds that the necessary measurement could not be made at AMPA for want of NAM "
+                 "rows. That turned out to be false: the measurement did not need NAMs, only hard "
+                 "negatives, and confirmed actives at other targets serve. Twelve cognition-relevant "
+                 "human targets, 120 ChEMBL actives each against 120 hard negatives, pre-registered "
+                 "at 5ef9334 before the model was loaded. ZERO of twelve clear the project's 0.70 "
+                 "channel gate. Pooled mean AUROC 0.468. FIVE targets sit significantly below "
+                 "chance with bootstrap intervals excluding 0.5, including the monoamine "
+                 "transporters whose chemistry is as classical as anything in the field (SLC6A3 "
+                 "0.373, SLC6A2 0.386) and the G2 target itself (GRIA1 0.387 [0.319, 0.459]). The "
+                 "best target in the panel is HRH3 at 0.601, which clears chance but not the gate. "
+                 "The old 0.26 and 0.09 anchor numbers were noise at n=3 and n=4, and a real n does "
+                 "not rescue the target. NOTE the scoping: what is refuted is design against THIS "
+                 "objective, not target-directed design in principle.",
+        failure_mode="measured_null",
+        keystone="", keystone_predicate="", revival_test="",
+        status="PERMANENTLY_CLOSED",
+    ),
+    dict(
+        hypothesis_id="H-generation-behind-a-ranking-gate",
+        claim="Target-directed generation becomes a falsifiable proposal once SOME scoring function "
+              "is shown to rank known actives at the intended target.",
         domain="de novo design",
         verdict="ABSTAINED", died_on="2026-09-20",
-        killed_by="not tested; opened by the failure of H-structure-de-novo-design",
-        evidence="NOT TESTED, and it is the live successor. Structure-based design is refuted here "
-                 "because the actives share no chemotype; target-directed design does not need one. "
-                 "But it inherits G2: the DTI head scores AMPA-PAM at AUROC 0.26 with permutation "
-                 "p > 0.7, and that blindness is not currently measurable either, because ChEMBL "
-                 "holds 75 AMPA PAM rows and ZERO AMPA NAM rows. A design campaign against a target "
-                 "the scoring function cannot rank is a generator optimising a number nobody can "
-                 "check.",
+        killed_by="not tested; opened by the refutation of H-target-directed-de-novo",
+        evidence="NOT TESTED, and it is the live successor. The refutation above is scoped to one "
+                 "objective, so it closes a door rather than the corridor. What it establishes is "
+                 "the ORDER: a generator amplifies its objective and contains no biology of its "
+                 "own, so an objective that cannot rank the actives it already knows about cannot "
+                 "be used to propose ones it does not. The gate is now cheap to apply, which is the "
+                 "part that changed today. Any candidate scorer can be run against the same 12-target "
+                 "panel in about an hour on one GPU, and the panel is built and committed.",
         failure_mode="instrument_blind",
-        keystone="The scoring function must be shown to rank known actives at the intended target "
-                 "before it is used to propose unknown ones. That is a measurement this project "
-                 "cannot currently make at AMPA for want of negatives, and the honest order is "
-                 "measurement first, generation second.",
-        keystone_predicate="chembl_allosteric_negatives_at(AMPA, 40)",
-        revival_test="Once a target exists where the scoring function demonstrably beats a "
-                     "permutation gate on held-out actives, generation against THAT target becomes "
-                     "a falsifiable proposal. Until then it is not.",
+        keystone="Some scoring function must clear AUROC 0.70 with permutation p < 0.05 on the "
+                 "120-versus-120 hard-negative panel at the target it would be pointed at. The "
+                 "predicate below checks exactly that against whatever has been scored. It is "
+                 "deliberately written so that an unscored panel RAISES rather than returning "
+                 "False, because an unrun experiment is an unanswered question, not a negative "
+                 "answer.",
+        keystone_predicate="dti_head_ranks_at(GRIA1, 0.70)",
+        revival_test="Score a candidate objective on the panel from scripts/133. If it clears the "
+                     "bar at a target, generation against THAT target becomes a falsifiable "
+                     "proposal and this entry re-opens. Before anything is built on top of it, run "
+                     "the Renz control-model exploitation test and require the generator to beat "
+                     "the AddCarbon null on the identical metric suite.",
         status="DEAD",
     ),
 ]

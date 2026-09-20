@@ -28,9 +28,25 @@ This project's objectives are measured:
 
 Source: `reports/pipeline/ampa_pnn_channels_v1.md`, from `scripts/114_ampa_pnn_channels.py`.
 
-Two of those are below 0.5, which is not "weak". It is **anti-correlated**. A generator pointed at an
-anti-correlated scorer produces confidently anti-active molecules, faster and in greater diversity
-than any human could. That is the whole argument in one line, and it is measured rather than feared.
+CORRECTED, same day, by `reports/pipeline/dti_scale_lohi_v1.md`. This section originally read that
+two of those numbers are below 0.5, that this is not "weak" but **anti-correlated**, and that a
+generator pointed at an anti-correlated scorer would produce confidently anti-active molecules. Two
+things were wrong with that.
+
+First the n. Those AUROCs were measured on three and four anchor compounds, which cannot resolve
+anything. Second, and more importantly, the anti-correlation claim does not survive measurement.
+Re-running the head at ChEMBL scale across twelve cognition targets, 120 actives against 120 hard
+negatives each, gives a pooled mean AUROC of **0.468** and **zero of twelve** targets clearing the
+project's gate. Five targets do sit significantly below chance, including GRIA1 at 0.387 with an
+interval of [0.319, 0.459]. But a paired within-compound test, comparing each molecule's score at a
+target it binds against its score at a target it does not, shows the apparent reversal is an
+artifact of target-level score offsets: it is significant raw and vanishes under within-target
+centering (48 of 100 higher at the real target, sign test p = 0.76).
+
+So the scorer is **uninformative, not inverted**. The conclusion for generation is unchanged and the
+reasoning is stronger, because an uninformative objective bears no relationship to activity in
+either direction. There is no sign to flip and nothing to exploit: optimising it hard produces
+molecules whose activity is simply unconstrained.
 
 ## A generated molecule can never acquire this project's evidence type
 
@@ -83,10 +99,13 @@ novelty metrics (Renz et al.). Any generator this project builds must beat AddCa
 pre-registered margin on the identical metric suite. Without that control, every novelty number is
 uninterpretable. This is the doc-290 lesson (rank-calibrate the baseline) applied to generation.
 
-**3. A Lo-Hi split of the existing DTI head.** Re-split its ChEMBL data at ECFP4 Tanimoto below 0.4
-and measure whether it predicts anything at all outside near-neighbour range. Given it already scores
-0.26 and 0.09 at those sites, the expected answer is no, and that is a cheap, decisive end to
-the generation question.
+**3. A Lo-Hi split of the existing DTI head.** DONE, see `reports/pipeline/dti_scale_lohi_v1.md`.
+It answered no, and more cheaply than expected. A single Tanimoto boundary turned out not to
+separate familiar from unfamiliar in ChEMBL at all, so the split was run as a similarity gradient
+instead. Mean AUROC across quartiles of neighbourhood density rises monotonically, 0.40 to 0.46 to
+0.50 to 0.51, which confirms a near-neighbour effect and simultaneously makes it academic: the
+effect tops out AT chance. Distance from a target's earliest ligands does nothing (0.47, 0.46, 0.48,
+0.47).
 
 Note the relationship between two numbers. The onboarding engine's abstention threshold is 0.35. The
 Lo-Hi splitter marks **0.4** as the boundary of the hard regime. The engine therefore operates
@@ -111,7 +130,8 @@ credit.
 
 ## Sequencing
 
-1. Run the Lo-Hi re-split of the DTI head. Cheapest, and likely decisive.
+1. ~~Run the Lo-Hi re-split of the DTI head.~~ DONE 2026-09-20. Decisive: 0 of 12 targets rank,
+   pooled mean AUROC 0.468.
 2. Run the Renz exploitation test against the project's own ranker. A collapse is publishable.
 3. Implement AddCarbon as the mandatory null before any generative metric is reported.
 4. Pre-register dated prospective predictions against readouts already scheduled.

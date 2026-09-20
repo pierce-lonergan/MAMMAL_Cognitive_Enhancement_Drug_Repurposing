@@ -392,3 +392,44 @@ def _allosteric_beats(metric: str, threshold: str) -> tuple[bool, str]:
 
 def registered() -> list[str]:
     return sorted(_REGISTRY)
+
+
+@predicate("dti_head_ranks_at", 2)
+def _dti_head_ranks_at(gene: str, min_auroc: str) -> tuple[bool, str]:
+    """Does the DTI head actually rank known actives above hard negatives at this target?
+
+    The gate that any scoring function must clear BEFORE it is pointed at a generative model. A
+    generator is an amplifier of its objective, so an objective that cannot rank the actives it
+    already knows about cannot be used to propose ones it does not.
+
+    Reads the scored panel from `scripts/133_dti_scale_lohi.py`, which scores 120 ChEMBL actives per
+    target against 120 hard negatives, a hard negative being a confirmed bioactive at a different
+    panel target with no recorded activity at this one. Measured 2026-09-20: zero of twelve targets
+    cleared 0.70, pooled mean AUROC 0.468, and five targets sat significantly below chance.
+
+    Raises rather than returning False when the panel has not been scored: an unrun experiment is an
+    unanswered question, not a negative answer.
+    """
+    want = float(min_auroc)
+    scored = ROOT / "data" / "interim" / "dti_scale_lohi_scores.csv"
+    if not scored.exists():
+        raise UnknownPredicate(
+            f"dti_head_ranks_at({gene}, {min_auroc}): the scored panel is not present at "
+            f"{scored}. Run scripts/133_dti_scale_lohi.py build, then score. Reporting False "
+            "would assert a measurement nobody made.")
+    df = pd.read_csv(scored)
+    g = df[df["gene"].str.upper() == gene.upper()]
+    if g.empty:
+        return False, (f"{gene} is not in the scored panel; present targets are "
+                       f"{', '.join(sorted(df['gene'].unique()))}")
+    pos = g[g.role == "active"]["predicted_pkd"].dropna()
+    neg = g[g.role == "negative"]["predicted_pkd"].dropna()
+    if len(pos) < 3 or len(neg) < 3:
+        return False, f"{gene}: only {len(pos)} actives and {len(neg)} negatives scored"
+    import numpy as np
+    from sklearn.metrics import roc_auc_score
+    y = np.r_[np.ones(len(pos)), np.zeros(len(neg))]
+    auroc = float(roc_auc_score(y, np.r_[pos.values, neg.values]))
+    ok = auroc >= want
+    return ok, (f"{gene}: AUROC {auroc:.3f} on {len(pos)} actives vs {len(neg)} hard negatives, "
+                f"{'clears' if ok else 'does NOT clear'} the {want:.2f} bar")

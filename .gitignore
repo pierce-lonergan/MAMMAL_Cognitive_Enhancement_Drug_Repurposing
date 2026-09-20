@@ -58,6 +58,10 @@ data/cache/
 data/kg/
 data/pockets/pdbs/
 !data/interim/.gitkeep
+# Exception: the DTI panel needs a GPU and the model weights to regenerate, and it is the
+# evidence behind a PERMANENTLY_CLOSED archive entry plus a machine-checkable keystone.
+# 360 KB. The 2 MB rows file it derives from is NOT kept; that one is regenerable offline.
+!data/interim/dti_scale_lohi_scores.csv
 !data/results/.gitkeep
 
 # Local cache for HuggingFace / fetcher caches
