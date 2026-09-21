@@ -257,7 +257,7 @@ def test_real_but_trivial_effect_is_called_null_not_positive():
     from mammal_repurposing.reporting.prospective import predict_healthy_adult
     led = _led([dict(compound="x", representative_g=0.12, ci_lo=0.02, ci_hi=0.21,
                      citation_short="X 2020")])
-    assert predict_healthy_adult("x", led)["prediction"] == "NULL"
+    assert predict_healthy_adult("x", led)["prediction"] == "NULL_EFFECT"
 
 
 def test_interval_spanning_zero_is_null_and_below_zero_is_negative():
@@ -266,7 +266,7 @@ def test_interval_spanning_zero_is_null_and_below_zero_is_negative():
         dict(compound="span", representative_g=0.05, ci_lo=-0.11, ci_hi=0.19, citation_short=""),
         dict(compound="neg", representative_g=-0.40, ci_lo=-0.70, ci_hi=-0.10, citation_short=""),
     ])
-    assert predict_healthy_adult("span", led)["prediction"] == "NULL"
+    assert predict_healthy_adult("span", led)["prediction"] == "NULL_EFFECT"
     assert predict_healthy_adult("neg", led)["prediction"] == "NEGATIVE"
 
 
@@ -299,7 +299,7 @@ def test_baseline_is_the_constant_null_predictor_not_a_coin_flip():
                + [dict(compound=f"n{i}", ci_lo=-0.2, ci_hi=0.2) for i in range(7)])
     b = healthy_adult_baseline(led)
     assert b["n_with_interval"] == 10 and b["n_positive"] == 3 and b["n_null"] == 7
-    assert b["constant_call"] == "NULL"
+    assert b["constant_call"] == "NULL_EFFECT"
     assert b["constant_accuracy"] == 0.7, "must reflect the real mix, not 0.5"
 
 
@@ -419,3 +419,22 @@ def test_modafinil_has_no_live_prediction():
     """Both modafinil readouts fell: one overturned on population, one on a BOLD primary."""
     df = _ha()
     assert df[df["ledger_compound"] == "modafinil"].empty
+
+
+def test_no_prediction_token_survives_a_default_csv_read_as_nan():
+    """pandas reads a bare NULL token as NaN. Serialising the call as "NULL" made all 16 NULL
+    predictions read back as missing data, silently deleting the most common call in the
+    registry from any downstream scoring."""
+    import io
+    from pathlib import Path
+    import pandas as pd
+    from mammal_repurposing.reporting import prospective as P
+    root = Path(__file__).resolve().parents[1]
+    d = pd.read_csv(root / "data" / "raw" / "prospective_healthy_adult.csv")
+    assert d["prediction"].isna().sum() == 0
+    tokens = {P.PRED_POSITIVE, P.PRED_NULL, P.PRED_NEGATIVE, P.PRED_ABSTAIN}
+    assert set(d["prediction"]) <= tokens
+    assert "NULL" not in tokens, "a bare NULL token round-trips through CSV as NaN"
+    for t in tokens:
+        got = pd.read_csv(io.StringIO("c" + chr(10) + t + chr(10)))["c"]
+        assert got.isna().sum() == 0, t

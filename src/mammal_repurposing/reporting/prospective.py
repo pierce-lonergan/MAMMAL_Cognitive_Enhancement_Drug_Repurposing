@@ -214,7 +214,11 @@ def audit_registry(df: pd.DataFrame) -> list[dict]:
 TARGET_G = 0.20  # the project's meaningful-effect floor; see scripts/121 MEANINGFUL_G
 
 PRED_POSITIVE = "POSITIVE"   # expect a statistically significant benefit of practical size
-PRED_NULL = "NULL"           # expect no significant benefit
+PRED_NULL = "NULL_EFFECT"    # expect no significant benefit.
+#: NOT the string "NULL". pandas.read_csv parses a bare NULL token as NaN by default, so
+#: serialising this call as "NULL" made all 16 of them read back as missing data. The
+#: pre-registered SEMANTICS are unchanged; only the serialised token is. Any consumer that
+#: forgot keep_default_na=False would silently lose the most common call in the registry.
 PRED_NEGATIVE = "NEGATIVE"   # expect a significant decrement
 PRED_ABSTAIN = "ABSTAIN"     # the ledger cannot speak to this compound
 

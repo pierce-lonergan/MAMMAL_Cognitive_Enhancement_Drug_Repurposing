@@ -139,6 +139,67 @@ committed beforehand:
 - **modafinil**: no live prediction anywhere. One candidate was overturned as an early-psychosis
   study, the other has a BOLD primary rather than a cognitive one.
 
+## Candidates the system had never considered, surfaced 2026-09-20
+
+The eight-lane sweep that produced the readout registry searched by INTERVENTION NAME, from a
+hand-written compound list. A critic pointed out that such a design can only find what someone
+already suspected. A second pass searched ClinicalTrials.gov from the OUTCOME side with no
+intervention filter at all, and opened registries the first pass never reached.
+
+It confirmed **77 further pending readouts**, more than the first pass found, with **zero**
+identifiers failing to resolve. Across 81 aggregated rows not one pass-1 CONFIRMED identifier
+reappeared, so the two passes produced near-disjoint sets. On ClinicalTrials.gov alone, where both
+passes searched, the outcome-side query independently re-found 19 of 40 pass-1 NCTs, which is a
+recall check on both. The honest conclusion is that the first pass captured at most about **45%**
+of the reachable corpus, and that the failure was of two separate kinds: the compound-list framing,
+and registries nobody opened.
+
+None of the following is evidence of efficacy. Every one is an ONGOING study with no result. They
+are listed because a compound-name search could not have generated them, which is the point.
+
+**Mechanistically informative, in rough order of what they would settle:**
+
+- **Paraxanthine**, the primary human metabolite of caffeine, on chronic 6-week dosing. Caffeine is
+  this project's best-evidenced enhancer, and this trial separates "caffeine works" from "the
+  adenosine-antagonist mechanism downstream of caffeine works". It abstains in the registry
+  precisely because mapping it onto the caffeine row would destroy the only question it asks.
+- **Equol**, the gut-microbial metabolite of daidzein, administered DIRECTLY. Only 10 to 20% of
+  Western populations produce it, and that producer/non-producer split is what has confounded soy
+  isoflavone trials for decades. Giving the metabolite bypasses the confound.
+- **Reboxetine head-to-head against methylphenidate** under standardised mental fatigue: a
+  selective noradrenaline reuptake inhibitor against the ledger's own labelled enhancer.
+- **Pseudoephedrine head-to-head against modafinil**, funded by the Japan Anti-Doping Agency.
+- **Levetiracetam**, an anti-seizure drug, in cognitively healthy mid-life APOE e4 carriers.
+- **Daridorexant and suvorexant**, dual orexin receptor antagonists, on overnight memory
+  consolidation, with suvorexant run against zolpidem to dissociate orexin from GABA-A.
+- **GT-002**, a first-in-class GABA-A PARTIAL positive allosteric modulator, against oxazepam.
+- **Creatine under physiological stress rather than at rest**: single 0.2 g/kg dose across 21 hours
+  of sleep deprivation, and loading under acute sleep restriction. The ledger's creatine row is
+  NULL at rest, so a stressor-conditioned effect would be new information rather than a
+  contradiction.
+- **Magnesium L-threonate** with a PRE-SPECIFIED sex-divergence hypothesis under a mental-fatigue
+  challenge.
+- **Caffeine mouth rinse**, tasted and expectorated without ingestion, alongside an espresso
+  mouthwash arm. A route manipulation that isolates oral and trigeminal signalling from systemic
+  pharmacokinetics, and the reason both abstain rather than mapping to the ingested caffeine row.
+
+**Longevity and frontier agents now in healthy adults:** fisetin (senolytic, DSST endpoint),
+alpha-ketoglutarate over 24 weeks, L-serine 6 g/day in 65 to 85 year olds, nicotinamide riboside,
+rapamycin, tocotrienol-rich fraction, and CX-50, which is orally ingested bovine adipose
+extracellular vesicles at 80 g/day scored on the NIH Toolbox. Also **AFA-281**, an undisclosed
+orally available small molecule in Phase 1 with choice reaction time as a named endpoint, which no
+compound list can contain because its structure is not public.
+
+**And one that is not a compound at all:** oral faecal microbiota transplant from young, physically
+active donors, in healthy adults. Alongside a fully-provided hazelnut-oil versus palm-oil diet and
+a quadrivalent influenza vaccine used as an acute cognitive decrement model, these are the clearest
+demonstrations of what outcome-side searching buys: the generator for the first pass was "things
+already believed to be nootropics", which is precisely the set with no information value.
+
+**What this does NOT change.** Not one of these has a result. None of them moves Tier 0, which is
+still empty. They are hypotheses with dates attached, and the registry exists so that when they
+read out, what this project predicted beforehand is already on the record.
+
 ## The honest bottom line
 
 If the question is which compounds have potential to make you sharper this afternoon, the answer is

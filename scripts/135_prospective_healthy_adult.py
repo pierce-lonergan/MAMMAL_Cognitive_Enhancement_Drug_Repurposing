@@ -111,6 +111,29 @@ COMPOUND_MAP: dict[str, str] = {
     "NCT07666685": "dietary_nitrate",
     "NCT07814300": "omega_3",
     "NCT07242430": "multivitamin_mineral",
+    # --- PASS 2 (2026-09-20). Outcome-side sweep plus registries pass 1 never opened. Mapped only
+    # --- where the intervention is one ledger compound, ingested, against a placebo contrast.
+    "CRD420261430017": "creatine",            # review, "creatine alone, multi-ingredient excluded"
+    "DRKS00041152": "creatine",               # 15 g loading then 8 g, crossover, no training arm
+    "CRD420261427771": "caffeine",            # acute caffeine review
+    "CRD420261328535": "anthocyanins",        # anthocyanin review
+    "CRD420251048338": "rhodiola_rosea",      # rhodiola/salidroside review
+    "jv974": "caffeine",                      # 250 mg vs cellulose placebo
+    "IRCT20251022067723N1": "caffeine",       # 400 mg vs placebo
+    "IRCT20260217068895N1": "caffeine",       # 6 mg/kg vs placebo
+    "CTRI/2026/01/102078": "caffeine",        # 3 mg/kg drink
+    "IRCT20260723070323N1": "caffeine",       # gum + capsules, both ingested, vs matched placebos
+    "IRCT20160306026938N19": "caffeine",      # has a PURE 200 mg caffeine arm against placebo
+    "IRCT20250403065192N1": "l_theanine",     # acute L-theanine vs placebo
+    "NCT07533032": "phosphatidylserine",      # 100 vs 200 mg vs placebo
+    "jacfs": "melatonin",                     # 5 mg vs placebo, memory-consolidation framing
+    "ACTRN12624001021561": "cannabidiol",     # 200 mg CBD softgel
+    "5R01DA058678-03 (NIH grant number; appl_id 11332967)": "cannabidiol",  # 300 vs 150 mg CBD
+    "2024-519670-39-00": "oxytocin",          # IV infusion -> the generic oxytocin row
+    "IRCT20260509069301N1": "oxytocin_intranasal",  # nasal spray -> the INTRANASAL row
+    "NL-OMON57760": "exogenous_ketones",      # ketone monoester
+    "PMID 41836921; DOI 10.3389/fmed.2026.1702773": "bacopa_monnieri",
+    "SLCTR/2026/022": "bacopa_monnieri",
 }
 
 #: Mapped registrations whose PRIMARY outcome is not an objective cognitive measure. The sweep's
@@ -178,6 +201,27 @@ ABSTAIN_REASON: dict[str, str] = {
     "ISRCTN66268301": "all arms on an exercise and diet intervention; compound not isolable",
     "ISRCTN75484092": "four-arm design; registration does not isolate a single compound",
     "UMIN000057063": "nucleotide-containing capsule; no ledger row",
+    # --- pass 2 abstentions
+    "NCT07533045": "PARAXANTHINE, the primary human METABOLITE of caffeine, not caffeine. It has "
+                   "no ledger row, and mapping it to caffeine would destroy the one thing the "
+                   "trial exists to test: whether the effect belongs to caffeine or to the "
+                   "adenosine-antagonist mechanism downstream of it",
+    "NCT07792876": "(R)-1,3-butanediol is a ketone PRECURSOR, not a monoester, and it is crossed "
+                   "with a carbohydrate beverage",
+    "frqne": "review pools methylphenidate OR modafinil",
+    "CRD420261390811": "aviation panel pooling modafinil, caffeine, dextroamphetamine, zolpidem "
+                       "and melatonin",
+    "DRKS00039313": "multi-nutrient stick: caffeine 160 mg with ginseng, taurine, arginine, "
+                    "minerals and B vitamins; caffeine not isolable",
+    "JPRN-jRCTs031240602": "pseudoephedrine and modafinil arms, doses not stated in the registry",
+    "INPLASY202690016": "caffeine MOUTH RINSE, expectorated without ingestion. The ledger estimate "
+                        "is for ingested caffeine; the trial exists precisely to separate oral and "
+                        "trigeminal signalling from systemic pharmacokinetics",
+    "IRCT20260723070323N2": "mixes ingested routes with a caffeinated espresso MOUTHWASH",
+    "DRKS00039036": "creatine crossed with resistance training",
+    "DRKS00040768": "creatine plus systematic resistance training in both arms",
+    "DRKS00037055": "creatine crossed with a standardised strength-training programme",
+    "ACTRN12626000246381": "psilocybin 25 mg crossed factorially with mindfulness training",
 }
 
 
