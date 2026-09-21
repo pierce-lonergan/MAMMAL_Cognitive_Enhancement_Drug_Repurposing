@@ -138,3 +138,53 @@ def test_score_registry_empty_is_graceful():
                           "predicted_outcome": [], "confidence": []})
     sc = tw.score_registry(empty)
     assert sc["n_resolved"] == 0
+
+
+# --- the Brier baseline guard (added 2026-09-20) ----------------------------------------------
+# The report benchmarked Brier against "0.25 = no-skill at base rate 0.5" while the ledger's own
+# base rate is 0.319. A no-skill reference taken from the wrong base rate flatters or punishes the
+# engine arbitrarily, so the comparator is now the ledger's real rate and these pin that.
+
+def _reg(rows):
+    import pandas as pd
+    return pd.DataFrame(rows)
+
+
+def test_omitting_the_base_rate_gives_nan_not_a_silent_default():
+    from mammal_repurposing.reporting.trial_watch import score_registry
+    sc = score_registry(_reg([
+        dict(status="RESOLVED", actual_outcome="FAILURE", predicted_outcome="FAILURE",
+             p_success=0.1, confidence="HIGH"),
+    ]))
+    assert sc["brier_base_rate"] != sc["brier_base_rate"], "expected NaN, not a 0.5 default"
+    assert sc["beats_base_rate_brier"] is False, "cannot claim to beat an uncomputed baseline"
+
+
+def test_engine_beating_the_constant_predictor_is_detected():
+    from mammal_repurposing.reporting.trial_watch import score_registry
+    rows = [dict(status="RESOLVED", actual_outcome="FAILURE", predicted_outcome="FAILURE",
+                 p_success=0.05, confidence="HIGH") for _ in range(4)]
+    sc = score_registry(_reg(rows), base_rate=0.319)
+    assert sc["base_rate"] == 0.319
+    assert sc["brier"] < sc["brier_base_rate"]
+    assert sc["beats_base_rate_brier"] is True
+
+
+def test_a_confidently_wrong_engine_loses_to_the_constant_predictor():
+    from mammal_repurposing.reporting.trial_watch import score_registry
+    rows = [dict(status="RESOLVED", actual_outcome="FAILURE", predicted_outcome="SUCCESS",
+                 p_success=0.95, confidence="HIGH") for _ in range(4)]
+    sc = score_registry(_reg(rows), base_rate=0.319)
+    assert sc["brier"] > sc["brier_base_rate"]
+    assert sc["beats_base_rate_brier"] is False
+
+
+def test_base_rate_comparator_is_not_hardcoded_to_a_half():
+    """A base rate far from 0.5 must move the comparator, or the fix did nothing."""
+    from mammal_repurposing.reporting.trial_watch import score_registry
+    rows = [dict(status="RESOLVED", actual_outcome="FAILURE", predicted_outcome="FAILURE",
+                 p_success=0.2, confidence="HIGH") for _ in range(4)]
+    lo = score_registry(_reg(rows), base_rate=0.10)["brier_base_rate"]
+    hi = score_registry(_reg(rows), base_rate=0.90)["brier_base_rate"]
+    assert lo < hi, "a lower base rate must score better against all-failure outcomes"
+    assert abs(lo - 0.25) > 1e-9 and abs(hi - 0.25) > 1e-9

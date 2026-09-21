@@ -7,7 +7,8 @@ A standing forward-prediction system. The calibrated per-mechanism-class SUCCESS
 - Resolved: **2** (0 success, 2 failure)
 - Accuracy (predicted vs actual): **100%** (2/2)
 - Prospective AUROC: **n/a (needs >=1 success and >=1 failure resolved)**
-- Brier score: **0.009** (lower is better; 0.25 = no-skill at base rate 0.5)
+- Brier score: **0.009** (lower is better). The no-skill reference is NOT 0.25, which is a coin flip at a 50/50 base rate. This ledger's base success rate is 0.319, and a constant predictor emitting that on the same resolved rows scores **0.102**. The engine beats it.
+  With only 2 resolved row(s), treat every score on this line as an indication of direction and nothing more. Both outcomes are not yet present, so AUROC is undefined.
 - By confidence tier: HIGH 1/1, MED 1/1
 
 ## Registry: locked forward predictions

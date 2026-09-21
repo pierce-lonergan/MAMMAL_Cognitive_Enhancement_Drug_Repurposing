@@ -57,7 +57,7 @@ def main() -> int:
     prior = class_success_table(ledger)
     prospective = pd.read_csv(PROSPECTIVE, comment="#")
     registry = build_registry(prospective, ledger)
-    sc = score_registry(registry)
+    sc = score_registry(registry, base_rate=base)
 
     reg_out = ROOT / "data" / "raw" / "trial_watch_registry.csv"
     registry.to_csv(reg_out, index=False)
@@ -90,8 +90,16 @@ def main() -> int:
                  f"({sum(v['correct'] for v in sc['by_confidence'].values())}"
                  f"/{sc['n_resolved']})")
         L.append(f"- Prospective AUROC: **{au_txt}**")
-        L.append(f"- Brier score: **{sc['brier']:.3f}** "
-                 "(lower is better; 0.25 = no-skill at base rate 0.5)")
+        L.append(f"- Brier score: **{sc['brier']:.3f}** (lower is better). The no-skill "
+                 f"reference is NOT 0.25, which is a coin flip at a 50/50 base rate. This "
+                 f"ledger's base success rate is {sc['base_rate']:.3f}, and a constant predictor "
+                 f"emitting that on the same resolved rows scores "
+                 f"**{sc['brier_base_rate']:.3f}**. The engine "
+                 f"{'beats' if sc['beats_base_rate_brier'] else 'does NOT beat'} it.")
+        if sc["n_resolved"] < 10:
+            L.append(f"  With only {sc['n_resolved']} resolved row(s), treat every score on this "
+                     f"line as an indication of direction and nothing more. "
+                     f"{'Both outcomes are not yet present, so AUROC is undefined.' if not (sc['n_success'] and sc['n_failure']) else ''}")
         if sc["by_confidence"]:
             tiers = ", ".join(f"{c} {v['correct']}/{v['n']}"
                               for c, v in sorted(sc["by_confidence"].items()))

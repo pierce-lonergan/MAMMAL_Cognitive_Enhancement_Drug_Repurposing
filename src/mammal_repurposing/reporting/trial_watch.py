@@ -27,6 +27,7 @@ import re
 from dataclasses import dataclass, asdict
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 from mammal_repurposing.validation.retrospective import (
@@ -206,16 +207,21 @@ def build_registry(prospective: pd.DataFrame, ledger: pd.DataFrame, *,
     return df[[c for c in cols if c in df.columns]]
 
 
-def score_registry(registry: pd.DataFrame) -> dict:
-    """Score the engine on RESOLVED trials: accuracy, prospective AUROC (when both
-    outcomes present), Brier, and a breakdown by confidence tier."""
+def score_registry(registry: pd.DataFrame, *, base_rate: float | None = None) -> dict:
+    """Score the engine on RESOLVED trials against a constant base-rate predictor.
+
+    `base_rate` is the ledger's own success rate, and it is what makes the Brier readable. Omit it
+    and the baseline comes back NaN rather than silently defaulting to 0.5, because 0.5 is the
+    wrong comparator for a ledger whose base rate is nowhere near even.
+    """
     res = registry[registry["status"] == "RESOLVED"].copy()
     res = res[res["actual_outcome"].notna() & (res["actual_outcome"].astype(str) != "")]
     n = len(res)
     if n == 0:
         return {"n_resolved": 0, "accuracy": float("nan"), "auroc": float("nan"),
-                "brier": float("nan"), "n_success": 0, "n_failure": 0,
-                "by_confidence": {}, "rows": res}
+                "brier": float("nan"), "brier_base_rate": float("nan"),
+                "base_rate": base_rate, "beats_base_rate_brier": False,
+                "n_success": 0, "n_failure": 0, "by_confidence": {}, "rows": res}
     labels = (res["actual_outcome"].astype(str).str.strip() == "SUCCESS").astype(int).values
     probs = res["p_success"].astype(float).values
     preds = res["predicted_outcome"].astype(str).str.strip().values
@@ -231,6 +237,14 @@ def score_registry(registry: pd.DataFrame) -> dict:
         gp = (g["predicted_outcome"].astype(str).str.strip()
               == g["actual_outcome"].astype(str).str.strip())
         by_conf[c] = {"n": int(len(g)), "correct": int(gp.sum())}
+    # The no-skill reference is NOT 0.25. That is the Brier of a coin flip at a 50/50 base rate,
+    # and this ledger's base rate is nothing like 50/50. The honest comparator is a constant
+    # predictor that always emits the ledger's own base success rate, scored on these same rows.
+    b_engine = brier_score(probs, labels)
+    b_base = (float("nan") if base_rate is None
+              else brier_score(np.full(n, float(base_rate)), labels))
     return {"n_resolved": n, "accuracy": acc, "auroc": au, "auroc_ci": ci,
-            "brier": brier_score(probs, labels), "n_success": n_pos,
-            "n_failure": n_neg, "by_confidence": by_conf, "rows": res}
+            "brier": b_engine, "brier_base_rate": float(b_base),
+            "base_rate": None if base_rate is None else float(base_rate),
+            "beats_base_rate_brier": bool(b_base == b_base and b_engine < b_base),
+            "n_success": n_pos, "n_failure": n_neg, "by_confidence": by_conf, "rows": res}
