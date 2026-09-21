@@ -313,3 +313,85 @@ def test_live_ledger_baseline_is_a_strong_opponent():
     b = healthy_adult_baseline(led)
     assert b["n_with_interval"] >= 30
     assert 0.2 < b["constant_accuracy"] < 0.8
+
+
+# --- the healthy-adult forward registry (2026-09-20) -------------------------------------------
+
+def _ha():
+    from pathlib import Path
+    import pandas as pd
+    root = Path(__file__).resolve().parents[1]
+    return pd.read_csv(root / "data" / "raw" / "prospective_healthy_adult.csv")
+
+
+def _s135():
+    import importlib.util
+    from pathlib import Path
+    root = Path(__file__).resolve().parents[1]
+    spec = importlib.util.spec_from_file_location(
+        "s135", root / "scripts" / "135_prospective_healthy_adult.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_every_row_is_pending_and_unscored():
+    """The registry is only worth anything if nothing in it has been filled in after the fact."""
+    df = _ha()
+    assert (df["status"] == "PENDING").all()
+    assert df["actual_outcome"].fillna("").eq("").all()
+
+
+def test_every_row_carries_a_reason_and_a_frozen_date():
+    df = _ha()
+    assert df["prediction_reason"].fillna("").str.strip().ne("").all()
+    assert (df["prediction_date"] == "2026-09-20").all()
+    assert (df["rule_committed_at"] == "2baedf8").all()
+
+
+def test_microdosing_maps_to_the_microdosing_ledger_row():
+    """The full-dose psilocybin estimate is -1.13; microdosing is -0.34. Conflating them was a bug."""
+    m = _s135()
+    assert m.COMPOUND_MAP["NCT07449351"] == "psilocybin_lsd_microdosing"
+
+
+def test_non_cognitive_primaries_are_excluded_not_predicted():
+    """Imaging, self-report and BOLD primaries cannot grade a cognition claim."""
+    m, df = _s135(), _ha()
+    for ident in ("NCT06367738", "NCT06768944", "NCT06041048"):
+        assert ident in m.ENDPOINT_EXCLUDE
+        row = df[df["identifier"] == ident].iloc[0]
+        assert row["prediction"] == "ABSTAIN"
+        assert row["prediction_basis"] == "endpoint_not_cognitive"
+
+
+def test_post_acute_endpoints_are_excluded_from_an_acute_rule():
+    """The ledger's g is on-drug; predicting a post-washout readout from it is a category error."""
+    m, df = _s135(), _ha()
+    assert "NCT06692192" in m.TIMING_EXCLUDE
+    row = df[df["identifier"] == "NCT06692192"].iloc[0]
+    assert row["prediction"] == "ABSTAIN"
+    assert row["prediction_basis"] == "post_acute_endpoint"
+
+
+def test_no_confirmed_registration_is_silently_dropped():
+    """Every confirmed row must appear with either a call or a recorded abstention reason."""
+    from pathlib import Path
+    import pandas as pd
+    root = Path(__file__).resolve().parents[1]
+    pend = pd.read_csv(root / "data" / "raw" / "pending_readouts_2026-09.csv")
+    conf = set(pend[pend["verdict"] == "CONFIRMED"]["identifier"].astype(str))
+    assert conf == set(_ha()["identifier"].astype(str))
+
+
+def test_secondary_endpoint_rows_are_tagged_for_stratification():
+    df = _ha()
+    tagged = df[df["endpoint_tier"] == "secondary"]
+    assert len(tagged) >= 3
+    assert (tagged["prediction"] != "ABSTAIN").any(), "tagging should not silently abstain them"
+
+
+def test_abstentions_outnumber_calls_and_that_is_expected():
+    """A registry that forces a call on every row is manufacturing a track record."""
+    df = _ha()
+    assert (df["prediction"] == "ABSTAIN").sum() > (df["prediction"] != "ABSTAIN").sum() / 2
