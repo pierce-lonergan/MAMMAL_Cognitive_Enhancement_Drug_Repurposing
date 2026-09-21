@@ -292,3 +292,58 @@ def healthy_adult_baseline(ledger: pd.DataFrame) -> dict:
             "base_rate_positive": (pos / n) if n else float("nan"),
             "constant_call": PRED_NULL,
             "constant_accuracy": ((n - pos - neg) / n) if n else float("nan")}
+
+
+def score_healthy_adult(reg: pd.DataFrame) -> dict:
+    """Score the frozen healthy-adult rule against the constant predictor. PRE-REGISTERED.
+
+    Written and committed BEFORE any outcome was resolved, so the test cannot be chosen to suit the
+    results. The comparison is paired, because both predictors are scored on the same rows, so it
+    is McNemar rather than a one-sample accuracy test.
+
+    The pair bookkeeping has a subtlety worth spelling out, because getting it wrong would inflate
+    the rule. With the constant predictor always answering NULL_EFFECT:
+
+      b  rule right, constant wrong : prediction == outcome and outcome != NULL_EFFECT
+      c  constant right, rule wrong : outcome == NULL_EFFECT and prediction != NULL_EFFECT
+      tie, both right               : prediction == outcome == NULL_EFFECT
+      tie, BOTH WRONG               : rule said POSITIVE and the trial went NEGATIVE, or the
+                                      reverse. The rule is wrong AND the constant is wrong, so the
+                                      pair is uninformative and must NOT count as a rule win.
+
+    That last case is the one that would silently flatter the rule if discordance were computed as
+    "prediction differs from NULL_EFFECT". It is a direction error, the most embarrassing kind, and
+    it earns nothing rather than being scored against the constant's own failure.
+
+    Only b and c enter the test: binomial on b out of b + c against 0.5, one-sided greater.
+    """
+    from scipy.stats import binomtest
+
+    d = reg[reg["prediction"] != PRED_ABSTAIN].copy()
+    d["actual_outcome"] = d.get("actual_outcome", pd.Series(dtype=object))
+    d = d[d["actual_outcome"].notna() & (d["actual_outcome"].astype(str).str.strip() != "")]
+    if d.empty:
+        return {"n_scored": 0, "b": 0, "c": 0, "ties_both_right": 0, "ties_both_wrong": 0,
+                "p_value": float("nan"), "rule_accuracy": float("nan"),
+                "constant_accuracy": float("nan"), "beats_constant": False, "rows": d}
+
+    pred = d["prediction"].astype(str)
+    act = d["actual_outcome"].astype(str).str.strip()
+    rule_right = pred == act
+    const_right = act == PRED_NULL
+
+    b = int((rule_right & ~const_right).sum())
+    c = int((~rule_right & const_right).sum())
+    both_right = int((rule_right & const_right).sum())
+    both_wrong = int((~rule_right & ~const_right).sum())
+
+    p = (float(binomtest(b, b + c, 0.5, alternative="greater").pvalue)
+         if (b + c) else float("nan"))
+    return {"n_scored": int(len(d)), "b": b, "c": c,
+            "ties_both_right": both_right, "ties_both_wrong": both_wrong,
+            "n_informative_pairs": b + c,
+            "p_value": p,
+            "rule_accuracy": float(rule_right.mean()),
+            "constant_accuracy": float(const_right.mean()),
+            "beats_constant": bool((b + c) and p == p and p < 0.05),
+            "rows": d}

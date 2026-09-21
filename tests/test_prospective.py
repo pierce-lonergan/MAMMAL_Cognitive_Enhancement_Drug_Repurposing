@@ -438,3 +438,83 @@ def test_no_prediction_token_survives_a_default_csv_read_as_nan():
     for t in tokens:
         got = pd.read_csv(io.StringIO("c" + chr(10) + t + chr(10)))["c"]
         assert got.isna().sum() == 0, t
+
+
+# --- the pre-registered healthy-adult scorer (2026-09-21) --------------------------------------
+# Committed BEFORE any outcome was resolved. The direction-error case is the one that would
+# silently flatter the rule, so it is pinned first.
+
+def _reg(rows):
+    import pandas as pd
+    return pd.DataFrame(rows)
+
+
+def test_direction_error_counts_for_nobody():
+    """Predicted POSITIVE, trial went NEGATIVE: the rule is wrong AND the constant is wrong.
+    Scoring that as a rule win, on the grounds that it differed from NULL_EFFECT, would be the
+    single easiest way to inflate this registry."""
+    from mammal_repurposing.reporting.prospective import score_healthy_adult
+    s = score_healthy_adult(_reg([
+        dict(prediction="POSITIVE", actual_outcome="NEGATIVE"),
+        dict(prediction="NEGATIVE", actual_outcome="POSITIVE"),
+    ]))
+    assert s["b"] == 0 and s["c"] == 0
+    assert s["ties_both_wrong"] == 2
+    assert s["beats_constant"] is False
+
+
+def test_rule_wins_only_when_it_calls_a_real_departure_correctly():
+    from mammal_repurposing.reporting.prospective import score_healthy_adult
+    s = score_healthy_adult(_reg(
+        [dict(prediction="POSITIVE", actual_outcome="POSITIVE") for _ in range(9)]
+        + [dict(prediction="POSITIVE", actual_outcome="NULL_EFFECT")]))
+    assert s["b"] == 9 and s["c"] == 1
+    assert s["p_value"] < 0.05 and s["beats_constant"] is True
+
+
+def test_constant_wins_when_everything_comes_back_null():
+    from mammal_repurposing.reporting.prospective import score_healthy_adult
+    s = score_healthy_adult(_reg(
+        [dict(prediction="POSITIVE", actual_outcome="NULL_EFFECT") for _ in range(10)]))
+    assert s["b"] == 0 and s["c"] == 10
+    assert s["beats_constant"] is False
+    assert s["rule_accuracy"] == 0.0 and s["constant_accuracy"] == 1.0
+
+
+def test_agreeing_with_the_constant_is_a_tie_not_a_win():
+    from mammal_repurposing.reporting.prospective import score_healthy_adult
+    s = score_healthy_adult(_reg(
+        [dict(prediction="NULL_EFFECT", actual_outcome="NULL_EFFECT") for _ in range(20)]))
+    assert s["ties_both_right"] == 20
+    assert s["n_informative_pairs"] == 0
+    assert s["beats_constant"] is False, "20 correct calls, zero evidence"
+
+
+def test_unresolved_rows_are_excluded_not_counted_as_wrong():
+    from mammal_repurposing.reporting.prospective import score_healthy_adult
+    s = score_healthy_adult(_reg([
+        dict(prediction="POSITIVE", actual_outcome="POSITIVE"),
+        dict(prediction="POSITIVE", actual_outcome=""),
+        dict(prediction="POSITIVE", actual_outcome=None),
+    ]))
+    assert s["n_scored"] == 1
+
+
+def test_abstentions_never_enter_the_score():
+    from mammal_repurposing.reporting.prospective import score_healthy_adult
+    s = score_healthy_adult(_reg([
+        dict(prediction="ABSTAIN", actual_outcome="POSITIVE"),
+        dict(prediction="ABSTAIN", actual_outcome="NULL_EFFECT"),
+    ]))
+    assert s["n_scored"] == 0
+
+
+def test_live_registry_is_not_yet_scoreable():
+    """Pins that nothing has been scored. Changing this means real outcomes arrived."""
+    from pathlib import Path
+    import pandas as pd
+    from mammal_repurposing.reporting.prospective import score_healthy_adult
+    root = Path(__file__).resolve().parents[1]
+    reg = pd.read_csv(root / "data" / "raw" / "prospective_healthy_adult.csv")
+    s = score_healthy_adult(reg)
+    assert s["n_scored"] == 0, "registry has outcomes; update this test deliberately"
