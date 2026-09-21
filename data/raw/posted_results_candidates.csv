@@ -1,0 +1,781 @@
+ledger_compound,search_term,prediction,pred_g,pred_ci_lo,pred_ci_hi,ledger_ma_year,results_year,independent_of_ledger,cognitive_primary,patient_population,usable,exclusion_reason,nct,title,status,results_posted,completion,primary_completion,enrollment,phase,interventions,primary_outcomes,healthy_flag,eligibility
+caffeine,caffeine,POSITIVE,0.28,0.21,0.36,2025,2018,False,True,,False,results available 2018 vs ledger meta-analysis 2025; could have been included in the pooled estimate,NCT02974114,Exploratory Study to Investigate Cognition Function and Mobility in Individuals With Pain,TERMINATED,2018-08-28,2017-02-06,2017-02-06,21,PHASE4,Paracetamol and caffeine; Paracetamol; Placebo,Change From Pain Free State (Day 3) in Error Adjusted Simple Reaction Time (SRT) in the Pain State (Day 2) | Change From Pain-free State (Day 3) in Reaction Time in the Pain State (Day 2) | Change From Pain-free State (Day 3) in Number of One Touch Stockings (OTS) of Cambridge Assessment Problems (on Which the First Box Choice Made Was Correct) in the Pain State (Day 2) | Change From Pain-free State (Day 3) in Attention Switching Task (AST) Congruency Cost in the Pain State (Day 2) | Change From Pain-free State (Day 3) in Spatial Working Memory (SWM) Between Errors in the Pain State (Day 2) | Change From Pain-free State (Day 3) in Rapid Visual Information Processing A Prime (RVPA) in the Pain State (Day 2),True,"Inclusion Criteria
+
+* Demonstrates understanding of the study procedures, restrictions and willingness to participate as evidenced by voluntary written informed consent and has received a signed and dated copy of the informed consent form.
+* Aged between 18-65 years.
+* Participant is male or female.
+* Understands and is willing, able and likely to comply with all study procedures and restrictions.
+* Adequately completes cognition and mobility familiarisation tasks in the opinion of the investigator.
+* Good general and mental health with, in the opinion of the investigator or medically qualified designee: No clinically significant and relevant abnormalities in medical history or upon physical examination; absence of any condition that might impact on the participant's safety or wellbeing or affect the individual's ability to understand and follow study procedures and requirements; BMI \>18.5 and \<30 kg/m2
+* VISIT 1 ONLY - Has experienced a minimum of two recurrent, acute pain episodes within the past 3 months or is currently suffering from a flare up episode of recurrent, acute pain; VISIT 2 ONLY - A score ≥5 to question 6 (rated on scale 0-10) on the Brief Pain Inventory - Short F"
+caffeine,caffeine,POSITIVE,0.28,0.21,0.36,2025,2017,False,True,,False,results available 2017 vs ledger meta-analysis 2025; could have been included in the pooled estimate,NCT02461693,Evaluating the Role of Expectations in Response to Caffeine Consumption: An RCT,COMPLETED,2017-07-12,2015-10,2015-10,205,NA,Caffeine; Placebo,"Mood State Score on POMS-2 Test | Vigilance Score on Computer-based Test Using Random, Visual Stimulus: Proportion Correct (Out of 60) | Vigilance Score on Computer-based Test Using Random, Visual Stimulus: Number Correct, Number of False Alarm Hits | Vigilance Score on Computer-based Test Using Random, Visual Stimulus: Mean Time to a Correct Hit",True,"Inclusion Criteria:
+
+* 18 years-old or older
+* available to participate on the dates specified
+* willing to take a caffeine or placebo pills at study session
+* willingness to abstain from caffeine for 12 hours prior to study visit (8:30pm-8:30am)
+* UAB employees or students with some college education (including current enrollment)
+
+Exclusion Criteria:
+
+* self-reported use of ADHD medication
+* self-reported use of anxiety medication
+* self-reported use of sleep medication
+* self-reported use of nicotine products
+* self-reported lactose intolerance
+* self-reported uncorrected vision
+* self-reported pregnancy or trying to become pregnant"
+caffeine,caffeine,POSITIVE,0.28,0.21,0.36,2025,2024,False,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration)results available 2024 vs ledger meta-analysis 2025; could have been included in the pooled estimate,NCT05067439,"A Study to Estimate the Effect of Multiple Dose Abrocitinib on Caffeine, Efavirenz, and Omeprazole in Healthy Participants",COMPLETED,2024-05-31,2022-02-26,2022-02-26,26,PHASE1,Abrocitinib; Omeprazole; Caffeine; Efavirenz,Area Under the Plasma Concentration-Time Profile From Time 0 Extrapolated to Infinite Time (AUCinf) of Omeprazole | AUCinf Corrected for Residual Concentrations (AUCinfCR) of Caffeine | Area Under the Plasma Concentration-Time Profile From Time 0 to the Time of the Last Quantifiable Concentration Corrected for Residual Concentrations (AUClastCR) of Efavirenz,True,"Inclusion Criteria:
+
+1. Participants must be ≥18 years of age at the time of signing the Informed consent document (ICD).
+2. Male and female participants who are healthy as determined by medical evaluation including a detailed medical history, complete physical examination, laboratory tests, and cardiovascular tests.
+3. Participants who are willing and able to comply with all scheduled visits, treatment plan, laboratory tests, lifestyle considerations, and other study procedures.
+4. Body mass index (BMI) of 17.5 to 32 kg/m2; and a total body weight \>50 kg (110 lb).
+5. Capable of giving signed informed consent as described in Appendix 1, which includes compliance with the requirements and restrictions listed in the ICD and in this protocol.
+
+Exclusion Criteria:
+
+1. Evidence or history of clinically significant hematological, renal, endocrine, neurological diseases, or other systems diseases, allergic diseases including drug allergies but excluding untreated asymptomatic seasonal allergies at the time of dosing
+2. Subjects with moderate to severe gastroesophageal reflux disease (GERD) symptoms, or any condition affecting drug absorption e.g. gastrectomy, cholecystectomy
+3. History o"
+caffeine,caffeine,POSITIVE,0.28,0.21,0.36,2025,2025,False,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration)results available 2025 vs ledger meta-analysis 2025; could have been included in the pooled estimate,NCT06215430,"A Study of Effect of Multiple Doses of LOXO-305 on the Pharmacokinetics of Single Oral Doses of CYP1A2, CYP2C9, CYP2C19 Substrates in Healthy Participants",COMPLETED,2025-03-10,2021-04-15,2021-04-15,16,PHASE1,Caffeine Tablet; Omeprazole capsule; Warfarin tablet; Pirtobrutinib,"Area Under the Concentration Time Curve (AUC) From Hour 0 to 24 Hours Post-Dose (AUC0-24): Caffeine | Area Under the Concentration Time Curve (AUC) From Hour 0 to 24 Hours Post-Dose (AUC0-24): Paraxanthine | Area Under the Concentration Time Curve (AUC) From Hour 0 to 24 Hours Post-Dose (AUC0-24): Omeprazole | Area Under the Concentration Time Curve (AUC) From Hour 0 to 24 Hours Post-Dose (AUC0-24): Warfarin | Area Under the Concentration Time Curve (AUC) From Hour 0 to 24 Hours Post-Dose (AUC0-24): Pirtobrutinib | Area Under the Concentration-time Curve (AUC), From Hour 0 to the Last Measurable Concentration (AUC0-t): Caffeine | Area Under the Concentration-time Curve (AUC), From Hour 0 to the Last Measurable Concentration (AUC0-t): Paraxanthine | Area Under the Concentration Time Curve (AUC) From Hour 0 to the Last Measurable Concentration (AUC0-t): Omeprazole | Area Under the Concentration Time Curve (AUC) From Hour 0 to the Last Measurable Concentration (AUC0-t): Warfarin | Area Under the Concentration Time Curve (AUC) From Hour 0 to the Last Measurable Concentration (AUC0-t): Pirtobrutinib | Area Under the Concentration Time Curve (AUC) From Hour 0 Extrapolated to Infinity (AUC0-inf): Caffeine | Area Under the Concentration Time Curve (AUC) From Hour 0 Extrapolated to Infinity (AUC0-inf): Paraxanthine | Area Under the Concentration Time Curve (AUC) From Hour 0 Extrapolated to Infinity (AUC0-inf): Omeprazole | Area Under the Concentration Time Curve (AUC) From Hour 0 Extrapolated to Infinity (AUC0-inf): Warfarin | Percentage Extrapolation for AUC0-inf (%AUCextrap): Caffeine | Percentage Extrapolation for AUC0-inf (%AUCextrap): Paraxanthine | Percentage Extrapolation for AUC0-inf (%AUCextrap): Omeprazole | Percentage Extrapolation for AUC0-inf (%AUCextrap): Warfarin | Apparent Systemic Clearance (CL/F): Caffeine | Apparent Systemic Clearance (CL/F): Omeprazole | Apparent Systemic Clearance (CL/F): Warfarin | Apparent Systemic Clearance (CL/F): Pirtobrutinib | Maximum Observed Plasma Concentration (Cmax): Caffeine | Maximum Observed Plasma Concentration (Cmax): Paraxanthine | Maximum Observed Plasma Concentration (Cmax): Omeprazole | Maximum Observed Plasma Concentration (Cmax): Warfarin | Maximum Observed Plasma Concentration (Cmax): Pirtobrutinib | Time to Maximum Observed Plasma Concentration (Tmax): Caffeine | Time to Maximum Observed Plasma Concentration (Tmax): Paraxanthine | Time to Maximum Observed Plasma Concentration (Tmax): Omeprazole | Time to Maximum Observed Plasma Concentration (Tmax): Warfarin | Time to Maximum Observed Plasma Concentration (Tmax): Pirtobrutinib | Apparent Terminal Elimination Rate Constant (λZ): Caffeine | Apparent Terminal Elimination Rate Constant (λZ): Paraxanthine | Apparent Terminal Elimination Rate Constant (λZ): Omeprazole | Apparent Terminal Elimination Rate Constant (λZ): Warfarin | Apparent Volume of Distribution at Terminal Phase (Vz/F): Caffeine | Apparent Volume of Distribution at Terminal Phase (Vz/F): Omeprazole | Apparent Volume of Distribution at Terminal Phase (Vz/F): Warfarin | Metabolite to Parent Drug AUC Ratio (MRAUC): AUC Ratio of Paraxanthine to Caffeine | Mean Residence Time (MRT): Caffeine | Mean Residence Time (MRT): Paraxanthine | Mean Residence Time (MRT): Omeprazole | Mean Residence Time (MRT): Warfarin | Apparent Terminal Elimination Half-Life (t1/2): Caffeine | Apparent Terminal Elimination Half-Life (t1/2): Paraxanthine | Apparent Terminal Elimination Half-Life (t1/2): Omeprazole | Apparent Terminal Elimination Half-Life (t1/2): Warfarin",True,"Inclusion Criteria:
+
+* Must have Body mass index (BMI) within the range of 18.0 to 32.0 kilograms per square meter (kg/m\^2), inclusive.
+* Male and female participants in good health, determined by no clinically significant findings from medical history, 12-lead Electrocardiogram (ECG), vital sign measurements, or clinical laboratory evaluations as assessed by the investigator.
+* Female participants of non-childbearing potential and male participants who follow standard contraceptive methods.
+* Must have comply with all study procedures, including the 23-night stay at the Clinical Research Unit (CRU) and follow-up phone call.
+
+Exclusion Criteria:
+
+* History or presence of any diseases or conditions of clinical significance by the Investigator (or designee) and/or Sponsor.
+* Known ongoing alcohol and/or drug abuse within 2 years prior to Screening.
+* History of significant hypersensitivity, intolerance, or allergy to any drug compound, food, or other substance, unless approved by the Investigator (or designee)."
+caffeine,caffeine,POSITIVE,0.28,0.21,0.36,2025,2019,False,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration)results available 2019 vs ledger meta-analysis 2025; could have been included in the pooled estimate,NCT01275170,A Single-Dose Study to Investigate the Pharmacokinetics of MK-7655 in Participants With Impaired Renal Function (MK-7655-005),COMPLETED,2019-07-19,2012-03-05,2012-03-05,49,PHASE1,MK-7655; Imipenem + Cilastatin; Caffeine; Midazolam; Omeprazole,Part 1: Area Under the Plasma Concentration-time Curve From Dosing to Infinity (AUC0-inf) of MK-7655 in Combination With PRIMAXIN® | Dialysis Clearance (CLD) of MK-7655 in Participants With End-stage Renal Diseases Requiring Hemodialysis (ESRD/HD) | Extraction Coefficient of MK-7655 in Participants With End-stage Renal Diseases Requiring Hemodialysis (ESRD/HD),True,"Inclusion criteria
+
+* Participants of reproductive potential (male or female) must be willing to use contraception.
+* Body Mass Index (BMI) ≤40 kg/m\^2
+* Weight \>60 kg at screening visit
+* No clinically significant abnormality on electrocardiogram (ECG) at screening visit and/or prior to administration of the initial dose of study drug
+* Panels A-D: smokers will be limited to no more that 10 cigarettes per day.
+* Panels E-H: nonsmoker or has not used nicotine for at least 6 months
+* In good health (stable health for participants with renal impairment)
+
+Exclusion criteria
+
+* Pregnant or breastfeeding.
+* History of recent stroke, chronic seizures, or major neurological disorder
+* History of clinically significant endocrine, gastrointestinal, cardiovascular, hematological, immunological, respiratory, or genitourinary abnormalities or diseases
+* History of malignant neoplastic disease. Exceptions: (1) adequately treated non-melanomatous skin carcinoma or carcinoma in situ of the cervix; (2) other malignancies that have been successfully treated ≥10 years prior to the screening visit
+* Panels A-D: Use of any medication (prescription or non-prescription) or herbal remedies (such as St. "
+caffeine,caffeine,POSITIVE,0.28,0.21,0.36,2025,2017,False,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration)results available 2017 vs ledger meta-analysis 2025; could have been included in the pooled estimate,NCT02629354,To Determine Blood Concentrations of Ibuprofen and Caffeine in a Tablet Against Ibuprofen Alone From Another Tablet,COMPLETED,2017-03-16,2016-01,2016-01,36,PHASE1,Ibuprofen; Caffeine; Ibuprofen,"Maximum Observed Plasma Concentration (Cmax) of S-ibuprofen | Cmax of R-ibuprofen | Cmax of Ibuprofen | Area Under the Plasma Concentration of S-ibuprofen Versus Time Curve, From Time Zero to t (AUC0-t) | AUC0-t of R-ibuprofen | AUC0-t of Ibuprofen",True,"Inclusion criteria:
+
+* Healthy males and females, 18 to 50 years (inclusive) at time of screening.
+* Body Mass Index (BMI) between 18.5 and 29.9 kg/m2 (inclusive).
+* Body mass not less than 50 kg.
+* Medical history, vital signs, physical examination, standard 12-lead electrocardiogram (ECG) and laboratory investigations must be clinically acceptable or within laboratory reference ranges for the relevant laboratory tests, unless the PI considers the deviation to be irrelevant for the purpose of the study.
+* Non-smokers and mild or moderate smokers (\<= 10 cigarettes or pipes per day). Further inclusion criteria apply
+
+Exclusion criteria:
+
+* Evidence of psychiatric disorder, antagonistic personality, poor motivation, emotional or intellectual problems likely to limit the validity of consent to participate in the study or limit the ability to comply with protocol requirements.
+* Current alcohol use \> 21 units of alcohol per week for males and \> 14 units of alcohol per week for females. One unit is equal to beer \[200 mL/10 ounces\], wine \[100 mL/4 ounces\], or distilled spirits \[25 mL/1 ounce\]) per day
+* Regular exposure to substances of abuse (other than alcohol) within the past"
+caffeine,caffeine,POSITIVE,0.28,0.21,0.36,2025,2022,False,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration)results available 2022 vs ledger meta-analysis 2025; could have been included in the pooled estimate,NCT04425902,"Evaluation of Pharmacokinetic Interaction Between GSK3640254 and Caffeine, Metoprolol, Montelukast, Flurbiprofen, Omeprazole, Midazolam, Digoxin, and Pravastatin in Healthy Adults",COMPLETED,2022-05-23,2021-03-10,2021-03-10,20,PHASE1,GSK3640254 200 mg; Caffeine 200 mg; Metoprolol 100 mg; Montelukast 10 mg; Flurbiprofen 100 mg; Omeprazole 40 mg; Midazolam 5 mg (2.5 mL); Digoxin 0.25 mg; Pravastatin 40 mg,Area Under the Plasma Concentration-time Curve (AUC) From Time Zero to Time t (AUC[0-t]) for Caffeine | AUC From Time Zero Extrapolated to Infinity (AUC[0-infinity]) for Caffeine | Maximum Observed Plasma Concentration (Cmax) for Caffeine | Time to Cmax (Tmax) for Caffeine | Apparent Terminal Phase Half-life (t1/2) for Caffeine | AUC(0-t) for Metoprolol | AUC(0-infinity) for Metoprolol | Cmax for Metoprolol | Tmax for Metoprolol | t1/2 for Metoprolol | AUC(0-t) for Montelukast | AUC(0-infinity) for Montelukast | Cmax for Montelukast | Tmax for Montelukast | t1/2 for Montelukast | AUC(0-t) for Flurbiprofen | AUC(0-infinity) for Flurbiprofen | Cmax for Flurbiprofen | Tmax for Flurbiprofen | t1/2 for Flurbiprofen | AUC(0-t) for Omeprazole | AUC(0-infinity) for Omeprazole | Cmax for Omeprazole | Tmax for Omeprazole | t1/2 for Omeprazole | AUC(0-t) for Midazolam | AUC(0-infinity) for Midazolam | Cmax for Midazolam | Tmax for Midazolam | t1/2 for Midazolam | AUC(0-t) for Digoxin | AUC(0-infinity) for Digoxin | Cmax for Digoxin | Tmax for Digoxin | t1/2 for Digoxin | AUC(0-t) for Pravastatin | AUC(0-infinity) for Pravastatin | Cmax for Pravastatin | Tmax for Pravastatin | t1/2 for Pravastatin,True,"Inclusion Criteria:
+
+* Participant must be 18 to 50 years of age inclusive, at the time of signing the informed consent.
+* Participants who are overtly healthy as determined by the investigator or medically qualified designee based on a medical evaluation including medical history, physical examination (including cardiopulmonary examination), laboratory tests, and cardiac monitoring (history and ECG).
+* Body weight more than or equal to (\>=) 50.0 kilograms (kg) (110 pounds \[lbs\]) for men and \>=45.0 kg (99 lbs) for women and body mass index within the range 18.5 to 31.0 kilogram per square meter (kg/m\^2) (inclusive).
+* Contraceptive use by men or women should be consistent with local regulations regarding the methods of contraception for those participating in clinical studies.
+* Male participants should not engage in intercourse while confined in the clinic. There is no need for an extended period of double barrier use or prolonged abstinence after study discharge.
+* A female participant is eligible to participate if she is not pregnant or breastfeeding and at least one of the following conditions applies:
+* Is not a woman of childbearing potential (WOCBP) or
+* Is a WOCBP and "
+caffeine,caffeine,POSITIVE,0.28,0.21,0.36,2025,2014,False,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration)results available 2014 vs ledger meta-analysis 2025; could have been included in the pooled estimate,NCT01766050,Study to Evaluate Effect of Belatacept on Pharmacokinetics of Inje Cocktail in Healthy Volunteers,COMPLETED,2014-06-27,2013-04,2013-04,45,PHASE4,Caffeine; Losartan; Omeprazole; Dextromethorphan; Midazolam; Belatacept,Adjusted Geometric Mean Maximum Drug Concentration (Cmax) of Midazolam With and Without the Coadministration of Belatacept - Pharmacokinetic (PK) Evaluable Population | Adjusted Geometric Mean Area Under the Concentration Time Curve (AUC) From Zero to Last Concentration (0-T) and AUC Extrapolated to Infinity (INF) of Midazolam With and Without the Coadministration of Belatacept - Pharmacokinetic (PK) Evaluable Population | Adjusted Geometric Mean Cmax of Losartan With and Without the Coadministration of Belatacept - PK Evaluable Population | Adjusted Geometric Mean AUC (0-T) and AUC (INF) of Losartan With and Without the Coadministration of Belatacept - Pharmacokinetic (PK) Evaluable Population | Adjusted Geometric Mean Cmax of Omeprazole With and Without the Coadministration of Belatacept - Pharmacokinetic (PK) Evaluable Population | Adjusted Geometric Mean AUC (0-T) and AUC (INF) of Omeprazole With and Without the Coadministration of Belatacept - Pharmacokinetic (PK) Evaluable Population | Adjusted Geometric Mean Cmax of Dextromethorphan With and Without the Coadministration of Belatacept - PK Evaluable Population | Adjusted Geometric Mean AUC (0-T) and AUC (INF) of Dextromethorphan With and Without the Coadministration of Belatacept - PK Evaluable Population | Adjusted Geometric Mean Cmax of Caffeine With and Without the Coadministration of Belatacept - PK Evaluable Population | Adjusted Geometric Mean AUC (0-T) and AUC (INF) of Caffeine With and Without the Coadministration of Belatacept - PK Evaluable Population,True,"Inclusion Criteria:
+
+* BMI 18 to 30 kg/m2
+* Men and women ages 18 to 45
+
+Exclusion Criteria:
+
+* Active tuberculosis
+* Any recent infection requiring antibiotic treatment within 4 weeks of dosing
+* Positive urine screen for drugs of abuse"
+methylphenidate,methylphenidate,POSITIVE,0.21,0.09,0.32,2020,2018,False,True,,False,results available 2018 vs ledger meta-analysis 2020; could have been included in the pooled estimate,NCT01852344,Behavioral Differences in Effortful Control,COMPLETED,2018-01-08,2017-04-24,2013-06-05,108,NA,Methylphenidate; Placebo; Easy Behavioral Task; Hard Behavioral Task,Reaction Time on the Multi-Source Interference Task,True,"Inclusion Criteria:
+
+* Age range 18-35
+
+Exclusion Criteria:
+
+* Pregnant or nursing (females)
+* Any clinically significant medical condition
+* Currently taking any medications (i.e., decongestants)
+* Currently taking any psychoactive medications
+* Alcohol or substance abuse (current or in the past 2 years)
+* Liver or Kidney disease
+* Any clinically significant personal or family history of cardiac problems"
+methylphenidate,methylphenidate,POSITIVE,0.21,0.09,0.32,2020,2018,False,True,ADHD,False,results available 2018 vs ledger meta-analysis 2020; could have been included in the pooled estimate,NCT01993108,"Control of Cognition (Naltrexone, Methylphenidate, and ADHD Study (NMAS))",COMPLETED,2018-06-18,2017-02,2015-12,23,PHASE4,Methylphenidate; Naltrexone; Placebo,Reaction Time Variability on the Multi-Source Interference Task,True,"Inclusion Criteria for all study participants:
+
+* Right-Handedness
+
+Exclusion Criteria for all study participants:
+
+* Any clinically significant history of cardiac problems
+* Any current Axis I psychiatric diagnosis as verified by the Structured Clinical Interview for DSM-IV (other than participants with ADHD or history of alcohol dependence)
+* A previous adequate trial with methylphenidate (Ritalin) or naltrexone (ReVia)
+* Currently taking any psychoactive medications
+* Any clinically significant medical condition
+* Any clinically significant neurological problem (seizures, tics, serious head injury)
+* Contraindications to MRI (metal objects in body or claustrophobia)
+* Currently pregnant or lactating
+* Alcohol or substance abuse (current or in the past 2 years)
+* Left-handedness or ambidextrous
+* Liver or kidney disease
+
+Inclusion Criteria for the participants with ADHD:
+
+* Currently un-medicated adults with ADHD
+* Has met full DSM-IV-R criteria (at least six of nine symptoms)for inattentive or hyperactive/impulsive subtypes (or both) by age 7 as well within the past month
+* Has described a chronic course of ADHD symptomatology from childhood to adulthood
+* Has endorsed a moderat"
+methylphenidate,methylphenidate,POSITIVE,0.21,0.09,0.32,2020,2014,False,True,Attention Deficit,False,results available 2014 vs ledger meta-analysis 2020; could have been included in the pooled estimate,NCT01933880,A Long Term Post-Marketing Study on the EffIcacy and Safety of Osmotic Release Oral System (OROS) Methylphenidate on the Cognitive Functions of Attention Deficit Hyperactivity Disorder (ADHD) Participants,COMPLETED,2014-09-17,2010-11,2010-11,194,PHASE4,Osmotic Release Oral System Methylphenidate Hydrochloride (OROS-MPH); No intervention,Change From Baseline in Digit Span Test Total Score at Week 12 | Change From Baseline in Inattention/Overactivity With Aggression (IOWA) Conners Behavior Rating Scale - I/O Score at Week 1 | Change From Baseline in IOWA Conners Behavior Rating Scale - I/O Score at Week 2 | Change From Baseline in IOWA Conners Behavior Rating Scale - I/O Score at Week 3 | Change From Baseline in IOWA Conners Behavior Rating Scale - I/O Score at Week 7 | Change From Baseline in IOWA Conners Behavior Rating Scale - I/O Score at Week 12,True,"Inclusion Criteria:
+
+* ADHD children must sign the consent form in person, and their parents or guardian must endorse, in the consent form, participation of the child in the designated research program
+* Through personal interaction and assessment questionnaire, examine to determine compliance of DSM-IV ADHD diagnostic criteria
+* According to the judgment of researchers, the ADHD children should have normal intelligence. Normal intelligence is defined as no obvious evidence of mental retardation in general (specific learning disabilities will not be considered mental retardation in general), formal IQ test to be conducted and 85 marks or above ought to be scored
+* ADHD children should not have been subjected to psychotropic drug treatment within 6 months. Those ADHD children on whom methylphenidate immediate-release tablets treatment is effective (with maximum daily dosage of 60 mg), may be admitted
+* Normal children with IQ greater than or equal to 85
+
+Exclusion Criteria:
+
+* Unable to fully comply with the cognitive function test in the laboratory
+* Known to be allergic to methylphenidate
+* Consumption of psychoactive drugs currently or in the past 30 days, including use of monoam"
+methylphenidate,methylphenidate,POSITIVE,0.21,0.09,0.32,2020,2010,False,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration)results available 2010 vs ledger meta-analysis 2020; could have been included in the pooled estimate,NCT00901576,A Drug Interaction Study of SPD503 and Concerta Administered Alone and In Combination in Normal Healthy Volunteers,COMPLETED,2010-05-19,2009-07-06,2009-07-06,38,PHASE1,SPD503; Concerta; SPD503 + Concerta,Maximum Plasma Concentration (Cmax) of Guanfacine | Area Under the Steady-state Plasma Concentration-time Curve (AUC) of Guanfacine | Time of Maximum Plasma Concentration (Tmax) of Guanfacine | Time of Plasma Half-Life(T 1/2) of Guanfacine | Cmax of d-Methylphenidate | AUC of d-Methylphenidate | Tmax of d-Methylphenidate | T 1/2 of d-Methylphenidate,True,"Inclusion Criteria:
+
+* Subjects must be normal healthy adult volunteers with no significant abnormalities in medical history, physical exam, vital signs or lab evaluations at the screening visit"
+methylphenidate,methylphenidate,POSITIVE,0.21,0.09,0.32,2020,2011,False,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration)results available 2011 vs ledger meta-analysis 2020; could have been included in the pooled estimate,NCT01183234,SPD544 High Strength Bioequivalence Study,COMPLETED,2011-08-25,2010-10-22,2010-10-22,28,PHASE1,SPD544; Methylphenidate hydrochloride,Area Under the Steady-state Plasma Concentration-time Curve (AUC 0-t) for Methylphenidate Hydrochloride (MPH) Using Two Different Formulations (Equasym XL and Metadate CD) | Maximum Plasma Concentration (Cmax) for MPH Using Two Different Formulations (Equasym XL and Metadate CD) | Time of Maximum Plasma Concentration (Tmax) for MPH Using Two Different Formulations (Equasym XL and Metadate CD),True,"Inclusion criteria:
+
+1. Healthy subjects, aged 18-55 years inclusive at the time of consent.
+2. Subject must be willing to comply with applicable contraceptive requirements of the protocol and be:
+
+   * Male, or
+   * Non-pregnant, non-lactating female who must be \>90 days post-partum or nulliparous.
+3. Body Mass Index (BMI) between 18.5 and 30.0kg/m² inclusive. This inclusion criterion will only be assessed at the Screening visit.
+4. Satisfactory medical assessment with no clinically significant or relevant abnormalities in medical history, physical examination, vital signs, ECG, and clinical laboratory evaluation (haematology, biochemistry, urinalysis) as assessed by the Investigator.
+5. Ability to provide written, personally signed and dated informed consent to participate in the study.
+6. An understanding, ability and willingness to fully comply with study procedures and restrictions.
+7. Ability to swallow all investigational medicinal products (IMPs).
+
+Exclusion criteria:
+
+1. Current or recurrent disease (e.g., cardiovascular, renal, liver, gastrointestinal, malignancy or other conditions) that could affect the action, absorption, or disposition of the IMPs, or could affect cl"
+methylphenidate,methylphenidate,POSITIVE,0.21,0.09,0.32,2020,2024,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT04603391,Cannabidiol and CES1 Interactions in Healthy Subjects,COMPLETED,2024-07-18,2021-12-31,2021-12-31,14,PHASE4,dl-Methylphenidate plus Cannabidiol; dl-Methylphenidate plus Cannabidiol Placebo solution,Differences in the Geometric Mean Ratio (GMR) of the Peak Concentration (Cmax) Will be Compared Between the Two Exposure Conditions; i.e. Methylphenidate + CBD vs Methylphenidate + Placebo. | Differences in the Geometric Mean Ratio (GMR) of the Area Under the Time Curve 0-infinity (AUCinf) for Methylphenidate Will be Compared Between the Two Exposure Conditions; i.e. Methylphenidate + CBD vs Methylphenidate + Placebo.,True,"Inclusion Criteria:
+
+* Signed Informed Consent
+* Age: 21-45 years
+* Gender: males and females (50:50)
+* Race or ethnicity: no restrictions
+* Body Mass Index (BMI) between 18.5 to 28 kg/m2 (inclusive)
+* Satisfactory completion of the screening medical history, physical exam, and laboratory evaluations.
+* Females of child-bearing potential must have a negative urine pregnancy test prior to enrollment and avoid pregnancy during study participation.
+* With the exception of oral contraceptives, subjects must not be taking prescription or OTC medication for the duration of study participation
+* Subjects must have no ongoing use of any botanical/nutritional supplement, vitamin, or energy drink for the duration of study participation
+
+Exclusion Criteria:
+
+* The presence of a known allergy, hypersensitivity, or adverse reaction to CBD or cannabis, or sesame seed oil
+* The presence of a known allergy, hypersensitivity, or adverse reaction to methylphenidate or dexmethylphenidate (Focalin®)
+* A history (within the past year) or presence of clinically significant cardiovascular, cerebrovascular, renal, hepatic, gastrointestinal, pulmonary, immunological, hematological, endocrine, or neurologic"
+methylphenidate,methylphenidate,POSITIVE,0.21,0.09,0.32,2020,2016,False,True,Epilepsy,False,results available 2016 vs ledger meta-analysis 2020; could have been included in the pooled estimate,NCT02178995,Methylphenidate Treatment of Attention Deficits in Epilepsy,COMPLETED,2016-08-31,2015-12,2015-09,55,PHASE4,Methylphenidate,"Conners' Continuous Performance Test (CPT) (Double-blind Portion, Primary Variables) | Symbol-digit Matching Test (Double-blind Portion) | MCG Paragraph Memory Test (Double-blind Portion) | Conners CPT Outcomes (Primary Variables) (Open-Label Portion) | Symbol-digit Matching Test (Open Label Phase) | MCG (Open-label Portion) | Seizure Frequency (Open-label Portion) | QOLIE-89 Aggregate Score",True,"Inclusion Criteria:
+
+1. For participants with seizures:
+
+   * H/o seizures of any cause
+   * Subjective cognitive complaints
+   * Stable antiepileptic drug doses which are not expected to change during the study
+   * Recent normal cardiac auscultation (may be done prior to enrollment by personal physician or study staff)
+   * Neurologist's judgement that participant is clinically appropriate for this study
+2. For healthy volunteers
+
+   * No history of seizures or other neurological disorders
+   * No history of cognitive complaints for any reason (including ADHD)
+   * Not on any medications which would interfere w/ cognitive testing
+3. English fluency
+
+Exclusion Criteria:
+
+1. IQ
+2. History of an adverse reaction to methylphenidate
+3. Age \>65 or \<18
+4. Personal medical history of
+
+   1. Arrhythmias,
+   2. Structural cardiac disease,
+   3. Other cardiac abnormality
+   4. Uncontrolled hypertension (\>150/95) during study. For those with BP \>140/90 \& \<150/95, they will be monitored during the study and refer them for treatment if their BP remains elevated throughout the study.
+   5. Uncontrolled tachycardia during study
+   6. Progressive neurological disorders which may interfere w"
+methylphenidate,methylphenidate,POSITIVE,0.21,0.09,0.32,2020,2014,False,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration)results available 2014 vs ledger meta-analysis 2020; could have been included in the pooled estimate,NCT00302458,A Study of Repeat Dosing of OROS® Methylphenidate Hydrochloride (CONCERTA®) and Immediate Release Methylphenidate Hydrochloride in Healthy Adults,COMPLETED,2014-01-07,2007-06,2007-06,44,PHASE4,OROS-Methylphenidate; Immediate Release Methylphenidate; Placebo,Peak Plasma Concentration of d-Methylphenidate,True,"Inclusion Criteria:
+
+1. Males or non-pregnant, non-lactating females. With the exception of women who have been post-menopausal for a minimum of 12 months prior to screening and those who have undergone hysterectomy or bilateral oophorectomy, all female subjects must have a negative urine pregnancy test at both screening and at each admission to the research unit. All male and female subjects must have used a medically acceptable form of birth control for at least one month prior to screening and be willing to continue use during the study. Medically acceptable forms of birth control include abstinence, hormonal contraceptives, diaphragm with spermicide, condom with spermicide, intrauterine device, or surgical sterilization (including vasectomy of male partner\[s\]).
+2. Eighteen (18) to 45 years of age, inclusive
+3. Based on medical history, limited physical examination (neurologic and cardiac) and/or lab results, are considered healthy and free of any conditions that may interfere with participation in the study. Any abnormalities at screening on results of electrocardiogram (ECG) or any laboratory test must be determined to be not clinically significant by an investigator.
+4. Agr"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2022,True,True,Schizophrenia,False,,NCT03838484,Effects of Transdermal Nicotine on Response Inhibition to Emotional Cues in Schizophrenia,TERMINATED,2022-04-29,2020-02-24,2020-02-24,18,NA,"Nicotine Patch, 7 Mg/24 Hr; Placebo patch",False Alarm Error Rate | False Alarm Error Rate | Omission Error Rate | Omission Error Rate | Reaction Time for Correct Hits | Reaction Time for Correct Hits | Reaction Time for False Alarms | Reaction Time for False Alarms,True,"Inclusion Criteria for schizophrenia subjects:
+
+1. Men and women age 18 - 65.
+2. Communicative in English.
+3. Provide voluntary, written informed consent.
+4. Physically healthy by medical history,and ECG examination.
+5. BMI \> 17.5 and \< 45.
+6. Diagnosis of schizophrenia (ICD-10 F20) or schizoaffective disorder (ICD-10 F25) confirmed by Structured Clinical Interview for Diagnostic and Statistical Manual (DSM)-V (SCID) or diagnostic interview with a trained clinician.
+7. Stable medication regimen over at least the past two weeks, including the use of either an oral or intramuscular administration of an antipsychotic medication. Additionally, subjects may take any prescribed medication aside from a nicotine-containing product as long as it has been regularly taken over the past two weeks, including as-needed (""PRN"") medication.
+8. Negative urine toxicology and negative urine cotinine (to confirm no recent nicotine use) at screening.
+9. Does not meet criteria for substance or alcohol use disorder per the SCID over the past 6 months
+10. For females, no longer of child-bearing potential, or agreeing to practice effective contraception during the study (e.g., established use of oral, in"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2019,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT01928758,Reduced Nicotine Cigarettes in Smokers With Mood and Anxiety Disorders,COMPLETED,2019-02-08,2018-03-23,2018-01-11,245,NA,Reduced Nicotine Content Cigarettes; Usual Nicotine Content Cigarettes,Plasma Cotinine Concentration,True,"Inclusion Criteria:
+
+* Smoke \>4 cigarettes/day for at least a year
+* No quit attempt in prior month
+* Not planning to quit smoking within next 6 months
+* Plan to live in local area for next 8 months
+* Meet diagnostic criteria for a current or lifetime Anxiety Disorder or Mood Disorder as determined by the Mini-international Neuropsychiatric Interview
+* Read and write in English
+* Women not pregnant or nursing and taking steps to avoid pregnancy
+* Able to understand and consent to study procedures
+
+Exclusion Criteria:
+
+* Unstable or significant medical condition such as Chronic Obstructive Pulmonary Disease or kidney failure
+* Use of non-cigarette nicotine delivery product in the past week or smoking cessation medicine in prior month
+* Currently reducing or planning to reduce cigarette consumption in next month
+* Uncontrolled serious psychotic illness or substance abuse or inpatient treatment for these in the past 6 months
+* Current suicide risk on clinical assessment
+* Aged \<18 or \>65
+* History of difficulty providing blood samples (fainting, poor venous access)
+* Unwilling to remain on one flavor of cigarette (regular or menthol) for the duration of the trial"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2015,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT01702519,A Pharmacokinetic Evaluation of Two Nicotine Patches in Smokers,COMPLETED,2015-02-11,2012-03,2012-03,40,PHASE1,nicotine,"Area Under the Curve From Time 0 to the Last Quantifiable Sample, AUC(0-t) | Maximum Measured Plasma Concentration (Cmax)",True,"Inclusion Criteria:
+
+* BMI 19-27 kg/m2
+* smokes \>10 cigarettes per day for preceeding 6 months
+
+Exclusion Criteria:
+
+* inability to stop smoking during study"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2017,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT02371850,Transdermal Patch CVD 1000: The Effect of Heat on Nicotine Release From Nicotine Patches in Adult Smokers,COMPLETED,2017-08-17,2015-06,2015-04,10,PHASE4,"Nicoderm patch first, then Aveva patch",Measurement of Maximum Serum Concentration (Cmax),True,"Inclusion Criteria:
+
+* 1\. Men or non-pregnant women of any ethnic background between the age of 18 and 45 years old
+* 2\. Subjects should be cigarette smokers who smoke at least 5 cigarettes per day for one year or more.
+* 3\. Provide written informed consent before initiation of any study procedures.
+* 4\. Available for follow-up for the planned duration of the study
+* 5\. Able to communicate well with the investigators
+* 6\. Able to adhere to the study restrictions and examination schedule.
+* 7\. Subjects who are within their ideal body weight (BMI \>17 and \<= 25)
+* 8\. Demonstrate comprehension of the protocol procedures and knowledge of study by passing (\>70% correct responses) a written examination containing 20 multiple choice and true false questions covering all aspects of the study including the purpose, procedures, risks and benefits.
+* 9\. Subjects deemed to be eligible as judged by the Medically Accountable Investigator (MAI) and determined by medical history, physical examination, and medication history.
+* 10\. Have a normal blood pressure (systolic: 90-140 mmHg; diastolic: 50-90 mmHg) and heart rate (55-100 bpm),
+* 11\. Have normal screening laboratories for WBC, H"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2020,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT03541044,A Bioequivalence Study of Two Nicotine Lozenges in Fasting Conditions in Healthy Smokers,COMPLETED,2020-03-12,2019-03-24,2019-03-24,46,PHASE1,Nicotine Prototype Mini lozenge; Nicorette Mini Lozenge,Assessment of Bioequivalence of Prototype Mini Lozenges With Nicorette Mini Lozenge by Measuring Area Under the Plasma Concentration Versus Time Curve From Time Zero to Time t (AUC [0-t]) | Assessment of Bioequivalence of Prototype Mini Lozenges With Nicorette Mini Lozenge by Measuring Area Under the Plasma Concentration Versus Time Curve Calculated From Time Zero to Infinity (AUC [(0-inf]) | Assessment of Bioequivalence of Prototype Mini Lozenges With Nicorette Mini Lozenge by Measuring Maximum Observed Plasma Nicotine Concentration (Cmax),True,"Inclusion Criteria:
+
+* Evidence of a personally signed and dated informed consent document indicating that the participant has been informed of all pertinent aspects of the study before any assessment is performed.
+* Participants who are willing and able to comply with scheduled visits, treatment plan, laboratory tests, and other study procedures.
+* Healthy participants which is defined as in general good physical health, as judged by the investigator and no clinically relevant abnormalities identified by a detailed medical history, full physical examination, including blood pressure, respiratory rate, oral body temperature and pulse rate measurement, 12-lead ECG or clinical laboratory tests.
+* Body Mass Index (BMI) of 19 to 27 Kilogram per meter square (kg/m2), inclusive; and a total body weight \>50 kg (110 pounds \[lbs\]).
+* Female participants of childbearing potential and at risk for pregnancy must agree to use a highly effective method of contraception throughout the study and for at least 5 days after the last dose of assigned treatment. Female participants who are not of childbearing potential must meet at least one of the following criteria: a) Achieved postmenopausal stat"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2018,True,True,,True,,NCT01223404,Nicotinic Modulation of the Default Network,COMPLETED,2018-01-25,2013-09,2013-09,21,NA,Placebo; Nicotine; Mecamylamine,Reaction Time | Signal Detection Performance | Default Network Activity,True,"Inclusion Criteria:
+
+* Age 21 through 50.
+* Did not consume cigarettes, cigarillos, cigars, or other tobacco or nicotine-containing products more than 20 times in lifetime, and did not use any nicotine-containing product at all within the last two years.
+* Normal or corrected to normal vision (at least 20/80).
+
+Exclusion Criteria:
+
+* Presence of metal objects in the body, implanted electronic devices, or any other counter indication for MRI.
+* Claustrophobia.
+* Major psychiatric disorders including mood, anxiety or psychotic disorders.
+* Cardiovascular or cerebrovascular disease, such as history of myocardial infarction, heart failure, angina, stroke, severe arrhythmias, or EKG abnormalities.
+* Kidney or liver disease.
+* Hypertension (resting systolic BP above 140 or diastolic above 85 mm Hg).
+* Hypotension (resting systolic BP below 95 or diastolic below 60).
+* Use of any prescription or over-the-counter drug other than supplements and birth control.
+* History of or current neurological illnesses, such as stroke, seizures, dementia or organic brain syndrome.
+* Learning disability, attention deficit disorder, or any other condition that impedes memory and attention.
+* Glaucoma, org"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2025,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT03625986,Does Switching to Nicotine Containing Electronic Cigarettes Reduce Health Risk Markers,COMPLETED,2025-03-27,2024-02-23,2024-01-26,105,NA,Nicotine-Containing Electronic Cigarette; Non-Nicotine Electronic Cigarette,Urinary NNAL Concentration,True,"Inclusion Criteria:
+
+* Age 21 to 70
+* Smoke ≥5 cigarettes per day for at least the past 12 months
+* Smoke regular, filtered cigarettes or machine-rolled cigarettes with a filter
+* Exhaled CO measurement ≥6 ppm at baseline visit
+* No serious quit attempt in prior month
+* Willing to completely cease cigarette consumption and switch to an e-cig
+* Willing and able to attend regular visits over a 7-week period
+* Able to read and write in English
+* Able to understand and consent to study procedures
+
+Exclusion Criteria:
+
+* Unstable or significant medical condition such as COPD, kidney disease, or liver disease in the past 12 months
+* Severe immune system disorders
+* Women who are pregnant, trying to become pregnant, or nursing
+* Use of any non-cigarette nicotine delivery product in the past 7 days
+* Use of an e-cig for 5 or more days in the past 28 days or any use in the past 7 days
+* Uncontrolled mental illness or substance abuse or inpatient treatment for these conditions in the past 6 months
+* History of a seizure disorder or had a seizure in the past 12 months
+* Currently or have ever taken medications prescribed to prevent seizures (such as Carbamazepine or Phenobarbital). Using seiz"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2019,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT03543137,To Assess the Bioequivalence of the 4mg Prototype Mini Nicotine Lozenge to the Reference Product (Nicorette) in Healthy Smokers,COMPLETED,2019-12-04,2018-11-12,2018-11-12,37,PHASE1,Nicotine Prototype Mini lozenge; Nicorette Mini Lozenge,Assessment of Bioequivalence of Prototype Mini Lozenges With Nicorette Mini Lozenge by Measuring Area Under the Plasma Concentration Versus Time Curve From Time Zero to Time t (AUC [0-t]) | Assessment of Bioequivalence of Prototype Mini Lozenges With Nicorette Mini Lozenge by Measuring Area Under the Plasma Concentration Versus Time Curve Calculated From Time Zero to Infinity (AUC [(0-inf]) | Assessment of Bioequivalence of Prototype Mini Lozenges With Nicorette Mini Lozenge by Measuring Maximum Observed Plasma Nicotine Concentration (Cmax),True,"Inclusion Criteria:
+
+* Evidence of a personally signed and dated informed consent document indicating that the participant has been informed of all pertinent aspects of the study before any assessment is performed.
+* Participants who are willing and able to comply with scheduled visits, treatment plan, laboratory tests, and other study procedures.
+* Healthy participants which is defined as in general good physical health, as judged by the investigator and no clinically relevant abnormalities identified by a detailed medical history, full physical examination, including blood pressure, respiratory rate, oral body temperature and pulse rate measurement, 12-lead ECG or clinical laboratory tests.
+* Body Mass Index (BMI) of 19 to 27 Kilogram per meter square (kg/m2), inclusive; and a total body weight \>50 kg (110 pounds \[lbs\]).
+* Female participants of childbearing potential and at risk for pregnancy must agree to use a highly effective method of contraception throughout the study and for at least 5 days after the last dose of assigned treatment. Female participants who are not of childbearing potential must meet at least one of the following criteria: a) Achieved postmenopausal stat"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2025,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT04231539,"Pharmacokinetics, Subjective Effects, and Abuse Liability of Nicotine Salt-Based Vaping Products With Tobacco or Unflavored E-liquids, SALTVAPE Study",COMPLETED,2025-10-31,2024-07-10,2024-07-10,15,NA,Nicotine; Vaporizer Device; Salt-HIgh Nicotine Unflavored (Product B); Free-Low Nicotine Tobacco Flavored (Product C); Salt-High Nicotine Tobacco Flavored (Product D),Maximum Concentration of Nicotine in Plasma (Cmax) | Area Under the Concentration-time Curve (AUC) | Time to Maximum Concentration,True,"Inclusion Criteria:
+
+* Willingness to abstain from using ENDS product for 8-10 hours (overnight abstinence) prior to study visits
+* Current daily ENDS user as determined by
+
+  * Has used ENDS product every day for the past 6 months (by history)
+  * Has used ENDS product or e-liquid containing nicotine (by history)
+* Participant or legal representative must understand the investigational nature of this study and sign and Independent Ethics Committee/Institutional Review Board approved written informed consent form prior to receiving any study related procedure
+
+Exclusion Criteria:
+
+* Smoked cigarettes in the past 7 days
+* Currently smokes \>= 5 cigarettes per month
+* Unstable medical conditions (such as unstable heart disease, uncontrolled hypertension, thyroid disease, diabetes, renal or liver impairment, or glaucoma) or psychiatric condition (such as current major depression, history of schizophrenia or bipolar disorder) or current regular use of psychiatric medications (such as major tranquilizers and antidepressants)
+* History of serious side effects from nicotine or from any nicotine replacement therapies
+* Uncontrolled intercurrent illness including, but not limited to, ongoin"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2016,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT02032212,A Bioavailability Study of Nicotine Delivered by an Electronic Vapour Product,COMPLETED,2016-05-02,2015-12,2014-05,12,NA,EVP unflavoured; EVP flavoured; Nicotine inhalator; Conventional cigarette,Nicotine Plasma Concentration | Area Under the Concentration-time Curve for Plasma Nicotine (AUCt),True,"Inclusion Criteria:
+
+* BMI of 18-35kg/m2
+* Subjects must be established smokers
+* Subjects must have smoked five to 30 cigarettes per day for at least one year
+
+Exclusion Criteria:
+
+* Subjects who have used nicotine replacement therapy within 14 days of the screening
+* Subjects who have donated blood within 12 months preceding study
+* Subjects with relevant illness history
+* Subjects positive for hepatitis or HIV
+* Subjects with history of drug or alcohol abuse
+* Subjects with lung function test or vital signs considered unsuitable
+* Subjects who are trying to stop smoking"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2017,True,True,Schizophrenia,False,,NCT00383747,The Effects of Nicotine on Cognition in Schizophrenia,COMPLETED,2017-04-28,2009-01,2009-01,60,PHASE4,transdermal nicotine patch; Transdermal Nicotine Patch,Effects of Nicotine Patch Compared With Placebo in Non- Smokers With Schizophrenia and Control Groups on Attention Measured by the Continuous Performance Test Identical Pairs Version,True,"Inclusion Criteria:
+
+Patients:
+
+* DSM IV diagnosis of schizophrenia,
+* age 18 - 60 inclusive,
+* able to provide informed consent,
+* treated with antipsychotic medications at a stable dose for at least 4 weeks,
+* not treated with an investigational medication in the past 30 days,
+* WRAT-3 IQ raw score greater than or equal to 35,
+* non smokers for more than 3 months\*,
+* normal or corrected to normal vision.
+
+Non Smoking defined by:
+
+1. Self report of not smoking a single cigarette in the past 3 months.
+2. Salivary Cotinine level \< 30 ng/ml at screening and on the day of testing
+3. Expired air CO \< 9ppm on the day of the testing
+
+Inclusion Criteria:
+
+Control Group:
+
+* Age 18 - 60 inclusive,
+* able to provide informed consent,
+* not treated with an investigational medication in the past 30 days,
+* WRAT-3 IQ raw score greater than or equal to 35,
+* non smokers for more than 3 months\*,
+* normal or corrected to normal vision,
+* Non Smoking as defined above.
+
+Exclusion Criteria:
+
+Patients:
+
+* Use of any nicotine containing product in the past 3 months by self report,
+* use of cholinesterase inhibitors such as galantamine in the past 3 months,
+* untreated ischaemic heart disease,
+* unc"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2022,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT03861078,The Effect of Electronic Cigarette Liquid Characteristics in Smokers.,COMPLETED,2022-12-23,2021-12-13,2021-12-13,22,NA,"Own Brand Cigarette; ECIG 15 mg nicotine, sweetened; ECIG 15 mg nicotine, unsweet; ECIG 0 mg nicotine, sweetened; ECIG 0 mg nicotine, unsweet",Plasma Nicotine Concentration | Progressive Ratio Task - Breakpoint | Progressive Ratio Task - Number of Puffs | Progressive Ratio Task - Latency,True,"Inclusion Criteria-- Participants must be:
+
+* Healthy (determined by self-report)
+* Between the ages of 21-55 years old
+* Current cigarette smokers
+* Wiling to provide informed consent
+* Able to attend the lab session and abstain from tobacco/nicotine products as required
+* Agree to use designated products according to the study protocol
+
+Exclusion Criteria:
+
+* Women if they are breast-feeding or test positive for pregnancy (by urinalysis) at screening.
+* Individuals who weigh less than 110 pounds.
+
+Some study details about the eligibility criteria are purposely omitted at this time to preserve scientific integrity. Full details will be posted at the conclusion of the study."
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2024,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT05024747,"A Bioequivalence Study of 21 Milligram (mg) Nicotine Transdermal Patches (NicoDerm CQ, GlaxoSmithKline [GSK] Dungarvan) Compared to the Current Marketed 21 mg Nicotine Transdermal Patches (NicoDerm CQ, Alza) in Healthy Adult Smokers",COMPLETED,2024-03-21,2021-10-25,2021-10-25,22,PHASE1,NicoDerm CQ patch (GSK Dungarvan); NicoDerm CQ (Alza),"Maximum Observed Plasma Nicotine Concentration (Cmax) of NicoDerm CQ Dungarvan (Test) Compared to NicoDerm CQ, Alza (Reference) | Area Under the Plasma Concentration Versus Time Curve From Time Zero to Time t (AUC [0-t]) of NicoDerm CQ Dungarvan (Test) Compared to NicoDerm CQ, Alza (Reference) | Area Under the Plasma Concentration Versus Time Curve Calculated From Time Zero to Infinity (AUC [(0-inf]) of NicoDerm CQ Dungarvan (Test) Compared to NicoDerm CQ, Alza (Reference)",True,"Inclusion Criteria:
+
+* Participant provision of a signed and dated informed consent document indicating that the participant has been informed of all pertinent aspects of the study before any assessment is performed.
+* Participant is willing and able to comply with scheduled visits, treatment plan, laboratory tests, and other study procedures.
+* A participant in good general and mental health with, in the opinion of the investigator or medically qualified designee, as determined by medical evaluation, including a detailed medical history, full physical examination, including blood pressure and pulse rate measurement, 12-lead Electrocardiogram (ECG) or clinical laboratory tests.
+* Body Mass Index (BMI) of 19 to 27 kilogram/meter Squared (kg/m\^2); and a total body weight \>50 kg (110 Pound-Mass \[lbs\]).
+* Any female participant of childbearing potential and at risk for pregnancy must agree to use a highly effective method of contraception throughout the study and for at least 5 days after the last dose of assigned treatment. Female participant who are not of childbearing potential must meet requirements of protocol.
+* Participants admits to having smoked more than 10 cigarettes per"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2018,True,True,,True,,NCT02420327,Low-Dose Galantamine to Potentiate the Attention-Enhancing Effects of Low-Dose Nicotine,COMPLETED,2018-08-17,2017-03,2017-03,43,NA,Placebo patch & placebo capsule; Placebo patch & galantamine capsule; Nicotine patch & placebo capsule; Nicotine patch and galantamine capsule,Spatial Attentional Resource Allocation Task Predictive Trials Reaction Time | Rapid Visual Information Processing Task Hit Rate | Change Detection Task Accuracy | Spatial Attentional Resource Allocation Task (SARAT) Non-predictive Trial Reaction Time | Rapid Visual Information Processing Task Reaction Time | Change Detection Task Reaction Time,True,"Inclusion Criteria:
+
+* Aged 21 to 55 years.
+* No exposure to any nicotine-containing product in the last year.
+* Smoked no more that 40 cigarettes, cigars or cigarillos in lifetime.
+* Normal or corrected to normal vision (at least 20/80).
+* Body weight 110-220 lbs.
+
+Exclusion Criteria:
+
+* Pregnant or breast-feeding.
+* Drug or alcohol abuse or dependence currently or in the last 2 years.
+* DSM Axis I mood, anxiety or psychotic disorder.
+* Cardiovascular or cerebrovascular disease, such as history of myocardial infarction and ischemia, heart failure, angina, stroke, severe arrhythmias, or EKG abnormalities (Wolf-Parkinson-White syndrome, Complete left bundle branch block, PR interval \<120 ms or \>200 ms, Prolonged QT interval (corrected) \>500 ms, Cardiac arrhythmias as defined by PACs \>3 per min or PVCs \>1 per min).
+* Uncontrolled hypertension (resting systolic BP above 140 or diastolic above 90 mm Hg).
+* Hypotension (resting systolic BP below 90 or diastolic below 60).
+* Significant kidney or liver impairment.
+* Moderate to severe asthma.
+* Obstructive pulmonary disease.
+* Type I or II diabetes.
+* Use of any centrally active medications; any peripherally acting cholinergic medic"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2015,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT01669122,Pharmacokinetic Study of 4 mg Nicotine Lozenge.,COMPLETED,2015-01-22,2012-08,2012-08,40,PHASE2,nicotine,"Area Under the Curve From Time 0 to t, AUC (0-t) | Maximum Plasma Concentration (Cmax)",True,"Inclusion Criteria:
+
+\- smoked commercially-manufactured cigarettes daily for the preceding 12 months and routinely smokes first cigarette within 30mins of awakening.
+
+Exclusion Criteria:
+
+* inability to refrain from smoking during confinement period, smoking tobacco in any other form other than commercially manufactured cigarettes, subject has used chewing tobacco or other tobacco products other than commercially manufactured cigarettes within 7 days of dosing"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2013,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT01536704,Nicotine Lozenge Bioequivalence Study,COMPLETED,2013-04-26,2011-08,2011-08,50,PHASE1,Nicotine (2 mg); Nicotine (4 mg),Area Under the Plasma Concentration Versus Time Curve From Time Zero to Time t [AUC(0-t)] | Maximum Observed Plasma Concentration [Cmaximum (Max)],True,"Inclusion Criteria:
+
+* Participants must be healthy smokers who usually smoked their first cigarette within 30 minutes of waking.
+* Body Mass Index within the range 19-27 kilograms/meters\^2
+
+Exclusion Criteria:
+
+* Participants who used chewing tobacco or tobacco products other than cigarettes within 21 days of screening visit"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2014,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT01847443,Comparison of Pharmacokinetic Profiles of Two Nicotine Gum Formulations,COMPLETED,2014-04-11,2013-06,2013-06,84,PHASE1,Nicotine (2 mg); Nicotine (4 mg),Area Under the Curve From Time 0 to Time 't' [AUC(0-t)] of Nicotine 2 mg Test and Reference Product | AUC(0-t) of Nicotine 4 mg Test and Reference Product | Maximum Observed Concentration (Cmax) of Nicotine 2 mg Test and Reference Product | Cmax of Nicotine 4 mg Test and Reference Product,True,"Inclusion Criteria:
+
+* BMI within the range of 19 to 30 kilograms/meters\^2
+* Current cigarette smokers who have smoked daily for at least a year, and smoke their first cigarette within 30 minutes of waking up
+
+Exclusion Criteria:
+
+* Participants who have attempted to quit smoking in the last 12 months, are currently attempting to quit smoking or reduce the number of cigarettes they smoke, or are intending to quit smoking in the next 3 months, with or without use of smoking cessation aids
+* Treatment with known hepatic enzyme altering agents"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2017,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT02532374,"Nicotine Pharmacokinetic and Pharmacodynamics Profile, Safety and Tolerability of P3L",COMPLETED,2017-06-15,2016-02,2015-10,16,NA,Nicorette® inhalator; P3L,Maximum Concentration (Cmax) of Nicotine Following Single Use of Nicorette® Inhalator | Maximum Concentration (Cmax) of Nicotine Following Single Use of P3L 50 µg/Puff | Maximum Concentration (Cmax) of Nicotine Following Single Use of P3L 80 µg/Puff | Maximum Concentration (Cmax) of Nicotine Following Single Use of P3L 150 µg/Puff | Time to the Maximum Concentration (Tmax) of Nicotine Following Single Use of Nicorette® Inhalator | Time to the Maximum Concentration (Tmax) of Nicotine Following Single Use of P3L 50 µg/Puff | Time to the Maximum Concentration (Tmax) of Nicotine Following Single Use of P3L 80 µg/Puff | Time to the Maximum Concentration (Tmax) of Nicotine Following Single Use of P3L 150 µg/Puff | Area Under the Concentration-time Curve From Start of Product Use to the Last Quantifiable Time Point (AUC0-last) of Nicotine Following Single Use of Nicorette® Inhalator | Area Under the Concentration-time Curve From Start of Product Use to the Last Quantifiable Time Point (AUC0-last) of Nicotine Following Single Use of P3L 50 µg/Puff | Area Under the Concentration-time Curve From Start of Product Use to the Last Quantifiable Time Point (AUC0-last) of Nicotine Following Single Use of P3L 80 µg/Puff | Area Under the Concentration-time Curve From Start of Product Use to the Last Quantifiable Time Point (AUC0-last) of Nicotine Following Single Use of P3L 150 µg/Puff | Area Under the Concentration-time Curve From Start of Product Use to 10 Minutes After Start of Product Use (AUC0-10) of Nicotine Following Single Use of Nicorette® Inhalator | Area Under the Concentration-time Curve From Start of Product Use to 10 Minutes After Start of Product Use (AUC0-10) of Nicotine Following Single Use of P3L 50 µg/Puff | Area Under the Concentration-time Curve From Start of Product Use to 10 Minutes After Start of Product Use (AUC0-10) of Nicotine Following Single Use of P3L 80 µg/Puff | Area Under the Concentration-time Curve From Start of Product Use to 10 Minutes After Start of Product Use (AUC0-10) of Nicotine Following Single Use of P3L 150 µg/Puff,True,"Inclusion Criteria:
+
+* Subject is Caucasian
+* Smoking, healthy subject as judged by the Investigator
+* Subject smoked at least 10 commercially available non-menthol cigarettes (CCs) per day for the last 4 weeks
+* Subject has smoked for at least the last 3 years prior to screening
+* Subject does not plan to quit smoking in the next 3 months
+
+Exclusion Criteria:
+
+* As per Investigator judgment, the subject cannot participate in the study for any reason (e.g., medical, psychiatric, and/or social reason)
+* Subject has donated or been in receipt of whole blood or blood products within 3 months prior to Admission Visit
+* Female subject is pregnant or breast feeding
+* Female subject does not agree to use an acceptable method of effective contraception
+* Female subject uses estrogen-containing hormonal contraception or hormone replacement therapy"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2021,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT02955329,Vaping THC From Electronic Cigarettes,COMPLETED,2021-04-30,2019-11-30,2019-11-30,8,PHASE3,Nicotine; Cannabis; PAX Loose Leaf Vaporizer,Mean Delivered and Retained Doses | Median Peak THC Concentration (Cmax) | Median Peak Nicotine Concentration (Cmax) | Median THC Exposure | Median Nicotine Exposure | Mean Heart Rate | Mean Score on the Drug Effects Questionnaire (DEQ) | Mean Scores on the Marijuana Craving Questionnaire-Short Form (MCQ-SF) | Mean Scores on the Modified Cigarette Evaluation Questionnaire (mCEQ) | Mean Scores on the Positive Affect Negative Affect Schedule (PANAS) | Mean Scores on the Minnesota Nicotine Withdrawal Scale (MNWS),True,"Inclusion
+
+* Age \>=21 years \<=70 years
+* Regular user of tobacco cigarettes (daily or most days)
+* Regular user of cannabis in any form (combusted or ingested) at least 5 days out of the month.
+* Positive for Tetrahydrocannabinol (THC) on screening toxicology test
+* Willing to abstain from tobacco smoking and all other combustible products (ex: cigars) for 12 hours prior to each outpatient hospital admission.
+* Willing to abstain from smoking/ingesting cannabis for 12 hours prior to each outpatient hospital admission.
+* Willing to abstain from using any kind of nicotine products for 12 hours prior to each outpatient hospital admission (ex: electronic cigarettes, nicotine replacement therapy).
+* Saliva cotinine ≥ 30 ng/mL and/or NicAlert of 6
+* Healthy (based on limited physical examination and medical history collected during screening)
+* Heart rate \< 105 beats per minute (BPM)
+* Systolic Blood Pressure \< 160 and \> 90 (considered out of range if both machine and manual readings are above/below these thresholds)
+* Diastolic Blood Pressure \< 100 and \> 50 (considered out of range if both machine and manual readings are above/below these thresholds)
+* Body Mass Index ≤\<=38.0
+
+E"
+nicotine,nicotine,POSITIVE,0.34,0.18,0.5,2010,2026,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT04378907,Assessing Electronic Cigarette Nicotine Flux,COMPLETED,2026-02-04,2023-02-01,2023-02-01,33,NA,Cigarette Smoker/ECIG users: 0 mg/ml nicotine concentration; Cigarette Smokers/ECIG users: 6 mg/ml nicotine concentration; Cigarette Smokers/ECIG users: 15 mg/ml nicotine concentration; Cigarette Smokers/ECIG users: 30 mg/ml nicotine concentration,Plasma Nicotine Concentration | Cigarette/ECIG Challenge Paradigm,True,"Inclusion Criteria:
+
+* healthy (determined by self-report)
+* between the ages of 18-55
+* willing to provide informed consent
+* able to attend the lab and abstain from tobacco/nicotine as required and must agree to use designated products according to study protocol
+
+Exclusion Criteria:
+
+• Women if they are breast-feeding or test positive for pregnancy (by urinalysis) at screening.
+
+Some study details about the eligibility criteria are purposely omitted at this time to preserve scientific integrity. Full details will be posted at the conclusion of the study."
+oxytocin,oxytocin,POSITIVE,0.29,0.154,0.429,2013,2014,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT01551303,Effect of Intranasal Neuropeptide on Emotion Perception in Trait Anxiety,COMPLETED,2014-06-30,2012-12,2012-12,47,NA,Oxytocin; Placebo,Affective Ratings in Affective Learning Task,True,"Inclusion Criteria:
+
+* No current Axis I according to Diagnostic \& Statistical Manual for Psychiatry-IV excluded diagnoses as determined by MINI or Structured Clinical Interview for Diagnosis psychiatric diagnostic interview completed within the past 6 months
+* Age 18 to 65
+* Subjects must be able to give informed consent and be willing and able to comply with study procedures.
+
+Exclusion Criteria:
+
+* Patients with severe unstable medical illness, clinically significant laboratory findings, or serious medical illness for which hospitalization may be likely within the next three months
+* Pregnant or lactating women.
+* Subjects currently taking hormones, such as estrogen.
+* Known hypersensitivity to oxytocin or to any of the excipients of Syntocinon Nasal spray.
+* Known hyponatremia or concurrent use of diuretics.
+* Subjects with a history of seizure disorder."
+oxytocin,oxytocin,POSITIVE,0.29,0.154,0.429,2013,2020,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT02999100,Comparison of Inhaled Oxytocin (IH) With Intramuscular (IM) Oxytocin in Pregnant Women and With Intravenous (IV) Oxytocin in Healthy Non-pregnant Women,TERMINATED,2020-03-05,2019-03-04,2019-03-01,31,PHASE1,IH Oxytocin; IM Oxytocin; IV Oxytocin; ROTAHALER,"Part 1: Plasma Concentration Time Profile of Oxytocin | Part 1: Maximum Observed Plasma Concentration (Cmax) of Oxytocin | Part 1: Observed Plasma Concentration (Cp) 10 of Oxytocin | Part 1: Observed Plasma Concentration (Cp) 20 of Oxytocin | Part 1: Observed Plasma Concentration (Cp) 30 of Oxytocin | Part 1: Time to Reach Maximum Observed Concentration (Tmax) of Oxytocin | Part 1: Area Under the Concentration-time Curve From Time Zero to the Time of the Last Quantifiable Concentration (AUC[0-t]) of Oxytocin | Part 1: Terminal Phase Half-life (t1/2) of Oxytocin | Part 2: Number of Participants With Non-serious Adverse Events (Non-SAEs) and Serious Adverse Events (SAEs) | Part 2: Absolute Values of Systolic Blood Pressure (SBP) and Diastolic Blood Pressure (DBP) | Part 2: Change From Baseline in SBP and DBP | Part 2: Change From Baseline in Heart Rate | Part 2: Absolute Values of Heart Rate | Part 2: Absolute Values of PR Interval, QRS Duration, Corrected QT Interval Using Bazett's (QTcB) Formula and Corrected QT Interval Using Fredericia's Formula (QTcF) Interval | Part 2: Number of Participants With Abnormal Respiratory Events | Part 2: Forced Expiratory Volume at 1 Minute (FEV1) | Part 2: Percent Oxygen in Blood | Part 2: Absolute Values of Respiration Rate | Part 2: Plasma Concentration Time Profile of Oxytocin. | Part 2: Maximum Observed Plasma Concentration (Cmax) of Oxytocin | Part 2: Observed Plasma Concentration (Cp)10 of Oxytocin | Part 2: Observed Plasma Concentration (Cp)20 of Oxytocin | Part 2: Observed Plasma Concentration (Cp)30 of Oxytocin | Part 2: Time to Reach Maximum Observed Concentration (Tmax) of Oxytocin | Part 2: Area Under the Concentration-time Curve From Time Zero Extrapolated to Time 't' (AUC[0-t]) of Oxytocin | Part 2: Plasma Clearance (CL) of Oxytocin for IV Route Only | Part 2: Volume of Distribution (VOD) of Oxytocin for IV Route Only | Part 2: Time to Reach Terminal Phase Half-life (t1/2) of Oxytocin",True,"Inclusion Criteria:
+
+All Groups:
+
+* Between 18 and 40 years of age inclusive, at the time of signing the informed consent.
+* Healthy as determined by the investigator or medically qualified designee based on a medical evaluation including medical history, physical examination, and laboratory tests as required per protocol.
+* Subject clinical chemistry and haematology values within an acceptable range for the population recruited and not of abnormal clinical significance. A subject with a clinical abnormality or laboratory parameter(s) which is/are not specifically listed in the inclusion or exclusion criteria, outside the reference range for the population being studied may be included only if the investigator in consultation with the Medical Monitor (if required) agree and document that the finding is unlikely to introduce additional risk factors and will not interfere with the study procedures.
+* Adequate peripheral venous access for cannulation.
+
+Group 1 Only:
+
+* Currently pregnant, with an uncomplicated pregnancy as determined by the investigator or designee.
+* Estimated date of delivery within 24 weeks of screening.
+* Planned spontaneous vaginal birth and considered by investi"
+oxytocin,oxytocin,POSITIVE,0.29,0.154,0.429,2013,2024,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT05672667,A Pharmacokinetic Study of Intravenous and Intranasal Oxytocin in Healthy Subjects,COMPLETED,2024-08-06,2023-11-01,2023-11-01,25,PHASE1,intravenous oxytocin; intranasal oxytocin,Plasma Oxytocin Concentration 2 Minutes After Infusion Initiated | Plasma Oxytocin Concentration 5 Minutes After Infusion Initiated | Plasma Oxytocin Concentration 10 Minutes After Infusion Initiated | Plasma Oxytocin Concentration 20 Minutes After Infusion Initiated | Plasma Oxytocin Concentration 30 Minutes After Infusion Initiated | Plasma Oxytocin Concentration 40 Minutes After Infusion Initiated | Plasma Oxytocin Concentration 50 Minutes After Infusion Initiated | Plasma Oxytocin Concentration 65 Minutes After Infusion Initiated | Plasma Oxytocin Concentration 90 Minutes After Infusion Initiated | Plasma Oxytocin Concentration 120 Minutes After Infusion Initiated | Plasma Oxytocin Concentration 1 Minute After First Intranasal Puffs | Plasma Oxytocin Concentration 2 Minutes After First Intranasal Puffs | Plasma Oxytocin Concentration 5 Minutes After First Intranasal Puffs | Plasma Oxytocin Concentration 7 Minutes After First Intranasal Puffs | Plasma Oxytocin Concentration 10 Minutes After First Intranasal Puffs | Plasma Oxytocin Concentration 15 Minutes After First Intranasal Puffs | Plasma Oxytocin Concentration 20 Minutes After First Intranasal Puffs | Plasma Oxytocin Concentration 25 Minutes After First Intranasal Puffs | Plasma Oxytocin Concentration 35 Minutes After First Intranasal Puffs | Plasma Oxytocin Concentration 45 Minutes After First Intranasal Puffs | Plasma Oxytocin Concentration 60 Minutes After First Intranasal Puffs,True,"Inclusion Criteria:
+
+* Male or female \> 18 and \< 75 years of age, Body Mass Index (BMI) \<40.
+* Generally in good health as determined by the Principal Investigator based on prior medical history, American Society of Anesthesiologists physical status 1 or 2.
+* For healthy volunteers, normal blood pressure (systolic 100-140 mmHg; diastolic 60-90 mmHg) resting heart rate 45-90 beats per minute) without medication. For those with hypertension, blood pressure controlled with anti-hypertensive medication and with a resting heart rate 45-100 beats per minute.
+* Female subjects of child-bearing potential and those \< 1 year post-menopausal, must be practicing highly effective methods of birth control such as hormonal methods (e.g., combined oral, implantable, injectable, or transdermal contraceptives), double barrier methods (e.g., condoms, sponge, diaphragm, or vaginal ring plus spermicidal jellies or cream), or total abstinence from heterosexual intercourse for a minimum of 1 full cycle before study drug administration.
+
+Exclusion Criteria:
+
+* Hypersensitivity, allergy, or significant reaction to any ingredient of Pitocin®
+* Any disease, diagnosis, or condition (medical or surgical) t"
+oxytocin,oxytocin,POSITIVE,0.29,0.154,0.429,2013,2025,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT05312008,Does Oxytocin Alter Tolerance to or Motivation for Alcohol,TERMINATED,2025-03-04,2023-12-21,2023-12-21,6,PHASE2,Intranasal oxytocin; Intranasal placebo,Subjective Effect of Alcohol - Craving | Subjective Effects of Alcohol - Intoxication | Stop Signal Response Task | Stroop Test | Alcohol Purchase Task (Variable OMax),True,"Inclusion Criteria:
+
+* Heavy alcohol drinkers.
+* Able to understand/complete questionnaires and procedures in English.
+* Have venous access sufficient to allow blood sampling.
+
+Exclusion Criteria:
+
+* Latex allergy.
+* Nasal condition that compromises delivery and/or absorption of intra-nasal oxytocin
+* Pregnant or breast-feeding women.
+* Desire to be treated for any substance use disorder or court ordered to not drink alcohol
+* Medical disorders or other conditions such as alcohol withdrawal seizures or delirium tremens that may influence study outcome or participant safety.
+* Positive urine drug screen for amphetamines/ methamphetamines, barbiturates, benzodiazepines, cocaine, opiates, or phencyclidine if determined by the PI to adversely affect participant safety or data integrity.
+* Medications (past 30 days) that could influence participant safety or data integrity (e.g. antidepressants, antipsychotics, benzodiazepines, etc.) as determined by the PI.
+* DSM 5 Disorders (other than alcohol) or current/history of neurological disease of cerebral origin, or head injury with \> 20 min loss of consciousness, if determined by the PI to affect participant safety or data integrity.
+* Pos"
+oxytocin,oxytocin,POSITIVE,0.29,0.154,0.429,2013,2021,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT03033784,Autism Oxytocin Brain Project,COMPLETED,2021-01-12,2018-10-03,2018-10-03,51,PHASE2,8 International Units (IU) of Oxytocin; 24IU of Oxytocin; 48IU of Oxytocin; Placebo,Resting State Functional Connectivity (rsFC) Salience Network (Anterior Cingulate Cortex (ACC) and Insula Versus Visual Cortex) | Blood Oxygen Level Dependent (BOLD) Activity in Response to Social Cues | Percent Change in Blood Oxygen Level Dependent (BOLD) Activity During Ball-Game Task | Oxytocin Plasma Concentration,True,"Inclusion Criteria for ASD Participants:
+
+* Have an ASD diagnosis based on the Autism Diagnostic Observation Schedule (ADOS) and Autism Diagnostic Interview (ADI) criteria, gold standards of research-based autism diagnosis
+* Intelligence quotient (IQ) \> 70
+* Normal or corrected-to-normal vision
+
+Exclusion Criteria for ASD Participants:
+
+* Recent occurrence of seizures (past 5 years)
+* Brain damage or head trauma (can be included at discretion of PI and sponsor)
+* Color blind
+* Cardiovascular disease
+* Presence of a severe medical problem
+* Severe mental retardation
+* Alcoholism or substance abuse
+* Asthma (can be included at the discretion of study physician/nurse practitioner if episodes are infrequent and no active problems at time of the study)
+* Migraine headaches (at the discretion of the nurse practitioner or the study physician)
+* Claustrophobia (at discretion of study physician/designee/PI)
+* Pacemakers, cochlear implants, surgical clips or metal fragments
+
+Inclusion Criteria for Healthy Age-Matched Controls:
+
+* IQ \> 70
+* Normal or corrected-to-normal vision
+
+Exclusion Criteria for Healthy Age-Matched Controls:
+
+* History of seizures
+* Neurological disorder
+* Current psyc"
+oxytocin,oxytocin,POSITIVE,0.29,0.154,0.429,2013,2021,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT03929367,PK Sampling After IV Oxytocin and Effects on Sensory Function in Healthy Volunteers,COMPLETED,2021-04-19,2020-03-01,2020-03-01,11,PHASE4,Oxytocin,Oxytocin Concentration | Oxytocin Concentration | Oxytocin Concentration | Oxytocin Concentration | Oxytocin Concentration | Oxytocin Concentration | Oxytocin Concentration | Oxytocin Concentration | Oxytocin Concentration | Oxytocin Concentration | Oxytocin Concentration,True,"Inclusion Criteria:
+
+* Male or female \> 18 and \< 60 years of age, Body Mass Index (BMI) \<40.
+* Generally in good health as determined by the Principal Investigator based on prior medical history, American Society of Anesthesiologists physical status I or II
+* Normal blood pressure (systolic 90-140 mmHg; diastolic 50-90 mmHg) resting heart rate 45-100 beats per minute) without medication
+* Female subjects of child-bearing potential and those \< 1 year post-menopausal, must be practicing highly effective methods of birth control such as hormonal methods
+
+Exclusion Criteria:
+
+* Hypersensitivity, allergy, or significant reaction to any ingredient of Pitocin®
+* Any disease, diagnosis, or condition (medical or surgical) that, in the opinion of the Principal Investigator, would place the subject at increased risk (active gynecologic disease in which increased tone would be detrimental e.g., uterine fibroids with ongoing bleeding), compromise the subject's compliance with study procedures, or compromise the quality of the data
+* Women who are pregnant (positive result for serum pregnancy test at screening visit), women who are currently nursing or lactating, women that have been pregnan"
+melatonin,melatonin,NEGATIVE,-0.74,-1.03,-0.45,2021,2016,False,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration)results available 2016 vs ledger meta-analysis 2021; could have been included in the pooled estimate,NCT02591238,Melatonin in Smoke-induced Vascular Injury,COMPLETED,2016-03-03,2015-10,2015-07,68,PHASE4,non-smoker oral placebo; non-smoker oral melatonin; smoker oral placebo; smoker oral melatonin,Smoke-induced Vascular Injury and Melatonin's Effect in This Process Assessed by the Concentration of Fbg. | Smoke-induced Vascular Injury and Melatonin's Effect in This Process Assessed by the Concentration of Glu. | Smoke-induced Vascular Injury and Melatonin's Effect in This Process Assessed by the Concentration of FFA. | Smoke-induced Vascular Injury and Melatonin's Effect in This Process Assessed by the Concentration of TC. | Smoke-induced Vascular Injury and Melatonin's Effect in This Process Assessed by the Concentration of TG. | Smoke-induced Vascular Injury and Melatonin's Effect in This Process Assessed by the Concentration of LDL-C.,True,"Inclusion Criteria:
+
+* Healthy smokers：must above 10 cigarettes per day, at least 1 year
+* Healthy non-smokers
+
+Exclusion Criteria:
+
+* Cardiovascular disease
+* Systolic blood pressure above 140 mm Hg
+* Diastolic blood pressure above 90 mmHg
+* Psychiatric disorders
+* Cancer
+* Pregnant
+* Lactating
+* Taking antipsychotic drugs orally during the 2 weeks of the trial"
+scopolamine,scopolamine,NEGATIVE,-0.86,-1.08,-0.64,2025,2018,False,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration)results available 2018 vs ledger meta-analysis 2025; could have been included in the pooled estimate,NCT03029650,Scopolamine Patch Pharmacokinetics in Healthy Adults,COMPLETED,2018-06-21,2018-03,2017-04,26,PHASE4,Transderm Scop®; Intravenous scopolamine hydrobromide,Measurement of Maximum Serum Concentration of Scopolamine (Cmax),True,"Inclusion Criteria:
+
+1. Men or non-pregnant women of any ethnic background between the age of 18 and 65 years old.
+2. Subjects must be non-smokers (must have refrained from the use of nicotine-containing substances, including tobacco products (e.g., cigarettes, cigars, chewing tobacco, gum, patch or electronic cigarettes) over the previous 12 months and are not currently using tobacco products.
+3. Provide written informed consent before initiation of any study procedures.
+4. Available for follow-up for the planned duration of the study.
+5. Able to communicate well with the investigators.
+6. Able to adhere to the study protocol schedule, study restrictions and examination schedule.
+7. Subjects who are within their ideal body weight (BMI between 18-29.9 kg/m2).
+8. Demonstrate comprehension of the protocol procedures and knowledge of study, as demonstrated a study member filling out a consent checklist form to verify that the subject understands all aspects of the study including the purpose, procedures, risks and benefits.
+9. Subjects deemed to be healthy as judged by the Medically Accountable Investigator (MAI) and determined by medical history, physical examination, and medication "
+scopolamine,scopolamine,NEGATIVE,-0.86,-1.08,-0.64,2025,2019,False,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration)results available 2019 vs ledger meta-analysis 2025; could have been included in the pooled estimate,NCT02918266,TAK-071 Scopolamine-Induced Cognitive Impairment Study,TERMINATED,2019-06-14,2017-08-08,2017-08-02,18,PHASE1,Scopolamine; TAK-071; Donepezil; Scopolamine Placebo; TAK-071 Placebo; Donepezil Placebo,Part 2: Change From Baseline in Total Number of Errors on the Groton Maze Learning Test (GMLT) at 2 Hours Post-Scopolamine Dose on Day 2,True,"Inclusion Criteria:
+
+1\. Weighs at least 50 kilogram (kg) and has a body mass index (BMI) from 18.0 to 30.0 kilogram per square meter (kg/m\^2), inclusive at Screening.
+
+Additional inclusion criteria for Part 2:
+
+1. Able to perform the CogState battery.
+2. Change from Baseline (average) in total GMLT errors of less than or equal to (\<=) -5 at 2 hours postdose of scopolamine.
+3. Sleepiness score less than (\<) 8 on the karolinska sleepiness scale (KSS) at 2 hours postdose of scopolamine.
+4. Passes a hearing test with at least 80 percent (%) correct responses and no more than 20% false positives. This test can be repeated once to determine eligibility.
+
+Exclusion Criteria:
+
+1. Has a history of drug abuse (defined as any illicit drug use) or a history of alcohol abuse (defined as regular consumption of 4 or more units per day) within 1 year prior to the Screening visit or is unwilling to agree to abstain from alcohol and drugs throughout the study. One unit is equivalent to a half-pint of beer or 1 measure of spirits or 1 glass of wine.
+2. Has used nicotine-containing products (including but not limited to cigarettes, pipes, cigars, chewing tobacco, nicotine patch or nicotine gum) wi"
+scopolamine,scopolamine,NEGATIVE,-0.86,-1.08,-0.64,2025,2019,False,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration)results available 2019 vs ledger meta-analysis 2025; could have been included in the pooled estimate,NCT01734902,Relative Bioavailability Study to Investigate and to Compare Two Different Formulations of Hyoscine Butylbromide in Healthy Male and Female Volunteers,COMPLETED,2019-04-23,2012-12-01,2012-12-01,30,PHASE1,Hyoscine butylbromide; Hyoscine butylbromide,Maximum Measured Concentration of the Hyoscine Butylbromide in Plasma (Cmax) | Area Under the Concentration-time Curve of the Hyoscine Butylbromide in Plasma Over the Time Interval From 0 to the Last Quantifiable Data Point (AUC0-tz),True,"Inclusion criteria:
+
+1\. Healthy male and female subjects
+
+Exclusion criteria:
+
+1\. Any relevant deviation from healthy conditions"
+scopolamine,scopolamine,NEGATIVE,-0.86,-1.08,-0.64,2025,2017,False,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration)results available 2017 vs ledger meta-analysis 2025; could have been included in the pooled estimate,NCT02516098,Determine the Bioequivalence of Two Formulations of Hyoscine Butylbromide.,COMPLETED,2017-02-13,2015-12,2015-12,56,PHASE1,hyoscine butylbromide,Maximum Observed Plasma Concentration of Hyoscine Butylbromide (Cmax) | AUC Time Zero to Times of Last Quantifiable Concentration (AUC 0-t),True,"Inclusion criteria:
+
+healthy males and females, aged 18-50years, BMI 18,5-30
+
+Exclusion criteria:
+
+History of hypersensitivity or allergy to IMP"
+scopolamine,scopolamine,NEGATIVE,-0.86,-1.08,-0.64,2025,2015,False,True,,False,results available 2015 vs ledger meta-analysis 2025; could have been included in the pooled estimate,NCT02051335,Roflumilast and Donepezil to Reverse Scopolamine Induced Cognitive Deficits in Healthy Adults,COMPLETED,2015-08-17,2014-05,2014-05,27,PHASE1,Roflumilast; Roflumilast placebo; Donepezil; Donepezil placebo; Scopolamine,Change From Baseline in the Verbal Recall Memory (VRM) Total Number of Correct Responses for Delayed Recall at 1 Hour After Scopolamine Administration | Change From Baseline in the Verbal Recall Memory (VRM) Total Number of Correct Responses for Immediate Recall at 1 Hour After Scopolamine Administration,True,"Inclusion Criteria:
+
+1. In the opinion of the investigator, the participant is capable of understanding and complying with protocol requirements.
+2. The participant or, when applicable, the participant's legally acceptable representative signs and dates a written, informed consent form and any required privacy authorization prior to the initiation of any study procedures.
+3. Is a healthy adult male.
+4. Is aged 18 to 45 years, inclusive, at the time of informed consent.
+5. Weighs at least 60 kg and has a body mass index (BMI) between 18 and 32 kg/m\^2 inclusive at Screening.
+6. A male participant who is nonsterilized and sexually active with a female partner of childbearing potential agrees to use adequate contraception from signing of informed consent throughout the duration of the study and for 12 weeks after last dose.
+7. Has clinical laboratory evaluations (including clinical chemistry, hematology and complete urinalysis) within the reference range for the testing laboratory, unless the results are deemed not to be clinically significant (CS) by the investigator at screening and Day -1 (Check-in) of Period 1.
+
+Exclusion Criteria:
+
+1. Has received any investigational compound wit"
+alcohol_acute,alcohol,NEGATIVE,-0.3,-0.39,-0.211,2022,2026,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT03106363,Combined Alcohol and Cannabis Effects on Skills of Young Drivers,COMPLETED,2026-07-24,2020-01-17,2020-01-17,49,NA,alcohol; placebo alcohol; delta 9 tetrahydrocannabinol; placebo delta 9 tetrahydrocannabinol,Psychomotor Impairment: Standard Deviation of Lateral Position,True,"Inclusion Criteria:
+
+* Use of cannabis at least once a week confirmed by urine point-of-care testing;
+* Males who report consuming at least 5 drinks and females who report consuming at least 4 drinks in about 2 hours in the past 6 months and at least one episode of rapid alcohol consumption in the past 6 months (3 or more drinks over a span of one hour)
+* 19-29 years of age;
+* Holds a class G or G2 Ontario driver's licence (or equivalent from another jurisdiction) for at least 12 months;
+* Willing to abstain from using alcohol for 48 hours and cannabis for 72 hours prior to Practice and Test Sessions.
+* Willing to abstain from all other drugs not prescribed for medical purposes for the duration of the study;
+* Provides written and informed consent.
+
+Exclusion Criteria:
+
+* Urine toxicology screens negative for cannabis upon eligibility assessment;
+* Diagnosis of severe medical or psychiatric conditions;
+* Females: Pregnancy or breastfeeding;
+* Meets criteria for Alcohol or Substance Dependence (current or lifetime) (DSM-IV);
+* Is a regular user of medications that affect brain function (i.e., antidepressants, benzodiazepines, stimulants);
+* Taking medications or have any medical con"
+alcohol_acute,alcohol,NEGATIVE,-0.3,-0.39,-0.211,2022,2024,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT04213846,Alcohol & Mobile Phone Study to Reduce High-risk Alcohol Use and Consequences,COMPLETED,2024-09-26,2022-04-29,2022-04-29,408,NA,Experimental: Mobile Alcohol Expectancy Intervention,Daily Drinking Questionnaire - Typical Number of Drinks Per Week | Peak Estimated Blood Alcohol Concentration (Peak eBAC) | Number of Heavy Episodic Drinking Days | Brief Young Adult Alcohol Consequences Questionnaire,True,"Inclusion Criteria:
+
+* Typically drinking 2+ days/week, having at least 1 occasion of heavy episodic drinking (4+ women/5+ men) in last 2 weeks, having 4 or more negative consequences in the last month, owning a smartphone with a data package, agreeing to install the app on their phone and receive notifications.
+* Student at a 2- or 4- year college where recruitment is located
+
+Exclusion Criteria:
+
+* None"
+alcohol_acute,alcohol,NEGATIVE,-0.3,-0.39,-0.211,2022,2013,False,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration)results available 2013 vs ledger meta-analysis 2022; could have been included in the pooled estimate,NCT00806260,A Study to Evaluate How VI-0521 Affect Psychomotor Performance in Healthy Overweight and Obese Subjects.,COMPLETED,2013-09-13,2009-05,2009-05,80,PHASE2,VI-0521; Placebo; Alcohol; alcohol placebo,Measure of Psychomotor Function Using Speed and Coordination on the CogScreen Pathfinder Number (PFN) Test in Subjects Treated With Alcohol Compared to Alcohol Placebo in Period 1. | Measure of Psychomotor Function Using Speed and Coordination on the CogScreen Pathfinder Number (PFN) Test in Subjects Treated With VI-0521 Compared to Placebo in Periods 2 and 3.,True,"Inclusion Criteria:
+
+* Written consents;
+* Adequate contraception from screening through 28 days after the last dose of study drug for female subjects;
+* Healthy obese or overweight subjects with BMI between 27 and 35.
+
+Exclusion Criteria:
+
+* History of glaucoma or any past or present use of medications to treat increased intraocular pressure;
+* Current use of any tobacco products, including cigarettes, cigars, pipes, or chewing tobacco, or use within the three months prior to screening;
+* History of drug abuse during the three years prior to screening;
+* History of alcohol abuse, or excessive alcohol consumption, or describes themselves as non-users of alcohol;
+* Current depression of moderate or greater severity, or any presence or history of suicidal behavior or active suicidal ideation
+* More than one lifetime episode of major depression;
+* Currently working night shifts at a job;
+* On average consumes greater than two cups of coffee or xanthine-containing beverages per day (\>200 mg/day) within the two weeks prior to screening;
+* Any use of dietary, herbal, and/or fitness/body-building supplements (with the exception of vitamins) within one month prior to screening;
+* Aspartat"
+alcohol_acute,alcohol,NEGATIVE,-0.3,-0.39,-0.211,2022,2025,True,True,,True,,NCT04276779,Effects of Alcohol and Mood on Attention,TERMINATED,2025-03-11,2023-12-08,2023-12-08,26,NA,Alcohol administration; Placebo administration; Positive mood induction; Negative mood induction,Modified Suicide Stroop Task,True,"Inclusion criteria:
+
+1. be between the ages of 21 and 65
+2. have consumed an average of at least five or more (four or more for females) standard alcoholic drinks per occasion once over the past year
+3. have self-administered a quantity of alcohol that is equal to or greater than the dose that will be administered in the lab on at least three occasions in the past year
+4. be able to read and write in English fluently.
+
+Exclusion criteria:
+
+1. active psychosis, suicidal ideation/intent, or mania; currently receiving psychiatric treatment; have received psychiatric treatment in past year or currently experiencing significant psychiatric distress
+2. in treatment or recovery from drug or alcohol use disorders or abstaining from alcohol
+3. any suicide attempt history
+4. pregnant/breast-feeding or immediate plans to become pregnant
+5. any chronic health problems or medications that would preclude the use of alcohol
+6. (to minimize adverse reactions to alcohol/inappropriate alcohol dose) \< 6 feet tall and over 230 lbs., or \> 6 feet tall and over 250 lbs.
+7. color-blind or sight-impaired
+8. knowing someone who has participated in this study."
+cocoa_flavanols,cocoa,POSITIVE,0.224,0.014,0.434,2022,2025,True,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration),NCT05956002,A Study to Evaluate the Study Medication (Etrasimod) When Mixed With Food in Healthy Participants,COMPLETED,2025-02-10,2024-01-04,2024-01-04,16,PHASE1,Estraimod Immediate Release (IR); Etrasimod Mini Tab in water; Etrasimod Mini Tab in chocolate pudding; Etrasimod Mini Tab in yogurt; Etrasimod Mini Tab in applesauce,Area Under the Plasma Concentration-Time Curve From Time Zero to the Time of the Last Quantifiable Concentration (AUClast) of Etrasimod | Area Under the Concentration-time Curve From Time Zero Extrapolated to Infinity (AUCinf) of Etrasimod | Maximum Observed Plasma Concentration (Cmax) for Etrasimod,True,"Inclusion Criteria:
+
+* Healthy participants
+* BMI 16 to 32 kg/m2
+* body weight more than 50kg
+
+Exclusion Criteria:
+
+* Ongoing or past history of significant medical conditions
+* Eye disorders such as macular edema or uveitis
+* Ongoing or recent infections
+* Use of prescription or non prescription medications within 7 days of first dose
+* Smoking or using nicotine products equivalent to more than 5 cigarettes per day
+* History of severe allergic or anaphylactic reactions"
+exogenous_ketones,ketone,POSITIVE,0.36,0.18,0.54,2026,2026,False,False,,False,primary outcome is not a cognitive measure; matched only via the registry's term expansion (attention -> concentration)results available 2026 vs ledger meta-analysis 2026; could have been included in the pooled estimate,NCT06053138,"Assessment of BHB Concentration Agreement Among Sampling Locations and the Impact of Ketosis on EPO, and More",COMPLETED,2026-03-12,2024-08-30,2024-01-30,16,NA,Ketone monoester; Placebo,Change in Venous Plasma Beta-hydroxybutyrate (BHB) From Baseline to Peak During Acute Ketosis Exposure | Serum Erythropoietin Concentration at Day 15 | Estradiol Concentration at Day 15,True,"Inclusion Criteria:
+
+* Age 18-60 years
+* BMI 19-30 kg/m2
+* Expected ease of catheter insertion
+* Considered of sound health
+* Oral and written informed consent
+
+Exclusion Criteria:
+
+* Inability to fully understand the consent including consent forms
+* Inability to cooperate to the study
+* electrolyte disorders
+* acute or chronic kidney disease or ompromised renal function including excess risk
+* servere hypertension
+* autoimmune disease
+* liver or bile disease
+* diabetes mellitus
+* reactive hypoglycemia or similar disorders
+* treatment with drugs, and dietary supplements with inference on key metabolic or hormonal markers, e.g. insulin, glucagon, DDP-IV inhibitors, GLP-1 RA, sulfunylurea
+* use of illegal or otherwise use of medicinal products without prescription
+* anemia or other know disease of the hematopoietic system
+* previous bariatric surgery
+* previous myocardial infarction or uncontrolled myocardial ischemia
+* recent intended/unintended weight loss
+* allergies to catheters or adhesives"
