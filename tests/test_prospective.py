@@ -236,3 +236,80 @@ def test_no_row_still_carries_the_bad_dysmenorrhea_nct():
     assert "NCT03821207" not in set(df["nct"].astype(str)), (
         "NCT03821207 resolves to an abdominal-massage dysmenorrhea study, not luvadaxistat")
     assert "NCT03382639" in set(df["nct"].astype(str))
+
+
+# --- the pre-registered healthy-adult forward rule (2026-09-20) --------------------------------
+
+def _led(rows):
+    import pandas as pd
+    return pd.DataFrame(rows)
+
+
+def test_rule_calls_positive_only_when_interval_clears_zero_and_the_floor():
+    from mammal_repurposing.reporting.prospective import predict_healthy_adult
+    led = _led([dict(compound="x", representative_g=0.28, ci_lo=0.21, ci_hi=0.36,
+                     citation_short="X 2020")])
+    assert predict_healthy_adult("x", led)["prediction"] == "POSITIVE"
+
+
+def test_real_but_trivial_effect_is_called_null_not_positive():
+    """An interval above zero with g under the floor must NOT become a POSITIVE call."""
+    from mammal_repurposing.reporting.prospective import predict_healthy_adult
+    led = _led([dict(compound="x", representative_g=0.12, ci_lo=0.02, ci_hi=0.21,
+                     citation_short="X 2020")])
+    assert predict_healthy_adult("x", led)["prediction"] == "NULL"
+
+
+def test_interval_spanning_zero_is_null_and_below_zero_is_negative():
+    from mammal_repurposing.reporting.prospective import predict_healthy_adult
+    led = _led([
+        dict(compound="span", representative_g=0.05, ci_lo=-0.11, ci_hi=0.19, citation_short=""),
+        dict(compound="neg", representative_g=-0.40, ci_lo=-0.70, ci_hi=-0.10, citation_short=""),
+    ])
+    assert predict_healthy_adult("span", led)["prediction"] == "NULL"
+    assert predict_healthy_adult("neg", led)["prediction"] == "NEGATIVE"
+
+
+def test_missing_compound_and_missing_interval_both_abstain():
+    from mammal_repurposing.reporting.prospective import predict_healthy_adult
+    led = _led([dict(compound="noci", representative_g=0.30, ci_lo=float("nan"),
+                     ci_hi=float("nan"), citation_short="")])
+    assert predict_healthy_adult("noci", led)["prediction"] == "ABSTAIN"
+    assert predict_healthy_adult("absent", led)["prediction"] == "ABSTAIN"
+
+
+def test_lookup_is_case_and_whitespace_insensitive():
+    from mammal_repurposing.reporting.prospective import predict_healthy_adult
+    led = _led([dict(compound="Caffeine", representative_g=0.28, ci_lo=0.21, ci_hi=0.36,
+                     citation_short="")])
+    assert predict_healthy_adult("  caffeine ", led)["prediction"] == "POSITIVE"
+
+
+def test_every_prediction_carries_its_own_reason():
+    from mammal_repurposing.reporting.prospective import predict_healthy_adult
+    led = _led([dict(compound="x", representative_g=0.28, ci_lo=0.21, ci_hi=0.36,
+                     citation_short="X 2020")])
+    for c in ("x", "absent"):
+        assert predict_healthy_adult(c, led)["reason"].strip(), "a bare call is not disputable"
+
+
+def test_baseline_is_the_constant_null_predictor_not_a_coin_flip():
+    from mammal_repurposing.reporting.prospective import healthy_adult_baseline
+    led = _led([dict(compound=f"p{i}", ci_lo=0.1, ci_hi=0.3) for i in range(3)]
+               + [dict(compound=f"n{i}", ci_lo=-0.2, ci_hi=0.2) for i in range(7)])
+    b = healthy_adult_baseline(led)
+    assert b["n_with_interval"] == 10 and b["n_positive"] == 3 and b["n_null"] == 7
+    assert b["constant_call"] == "NULL"
+    assert b["constant_accuracy"] == 0.7, "must reflect the real mix, not 0.5"
+
+
+def test_live_ledger_baseline_is_a_strong_opponent():
+    """Pins that the constant-NULL predictor is hard to beat, which is the whole point."""
+    from pathlib import Path
+    import pandas as pd
+    from mammal_repurposing.reporting.prospective import healthy_adult_baseline
+    root = Path(__file__).resolve().parents[1]
+    led = pd.read_csv(root / "data" / "raw" / "healthy_adult_cognition_ledger.csv")
+    b = healthy_adult_baseline(led)
+    assert b["n_with_interval"] >= 30
+    assert 0.2 < b["constant_accuracy"] < 0.8

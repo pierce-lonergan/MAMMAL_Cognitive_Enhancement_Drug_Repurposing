@@ -193,3 +193,98 @@ def audit_registry(df: pd.DataFrame) -> list[dict]:
                           f"confirmed against the registry",
             })
     return issues
+
+
+# ---------------------------------------------------------------------------------------------
+# The healthy-adult forward rule. PRE-REGISTERED 2026-09-20, written and committed BEFORE the
+# pending-readout sweep's compound list was read, so the mapping cannot have been chosen to suit
+# the compounds it will be applied to. Check the commit order in git rather than taking this
+# sentence for it.
+#
+# The registry it feeds is the healthy-adult arm the project does not have. Every existing row is
+# a patient population (CIAS, Fragile X, Alzheimer's, schizophrenia), so G1 -- the binding
+# constraint, zero verified durable gain in healthy adults -- has never been tested prospectively
+# at all.
+#
+# The rule is deliberately dumb. It applies the ledger's OWN pooled estimate for a compound and
+# nothing else. No trial-specific tuning, no judgement per row, no reading of the trial protocol
+# beyond its population and endpoint. A rule with discretion in it is not falsifiable, because any
+# miss can be explained after the fact.
+
+TARGET_G = 0.20  # the project's meaningful-effect floor; see scripts/121 MEANINGFUL_G
+
+PRED_POSITIVE = "POSITIVE"   # expect a statistically significant benefit of practical size
+PRED_NULL = "NULL"           # expect no significant benefit
+PRED_NEGATIVE = "NEGATIVE"   # expect a significant decrement
+PRED_ABSTAIN = "ABSTAIN"     # the ledger cannot speak to this compound
+
+
+def predict_healthy_adult(compound: str, ledger: pd.DataFrame) -> dict:
+    """The frozen forward rule for a healthy-adult cognition trial.
+
+    Takes ONLY the compound name and the ledger. Returns the call, the evidence it rests on, and
+    the reason, so every prediction carries its own justification and can be disputed on the spot.
+
+    The mapping, fixed in advance:
+      interval entirely above 0 AND g >= TARGET_G   -> POSITIVE
+      interval entirely above 0 AND g <  TARGET_G   -> NULL, because a real but trivial pooled
+                                                       effect is not expected to reach
+                                                       significance again at typical trial n
+      interval entirely below 0                     -> NEGATIVE
+      interval spans 0                              -> NULL
+      no interval recorded                          -> ABSTAIN on unknown precision
+      compound absent from the ledger               -> ABSTAIN
+
+    ABSTAIN is a first-class answer and is expected to be the most common one. A registry that
+    forces a call on every row manufactures a track record out of guesses.
+    """
+    key = str(compound).strip().lower()
+    hit = ledger[ledger["compound"].astype(str).str.strip().str.lower() == key]
+    if hit.empty:
+        return {"compound": compound, "prediction": PRED_ABSTAIN, "g": None,
+                "ci_lo": None, "ci_hi": None, "basis": "not_in_ledger",
+                "reason": "no healthy-adult ledger row for this compound"}
+
+    r = hit.iloc[0]
+    g, lo, hi = r.get("representative_g"), r.get("ci_lo"), r.get("ci_hi")
+    common = {"compound": compound, "g": None if pd.isna(g) else float(g),
+              "ci_lo": None if pd.isna(lo) else float(lo),
+              "ci_hi": None if pd.isna(hi) else float(hi),
+              "basis": f"ledger:{r.get('citation_short', '')}".strip(":")}
+
+    if pd.isna(lo) or pd.isna(hi):
+        return {**common, "prediction": PRED_ABSTAIN,
+                "reason": "ledger row has no interval; precision unknown, so no call is made"}
+    if lo > 0:
+        if not pd.isna(g) and float(g) >= TARGET_G:
+            return {**common, "prediction": PRED_POSITIVE,
+                    "reason": f"pooled interval [{lo:.2f}, {hi:.2f}] lies entirely above 0 and "
+                              f"g={float(g):.2f} reaches the {TARGET_G:.2f} floor"}
+        return {**common, "prediction": PRED_NULL,
+                "reason": f"pooled interval [{lo:.2f}, {hi:.2f}] excludes 0 but g="
+                          f"{float(g):.2f} is below the {TARGET_G:.2f} floor, so a single trial "
+                          f"is not expected to reach significance"}
+    if hi < 0:
+        return {**common, "prediction": PRED_NEGATIVE,
+                "reason": f"pooled interval [{lo:.2f}, {hi:.2f}] lies entirely below 0"}
+    return {**common, "prediction": PRED_NULL,
+            "reason": f"pooled interval [{lo:.2f}, {hi:.2f}] spans 0"}
+
+
+def healthy_adult_baseline(ledger: pd.DataFrame) -> dict:
+    """The constant predictor this forward rule has to beat, computed from the ledger itself.
+
+    Without this, a healthy-adult registry would repeat the mistake the patient arm made: report an
+    accuracy that a fixed answer would also achieve. Predicting NULL for everything is the thing to
+    beat, and on this evidence base it is a strong opponent.
+    """
+    lo, hi = ledger["ci_lo"], ledger["ci_hi"]
+    have = ledger[lo.notna() & hi.notna()]
+    n = len(have)
+    pos = int((have["ci_lo"] > 0).sum())
+    neg = int((have["ci_hi"] < 0).sum())
+    return {"n_with_interval": n, "n_positive": pos, "n_negative": neg,
+            "n_null": n - pos - neg,
+            "base_rate_positive": (pos / n) if n else float("nan"),
+            "constant_call": PRED_NULL,
+            "constant_accuracy": ((n - pos - neg) / n) if n else float("nan")}
