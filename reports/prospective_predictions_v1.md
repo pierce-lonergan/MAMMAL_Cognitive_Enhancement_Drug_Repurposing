@@ -6,7 +6,13 @@ Falsifiable, time-stamped predictions for **real** ongoing cognition trials, eac
 
 ## Resolved since the ledger was curated (out-of-sample confirmations)
 
-**2 / 2 correct** (accuracy 100%). These trials read out *after* the 31-drug ledger was frozen, so they are genuine out-of-sample tests of class predictions.
+**2 / 2 correct** (accuracy 100%). These trials read out *after* the 31-drug ledger was frozen, so they are out-of-sample in TIMING.
+
+**But read the baseline before reading that number.** CNS cognition trials mostly fail, so a predictor that says FAILURE every single time is right 100% of the time on these same rows. This registry does NOT beat that constant predictor (one-sided binomial p = 1.000).
+
+The number that carries the evidence is **0**: the count of resolved rows where the prediction DEPARTED from the majority outcome, because only those can distinguish a working model from a constant one. There are none. Every resolved prediction so far agreed with the majority, so the registry has produced NO discriminative evidence yet, whatever the headline accuracy suggests.
+
+That changes when the pending rows read out. 4 of 4 pending predictions depart from the FAILURE majority (emraclidine, xanomeline-trospium (KarXT), zatolmilast), so each one is a real bet that can be lost.
 
 | Drug | class | indication | predicted | actual | ✓ | basis |
 |---|---|---|---|---|---|---|

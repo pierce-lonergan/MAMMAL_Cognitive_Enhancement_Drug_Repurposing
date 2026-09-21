@@ -43,14 +43,68 @@ def load_prospective(path) -> pd.DataFrame:
 
 
 def score_resolved(df: pd.DataFrame) -> dict:
-    """Accuracy of predictions on RESOLVED trials (predicted vs actual outcome)."""
+    """Accuracy of predictions on RESOLVED trials, ALWAYS against a constant baseline.
+
+    Raw accuracy on this registry is close to meaningless on its own, and quoting it alone was a
+    real defect here. CNS cognition trials mostly fail, so a predictor that says FAILURE every time
+    scores well without knowing anything. A prediction only carries information when it DIFFERS
+    from that constant predictor, and the count of such rows is the registry's real sample size.
+
+    So this returns, alongside accuracy:
+      baseline_accuracy   what the best constant predictor scores on the same resolved rows
+      n_informative       resolved rows where the prediction departed from the majority outcome
+      n_informative_right how many of those it got right -- this is the evidence, and nothing else
+      p_value             binomial test of n_correct against the baseline rate, one-sided
+
+    An empty `n_informative` means the registry has produced NO discriminative evidence yet, no
+    matter how good the headline accuracy looks.
+    """
     res = df[df["status"] == "RESOLVED"].copy()
     res = res[res["actual_outcome"].notna() & (res["actual_outcome"] != "")]
     if len(res) == 0:
-        return {"n_resolved": 0, "n_correct": 0, "accuracy": float("nan"), "rows": res}
+        return {"n_resolved": 0, "n_correct": 0, "accuracy": float("nan"),
+                "majority_outcome": None, "baseline_accuracy": float("nan"),
+                "n_informative": 0, "n_informative_right": 0, "beats_baseline": False,
+                "p_value": float("nan"), "rows": res}
     res["correct"] = res["predicted_outcome"] == res["actual_outcome"]
-    return {"n_resolved": int(len(res)), "n_correct": int(res["correct"].sum()),
-            "accuracy": float(res["correct"].mean()), "rows": res}
+    counts = res["actual_outcome"].value_counts()
+    majority = str(counts.index[0])
+    baseline_acc = float(counts.iloc[0] / len(res))
+
+    informative = res[res["predicted_outcome"] != majority]
+    n_corr = int(res["correct"].sum())
+    acc = float(res["correct"].mean())
+
+    from scipy.stats import binomtest
+    p = float(binomtest(n_corr, len(res), baseline_acc, alternative="greater").pvalue)
+
+    return {"n_resolved": int(len(res)), "n_correct": n_corr, "accuracy": acc,
+            "majority_outcome": majority, "baseline_accuracy": baseline_acc,
+            "n_informative": int(len(informative)),
+            "n_informative_right": int(informative["correct"].sum()) if len(informative) else 0,
+            "beats_baseline": bool(acc > baseline_acc),
+            "p_value": p, "rows": res}
+
+
+def pending_informativeness(df: pd.DataFrame) -> dict:
+    """How much discriminative evidence the PENDING rows can deliver when they read out.
+
+    A pending prediction that agrees with the majority outcome will teach nothing when it resolves,
+    exactly as the resolved ones did not. This says in advance how many of the outstanding bets are
+    real bets. Use it to judge whether the registry is worth waiting on.
+    """
+    pend = df[df["status"] == "PENDING"]
+    res = df[df["status"] == "RESOLVED"]
+    res = res[res["actual_outcome"].notna() & (res["actual_outcome"] != "")]
+    if len(res) == 0:
+        # No resolved history to define a majority; fall back to the predictions' own modal value.
+        majority = str(df["predicted_outcome"].value_counts().index[0]) if len(df) else None
+    else:
+        majority = str(res["actual_outcome"].value_counts().index[0])
+    informative = pend[pend["predicted_outcome"] != majority] if majority else pend
+    return {"n_pending": int(len(pend)), "assumed_majority": majority,
+            "n_pending_informative": int(len(informative)),
+            "drugs": sorted(informative["drug"].astype(str).unique().tolist())}
 
 
 def summary(df: pd.DataFrame) -> dict:
