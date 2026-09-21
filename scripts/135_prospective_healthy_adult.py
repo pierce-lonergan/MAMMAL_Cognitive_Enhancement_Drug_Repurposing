@@ -361,8 +361,42 @@ def write_report(df: pd.DataFrame, base: dict) -> None:
                       encoding="utf-8")
 
 
+#: Columns written by RESOLUTION, not by this builder. Re-running the builder must never destroy
+#: them. It did once: regenerating after a retraction silently dropped the retraction record and
+#: every resolved outcome, because build() constructs rows from scratch. Any column here is carried
+#: over from the existing file, matched on identifier.
+RESOLUTION_COLUMNS = ("actual_outcome", "outcome_source", "outcome_quote", "outcome_date",
+                      "outcome_verified", "status")
+
+
+def preserve_resolutions(df: pd.DataFrame) -> pd.DataFrame:
+    """Carry resolution data from the existing registry onto freshly built rows.
+
+    The builder owns predictions; resolution owns outcomes. Rebuilding the former must not touch
+    the latter, or a rerun quietly erases the only part of the registry that accumulates.
+    """
+    if not OUT.exists():
+        return df
+    prev = pd.read_csv(OUT)
+    have = [c for c in RESOLUTION_COLUMNS if c in prev.columns]
+    if not have:
+        return df
+    prev = prev[["identifier", *have]].drop_duplicates("identifier")
+    merged = df.drop(columns=[c for c in have if c in df.columns]).merge(
+        prev, on="identifier", how="left")
+    for c in have:
+        if c == "status":
+            merged[c] = merged[c].fillna("PENDING")
+        else:
+            merged[c] = merged[c].fillna("")
+    kept = int((merged["status"] == "RESOLVED").sum()) if "status" in merged else 0
+    L.info("preserved resolution data for %d row(s); %d RESOLVED carried over",
+           int(prev.shape[0]), kept)
+    return merged
+
+
 def main() -> int:
-    df = build()
+    df = preserve_resolutions(build())
     led = pd.read_csv(LEDGER)
     base = healthy_adult_baseline(led)
     OUT.parent.mkdir(parents=True, exist_ok=True)

@@ -542,3 +542,41 @@ def test_the_misattributed_resolution_stays_retracted():
     assert "RETRACTED" in str(row["outcome_verified"])
     assert score_healthy_adult(reg)["n_scored"] == 0, "no validly resolved row exists"
 
+
+
+def test_rebuilding_the_registry_does_not_destroy_resolution_data():
+    """The builder owns predictions; resolution owns outcomes. A rerun must not erase the latter.
+
+    It did once: regenerating after a retraction silently dropped the retraction record and every
+    outcome column, because build() constructs rows from scratch. The loss was invisible until a
+    test asked for a column that no longer existed.
+    """
+    import importlib.util
+    from pathlib import Path
+
+    import pandas as pd
+    root = Path(__file__).resolve().parents[1]
+    spec = importlib.util.spec_from_file_location(
+        "s135", root / "scripts" / "135_prospective_healthy_adult.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    fresh = pd.DataFrame({"identifier": ["NCT07469852", "NCT00000000"],
+                          "prediction": ["POSITIVE", "POSITIVE"],
+                          "status": ["PENDING", "PENDING"], "actual_outcome": ["", ""]})
+    out = mod.preserve_resolutions(fresh)
+    row = out[out["identifier"] == "NCT07469852"].iloc[0]
+    assert "RETRACTED" in str(row["outcome_verified"]), "resolution data was not carried over"
+    assert set(mod.RESOLUTION_COLUMNS) <= set(out.columns)
+
+
+def test_the_live_registry_still_carries_the_retraction_on_disk():
+    """Not just in a commit message: the CSV itself must hold it."""
+    from pathlib import Path
+
+    import pandas as pd
+    root = Path(__file__).resolve().parents[1]
+    d = pd.read_csv(root / "data" / "raw" / "prospective_healthy_adult.csv")
+    row = d[d["identifier"] == "NCT07469852"].iloc[0]
+    assert "RETRACTED" in str(row["outcome_verified"])
+    assert row["status"] == "PENDING"
