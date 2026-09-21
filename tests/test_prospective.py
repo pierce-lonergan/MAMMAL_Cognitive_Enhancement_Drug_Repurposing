@@ -395,3 +395,27 @@ def test_abstentions_outnumber_calls_and_that_is_expected():
     """A registry that forces a call on every row is manufacturing a track record."""
     df = _ha()
     assert (df["prediction"] == "ABSTAIN").sum() > (df["prediction"] != "ABSTAIN").sum() / 2
+
+
+def test_the_overturned_psychosis_trial_never_returns():
+    """NCT07231497 is COSTEP 1, single-arm, unmasked, medicated psychosis. It passed the sweep's
+    verifier because the registry's own healthyVolunteers flag contradicts its eligibility text."""
+    m, df = _s135(), _ha()
+    assert "NCT07231497" not in m.COMPOUND_MAP
+    assert "NCT07231497" not in set(df["identifier"].astype(str))
+
+
+def test_the_overturn_is_recorded_not_silently_dropped():
+    from pathlib import Path
+    import pandas as pd
+    root = Path(__file__).resolve().parents[1]
+    pend = pd.read_csv(root / "data" / "raw" / "pending_readouts_2026-09.csv")
+    row = pend[pend["identifier"] == "NCT07231497"].iloc[0]
+    assert row["verdict"] == "REJECT_WRONG_POPULATION"
+    assert "OVERTURNED" in str(row["post_sweep_correction"])
+
+
+def test_modafinil_has_no_live_prediction():
+    """Both modafinil readouts fell: one overturned on population, one on a BOLD primary."""
+    df = _ha()
+    assert df[df["ledger_compound"] == "modafinil"].empty

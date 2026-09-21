@@ -91,7 +91,6 @@ COMPOUND_MAP: dict[str, str] = {
     "NCT06763172": "caffeine",
     "NCT07469852": "caffeine",
     "NCT06041048": "modafinil",
-    "NCT07231497": "modafinil",
     "NCT06906848": "citicoline",
     "NCT07408180": "nicotine",
     "NCT05301608": "psilocybin",
@@ -119,10 +118,18 @@ COMPOUND_MAP: dict[str, str] = {
 #: them. A prediction about a cognitive effect cannot be graded on an imaging, self-report or BOLD
 #: primary; that is precisely the category error found in the patient arm, where a cognition claim
 #: was being scored against a PANSS negative-symptom primary.
+#: NCT07231497 is NOT in COMPOUND_MAP and must not be re-added. Its sweep verdict was OVERTURNED:
+#: it is COSTEP 1, "Cognitive Strategies in Early Psychosis", single-arm, unmasked, requiring a
+#: month of stable antipsychotic medication. The registry's own healthyVolunteers flag says true
+#: and contradicts its eligibility criteria, which is how it passed verification. See
+#: post_sweep_correction in data/raw/pending_readouts_2026-09.csv. That leaves NCT06041048 as the
+#: only pending healthy-adult modafinil readout found anywhere in the sweep, and it is excluded
+#: below on endpoint grounds, so modafinil now has NO live prediction at all.
+
 ENDPOINT_EXCLUDE: dict[str, str] = {
     "NCT06367738": "primary outcome is imaging (mean diffusivity), not cognition",
     "NCT06768944": "primary outcome is self-report (Persisting Effects Questionnaire)",
-    "NCT06041048": "sole primary outcome is BOLD brain activity, not a cognitive test",
+    "NCT06041048": "sole primary outcome is BOLD brain activity, not a cognitive test. The critic verified the DESIGN is otherwise excellent (randomised crossover, triple-masked, healthy 18-60, n=40) and it is the only clean pending healthy-adult modafinil readout in the sweep. Excluded anyway: a cognition call cannot be graded on a BOLD primary. Its objective cognitive measures are secondary and could support a secondary-tier prediction if that tier is ever scored separately",
     "NCT07732166": "verifier flagged the primary as borderline on domain; excluded rather than "
                    "resolved by preference",
 }

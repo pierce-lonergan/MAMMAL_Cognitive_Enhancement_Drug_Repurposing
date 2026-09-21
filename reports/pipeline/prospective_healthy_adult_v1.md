@@ -10,7 +10,7 @@ estimates are acute and on-drug, so this arm abstains on post-acute endpoints ra
 predicting them from the wrong quantity. Testing G1 forward would need post-washout
 designs, and the sweep found that they mostly do not exist.
 
-**64 confirmed pending readouts.** Found by an eight-lane blind sweep of
+**63 confirmed pending readouts.** Found by an eight-lane blind sweep of
 ClinicalTrials.gov, PROSPERO, ISRCTN, UMIN and OSF; every registration was then handed to
 an independent skeptic who had to re-find it and could reject it as not-found,
 wrong-population, not-cognitive, already-published or misdescribed. 69 of 83 candidates
@@ -28,10 +28,10 @@ order in git rather than taking that sentence for it.
 |---|---:|
 | ABSTAIN | 35 |
 | POSITIVE | 14 |
-| NULL | 10 |
+| NULL | 9 |
 | NEGATIVE | 5 |
 
-**29 of 64 registrations get a call; 35 abstain.** Abstention is the expected common outcome, not a failure. Every abstention carries its reason in the CSV, so the set can be audited rather than assumed to be an oversight.
+**28 of 63 registrations get a call; 35 abstain.** Abstention is the expected common outcome, not a failure. Every abstention carries its reason in the CSV, so the set can be audited rather than assumed to be an oversight.
 
 ### Every call, with the evidence behind it
 
@@ -49,7 +49,6 @@ order in git rather than taking that sentence for it.
 | `NCT07109245` | ClinicalTrials.gov | insulin_intranasal | **NULL** | 0.02 [-0.05, 0.09] | Primary completion date 2028-08 (ESTIMATED |
 | `CRD420261431354` | PROSPERO | menopausal_hormone_therapy | **NULL** | -0.16 [-0.67, 0.34] | Registration states "Review start date: 1  |
 | `NCT06530459` | ClinicalTrials.gov | menopausal_hormone_therapy | **NULL** | -0.16 [-0.67, 0.34] | Primary completion date 2027-04 (ESTIMATED |
-| `NCT07231497` | ClinicalTrials.gov | modafinil | **NULL** | 0.12 [0.02, 0.21] | Primary completion and completion both 203 |
 | `NCT07242430` | ClinicalTrials.gov | multivitamin_mineral | **NULL** | 0.07 [0.03, 0.11] | Primary completion 2026-10-25 (estimated); |
 | `NCT07814300` | ClinicalTrials.gov | omega_3 | **NULL** | 0.04 [-0.11, 0.19] | Primary completion 2026-08-30 (ACTUAL); ov |
 | `CRD420251266075` | PROSPERO | anthocyanins | **POSITIVE** | 0.46 [0.30, 0.63] | No anticipated completion date readable. P |
