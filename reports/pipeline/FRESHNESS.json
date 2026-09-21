@@ -1028,6 +1028,12 @@
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass: clearing it means executing this pipeline stage against the 32 GB working data tree, which rewrites derived artifacts later stages read. Operator decision, one report at a time, via --reproduce. Recorded against the commit that outran it, so any further change to the generator re-fails this report."
     },
+    "reports/pipeline/prospective_healthy_adult_v1.md::src/mammal_repurposing/reporting/prospective.py": {
+      "outcome": "reproduced",
+      "code_commit": "c26691ad082fcc91b9418dab292b3ccb2dca5699",
+      "verified_on": "2026-09-21",
+      "evidence": "scripts/135_prospective_healthy_adult.py --report <tmp> reproduced the committed report byte for byte"
+    },
     "reports/pipeline/repurposing_shortlist_v1.md::src/mammal_repurposing/reporting/clinician_dossier.py": {
       "outcome": "unverified",
       "code_commit": "d9339e83d37bfc43d464af3fe0ebd9c3d9ee0f7e",
