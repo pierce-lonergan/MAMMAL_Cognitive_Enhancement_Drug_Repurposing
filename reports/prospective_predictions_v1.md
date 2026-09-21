@@ -4,6 +4,23 @@ Falsifiable, time-stamped predictions for **real** ongoing cognition trials, eac
 
 **6 predictions** across 5 mechanism classes: 2 already resolved, 4 pending.
 
+## Structural audit
+
+**6 structural issue(s) across 6 rows.** These are not wrong predictions. They are conditions that make a row's contribution to the track record unreadable, and none of them shows up in an accuracy figure.
+
+| code | drug | NCT | detail |
+|---|---|---|---|
+| `PREDICTION_AFTER_READOUT` | iclepertin | NCT04846868 | prediction_date 2026-05-30 postdates readout_year 2025; this is a retrodiction, not a prospective test |
+| `PREDICTION_AFTER_READOUT` | luvadaxistat | NCT03382639 | prediction_date 2026-05-30 postdates readout_year 2024; this is a retrodiction, not a prospective test |
+| `PRIMARY_NOT_COGNITION` | luvadaxistat | NCT03382639 | primary endpoint 'PANSS-negative (primary)' is not a cognition primary by is_cognition_primary(); grading a cognition claim on it is a category error |
+| `STATUS_STALE` | zatolmilast | NCT05358886 | registry row says PENDING but ClinicalTrials.gov says COMPLETED (completion 2025-07-18); the bet may already be decided and the row has not been scored |
+| `STATUS_STALE` | zatolmilast | NCT05163808 | registry row says PENDING but ClinicalTrials.gov says COMPLETED (completion 2025-09-02); the bet may already be decided and the row has not been scored |
+| `PRIMARY_NOT_COGNITION_PER_REGISTRY` | emraclidine | NCT07145918 | row says 'cognition (secondary/exploratory)' but ClinicalTrials.gov lists the primary as 'adverse events; PK; PANSS total (NO cognition primary)', which is not a cognition primary |
+
+Rows with no structural issue: **NCT06976203**.
+
+Nothing above is auto-corrected. A frozen prediction edited to match what the world subsequently did is not a prediction, so the rows stay as registered and the problems are reported instead.
+
 ## Resolved since the ledger was curated (out-of-sample confirmations)
 
 **2 / 2 correct** (accuracy 100%). These trials read out *after* the 31-drug ledger was frozen, so they are out-of-sample in TIMING.

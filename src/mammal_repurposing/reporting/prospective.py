@@ -114,3 +114,82 @@ def summary(df: pd.DataFrame) -> dict:
         "n_resolved": int((df["status"] == "RESOLVED").sum()),
         "classes": sorted(df["mechanism_class"].unique().tolist()),
     }
+
+
+def audit_registry(df: pd.DataFrame) -> list[dict]:
+    """Structural problems that make a row's contribution to the track record unreadable.
+
+    Added 2026-09-20 after three separate defects were found by hand on the two RESOLVED rows,
+    which between them ARE the entire track record. None of these is caught by accuracy, and all
+    three change what the accuracy means:
+
+      PREDICTION_AFTER_READOUT  prediction_date is later than the trial's readout, so the row is a
+                                retrodiction. It may still be a useful sanity anchor, but it cannot
+                                be cited as an out-of-sample test, because the answer was public
+                                when the prediction was recorded.
+      PRIMARY_NOT_COGNITION     the scored primary endpoint fails `is_cognition_primary`. A
+                                prediction graded on a negative-symptom or safety primary is not a
+                                cognition prediction, whatever the indication column says.
+      UNVERIFIED_NCT            nct_verified is not "Y". One such row was found pointing at an NCT
+                                that resolves to an entirely unrelated study, so this is not a
+                                formality.
+
+    Returns one dict per issue. An empty list means the registry is structurally clean, NOT that
+    its predictions are any good.
+    """
+    issues: list[dict] = []
+    for _, r in df.iterrows():
+        drug = str(r.get("drug", "?"))
+        nct = str(r.get("nct", "")).strip()
+
+        readout = r.get("readout_year")
+        pdate = str(r.get("prediction_date", "")).strip()
+        if pd.notna(readout) and pdate[:4].isdigit():
+            try:
+                if int(pdate[:4]) > int(float(readout)):
+                    issues.append({
+                        "code": "PREDICTION_AFTER_READOUT", "drug": drug, "nct": nct,
+                        "detail": f"prediction_date {pdate} postdates readout_year "
+                                  f"{int(float(readout))}; this is a retrodiction, not a "
+                                  f"prospective test",
+                    })
+            except (TypeError, ValueError):
+                pass
+
+        # Checked on EVERY row, not just resolved ones. A pending prediction graded on a
+        # non-cognition primary is the same category error, just not cashed out yet.
+        pe = r.get("primary_endpoint")
+        ctg_pe = r.get("ctgov_primary")
+        if not is_cognition_primary(pe):
+            issues.append({
+                "code": "PRIMARY_NOT_COGNITION", "drug": drug, "nct": nct,
+                "detail": f"primary endpoint {pe!r} is not a cognition primary by "
+                          f"is_cognition_primary(); grading a cognition claim on it is a "
+                          f"category error",
+            })
+        elif isinstance(ctg_pe, str) and ctg_pe and not is_cognition_primary(ctg_pe):
+            # The row's own label passes but the registry's actual primary does not. This is the
+            # worse case of the two, because the row reads as clean.
+            issues.append({
+                "code": "PRIMARY_NOT_COGNITION_PER_REGISTRY", "drug": drug, "nct": nct,
+                "detail": f"row says {pe!r} but ClinicalTrials.gov lists the primary as "
+                          f"{ctg_pe!r}, which is not a cognition primary",
+            })
+
+        ctg = str(r.get("ctgov_status", "")).strip().upper()
+        if str(r.get("status", "")).strip() == "PENDING" and ctg in {"COMPLETED", "TERMINATED",
+                                                                    "WITHDRAWN", "SUSPENDED"}:
+            issues.append({
+                "code": "STATUS_STALE", "drug": drug, "nct": nct,
+                "detail": f"registry row says PENDING but ClinicalTrials.gov says {ctg} "
+                          f"(completion {r.get('ctgov_completion')}); the bet may already be "
+                          f"decided and the row has not been scored",
+            })
+
+        if str(r.get("nct_verified", "")).strip().upper() != "Y":
+            issues.append({
+                "code": "UNVERIFIED_NCT", "drug": drug, "nct": nct,
+                "detail": f"nct_verified={r.get('nct_verified')!r}; the identifier has not been "
+                          f"confirmed against the registry",
+            })
+    return issues

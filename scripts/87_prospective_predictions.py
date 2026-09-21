@@ -30,6 +30,7 @@ def main() -> int:
     df = P.load_prospective(ROOT / "data" / "raw" / "prospective_predictions.csv")
     sc = P.score_resolved(df)
     pi = P.pending_informativeness(df)
+    au = P.audit_registry(df)
     sm = P.summary(df)
 
     L = []
@@ -43,6 +44,29 @@ def main() -> int:
     L.append("")
     L.append(f"**{sm['n_total']} predictions** across {len(sm['classes'])} mechanism "
              f"classes: {sm['n_resolved']} already resolved, {sm['n_pending']} pending.")
+    L.append("")
+    L.append("## Structural audit")
+    L.append("")
+    if au:
+        clean = sorted(set(df["nct"].astype(str)) - {str(i["nct"]) for i in au})
+        L.append(f"**{len(au)} structural issue(s) across {len(df)} rows.** These are not wrong "
+                 f"predictions. They are conditions that make a row's contribution to the track "
+                 f"record unreadable, and none of them shows up in an accuracy figure.")
+        L.append("")
+        L.append("| code | drug | NCT | detail |")
+        L.append("|---|---|---|---|")
+        for i in au:
+            L.append(f"| `{i['code']}` | {i['drug']} | {i['nct']} | {i['detail']} |")
+        L.append("")
+        L.append(f"Rows with no structural issue: "
+                 f"**{', '.join(clean) if clean else 'none'}**.")
+        L.append("")
+        L.append("Nothing above is auto-corrected. A frozen prediction edited to match what the "
+                 "world subsequently did is not a prediction, so the rows stay as registered and "
+                 "the problems are reported instead.")
+    else:
+        L.append("No structural issues. Note that this says the rows are well-formed, NOT that "
+                 "the predictions are any good.")
     L.append("")
     L.append("## Resolved since the ledger was curated (out-of-sample confirmations)")
     L.append("")

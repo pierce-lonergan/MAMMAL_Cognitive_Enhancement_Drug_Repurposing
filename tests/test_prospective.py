@@ -155,3 +155,84 @@ def test_no_resolved_rows_does_not_crash_or_claim_a_baseline():
     assert sc["n_resolved"] == 0
     assert sc["n_informative"] == 0
     assert sc["beats_baseline"] is False
+
+
+# --- the structural audit (added 2026-09-20) ---------------------------------------------------
+# Found by re-verifying every NCT by hand: one row pointed at a study of abdominal massage for
+# dysmenorrhea, two "pending" trials had completed in 2025, one row's primary was a
+# negative-symptom scale, and both resolved predictions were dated after their own readouts.
+# Accuracy showed none of it.
+
+def test_prediction_dated_after_readout_is_flagged():
+    from mammal_repurposing.reporting.prospective import audit_registry
+    iss = audit_registry(_frame([dict(
+        drug="x", nct="NCT1", status="RESOLVED", primary_endpoint="MCCB composite",
+        readout_year=2024.0, prediction_date="2026-05-30", nct_verified="Y")]))
+    assert any(i["code"] == "PREDICTION_AFTER_READOUT" for i in iss)
+
+
+def test_prediction_dated_before_readout_is_clean():
+    from mammal_repurposing.reporting.prospective import audit_registry
+    iss = audit_registry(_frame([dict(
+        drug="x", nct="NCT1", status="RESOLVED", primary_endpoint="MCCB composite",
+        readout_year=2027.0, prediction_date="2026-05-30", nct_verified="Y")]))
+    assert not any(i["code"] == "PREDICTION_AFTER_READOUT" for i in iss)
+
+
+def test_non_cognition_primary_is_flagged_on_pending_rows_too():
+    """A category error that has not been cashed out yet is still a category error."""
+    from mammal_repurposing.reporting.prospective import audit_registry
+    iss = audit_registry(_frame([dict(
+        drug="x", nct="NCT1", status="PENDING", primary_endpoint="PANSS-negative",
+        readout_year=float("nan"), prediction_date="2026-05-30", nct_verified="Y")]))
+    assert any(i["code"] == "PRIMARY_NOT_COGNITION" for i in iss)
+
+
+def test_row_that_looks_clean_but_registry_disagrees_is_flagged():
+    """The worse case: the row's own label passes, the actual registered primary does not."""
+    from mammal_repurposing.reporting.prospective import audit_registry
+    iss = audit_registry(_frame([dict(
+        drug="x", nct="NCT1", status="PENDING", primary_endpoint="cognition (exploratory)",
+        ctgov_primary="adverse events; PK; PANSS total", readout_year=float("nan"),
+        prediction_date="2026-05-30", nct_verified="Y")]))
+    assert any(i["code"] == "PRIMARY_NOT_COGNITION_PER_REGISTRY" for i in iss)
+
+
+def test_pending_row_whose_trial_already_completed_is_flagged():
+    from mammal_repurposing.reporting.prospective import audit_registry
+    iss = audit_registry(_frame([dict(
+        drug="x", nct="NCT1", status="PENDING", primary_endpoint="NIH Toolbox cognition",
+        ctgov_status="COMPLETED", ctgov_completion="2025-07-18", ctgov_primary="NIH Toolbox",
+        readout_year=float("nan"), prediction_date="2026-05-30", nct_verified="Y")]))
+    assert any(i["code"] == "STATUS_STALE" for i in iss)
+
+
+def test_still_recruiting_pending_row_is_not_flagged_stale():
+    from mammal_repurposing.reporting.prospective import audit_registry
+    iss = audit_registry(_frame([dict(
+        drug="x", nct="NCT1", status="PENDING", primary_endpoint="ADAS-Cog11",
+        ctgov_status="RECRUITING", ctgov_completion="2028-09-11", ctgov_primary="ADAS-Cog11",
+        readout_year=float("nan"), prediction_date="2026-05-30", nct_verified="Y")]))
+    assert not any(i["code"] == "STATUS_STALE" for i in iss)
+    assert iss == [], "a fully clean row should raise nothing at all"
+
+
+def test_live_registry_has_exactly_one_structurally_clean_row():
+    """Pins the state found on 2026-09-20: only MINDSET 2 survives the audit."""
+    from pathlib import Path
+    from mammal_repurposing.reporting.prospective import audit_registry, load_prospective
+    root = Path(__file__).resolve().parents[1]
+    df = load_prospective(root / "data" / "raw" / "prospective_predictions.csv")
+    iss = audit_registry(df)
+    clean = set(df["nct"].astype(str)) - {str(i["nct"]) for i in iss}
+    assert clean == {"NCT06976203"}, f"expected only MINDSET 2 clean, got {clean}"
+
+
+def test_no_row_still_carries_the_bad_dysmenorrhea_nct():
+    from pathlib import Path
+    from mammal_repurposing.reporting.prospective import load_prospective
+    root = Path(__file__).resolve().parents[1]
+    df = load_prospective(root / "data" / "raw" / "prospective_predictions.csv")
+    assert "NCT03821207" not in set(df["nct"].astype(str)), (
+        "NCT03821207 resolves to an abdominal-massage dysmenorrhea study, not luvadaxistat")
+    assert "NCT03382639" in set(df["nct"].astype(str))
