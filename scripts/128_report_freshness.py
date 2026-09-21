@@ -151,6 +151,16 @@ def _reproduce_in_place(script: str, args: list[str], report: str,
             print(f"{report}: `{script}` exceeded {timeout}s")
             return (False, False)
         if proc.returncode != 0:
+            # Some generators exit non-zero BY DESIGN to signal a condition while still writing
+            # their report correctly -- scripts/130 exits 1 on an unresolvable keystone. Treat a
+            # non-zero exit as reproducible ONLY when the output is byte-identical, which is
+            # self-certifying: a generator that crashed partway cannot match the committed file
+            # exactly. Any difference keeps the old behaviour, because there we genuinely cannot
+            # tell a real change from a truncated write.
+            if target.exists() and target.read_bytes() == keep.read_bytes():
+                print(f"{report}: `{script}` exited {proc.returncode} but reproduced its report "
+                      f"byte for byte; treating the exit code as intentional")
+                return (True, True)
             tail = (proc.stderr or proc.stdout or "").strip().splitlines()[-4:]
             print(f"{report}: neither `{script} --report` (exit "
                   f"{first.returncode}) nor `{script}` (exit {proc.returncode}) "

@@ -879,16 +879,22 @@
       "evidence": "scripts/100_perseus.py --report <tmp> reproduced the committed report byte for byte"
     },
     "reports/pipeline/persistence_axis_v1.md::scripts/99_persistence_axis.py": {
-      "outcome": "unverified",
+      "outcome": "reproduced",
       "code_commit": "ffa750cd4651aa0ff66fe590be8922306a135cb5",
-      "recorded_on": "2026-09-20",
-      "why": "Generator touched 2026-09-20 to emit its own freshness trailer via provenance.trailer.stamp. That is a provenance change, not a numbers change, but the gate is deliberately crude about which code changes matter, so these register as stale and are recorded rather than exempted. stamp is idempotent, and the CITED report in this set reproduced BYTE FOR BYTE, which is the evidence the edit does not move numbers."
+      "verified_on": "2026-09-20",
+      "evidence": "scripts/99_persistence_axis.py --report <tmp> reproduced the committed report byte for byte"
     },
     "reports/pipeline/persistence_axis_v1.md::src/mammal_repurposing/provenance/trailer.py": {
-      "outcome": "unverified",
+      "outcome": "reproduced",
       "code_commit": "ffa750cd4651aa0ff66fe590be8922306a135cb5",
-      "recorded_on": "2026-09-20",
-      "why": "Generator touched 2026-09-20 to emit its own freshness trailer via provenance.trailer.stamp. That is a provenance change, not a numbers change, but the gate is deliberately crude about which code changes matter, so these register as stale and are recorded rather than exempted. stamp is idempotent, and the CITED report in this set reproduced BYTE FOR BYTE, which is the evidence the edit does not move numbers."
+      "verified_on": "2026-09-20",
+      "evidence": "scripts/99_persistence_axis.py --report <tmp> reproduced the committed report byte for byte"
+    },
+    "reports/pipeline/persistence_axis_v1.md::src/mammal_repurposing/reporting/trial_watch.py": {
+      "outcome": "reproduced",
+      "code_commit": "7ec725840964b3f0e7b49fc195e87fa4d3969e6d",
+      "verified_on": "2026-09-20",
+      "evidence": "scripts/99_persistence_axis.py --report <tmp> reproduced the committed report byte for byte"
     },
     "reports/pipeline/persistence_axis_v1.md::src/mammal_repurposing/validation/persistence.py": {
       "outcome": "unverified",
@@ -1033,6 +1039,12 @@
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
       "recorded_on": "2026-08-24",
       "why": "not re-run in this pass. Clearing one means executing its pipeline stage against a 32 GB working data tree that later stages read, which is an operator decision taken one report at a time with --reproduce. Recorded against the commit that outran it, so any further change to that generator re-fails this report. The eight reports touched by the 2026-08-24 Tanimoto self-match fix (fd348c7) were regenerated and are not in this list."
+    },
+    "reports/pipeline/retro_validation_v1.md::src/mammal_repurposing/reporting/trial_watch.py": {
+      "outcome": "reproduced",
+      "code_commit": "7ec725840964b3f0e7b49fc195e87fa4d3969e6d",
+      "verified_on": "2026-09-20",
+      "evidence": "scripts/130_retro_validation.py --report <tmp> reproduced the committed report byte for byte"
     },
     "reports/pipeline/scaffold_aware_v1.md::src/mammal_repurposing/diagnostics/scaffold_aware_al.py": {
       "outcome": "reproduced",
@@ -1369,6 +1381,12 @@
       "code_commit": "eeb27d525008066244ebd8697e26c2dcf7595ed0",
       "verified_on": "2026-09-20",
       "evidence": "scripts/92_v8_real_gate1.py --report <tmp> reproduced the committed report byte for byte"
+    },
+    "reports/pipeline/window_assay_index_v1.md::src/mammal_repurposing/reporting/trial_watch.py": {
+      "outcome": "reproduced",
+      "code_commit": "7ec725840964b3f0e7b49fc195e87fa4d3969e6d",
+      "verified_on": "2026-09-20",
+      "evidence": "scripts/125_window_assay_index.py --report <tmp> reproduced the committed report byte for byte"
     },
     "reports/pipeline/within_class_resolution_v1.md::scripts/93_within_class_resolution.py": {
       "outcome": "unverified",
