@@ -345,7 +345,7 @@ def test_only_resolved_rows_carry_an_outcome():
     assert resolved["actual_outcome"].fillna("").ne("").all(), "a RESOLVED row has no outcome"
     assert set(df["status"]) <= {"PENDING", "RESOLVED"}
     # every resolved row must also name the source it was resolved from
-    assert resolved["outcome_source"].fillna("").str.strip().ne("").all()
+    assert resolved["outcome_source"].astype(str).str.strip().replace("nan", "").ne("").all()
 
 
 def test_every_row_carries_a_reason_and_a_frozen_date():
@@ -515,24 +515,30 @@ def test_abstentions_never_enter_the_score():
     assert s["n_scored"] == 0
 
 
-def test_live_registry_first_outcome_is_recorded_as_a_loss():
-    """The registry's first resolved row, 2026-09-21. It went AGAINST the rule.
+def test_the_misattributed_resolution_stays_retracted():
+    """The registry's only resolved row was RETRACTED on 2026-09-21 and must not creep back.
 
-    Caffeine was predicted POSITIVE from a pooled 0.28 [0.21, 0.36]. NCT07469852 (300 mg anhydrous
-    caffeine, Nutrients 2026;18(17):2771, PMID 42738944) reported no significant main effects on
-    its cognitive battery. So b = 0, c = 1: the constant predictor wins the only informative pair
-    the registry has. n = 1 means nothing statistically and this test asserts no significance; it
-    exists so the first entry cannot be quietly revised later.
+    A blind resolver attributed NCT07469852 to Nutrients 2026;18(17):2771 and an independent
+    verifier confirmed the paper exists. Neither checked that it belongs to THIS registration. It
+    does not: the paper is a reactive-agility study with n = 51 of 150 recruited, while
+    NCT07469852 is a 4-km cycling time trial with n = 15 whose primary outcome is the time-trial
+    finishing time. Its references are BACKGROUND citations only, with no derived publication.
+    Same lab, same dose, same "standardized approach" phrasing, different study.
+
+    The lesson generalises: confirming that a SOURCE EXISTS is not confirming that it belongs to
+    the study being resolved, and a prolific lab publishing sibling trials defeats any check that
+    stops at existence.
     """
     from pathlib import Path
+
     import pandas as pd
+
     from mammal_repurposing.reporting.prospective import score_healthy_adult
     root = Path(__file__).resolve().parents[1]
     reg = pd.read_csv(root / "data" / "raw" / "prospective_healthy_adult.csv")
     row = reg[reg["identifier"] == "NCT07469852"].iloc[0]
-    assert row["prediction"] == "POSITIVE"
-    assert row["actual_outcome"] == "NULL_EFFECT"
-    s = score_healthy_adult(reg)
-    assert s["n_scored"] >= 1
-    assert s["b"] == 0 and s["c"] == 1, "the first entry is a loss and must stay one"
-    assert s["beats_constant"] is False
+    assert row["status"] == "PENDING"
+    assert str(row.get("actual_outcome", "")).strip() in ("", "nan")
+    assert "RETRACTED" in str(row["outcome_verified"])
+    assert score_healthy_adult(reg)["n_scored"] == 0, "no validly resolved row exists"
+
