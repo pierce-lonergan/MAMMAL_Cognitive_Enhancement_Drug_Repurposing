@@ -335,11 +335,17 @@ def _s135():
     return mod
 
 
-def test_every_row_is_pending_and_unscored():
-    """The registry is only worth anything if nothing in it has been filled in after the fact."""
+def test_only_resolved_rows_carry_an_outcome():
+    """A PENDING row must never carry an outcome. The registry is worth something only if rows are
+    filled in when they resolve and not before, so the two columns have to agree row by row."""
     df = _ha()
-    assert (df["status"] == "PENDING").all()
-    assert df["actual_outcome"].fillna("").eq("").all()
+    pending = df[df["status"] == "PENDING"]
+    resolved = df[df["status"] == "RESOLVED"]
+    assert pending["actual_outcome"].fillna("").eq("").all(), "a PENDING row has an outcome"
+    assert resolved["actual_outcome"].fillna("").ne("").all(), "a RESOLVED row has no outcome"
+    assert set(df["status"]) <= {"PENDING", "RESOLVED"}
+    # every resolved row must also name the source it was resolved from
+    assert resolved["outcome_source"].fillna("").str.strip().ne("").all()
 
 
 def test_every_row_carries_a_reason_and_a_frozen_date():
@@ -509,12 +515,24 @@ def test_abstentions_never_enter_the_score():
     assert s["n_scored"] == 0
 
 
-def test_live_registry_is_not_yet_scoreable():
-    """Pins that nothing has been scored. Changing this means real outcomes arrived."""
+def test_live_registry_first_outcome_is_recorded_as_a_loss():
+    """The registry's first resolved row, 2026-09-21. It went AGAINST the rule.
+
+    Caffeine was predicted POSITIVE from a pooled 0.28 [0.21, 0.36]. NCT07469852 (300 mg anhydrous
+    caffeine, Nutrients 2026;18(17):2771, PMID 42738944) reported no significant main effects on
+    its cognitive battery. So b = 0, c = 1: the constant predictor wins the only informative pair
+    the registry has. n = 1 means nothing statistically and this test asserts no significance; it
+    exists so the first entry cannot be quietly revised later.
+    """
     from pathlib import Path
     import pandas as pd
     from mammal_repurposing.reporting.prospective import score_healthy_adult
     root = Path(__file__).resolve().parents[1]
     reg = pd.read_csv(root / "data" / "raw" / "prospective_healthy_adult.csv")
+    row = reg[reg["identifier"] == "NCT07469852"].iloc[0]
+    assert row["prediction"] == "POSITIVE"
+    assert row["actual_outcome"] == "NULL_EFFECT"
     s = score_healthy_adult(reg)
-    assert s["n_scored"] == 0, "registry has outcomes; update this test deliberately"
+    assert s["n_scored"] >= 1
+    assert s["b"] == 0 and s["c"] == 1, "the first entry is a loss and must stay one"
+    assert s["beats_constant"] is False

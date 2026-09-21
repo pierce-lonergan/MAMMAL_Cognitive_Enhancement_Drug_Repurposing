@@ -56,7 +56,7 @@ These are hypotheses worth evaluation, **not** predicted cures. Predicted effect
 
 ## Reproducibility
 
-All four panels recompute from committed artifacts via `scripts/83_flagship_figure.py`. Core modules: `validation/retrospective.py` (Gap 3 + 6), `validation/disease_reframe.py` (Gap 2), `cluster_a/allosteric_ltr.py` (Gap 4), `reporting/{clinician_dossier,repurposing_shortlist}.py` (Gaps 5 + 7). The 31-target panel is scored with the released MAMMAL `dti_bindingdb_pkd` head (`docs/MAMMAL_SETUP.md`). 749 non-slow tests pass.
+All four panels recompute from committed artifacts via `scripts/83_flagship_figure.py`. Core modules: `validation/retrospective.py` (Gap 3 + 6), `validation/disease_reframe.py` (Gap 2), `cluster_a/allosteric_ltr.py` (Gap 4), `reporting/{clinician_dossier,repurposing_shortlist}.py` (Gaps 5 + 7). The 31-target panel is scored with the released MAMMAL `dti_bindingdb_pkd` head (`docs/MAMMAL_SETUP.md`). 830 non-slow tests pass.
 
 ---
 

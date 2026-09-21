@@ -39,15 +39,23 @@ falls at or before each year:
 
 | by end of | discordant pairs due | power at true 0.70 | power at true 0.80 |
 |---|---:|---:|---:|
-| 2024 | 2 | 0% | 0% |
-| 2025 | 10 | 15% | 38% |
-| 2026 **(today)** | 26 | 63% | 94% |
-| 2027 | 27 | 58% | 93% |
-| 2028 | 27 | 58% | 93% |
-| 2029 | 27 | 58% | 93% |
-| 2030 | 27 | 58% | 93% |
+| 2024 | 1 | n/a | n/a |
+| 2025 | 5 | 17% | 33% |
+| 2026 **(today)** | 18 | 53% | 87% |
+| 2027 | 23 | 62% | 93% |
+| 2028 | 25 | 51% | 89% |
+| 2029 | 25 | 51% | 89% |
+| 2030 | 25 | 51% | 89% |
 
-**26 of the 31 discordant pairs already have a stated readout date at or before the end of 2026.** The rate-limiting step is therefore NOT waiting for trials to finish. It is finding out whether the results have been published, which is work that can be done now.
+**14 of the 31 discordant pairs are actually past their stated due date today.** An earlier version of this report said 26, from a date parser that took the MINIMUM year anywhere in the free text. That is wrong: a registration or study-START date is usually the earliest year present, so a row reading "Study start 2026-09; primary completion 2028-08" was counted as due now. Five rows were miscounted that way and the parser has been corrected to read the date following a completion phrase, returning nothing rather than guessing when no such phrase exists. A further 6 rows state no due date at all.
+
+### The exposure to publication bias is total and one-sided
+
+Of the 14 pairs that are resolvable today, **14 are POSITIVE calls** (14/14). Every NEGATIVE call in the registry is future-dated or undated.
+
+That composition is dangerous, and in the direction that flatters the rule. The comparator always answers NULL_EFFECT, so on a POSITIVE call the rule wins if and only if the readout comes back positive. Journal publication selects for positive findings, and journal publication is the only resolution channel available, because not one of these rows has registry-posted results. So the mechanism runs: the file drawer withholds nulls, resolution therefore over-samples positives, and a positive is a rule win on 100% of currently resolvable rows.
+
+**A win rate measured on today's resolvable set would be biased upward and must not be reported as the registry's performance.** The bias resolves on its own only when the NEGATIVE calls come due from late 2026 onward, because those invert the relationship: there the rule wins by the readout being negative, which the file drawer also suppresses.
 
 ## Reading
 
@@ -55,11 +63,9 @@ falls at or before each year:
 can actually separate the rule from a constant predictor. Any future headline must be
 quoted against 31, not 140.
 
-**It is already decisive IF the rule is good.** 26 of the 31 discordant pairs have a stated
-readout date at or before the end of this year. At n = 26 the power to detect a true
-per-pair win rate of 0.80 is 94%. So if the healthy-adult ledger genuinely predicts new
-readouts well, that is measurable NOW and does not need a single new trial. The bottleneck
-is not the calendar, it is finding out which of those 26 have published.
+**Far less of it is resolvable now than it first appeared.** 14 pairs are past due, not 26; the earlier figure came from a date-parsing bug corrected above. At n = 14 the power to detect a true per-pair win rate of 0.80 is 70%, and at 0.70 it is 36%.
+
+**And a blind resolution sweep over those rows found almost nothing to score.** 26 rows attempted, 25 UNRESOLVED, one resolved. Zero had registry-posted results. So the binding constraint is not trial completion and not search effort: it is PUBLICATION LAG, which no amount of scaling touches.
 
 **It is hopeless if the rule is only slightly good.** At a true win rate of 0.60, detecting
 it at 80% power needs 158 discordant pairs, five times what two search passes produced. A
@@ -85,7 +91,7 @@ Measured end-to-end yield over both search passes: 140 confirmed readouts produc
 
 So the decision is tiered, and which tier applies is not yet known:
 
-- **If the rule is strong (true win rate around 0.80), the search is already finished.** 31 discordant pairs exceed the 18 needed, and 26 of them are already due. Nothing is gained by searching more; everything is gained by resolving what is held.
+- **If the rule is strong (true win rate around 0.80), the search is already finished.** 31 discordant pairs exceed the 18 needed, and 18 of them are already due. Nothing is gained by searching more; everything is gained by resolving what is held.
 - **If it is moderate (0.70), one targeted pass closes the gap.** Six more discordant pairs, which is roughly 16 to 27 more confirmed readouts.
 - **If it is weak (0.60), the design cannot reach it.** 127 more discordant pairs means roughly 350 to 575 more confirmed readouts, two and a half to four times the total output of two full search passes, for an edge small enough that it would not change any advice.
 

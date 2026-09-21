@@ -44,6 +44,7 @@ TARGET_G = 0.20       # the ledger floor; an interval above zero BELOW it still 
 ALPHA = 0.05          # one-sided; the registry only claims the rule BEATS the constant
 TARGET_POWER = 0.80
 TODAY_YEAR = 2026
+TODAY_MONTH = 9
 CONSTANT_CALL = "NULL_EFFECT"
 
 
@@ -70,9 +71,60 @@ def n_needed(true_win_rate: float, power: float = TARGET_POWER, cap: int = 4000)
     return None
 
 
-def earliest_year(text: str) -> int | None:
-    years = [int(y) for y in re.findall(r"20\d\d", str(text))]
-    return min(years) if years else None
+#: Phrases that actually introduce a COMPLETION date, longest first so the specific ones win.
+_DUE_PHRASES = [
+    "primary completion and study completion both", "primary completion and completion both",
+    "overall trial end date", "overall study end date", "study completion date",
+    "primary completion date", "last follow-up date", "anticipated completion",
+    "review end date", "study completion", "primary completion", "completion date", "end date",
+]
+_DATE = re.compile(
+    r"(20\d\d)[-/](\d{1,2})(?:[-/](\d{1,2}))?"                       # 2027-11 or 2027-11-05
+    r"|(\d{1,2})\s+([A-Z][a-z]+)\s+(20\d\d)"                        # 10 November 2027
+    r"|([A-Z][a-z]+)\s+(20\d\d)"                                     # November 2027
+    r"|(20\d\d)")                                               # bare year, last resort
+_MONTHS = {m: i for i, m in enumerate(
+    ["January","February","March","April","May","June","July","August","September","October",
+     "November","December"], 1)}
+
+
+def due_year_month(text: str) -> tuple[int, int] | None:
+    """The date a readout is actually DUE, or None if the text does not state one.
+
+    CORRECTED 2026-09-21. This function previously took the MINIMUM year appearing anywhere in the
+    free text, which is wrong in a way that inflated the headline. A registration or study-START
+    date is usually the earliest year present, so a trial reading "Study start 2026-09; primary
+    completion 2028-08" was counted as due in 2026. Five rows were miscounted that way. The fix
+    reads the date that FOLLOWS a completion phrase, and returns None rather than guessing when no
+    such phrase exists, because an unknown due date is not a due date.
+    """
+    t = str(text)
+    low = t.lower()
+    for phrase in _DUE_PHRASES:
+        i = low.find(phrase)
+        if i < 0:
+            continue
+        m = _DATE.search(t, i + len(phrase))
+        if not m:
+            # some records put the date FIRST: "2027-09-30 (estimated end date)"
+            before = list(_DATE.finditer(t[:i]))
+            if not before:
+                continue
+            m = before[-1]
+        if m.group(1):
+            return int(m.group(1)), int(m.group(2))
+        if m.group(6):
+            return int(m.group(6)), _MONTHS.get(m.group(5), 12)
+        if m.group(8):
+            return int(m.group(8)), _MONTHS.get(m.group(7), 12)
+        if m.group(9):
+            return int(m.group(9)), 12
+    return None
+
+
+def due_by(text: str, year: int, month: int = 12) -> bool:
+    d = due_year_month(text)
+    return bool(d and (d[0], d[1]) <= (year, month))
 
 
 def main() -> int:
@@ -81,14 +133,14 @@ def main() -> int:
     disc = calls[calls["prediction"] != CONSTANT_CALL]
     conc = calls[calls["prediction"] == CONSTANT_CALL]
 
-    calls["readout_year"] = calls["expected_readout"].map(earliest_year)
-    disc_years = calls[calls["prediction"] != CONSTANT_CALL]["readout_year"]
+    calls["due"] = calls["expected_readout"].map(due_year_month)
 
     n_disc = len(disc)
     need = min_wins(n_disc)
-    cum = {}
-    for y in range(2023, 2031):
-        cum[y] = int((disc_years <= y).sum())
+    dc = calls[calls["prediction"] != CONSTANT_CALL]
+    cum = {y: int(sum(1 for v in dc["due"] if v and v[0] <= y)) for y in range(2023, 2031)}
+    past_due = dc[[bool(v and (v[0], v[1]) <= (TODAY_YEAR, TODAY_MONTH)) for v in dc["due"]]]
+    n_undated = int(sum(1 for v in dc["due"] if v is None))
 
     lines = [
         "# When can the forward registry detect anything?",
@@ -154,13 +206,36 @@ def main() -> int:
     n_map = int(((reg["ledger_compound"].notna()) &
                  (reg["ledger_compound"].astype(str).str.strip() != "")).sum())
 
-    n_now = cum[TODAY_YEAR]
+    n_now = len(past_due)
+    n_pos_now = int((past_due["prediction"] == "POSITIVE").sum())
     lines += [
         "",
-        f"**{n_now} of the {n_disc} discordant pairs already have a stated readout date at or "
-        f"before the end of {TODAY_YEAR}.** The rate-limiting step is therefore NOT waiting for "
-        "trials to finish. It is finding out whether the results have been published, which is "
-        "work that can be done now.",
+        f"**{n_now} of the {n_disc} discordant pairs are actually past their stated due date "
+        f"today.** An earlier version of this report said 26, from a date parser that took the "
+        "MINIMUM year anywhere in the free text. That is wrong: a registration or study-START date "
+        "is usually the earliest year present, so a row reading \"Study start 2026-09; primary "
+        "completion 2028-08\" was counted as due now. Five rows were miscounted that way and the "
+        "parser has been corrected to read the date following a completion phrase, returning "
+        "nothing rather than guessing when no such phrase exists. "
+        f"A further {n_undated} rows state no due date at all.",
+        "",
+        "### The exposure to publication bias is total and one-sided",
+        "",
+        f"Of the {n_now} pairs that are resolvable today, **{n_pos_now} are POSITIVE calls** "
+        f"({n_pos_now}/{n_now}). Every NEGATIVE call in the registry is future-dated or undated.",
+        "",
+        "That composition is dangerous, and in the direction that flatters the rule. The comparator "
+        "always answers NULL_EFFECT, so on a POSITIVE call the rule wins if and only if the readout "
+        "comes back positive. Journal publication selects for positive findings, and journal "
+        "publication is the only resolution channel available, because not one of these rows has "
+        "registry-posted results. So the mechanism runs: the file drawer withholds nulls, "
+        "resolution therefore over-samples positives, and a positive is a rule win on 100% of "
+        "currently resolvable rows.",
+        "",
+        "**A win rate measured on today's resolvable set would be biased upward and must not be "
+        "reported as the registry's performance.** The bias resolves on its own only when the "
+        "NEGATIVE calls come due from late 2026 onward, because those invert the relationship: "
+        "there the rule wins by the readout being negative, which the file drawer also suppresses.",
         "",
         "## Reading",
         "",
@@ -168,11 +243,15 @@ def main() -> int:
         "can actually separate the rule from a constant predictor. Any future headline must be",
         "quoted against 31, not 140.",
         "",
-        "**It is already decisive IF the rule is good.** 26 of the 31 discordant pairs have a stated",
-        "readout date at or before the end of this year. At n = 26 the power to detect a true",
-        "per-pair win rate of 0.80 is 94%. So if the healthy-adult ledger genuinely predicts new",
-        "readouts well, that is measurable NOW and does not need a single new trial. The bottleneck",
-        "is not the calendar, it is finding out which of those 26 have published.",
+        f"**Far less of it is resolvable now than it first appeared.** {n_now} pairs are past due, "
+        f"not 26; the earlier figure came from a date-parsing bug corrected above. At n = {n_now} "
+        f"the power to detect a true per-pair win rate of 0.80 is {power_at(n_now, 0.80):.0%}, and "
+        f"at 0.70 it is {power_at(n_now, 0.70):.0%}.",
+        "",
+        "**And a blind resolution sweep over those rows found almost nothing to score.** 26 rows "
+        "attempted, 25 UNRESOLVED, one resolved. Zero had registry-posted results. So the binding "
+        "constraint is not trial completion and not search effort: it is PUBLICATION LAG, which no "
+        "amount of scaling touches.",
         "",
         "**It is hopeless if the rule is only slightly good.** At a true win rate of 0.60, detecting",
         "it at 80% power needs 158 discordant pairs, five times what two search passes produced. A",
