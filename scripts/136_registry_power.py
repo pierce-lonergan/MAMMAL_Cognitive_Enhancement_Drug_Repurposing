@@ -37,7 +37,9 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 L = logging.getLogger("registry_power")
 
 REGISTRY = ROOT / "data" / "raw" / "prospective_healthy_adult.csv"
+LEDGER = ROOT / "data" / "raw" / "healthy_adult_cognition_ledger.csv"
 REPORT = ROOT / "reports" / "pipeline" / "registry_power_v1.md"
+TARGET_G = 0.20       # the ledger floor; an interval above zero BELOW it still calls NULL_EFFECT
 
 ALPHA = 0.05          # one-sided; the registry only claims the rule BEATS the constant
 TARGET_POWER = 0.80
@@ -143,6 +145,15 @@ def main() -> int:
         mark = " **(today)**" if y == TODAY_YEAR else ""
         lines.append(f"| {y}{mark} | {n} | {p70} | {p80} |")
 
+    led = pd.read_csv(LEDGER)
+    led = led[led["ci_lo"].notna() & led["ci_hi"].notna()]
+    disc_pos = set(led[(led["ci_lo"] > 0) & (led["representative_g"] >= TARGET_G)]["compound"])
+    disc_neg = set(led[led["ci_hi"] < 0]["compound"])
+    below_floor = set(led[(led["ci_lo"] > 0) & (led["representative_g"] < TARGET_G)]["compound"])
+    n_reads = len(reg)
+    n_map = int(((reg["ledger_compound"].notna()) &
+                 (reg["ledger_compound"].astype(str).str.strip() != "")).sum())
+
     n_now = cum[TODAY_YEAR]
     lines += [
         "",
@@ -174,6 +185,56 @@ def main() -> int:
         "compounds whose ledger interval lies clearly ABOVE or BELOW zero, because only those",
         "generate discordant pairs. Searching for more trials on compounds whose ledger row spans",
         "zero is wasted effort, however many it finds.",
+        "",
+        "## How much more searching, and is it worth it",
+        "",
+        "Measured end-to-end yield over both search passes: "
+        f"{n_reads} confirmed readouts produced {len(calls)} calls and {n_disc} discordant pairs, "
+        f"so {n_disc / n_reads:.0%} of a readout's worth survives to the test. Of readouts that map "
+        f"to a ledger compound at all ({n_map} of {n_reads}, {n_map / n_reads:.0%}), "
+        f"{n_disc / n_map:.0%} are discordant.",
+        "",
+        "| to reach | needed for | more discordant pairs | untargeted readouts | targeted |",
+        "|---|---|---:|---:|---:|",
+    ]
+    for tgt, lab in ((18, "80% power at true 0.80"), (37, "80% power at true 0.70"),
+                     (158, "80% power at true 0.60")):
+        extra = max(0, tgt - n_disc)
+        unt = round(extra / (n_disc / n_reads)) if n_disc else 0
+        tar = round(extra / (n_map / n_reads)) if n_map else 0
+        lines.append(f"| n = {tgt} | {lab} | {extra} | "
+                     f"{'none, already there' if not extra else f'~{unt}'} | "
+                     f"{'none' if not extra else f'~{tar}'} |")
+
+    lines += [
+        "",
+        "So the decision is tiered, and which tier applies is not yet known:",
+        "",
+        "- **If the rule is strong (true win rate around 0.80), the search is already finished.** "
+        f"{n_disc} discordant pairs exceed the 18 needed, and {cum[TODAY_YEAR]} of them are already "
+        "due. Nothing is gained by searching more; everything is gained by resolving what is held.",
+        "- **If it is moderate (0.70), one targeted pass closes the gap.** Six more discordant pairs, "
+        "which is roughly 16 to 27 more confirmed readouts.",
+        "- **If it is weak (0.60), the design cannot reach it.** 127 more discordant pairs means "
+        "roughly 350 to 575 more confirmed readouts, two and a half to four times the total output "
+        "of two full search passes, for an edge small enough that it would not change any advice.",
+        "",
+        "**Which means resolution must come before more searching.** Until the held rows are scored "
+        "nobody knows which tier this is, and three of the four possible answers make further "
+        "searching either unnecessary or pointless.",
+        "",
+        "### If a targeted pass is run, these are the only compounds worth searching",
+        "",
+        f"Exactly {len(disc_pos) + len(disc_neg)} ledger compounds generate a discordant call.",
+        "",
+        f"- expect a benefit ({len(disc_pos)}): {', '.join(sorted(disc_pos))}",
+        f"- expect a decrement ({len(disc_neg)}): {', '.join(sorted(disc_neg))}",
+        "",
+        f"Every other compound in the ledger yields NULL_EFFECT and is worth nothing to the test. "
+        f"Note the trap in that list: {', '.join(sorted(below_floor))} all have an interval "
+        f"entirely above zero and STILL call NULL_EFFECT, because their point estimate sits below "
+        f"the {TARGET_G:.2f} floor. A targeting rule written as \"interval excludes zero\" rather "
+        f"than \"the rule departs from NULL_EFFECT\" would waste effort on all four.",
         "",
     ]
     REPORT.parent.mkdir(parents=True, exist_ok=True)
