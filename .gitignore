@@ -96,3 +96,5 @@ data/raw/kpuu_anchors_cache.csv
 
 # scraped pages left behind by research subagents (a curl redirect at repo root)
 /*.html
+# cis-MR reference data: large, openly re-downloadable, not project artifacts
+# GWAS_CP_all.txt (601 MB) and the eQTL credible sets live in ~/.data, not the repo.

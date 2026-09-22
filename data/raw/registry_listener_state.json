@@ -1,0 +1,380 @@
+{
+ "frozen_on": "2026-09-21",
+ "note": "Passive listener. A change raises a flag for a human; it resolves nothing, because attributing a publication to a registration is not automatable - see the NCT07469852 retraction.",
+ "rows": {
+  "NCT04273776": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "ACTIVE_NOT_RECRUITING"
+  },
+  "NCT05301608": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT05325502": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "ACTIVE_NOT_RECRUITING"
+  },
+  "NCT05483465": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT05519644": {
+   "changed_since_freeze": false,
+   "derived_pmids": [
+    "42753265"
+   ],
+   "has_results": false,
+   "n_derived_publications": 1,
+   "status": "ACTIVE_NOT_RECRUITING"
+  },
+  "NCT05588934": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT06021223": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "COMPLETED"
+  },
+  "NCT06041048": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT06192407": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT06367738": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT06374641": {
+   "changed_since_freeze": false,
+   "derived_pmids": [
+    "17473782",
+    "19661447",
+    "22033512"
+   ],
+   "has_results": false,
+   "n_derived_publications": 3,
+   "status": "COMPLETED"
+  },
+  "NCT06431932": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT06530459": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT06682767": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "NOT_YET_RECRUITING"
+  },
+  "NCT06690892": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT06692192": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT06763172": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT06768944": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT06780774": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "NOT_YET_RECRUITING"
+  },
+  "NCT06900452": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT06906848": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "COMPLETED"
+  },
+  "NCT07051655": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT07079852": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "NOT_YET_RECRUITING"
+  },
+  "NCT07109245": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT07119788": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT07135232": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT07216781": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "ACTIVE_NOT_RECRUITING"
+  },
+  "NCT07235878": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "ACTIVE_NOT_RECRUITING"
+  },
+  "NCT07242430": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "ACTIVE_NOT_RECRUITING"
+  },
+  "NCT07267559": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT07267845": {
+   "changed_since_freeze": false,
+   "derived_pmids": [
+    "1428296",
+    "37340479",
+    "39683633"
+   ],
+   "has_results": false,
+   "n_derived_publications": 3,
+   "status": "RECRUITING"
+  },
+  "NCT07285629": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "COMPLETED"
+  },
+  "NCT07319117": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT07388576": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT07408180": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "COMPLETED"
+  },
+  "NCT07449351": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "NOT_YET_RECRUITING"
+  },
+  "NCT07451496": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT07469852": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "ACTIVE_NOT_RECRUITING"
+  },
+  "NCT07475546": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "ACTIVE_NOT_RECRUITING"
+  },
+  "NCT07530185": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "NOT_YET_RECRUITING"
+  },
+  "NCT07533032": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "COMPLETED"
+  },
+  "NCT07533045": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "COMPLETED"
+  },
+  "NCT07637487": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT07666685": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT07706283": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "COMPLETED"
+  },
+  "NCT07732166": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT07742501": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "COMPLETED"
+  },
+  "NCT07742514": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "COMPLETED"
+  },
+  "NCT07792876": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "RECRUITING"
+  },
+  "NCT07801066": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "NOT_YET_RECRUITING"
+  },
+  "NCT07814300": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "ACTIVE_NOT_RECRUITING"
+  },
+  "NCT07818564": {
+   "changed_since_freeze": false,
+   "derived_pmids": [],
+   "has_results": false,
+   "n_derived_publications": 0,
+   "status": "NOT_YET_RECRUITING"
+  }
+ }
+}
